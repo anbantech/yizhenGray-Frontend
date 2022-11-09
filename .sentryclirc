@@ -1,0 +1,7 @@
+[defaults]
+url=http://router.anban.cloud:31005/
+org=sentry
+project=yizhen-frontend
+
+[auth]
+token=2e2e190ce466434c8fcd55e9ba8031427fa014eaf46f4573b95f78c0991b2bfe

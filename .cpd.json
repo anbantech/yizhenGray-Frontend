@@ -1,0 +1,7 @@
+{
+  "reporters": ["html", "markdown", "verbose"],
+  "ignore": ["dist/**", "nginx/**", "public/**", "node_modules/**", "scripts/**", "report/**", "src/mock/**"],
+  "format": ["javascript", "typescript", "jsx", "tsx", "css", "less"],
+  "gitignore": true,
+  "min-tokens": 20
+}

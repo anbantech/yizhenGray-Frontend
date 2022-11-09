@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "ESNext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "jsx": "react",
+    "isolatedModules": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "baseUrl": "./",
+    "paths": {
+      "Src/*": ["src/*"],
+      "Api/*": ["src/Api/*"],
+      "Image/*": ["src/Image/*"],
+      "Common/*": ["src/common/*"],
+      "Components/*": ["src/components/*"],
+      "Utils/*": ["src/utils/*"]
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "downlevelIteration": true,
+    "useUnknownInCatchVariables": false
+  },
+  "include": ["src/**/*", "scripts/constants.js"],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="shortcut icon" href=./favicon.ico type=image/x-icon>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>易侦</title>
+    <style>
+      body {
+        margin: 0;
+      }
+
+      .wrapper {
+        height: 100vh;
+        background-image: url('./image/bg.png');
+        background-position: top center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+
+      .content {
+        max-width: 1200px;
+        height: 100vh;
+        margin: auto;
+        display: flex;
+        position: relative;
+      }
+
+      .content .logo {
+        position: absolute;
+        top: 40px;
+      }
+
+      .target {
+        margin: auto;
+      }
+
+      .target .title {
+        margin-bottom: 53px;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 32px;
+        line-height: 150%;
+        letter-spacing: 0.05em;
+        color: #ffffff;
+      }
+
+      .project {
+        width: 400px;
+        height: 180px;
+        display: block;
+        margin: auto;
+        margin-top: 36px;
+        padding: 30px 0;
+        box-sizing: border-box;
+        border-radius: 12px;
+        transition: all ease 0.5s;
+        position: relative;
+        border: 3px solid transparent;
+        text-decoration: none;
+      }
+
+      .project:hover {
+        transform: scale(1.05);
+        border: 3px solid #b4c0ff;
+      }
+
+      .project img {
+        width: 80px;
+        height: 80px;
+        display: block;
+        margin: auto;
+        position: relative;
+      }
+
+      .project p {
+        margin: auto;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 30px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #ffffff;
+        text-align: center;
+        position: relative;
+        text-decoration: none;
+      }
+
+      .card.normal,
+      .card.plus {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+      }
+
+      .project.plus {
+        background-image: url('./image/plus.png');
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="content">
+        <img class="logo" src="./image/logo.svg" alt="logo" />
+        <div class="target">
+          <h1 class="title">安般易侦协议智能模糊测试系统V1.0</h1>
+          <a class="project" href="/normal" target="_blank">
+            <img class="card normal" src="./image/normal.png" alt="" />
+            <img src="./image/1.png" alt="normal" />
+            <p>易侦协议模糊测试系统</p>
+          </a>
+          <a class="project" href="/plus" target="_blank">
+            <img class="card plus" src="./image/plus.png" alt="" />
+            <img src="./image/2.png" alt="plus" />
+            <p>易侦PLUS协议模糊测试系统</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
