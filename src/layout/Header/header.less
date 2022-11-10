@@ -1,0 +1,74 @@
+.Header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: 58px;
+  background-color: #fff;
+}
+
+.Header_content {
+  display: flex;
+  padding: 14px 0;
+  text-align: center;
+}
+
+.Header_content_title {
+  margin-right: 48px;
+  color: #697585;
+  font-weight: 500;
+  font-size: 18px;
+  font-style: normal;
+  line-height: 27px;
+}
+
+.Header_content_img {
+  width: 28px;
+  height: 28px;
+  margin-right: 11px;
+}
+
+.HeaderBread {
+  margin-left: 45px;
+}
+
+.HeaderUser {
+  margin-right: 12px;
+
+  > div {
+    padding-right: 18px;
+  }
+}
+
+.sys {
+  :global(.ant-dropdown-menu-title-content) {
+    text-align: center;
+  }
+
+  :global(.ant-dropdown-menu-item) {
+    width: 160px;
+    height: 38px;
+  }
+}
+
+.resetPasswordDialog {
+  :global(.ant-form-item-label) {
+    color: #333;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 22px;
+    text-align: left;
+  }
+
+  :global(.ant-modal-title) {
+    color: #333;
+    font-weight: 700;
+    font-size: 16px;
+    font-style: normal;
+    line-height: 24px;
+  }
+
+  :global(.ant-modal-footer) {
+    display: block;
+  }
+}

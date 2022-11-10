@@ -1,0 +1,173 @@
+.side {
+  /* height: 100vh; */
+}
+
+.sideNav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 240px;
+  background-color: #fff;
+}
+
+.Menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.configMenu {
+  display: flex;
+  align-items: center;
+  width: 216px;
+  height: 50px;
+  margin: 0 12px;
+  padding: 15px 20px;
+  cursor: pointer;
+}
+
+.sideNav_content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 216px;
+  height: 50px;
+  margin: 0 12px;
+  padding: 15px 20px;
+  cursor: pointer;
+
+  .sideNav_chart {
+    color: #303133;
+    font-weight: normal;
+    font-size: 15px;
+    font-style: normal;
+    line-height: 21px;
+    letter-spacing: 0.3px;
+  }
+}
+
+.sideNav_content:hover {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+
+  .sideNav_chart {
+    color: #245ff0;
+    font-weight: normal;
+    font-size: 15px;
+    font-style: normal;
+    line-height: 21px;
+    letter-spacing: 0.3px;
+  }
+}
+
+.active {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 216px;
+  height: 50px;
+  margin: 0 12px;
+  padding: 15px 20px;
+  background-color: #ebf2ff;
+  border-radius: 8px;
+  cursor: pointer;
+
+  .sideNav_chart {
+    color: #245ff0;
+    font-weight: 600;
+    font-size: 15px;
+    font-style: normal;
+    line-height: 21px;
+    letter-spacing: 0.3px;
+  }
+}
+
+.sideNav_img {
+  width: 24px;
+  height: 24px;
+  margin-right: 20px;
+}
+
+.isRotate {
+  position: absolute;
+  right: 16px;
+  transform: rotate(180deg);
+  transition: transform 0.5s;
+}
+
+.isNoRotate {
+  position: absolute;
+  right: 16px;
+  transform: rotate(0deg);
+  transition: transform 0.5s;
+}
+
+.sideNav_contents {
+  display: flex;
+  align-items: center;
+  width: 216px;
+  height: 50px;
+  margin: 0 12px;
+  padding: 15px 64px;
+  cursor: pointer;
+
+  .sideNav_chart {
+    color: #303133;
+    font-weight: normal;
+    font-size: 15px;
+    font-style: normal;
+    line-height: 21px;
+    letter-spacing: 0.3px;
+  }
+}
+
+.actives {
+  display: flex;
+  align-items: center;
+  width: 216px;
+  height: 50px;
+  margin: 0 12px;
+  padding: 15px 64px;
+  background-color: #ebf2ff;
+  border-radius: 8px;
+  cursor: pointer;
+
+  .sideNav_chart {
+    color: #245ff0;
+    font-weight: 600;
+    font-size: 15px;
+    font-style: normal;
+    line-height: 21px;
+    letter-spacing: 0.3px;
+  }
+}
+
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
+}
+
+.errorMessageCue {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: #f00;
+  border-radius: 50%;
+  animation: radiate 1000ms infinite;
+}
+
+@keyframes radiate {
+  from {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
