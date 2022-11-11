@@ -9,3 +9,4 @@ interface ResponseData<T> {
 declare module 'axios' {
   export interface AxiosResponse<T = any> extends Promise<ResponseData<T>> {}
 }
+
