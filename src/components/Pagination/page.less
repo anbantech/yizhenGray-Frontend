@@ -1,0 +1,43 @@
+.pagePosition {
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+  margin-top: 30px;
+}
+
+:global(.ant-pagination-item) {
+  background-color: transparent !important;
+  border: 0 solid transparent !important;
+}
+
+:global(.ant-pagination-item-active) {
+  height: 32px;
+  background-color: #4880ff !important;
+  border-radius: 99px;
+}
+
+.pageList {
+  :global(.ant-pagination-item-active) {
+    width: 32px;
+    height: 32px;
+    background-color: #4880ff !important;
+    border-radius: 99px;
+  }
+}
+
+:global(.ant-pagination-item-active a) {
+  color: #fff !important;
+}
+
+:global(.ant-pagination-item-link) {
+  background-color: transparent !important;
+  border: 0 solid transparent !important;
+}
+
+:global(.ant-pagination-options-quick-jumper input) {
+  background-color: #eee;
+}
+
+.total {
+  margin-left: 20px;
+}

@@ -1,6 +1,6 @@
 import 'antd/dist/antd.css'
 import { Layout } from 'antd'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import NoMatch from 'Src/view/404/404'
 import Login from 'Src/view/Login/Login'
 import { Route, Switch, RouteComponentProps } from 'react-router-dom'
@@ -53,20 +53,13 @@ function Main() {
 
 const App: React.FC<RouteComponentProps<any, any, any>> = props => {
   const name = props.location.pathname
-  const RouterMap = new Set([
-    '/projects',
-    '/Arrgemnt',
-    '/targets',
-    '/targets/create',
-    '/Exception/create',
-    '/Exception',
-    '/byPass',
-    '/message',
-    '/UserLog',
-    '/UserList',
-    '/backupData',
-    '/byPass/newCreateByPass'
-  ])
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log('%c开发环境路由监听', 'background:yellow;', props.location)
+    }
+  }, [props.location])
+  const RouterMap = new Set(['/projects', '/excitationList', '/Exception', '/UserLog', '/UserList'])
   const tokenID = window.localStorage.getItem('access_token')
   return (
     <>

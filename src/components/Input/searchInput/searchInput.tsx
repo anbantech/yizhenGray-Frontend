@@ -1,13 +1,12 @@
 import Input from 'antd/lib/input'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import clearImage from 'Src/asstes/image/Delete.svg'
 import searchImage from 'Src/asstes/image/search.svg'
-import UseThrorrleWait from 'Src/until/Hooks/useDebounceWait'
+import useRequestRate from 'Src/until/Hooks/useRequestRate'
 import styles from './searchInput.less'
 
 interface searchTypes {
   placeholder: string
-  inputValue: string | number
   onChangeValue: (value: string) => void
 }
 
@@ -29,40 +28,44 @@ const Search = () => {
 // 输入框右边图标 根据输入文字进行显示隐藏,点击可以清除文字
 const ClearSuffix = React.memo(function ClearSuffix(isShowProp: isShowProps<isShowType, fnType>) {
   const { inputValue, onChangeValue } = isShowProp
-  const [isShow, setIsShow] = useState(false)
   const clearInputValue = () => {
-    setIsShow(false)
     onChangeValue('')
   }
-  // 如果输入值,取消图标显示
-  useEffect(() => {
-    if (inputValue) {
-      setIsShow(true)
-    }
+
+  const changeImageShow = useMemo(() => {
+    return inputValue
   }, [inputValue])
+
   return (
     <div className={styles.clearImage} tabIndex={0} role='button' onClick={clearInputValue}>
-      <img className={isShow ? styles.clearImageConcent : styles.clearImageHidden} src={clearImage} alt='clear' />
+      <img className={changeImageShow ? styles.clearImageConcent : styles.clearImageHidden} src={clearImage} alt='clear' />
     </div>
   )
 })
 
 function SearchInput(props: searchTypes) {
-  const { placeholder, inputValue, onChangeValue } = props
+  const { placeholder, onChangeValue } = props
   const changeValueFn = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
     onChangeValue(value)
   }
-  const { run } = UseThrorrleWait(changeValueFn, { wait: 200 })
+
+  const [nowValue, isCancel, controlRate] = useRequestRate(changeValueFn, 300)
+  useEffect(() => {
+    if (isCancel) {
+      onChangeValue(nowValue)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nowValue, isCancel])
   return (
     <div className={styles.searchInput}>
       <Input
-        value={inputValue}
+        value={nowValue}
         prefix={<Search />}
-        suffix={<ClearSuffix inputValue={inputValue} onChangeValue={onChangeValue} />}
+        suffix={<ClearSuffix inputValue={nowValue} onChangeValue={controlRate} />}
         placeholder={placeholder}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          run(e)
+          controlRate(e.target.value)
         }}
       />
     </div>

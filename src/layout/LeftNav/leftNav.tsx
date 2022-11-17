@@ -7,8 +7,6 @@ import ac_items from 'Src/asstes/image/ac_items.svg'
 import ac_configImage from 'Src/asstes/image/ac_config.svg'
 import Arge from 'Src/asstes/image/Arge.svg'
 import ac_Arge from 'Src/asstes/image/ac_Arge.svg'
-import message from 'Src/asstes/image/message.svg'
-import ac_message from 'Src/asstes/image/ac_message.svg'
 import sidebarLogo from 'Src/asstes/image/sidebarLogo.svg'
 import { useHistory, withRouter } from 'react-router-dom'
 import { UpOutlined } from '@ant-design/icons'
@@ -51,15 +49,9 @@ const routerList: SideBarRoute[] = [
     activeImageURL: ac_Arge,
     name: '配置项',
     children: [
-      { name: '协议列表', path: 'Arrgemnt' },
-      { name: '目标列表', path: 'targets' }
+      { name: '模版列表', path: 'TemplateList' },
+      { name: '激励列表', path: 'excitationList' }
     ]
-  },
-  {
-    inactiveImageURL: message,
-    activeImageURL: ac_message,
-    name: '信息中心',
-    path: 'message'
   },
   {
     inactiveImageURL: configImage,
