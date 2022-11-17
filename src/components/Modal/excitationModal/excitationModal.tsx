@@ -1,0 +1,169 @@
+import React, { useEffect, useState } from 'react'
+import 'antd/dist/antd.css'
+import { Modal, Input, Form, Button, message } from 'antd'
+import { throwErrorMessage } from 'Src/until/message'
+import { updateProject, createProject } from 'Src/services/api/projectApi'
+import styles from '../BaseModle.less'
+
+interface FormInstance {
+  name: string
+  desc: string
+}
+const layout = {
+  labelCol: { span: 6 },
+  wrapperCol: { span: 16 }
+}
+function ExcitationModal(props: any) {
+  const { visible, width, hideModal, fixTitle, id, projectInfo } = props
+  const [form] = Form.useForm<FormInstance>()
+  const [isDisableStatus, setDisabledStatus] = useState(true)
+
+  // 创建激励
+  const createProjectItem = async (params: any) => {
+    try {
+      const data = await createProject(params)
+      message.success('项目创建成功')
+      return data
+    } catch (error) {
+      throwErrorMessage(error, { 1005: '项目名称重复，请修改' })
+      return error
+    }
+  }
+  // 校验表单 且 完成列表刷新  关闭表单
+  const validateForm = async () => {
+    try {
+      const value = await form.validateFields()
+      const { name, desc } = value
+      if (name) {
+        if (fixTitle) {
+          const res = await updateProject({ name: name.trim(), desc: desc ? desc.trim() : '' }, id)
+          message.success('项目修改成功')
+          return res
+        }
+        if (!fixTitle) {
+          const res = await createProjectItem({ name: name.trim(), desc: desc ? desc.trim() : '' })
+          return res
+        }
+      }
+    } catch (error) {
+      setDisabledStatus(true)
+      throwErrorMessage(error, { 1005: '项目名称重复，请修改' })
+      return error
+    }
+  }
+  const formVali = () => {
+    setDisabledStatus(true)
+    validateForm()
+      .then(res => {
+        if (res.code !== 1005) {
+          hideModal(false)
+          form.resetFields()
+        }
+        return res
+      })
+      .catch(error => {
+        return error
+      })
+  }
+
+  const onValuesChange = (changedValues: any, allValues: any) => {
+    const bol = allValues.desc === undefined || allValues.desc?.length <= 50
+    if (allValues.name?.length >= 2 && allValues.name.length <= 20 && /^[\w\u4E00-\u9FA5]+$/.test(allValues.name) && bol) {
+      setDisabledStatus(false)
+    } else {
+      setDisabledStatus(true)
+    }
+  }
+
+  useEffect(() => {
+    if (projectInfo) {
+      const { name, desc } = projectInfo
+      // cause backend will auto add prefix for queue name
+      // thus remove prefix of queue name when editing
+      const formData = { name, desc }
+      form.setFieldsValue(formData)
+    }
+  }, [form, projectInfo])
+
+  return (
+    <Modal
+      className={styles}
+      width={width}
+      visible={visible}
+      title={fixTitle ? '修改项目' : '新建项目'}
+      onCancel={() => {
+        hideModal(false)
+        form.resetFields()
+        setDisabledStatus(true)
+      }}
+      footer={[
+        <Button
+          className={styles.btn_cancel_exection}
+          key='back'
+          onClick={() => {
+            form.resetFields()
+            hideModal(false)
+            setDisabledStatus(true)
+          }}
+        >
+          取消
+        </Button>,
+        <Button className={styles.btn_create_exection} key='submit' size='small' disabled={isDisableStatus} type='primary' onClick={() => formVali()}>
+          {fixTitle ? '修改' : '新建'}
+        </Button>
+      ]}
+    >
+      <>
+        <Form form={form} autoComplete='off' {...layout} onValuesChange={onValuesChange}>
+          <Form.Item
+            name='name'
+            label='激励ID'
+            validateFirst
+            validateTrigger={['onBlur']}
+            rules={[
+              { required: true, message: '请输入激励ID' },
+              { type: 'string', min: 2, max: 20, message: '项目名称长度为2到20个字符' },
+              {
+                validateTrigger: 'onBlur',
+                validator(_, value) {
+                  const reg = /^[\w\u4E00-\u9FA5]+$/
+                  if (reg.test(value)) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('项目名称由汉字、数字、字母和下划线组成'))
+                }
+              }
+            ]}
+          >
+            <Input placeholder='请输入激励ID' />
+          </Form.Item>
+          <Form.Item
+            name='name'
+            label='激励端点名称'
+            validateFirst
+            validateTrigger={['onBlur']}
+            rules={[
+              { required: true, message: '请输入激励端点名称' },
+              { type: 'string', min: 2, max: 20, message: '项目名称长度为2到20个字符' },
+              {
+                validateTrigger: 'onBlur',
+                validator(_, value) {
+                  const reg = /^[\w\u4E00-\u9FA5]+$/
+                  if (reg.test(value)) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('项目名称由汉字、数字、字母和下划线组成'))
+                }
+              }
+            ]}
+          >
+            <Input placeholder='请输入激励端点名称' />
+          </Form.Item>
+        </Form>
+        <div className={styles.exection_line} />
+      </>
+    </Modal>
+  )
+}
+
+export default ExcitationModal

@@ -1,5 +1,6 @@
 import React from 'react'
 import defaultValueImage from 'Src/asstes/image/defalutValue.svg'
+import styles from './defaultValueTips.less'
 
 type contentType = string
 
@@ -13,7 +14,7 @@ interface propsType<T> {
 const DefaultValueTips: React.FC<propsType<contentType>> = (props: propsType<contentType>) => {
   const { content } = props
   return (
-    <div>
+    <div className={styles.Tips_Main}>
       <img src={defaultValueImage} alt='' />
       <span> {content} </span>
     </div>

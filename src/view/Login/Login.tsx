@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { loginIn } from 'Src/services/api/loginApi'
 import LoginImg from 'Src/asstes/image/bg.png'
 import { useHistory, withRouter } from 'react-router-dom'
-import SearchInput from 'Src/components/Input/searchInput/searchInput'
 import styles from './login.less'
 
 function Login() {
@@ -11,7 +10,6 @@ function Login() {
   // const year = date.getFullYear()
   const [form] = Form.useForm()
   const history = useHistory()
-  const [value, setValue] = useState('')
   const [isDisableStatus, setDisabledStatus] = useState(true)
   const onValuesChange = (changedValues: any, allValues: any) => {
     const bol = allValues.username !== undefined && allValues.username.length > 0 && allValues.password !== undefined && allValues.password.length > 0
@@ -57,7 +55,6 @@ function Login() {
           {/* <span> 欢迎使用网络协议模糊测试工具 </span> */}
           <span>欢迎使用易侦协议模糊测试系统 </span>
         </div>
-        <SearchInput placeholder='请搜索项目' inputValue={value} onChangeValue={setValue} />
         <div className={styles.loginRightForm}>
           <Form name='basic' onValuesChange={onValuesChange} layout='vertical' initialValues={{ remember: true }} form={form} autoComplete='off'>
             {/* 紫琼说不要感叹号，2022年9月23日15点54分 */}

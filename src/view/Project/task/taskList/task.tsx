@@ -1,0 +1,287 @@
+import SearchInput from 'Src/components/Input/searchInput/searchInput'
+import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
+import CreateButton from 'Src/components/Button/createButton'
+import Table from 'antd/lib/table'
+import ConfigProvider from 'antd/lib/config-provider'
+import { useState } from 'react'
+import * as React from 'react'
+import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
+import zhCN from 'antd/lib/locale/zh_CN'
+import deleteImage from 'Src/asstes/image/Deletes.svg'
+import PaginationsAge from 'Src/components/Pagination/Pagina'
+import { statusList, statusMap } from 'Src/until/DataMap/dataMap'
+import { DownOutlined } from '@ant-design/icons/lib/icons'
+import { taskList } from 'Src/services/api/taskApi'
+import { throwErrorMessage } from 'Src/until/message'
+import globalStyle from 'Src/view/Project/project/project.less'
+import styles from './task.less'
+
+const customizeRender = () => <DefaultValueTips content='暂无项目' />
+
+const request = {
+  project_id: -1,
+  key_word: '',
+  page: 1,
+  page_size: 10,
+  status: null,
+  sort_field: 'create_time',
+  sort_order: 'descend'
+}
+
+interface Resparams {
+  project_id: number
+  key_word?: string
+  page: number
+  status: number | string | null
+  page_size: number
+  sort_field?: string
+  sort_order?: string
+}
+interface statusItemType {
+  lable: string
+  value: number | string
+}
+type statusValue = string | number
+
+interface projectListType {
+  [key: string]: string | number
+}
+interface projectPropsType<T> {
+  projectInfo: T
+}
+interface results {
+  status: 0 | 2 | 1 | 3 | 4 | 5
+}
+interface projectInfoType {
+  projectId: number
+  projectDesc: string
+  projectName: string
+}
+const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<projectInfoType>>> = props => {
+  const { projectInfo } = props.location?.state
+  const history = useHistory()
+  // 任务列表参数
+  const [params, setParams] = useState<Resparams>({ ...request, project_id: projectInfo.projectId })
+
+  // 项目列表
+  const [taskLists, setTaskList] = useState<any>([])
+
+  // 页码
+  const [total, setTotal] = useState<number>()
+
+  // 筛选任务状态
+  const [statusOperationStatus, setStatusOperationStatus] = useState<boolean>(false)
+
+  // 状态显示控制
+  const [isShows, setShow] = useState<statusValue>(-2)
+
+  // 新建任务
+  const jumpNewCreateTask = () => {
+    history.push({
+      pathname: '/projects/Tasks/createTask',
+      state: { projectInfo, taskInfo: { editTask: false } }
+    })
+  }
+
+  // 筛选状态菜单控制
+  const operattion = (operation: boolean) => {
+    setStatusOperationStatus(!operation)
+  }
+
+  // 更新参数获取列表
+  const updateParams = (value: string) => {
+    setParams({ ...params, key_word: value })
+  }
+
+  //  更改页码
+  const changePage = (page: number, pageSize: number) => {
+    setParams({ ...params, page, page_size: pageSize })
+  }
+
+  // 选择任务状态
+  const checkStatus = (value: string | number | null) => {
+    setShow(value as number)
+    if (value === '') {
+      setParams({ ...params, status: null })
+    } else {
+      setParams({ ...params, status: value })
+    }
+    setStatusOperationStatus(false)
+  }
+  // 状态菜单
+  const StatusMenuComponents = () => {
+    return (
+      <div className={styles.statusMenu}>
+        {statusList.map((item: statusItemType) => {
+          return (
+            <div key={item.value} className={styles.size}>
+              <div
+                className={[styles.checkblue, `${isShows === item.value ? styles.checkBlue : styles.checkblack}`].join(' ')}
+                onClick={() => {
+                  checkStatus(item.value)
+                }}
+                role='time'
+              >
+                {' '}
+                {item.lable}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+
+  // 表格title
+  const columns = [
+    {
+      width: '8%',
+      title: '任务名称',
+      dataIndex: 'name',
+      key: 'name',
+      // eslint-disable-next-line react/display-name
+      render: (_: any, row: any) => {
+        return (
+          <span className={styles.tableProjectName} role='time' onClick={() => {}}>
+            {row.name}
+          </span>
+        )
+      }
+    },
+    {
+      width: '20%',
+      title: '描述',
+      dataIndex: 'desc',
+      key: 'desc'
+    },
+    {
+      width: '10%',
+      title: '运行时长',
+      dataIndex: 'work_time',
+      key: 'work_time',
+      // eslint-disable-next-line react/display-name
+      render: (_: any, row: any) => {
+        return <span>{`${row.wrok_time}h`}</span>
+      }
+    },
+    {
+      width: '10%',
+      title: 'Crash数量',
+      dataIndex: 'crash_num',
+      key: 'crash_num'
+    },
+    {
+      width: '8%',
+      title: '覆盖率',
+      dataIndex: 'coverage',
+      key: 'coverage'
+    },
+    {
+      width: '15%',
+      // eslint-disable-next-line react/display-name
+      title: () => (
+        <div className={styles.statusList_boby}>
+          <div
+            role='button'
+            tabIndex={0}
+            onClick={() => {
+              operattion(statusOperationStatus)
+            }}
+          >
+            <span>任务状态</span>
+            <DownOutlined rotate={statusOperationStatus ? -180 : 0} />
+          </div>
+          {statusOperationStatus ? <StatusMenuComponents /> : null}
+        </div>
+      ),
+      dataIndex: 'status',
+      // eslint-disable-next-line react/display-name
+      render: (text: any, row: results) => {
+        return (
+          <div className={styles.status}>
+            <span className={statusMap[row.status].color} />
+            <span>{statusMap[row.status].label}</span>
+          </div>
+        )
+      }
+    },
+    {
+      width: '15%',
+      title: '任务操作',
+      dataIndex: 'desc',
+      key: 'desc',
+      // eslint-disable-next-line react/display-name
+      render: (_: any, row: any) => {
+        return (
+          <div className={globalStyle.Opera_detaile}>
+            <span role='button' tabIndex={0} onClick={() => {}}>
+              开始测试
+            </span>
+          </div>
+        )
+      }
+    },
+    {
+      width: '15%',
+      title: '更多操作',
+      dataIndex: 'operations',
+      key: 'operations',
+      // eslint-disable-next-line react/display-name
+      render: (_: any, row: any) => {
+        return (
+          <div className={globalStyle.Opera_detaile}>
+            <span role='button' tabIndex={0} onClick={() => {}}>
+              查看详情
+            </span>
+            <span style={{ marginLeft: '10px', marginRight: '10px' }} role='button' tabIndex={0} onClick={() => {}}>
+              修改
+            </span>
+            <img src={deleteImage} alt='' onClick={() => {}} />
+          </div>
+        )
+      }
+    }
+  ]
+
+  // 获取任务列表
+  const getTaskList = async (value: Resparams) => {
+    try {
+      const result = await taskList(value)
+      if (result.data) {
+        setTotal(result.data.total)
+        setTaskList(result.data.results)
+      }
+      return result
+    } catch (error) {
+      throwErrorMessage(error)
+    }
+  }
+  React.useEffect(() => {
+    getTaskList(params)
+  }, [params])
+  return (
+    <div className={globalStyle.AnBan_main}>
+      <div className={globalStyle.AnBan_header}>
+        <div>
+          <span className={globalStyle.AnBan_header_title}>{projectInfo?.projectName || '暂无'}</span>
+          <span className={styles.projectDescStyle}>{`项目描述 : ${projectInfo?.projectDesc || '暂无'}`}</span>
+        </div>
+
+        <div className={globalStyle.AnBan_header_bottom}>
+          <SearchInput placeholder='根据名称搜索任务' onChangeValue={updateParams} />
+          <CreateButton width='146px' name='新建任务' size='large' type='primary' onClick={jumpNewCreateTask} />
+        </div>
+      </div>
+      <div className={styles.tableConcent}>
+        <ConfigProvider locale={zhCN} renderEmpty={customizeRender}>
+          <Table rowKey='id' dataSource={taskLists} columns={columns} pagination={false} />
+        </ConfigProvider>
+      </div>
+      <div className={globalStyle.AnBan_PaginationsAge}>
+        <PaginationsAge length={total} num={10} getParams={changePage} pagenums={params.page} />
+      </div>
+    </div>
+  )
+}
+
+export default withRouter(Task)

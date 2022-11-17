@@ -1,8 +1,5 @@
 // 1. 获取所有源语 直接调用借口
 
-import { S } from 'mockjs'
-import ByPassConcent from 'Src/views/ByPass/ByPassConcent'
-
 // 2. 创建项目
 export interface CreateProject {
   name: string
@@ -194,12 +191,11 @@ export interface Createtask {
 
 export interface TaskList {
   project_id: number
-  key_word: string
+  key_word?: string
   page: number
   page_size: number
-  sort_field: string
-  sort_order: string
-  type: string | number
+  sort_field?: string
+  sort_order?: string
   status?: string | number | null
 }
 

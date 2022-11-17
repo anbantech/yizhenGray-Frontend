@@ -2,7 +2,7 @@ const path = require('path')
 
 const isDev = process.env.NODE_ENV !== 'production'
 const SERVER_HOST = '0.0.0.0'
-const SERVER_PORT = 9004
+const SERVER_PORT = 10086
 
 const PROJECT_PATH = path.resolve(__dirname, '../')
 const PROJECT_NAME = path.parse(PROJECT_PATH).name
