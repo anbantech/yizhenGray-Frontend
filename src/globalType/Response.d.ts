@@ -42,6 +42,34 @@ export interface ResProjectList {
   total: number
 }
 
+export interface ResExcitationList {
+  results: {
+    id: number
+    name: string
+    port: string
+    status: number
+    create_time: string
+    update_time: string
+    create_user: string
+    update_user: string
+  }[]
+  page_count: number
+  page_no: number
+  total: number
+}
+
+export interface ResCreExcitationList {
+  results: {
+    id: number
+    name: string
+    port: string
+    status: number
+    create_time: string
+    update_time: string
+    create_user: string
+    update_user: string
+  }[]
+}
 // 4. 项目详情
 
 export interface ResProjectDetails {
@@ -157,7 +185,6 @@ export interface Resexception_list {
     page_no: number
     page_count: number
     total: number
-    //TODO
     results: any
     create_time: string
     update_time: string
@@ -415,7 +442,8 @@ export interface GetErrorMessageResponse {
 export interface UpdateResponseErrorMessage {
   count: number
 }
-//40 新建旁路
+
+// 新建旁路
 export interface BypassRes {
   code: number
   message: string

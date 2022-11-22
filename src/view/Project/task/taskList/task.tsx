@@ -5,14 +5,16 @@ import Table from 'antd/lib/table'
 import ConfigProvider from 'antd/lib/config-provider'
 import { useState } from 'react'
 import * as React from 'react'
+import { message } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
 import zhCN from 'antd/lib/locale/zh_CN'
 import deleteImage from 'Src/asstes/image/Deletes.svg'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import { statusList, statusMap } from 'Src/until/DataMap/dataMap'
 import { DownOutlined } from '@ant-design/icons/lib/icons'
-import { taskList } from 'Src/services/api/taskApi'
+import { taskList, deleteTasks } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/until/message'
+import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import globalStyle from 'Src/view/Project/project/project.less'
 import styles from './task.less'
 
@@ -52,7 +54,8 @@ interface projectPropsType<T> {
 interface results {
   status: 0 | 2 | 1 | 3 | 4 | 5
 }
-interface projectInfoType {
+
+export interface projectInfoType {
   projectId: number
   projectDesc: string
   projectName: string
@@ -74,6 +77,12 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
 
   // 状态显示控制
   const [isShows, setShow] = useState<statusValue>(-2)
+
+  // 弹窗
+  const [modalData, setModalData] = useState({ taskId: '', fixTitle: false, isModalVisible: false })
+
+  //  删除弹出框
+  const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
 
   // 新建任务
   const jumpNewCreateTask = () => {
@@ -132,6 +141,34 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     )
   }
 
+  const jumpTasksDetail = (value: any) => {
+    history.push({
+      pathname: '/projects/Tasks/Detail',
+      state: { projectInfo, taskInfo: { editTask: false, ...value } }
+    })
+  }
+  const deleteTask = (value: boolean, id: any) => {
+    setModalData({ ...modalData, taskId: id })
+    setCommonModleStatus(value)
+  }
+  const deleteProjectRight = async () => {
+    console.log(typeof projectInfo.projectId)
+    try {
+      const res = await deleteTasks(projectInfo.projectId, modalData.taskId)
+      if (res.data) {
+        setParams({ ...params, key_word: '', page: 1 })
+        setCommonModleStatus(false)
+        message.success('删除成功')
+      }
+    } catch (error) {
+      throwErrorMessage(error, { 1009: '项目删除失败' })
+    }
+  }
+
+  // 删除弹出框函数
+  const CommonModleClose = (value: boolean) => {
+    setCommonModleStatus(value)
+  }
   // 表格title
   const columns = [
     {
@@ -230,13 +267,25 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       render: (_: any, row: any) => {
         return (
           <div className={globalStyle.Opera_detaile}>
-            <span role='button' tabIndex={0} onClick={() => {}}>
+            <span
+              role='button'
+              tabIndex={0}
+              onClick={() => {
+                jumpTasksDetail(row)
+              }}
+            >
               查看详情
             </span>
             <span style={{ marginLeft: '10px', marginRight: '10px' }} role='button' tabIndex={0} onClick={() => {}}>
               修改
             </span>
-            <img src={deleteImage} alt='' onClick={() => {}} />
+            <img
+              src={deleteImage}
+              alt=''
+              onClick={() => {
+                deleteTask(true, row.id)
+              }}
+            />
           </div>
         )
       }
@@ -280,6 +329,13 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       <div className={globalStyle.AnBan_PaginationsAge}>
         <PaginationsAge length={total} num={10} getParams={changePage} pagenums={params.page} />
       </div>
+      <CommonModle
+        IsModalVisible={CommonModleStatus}
+        deleteProjectRight={deleteProjectRight}
+        CommonModleClose={CommonModleClose}
+        name='删除项目'
+        concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
+      />
     </div>
   )
 }

@@ -9,3 +9,9 @@ export function getHiddenPropertyName() {
     eventName
   }
 }
+export function getTime(Data: string) {
+  if (Data) {
+    const time = Data?.split('.')
+    return time[0]
+  }
+}

@@ -8,18 +8,20 @@ import { useState } from 'react'
 import * as React from 'react'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
 import { message } from 'antd'
-import { ProList, removeProject } from 'Src/services/api/projectApi'
+import { excitationListFn, removeExcitation } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/until/message'
 import zhCN from 'antd/lib/locale/zh_CN'
 import deleteImage from 'Src/asstes/image/Deletes.svg'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import styles from 'Src/view/Project/project/project.less'
+import style from './excitation.less'
 
 const customizeRender = () => <DefaultValueTips content='暂无项目' />
 
 const request = {
   key_word: '',
+  status: null,
   page: 1,
   page_size: 10,
   sort_field: 'create_time',
@@ -28,23 +30,21 @@ const request = {
 
 interface Resparams {
   key_word?: string
+  status?: null | number
   page: number
   page_size: number
   sort_field?: string
   sort_order?: string
 }
-
-interface projectListType {
-  [key: string]: string | number
-}
 interface projectInfoType {
   id: number
   name: string
-  desc: string
+  port: string
+  status: number | null
   create_time: string
-  create_user: string
   update_time: string
-  update_user: string | null
+  create_user: string
+  update_user: string
 }
 const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () => {
   const history = useHistory()
@@ -52,7 +52,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   const [params, setParams] = useState(request)
 
   // 项目列表
-  const [excitationList, setExcitationList] = useState<projectListType[]>([])
+  const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
 
   // 页码
   const [total, setTotal] = useState<number>()
@@ -61,7 +61,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   const [excitationInfo, setExcitationInfo] = useState('')
 
   // 修改,更新 弹出框基本数据集合
-  const [modalData, setModalData] = useState({ projectId: '', fixTitle: false, isModalVisible: false })
+  const [modalData, setModalData] = useState({ excitationId: '', fixTitle: false, isModalVisible: false })
 
   //  删除弹出框基本数据集合
   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
@@ -85,7 +85,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   // 修改项目
   const fixProject = (item: any) => {
     setExcitationInfo({ ...item })
-    setModalData({ ...modalData, projectId: item.id, fixTitle: true, isModalVisible: true })
+    setModalData({ ...modalData, excitationId: item.id, fixTitle: true, isModalVisible: true })
   }
 
   // 更新参数获取列表
@@ -95,16 +95,16 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
 
   // 查看详情 跳转任务列表 携带项目Id
   const jumpTask = (value: projectInfoType) => {
-    const { id, desc, name } = value
+    const { id, name } = value
     history.push({
       pathname: '/projects/Tasks',
-      state: { projectInfo: { projectId: id, projectDesc: desc, projectName: name } }
+      state: { projectInfo: { projectId: id, projectName: name } }
     })
   }
 
   // 删除项目弹出框
   const deleteProject = (id: string, value: boolean) => {
-    setModalData({ ...modalData, projectId: id })
+    setModalData({ ...modalData, excitationId: id })
     setCommonModleStatus(value)
   }
 
@@ -113,9 +113,35 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     setParams({ ...params, page, page_size: pageSize })
   }
 
-  const deleteProjectRight = async () => {
+  //   const deleteProjectRight = async () => {
+  //     try {
+  //       const res = await removeProject(modalData.projectId)
+  //       if (res.data) {
+  //         setParams({ ...params, key_word: '', page: 1 })
+  //         setCommonModleStatus(false)
+  //         message.success('删除成功')
+  //       }
+  //     } catch (error) {
+  //       throwErrorMessage(error, { 1009: '项目删除失败' })
+  //     }
+  //   }
+
+  // 获取项目列表
+  const getExcitationList = async (value: Resparams) => {
     try {
-      const res = await removeProject(modalData.projectId)
+      const result = await excitationListFn(value)
+      if (result.data) {
+        setTotal(result.data.total)
+        setExcitationList(result.data.results)
+      }
+    } catch (error) {
+      throwErrorMessage(error, { 1004: '请求资源未找到' })
+    }
+  }
+  // 删除激励
+  const deleteExcitationRight = async () => {
+    try {
+      const res = await removeExcitation(modalData.excitationId)
       if (res.data) {
         setParams({ ...params, key_word: '', page: 1 })
         setCommonModleStatus(false)
@@ -125,22 +151,8 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       throwErrorMessage(error, { 1009: '项目删除失败' })
     }
   }
-
-  // 获取项目列表
-  const getProjectList = async (value: Resparams) => {
-    try {
-      const result = await ProList(value)
-      if (result.data) {
-        setTotal(result.data.total)
-        setExcitationList(result.data.results)
-      }
-    } catch (error) {
-      throwErrorMessage(error, { 1004: '请求资源未找到' })
-    }
-  }
-
   React.useEffect(() => {
-    getProjectList(params)
+    getExcitationList(params)
   }, [params])
   const columns = [
     {
@@ -166,18 +178,18 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     {
       width: '30%',
       title: '激励端点名称',
-      dataIndex: 'desc',
-      key: 'desc'
+      dataIndex: 'port',
+      key: 'port'
     },
     {
-      width: '10%',
+      width: '8%',
       title: '操作',
       dataIndex: 'operations',
       key: 'operations',
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
         return (
-          <div className={styles.Opera_detaile}>
+          <div className={style.excitaion_operation}>
             <span
               style={{ marginLeft: '10px', marginRight: '10px' }}
               role='button'
@@ -222,14 +234,16 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         hideModal={cancel}
         projectInfo={excitationInfo}
         fixTitle={modalData.fixTitle}
-        id={modalData.projectId}
+        id={modalData.excitationId}
         width={480}
       />
       <CommonModle
         IsModalVisible={CommonModleStatus}
-        deleteProjectRight={deleteProjectRight}
+        deleteProjectRight={() => {
+          deleteExcitationRight()
+        }}
         CommonModleClose={CommonModleClose}
-        name='删除项目'
+        name='删除激励'
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
       />
     </div>

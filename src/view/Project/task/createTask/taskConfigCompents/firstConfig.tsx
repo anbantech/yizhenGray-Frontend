@@ -1,6 +1,6 @@
 import { Form, Input } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
-import React, { useImperativeHandle } from 'react'
+import React, { useEffect, useImperativeHandle } from 'react'
 import styles from './stepBaseConfig.less'
 
 const layout = {
@@ -9,14 +9,18 @@ const layout = {
 }
 
 const FirstConfig = React.forwardRef((props, myRef) => {
+  const [form] = useForm()
+
   useImperativeHandle(myRef, () => ({
-    save: () => {},
+    save: () => {
+      const formData = form.getFieldsValue()
+      return formData
+    },
     delete: () => {},
     validate: () => {},
     clearInteraction: () => {}
   }))
-
-  const [form] = useForm()
+  useEffect(() => {}, [])
   return (
     <div className={styles.stepBaseMain}>
       <Form name='basic' className={styles.stepBaseMain_Form} {...layout} autoComplete='off' form={form} size='large'>
