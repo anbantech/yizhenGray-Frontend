@@ -10,6 +10,7 @@ import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import Project from 'Src/view/Project/project/project'
 import Tasks from 'Src/view/Project/task/taskList/task'
+import TasksDetail from 'Src/view/Project/taskDetail/taskDetail'
 import OperationTask from 'Src/view/Project/task/createTask/newCreateTask'
 import ExcitationList from 'Src/view/excitation/ excitationList'
 // import UserLog from 'Src/view/uesrManagement/userLog/userLog'
@@ -22,6 +23,7 @@ function content() {
         <Route path='/' exact component={Project} />
         <Route path='/projects' exact component={Project} />
         <Route path='/projects/Tasks' exact component={Tasks} />
+        <Route path='/projects/Tasks/Detail' exact component={TasksDetail} />
         <Route path='/projects/Tasks/createTask' exact component={OperationTask} />
         <Route path='/projects/Tasks/fixTask' exact component={OperationTask} />
         <Route path='/excitationList' exact component={ExcitationList} />

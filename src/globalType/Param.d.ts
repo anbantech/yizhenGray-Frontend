@@ -30,6 +30,20 @@ export interface ProjectList {
   sort_order?: string
 }
 
+// 激励
+export interface ExcitationList {
+  key_word?: string
+  page: number
+  status?: number | null
+  page_size: number
+  sort_field?: string
+  sort_order?: string
+}
+
+export interface createExcitation {
+  name: string
+  port: string
+}
 // 4. 项目详情
 
 export interface ProjectDetails {

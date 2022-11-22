@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
 import { Modal, Input, Form, Button, message } from 'antd'
 import { throwErrorMessage } from 'Src/until/message'
-import { updateProject, createProject } from 'Src/services/api/projectApi'
+import { createExcitationListFn, updateExcitation } from 'Src/services/api/excitationApi'
 import styles from '../BaseModle.less'
 
 interface FormInstance {
   name: string
-  desc: string
+  port: string
 }
 const layout = {
   labelCol: { span: 6 },
@@ -21,11 +21,11 @@ function ExcitationModal(props: any) {
   // 创建激励
   const createProjectItem = async (params: any) => {
     try {
-      const data = await createProject(params)
+      const data = await createExcitationListFn(params)
       message.success('项目创建成功')
       return data
     } catch (error) {
-      throwErrorMessage(error, { 1005: '项目名称重复，请修改' })
+      message.error(error.message)
       return error
     }
   }
@@ -33,21 +33,21 @@ function ExcitationModal(props: any) {
   const validateForm = async () => {
     try {
       const value = await form.validateFields()
-      const { name, desc } = value
+      const { name, port } = value
       if (name) {
         if (fixTitle) {
-          const res = await updateProject({ name: name.trim(), desc: desc ? desc.trim() : '' }, id)
-          message.success('项目修改成功')
+          const res = await updateExcitation({ name: name.trim(), port: port.trim() }, id)
+          message.success('激励修改成功')
           return res
         }
         if (!fixTitle) {
-          const res = await createProjectItem({ name: name.trim(), desc: desc ? desc.trim() : '' })
+          const res = await createProjectItem({ name: name.trim(), port: port.trim() })
           return res
         }
       }
     } catch (error) {
       setDisabledStatus(true)
-      throwErrorMessage(error, { 1005: '项目名称重复，请修改' })
+      throwErrorMessage(error, { 1005: '激励名称重复，请修改' })
       return error
     }
   }
@@ -67,8 +67,9 @@ function ExcitationModal(props: any) {
   }
 
   const onValuesChange = (changedValues: any, allValues: any) => {
-    const bol = allValues.desc === undefined || allValues.desc?.length <= 50
-    if (allValues.name?.length >= 2 && allValues.name.length <= 20 && /^[\w\u4E00-\u9FA5]+$/.test(allValues.name) && bol) {
+    const protBol = allValues.port?.length >= 2 && allValues.port.length <= 20 && /^[\dA-Za-z]+$/.test(allValues.port)
+    const idBol = allValues.name?.length >= 2 && allValues.name.length <= 20 && /^[\dA-Za-z]+$/.test(allValues.name)
+    if (idBol && protBol) {
       setDisabledStatus(false)
     } else {
       setDisabledStatus(true)
@@ -77,10 +78,10 @@ function ExcitationModal(props: any) {
 
   useEffect(() => {
     if (projectInfo) {
-      const { name, desc } = projectInfo
+      const { name, port } = projectInfo
       // cause backend will auto add prefix for queue name
       // thus remove prefix of queue name when editing
-      const formData = { name, desc }
+      const formData = { name, port }
       form.setFieldsValue(formData)
     }
   }, [form, projectInfo])
@@ -90,7 +91,7 @@ function ExcitationModal(props: any) {
       className={styles}
       width={width}
       visible={visible}
-      title={fixTitle ? '修改项目' : '新建项目'}
+      title={fixTitle ? '修改激励' : '新建激励'}
       onCancel={() => {
         hideModal(false)
         form.resetFields()
@@ -122,15 +123,15 @@ function ExcitationModal(props: any) {
             validateTrigger={['onBlur']}
             rules={[
               { required: true, message: '请输入激励ID' },
-              { type: 'string', min: 2, max: 20, message: '项目名称长度为2到20个字符' },
+              { type: 'string', min: 2, max: 20, message: '激励ID长度为2到20个字符' },
               {
                 validateTrigger: 'onBlur',
                 validator(_, value) {
-                  const reg = /^[\w\u4E00-\u9FA5]+$/
+                  const reg = /^[\dA-Za-z]+$/
                   if (reg.test(value)) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('项目名称由汉字、数字、字母和下划线组成'))
+                  return Promise.reject(new Error('激励ID由数字、字母组成'))
                 }
               }
             ]}
@@ -138,21 +139,21 @@ function ExcitationModal(props: any) {
             <Input placeholder='请输入激励ID' />
           </Form.Item>
           <Form.Item
-            name='name'
+            name='port'
             label='激励端点名称'
             validateFirst
             validateTrigger={['onBlur']}
             rules={[
               { required: true, message: '请输入激励端点名称' },
-              { type: 'string', min: 2, max: 20, message: '项目名称长度为2到20个字符' },
+              { type: 'string', min: 2, max: 20, message: '激励端点名称2到20个字符' },
               {
                 validateTrigger: 'onBlur',
                 validator(_, value) {
-                  const reg = /^[\w\u4E00-\u9FA5]+$/
+                  const reg = /^[\dA-Za-z]+$/
                   if (reg.test(value)) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('项目名称由汉字、数字、字母和下划线组成'))
+                  return Promise.reject(new Error('激励端点名称由数字、字母组成'))
                 }
               }
             ]}

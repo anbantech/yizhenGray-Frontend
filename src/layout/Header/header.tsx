@@ -155,6 +155,7 @@ function Header(props: any) {
   const name: any = {
     '/projects': '项目列表',
     '/projects/Tasks': '任务列表',
+    '/projects/Tasks/Detail': '任务详情',
     '/projects/Tasks/createTask': '新建任务',
     '/projects/Tasks/fixTask': '修改任务',
     '/excitationList': '激励列表',
