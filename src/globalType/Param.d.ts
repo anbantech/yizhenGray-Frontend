@@ -32,6 +32,7 @@ export interface ProjectList {
 
 // 激励
 export interface ExcitationList {
+  group_type: number
   key_word?: string
   page: number
   status?: number | null
@@ -92,14 +93,11 @@ export interface createTemplate {
 // 9. 模板列表
 
 export interface protocol_List {
-  protocol_id: number | string
   key_word?: string
   page?: number
   page_size?: number
   sort_field?: string
   sort_order?: string
-  type?: 'user_defined' | 'default' | 'recycle_bin'
-  category?: number | string
 }
 
 export interface template_Listest {
@@ -486,4 +484,32 @@ export interface userLogParams {
   sort_order: string
   start_time: string
   end_time: string
+}
+
+export interface ExcitationParams {
+  name?: string
+  port?: string
+  desc?: string
+  group_type?: number
+  work_type?: number
+  recycle_count_0?: number
+  recycle_count_1?: number
+  wait_time_0?: number
+  wait_time_1?: number
+  align_delay_0?: number
+  align_delay_1?: number
+  align_delay_2?: number
+  template_id?: number
+  recycle_count?: number
+  recycle_time?: number
+  enable?: boolean
+  next_time?: number
+  group_id_list?: any[]
+  group_info?: any
+}
+
+export interface useCaseParams {
+  name: string
+  desc: string
+  group_id_list: number[]
 }

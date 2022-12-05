@@ -8,12 +8,13 @@ interface buttonStyleType {
   size?: 'small' | 'middle' | 'large' | undefined
   type?: 'link' | 'text' | 'ghost' | 'default' | 'primary' | 'dashed' | undefined
   onClick?: () => void
+  disabled?: boolean
   buttonStyle: any
 }
 const CommonButton: React.FC<buttonStyleType> = props => {
-  const { name, size, type, onClick, buttonStyle } = props
+  const { name, size, type, onClick, buttonStyle, disabled } = props
   return (
-    <Button className={buttonStyle} type={type} size={size} block onClick={onClick}>
+    <Button disabled={disabled} className={buttonStyle} type={type} size={size} block onClick={onClick}>
       {name}
     </Button>
   )

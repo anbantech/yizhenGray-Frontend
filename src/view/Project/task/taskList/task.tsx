@@ -142,9 +142,10 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   }
 
   const jumpTasksDetail = (value: any) => {
+    const task_id = value.id
     history.push({
       pathname: '/projects/Tasks/Detail',
-      state: { projectInfo, taskInfo: { editTask: false, ...value } }
+      state: { projectInfo, taskInfo: { editTask: false, task_id } }
     })
   }
   const deleteTask = (value: boolean, id: any) => {

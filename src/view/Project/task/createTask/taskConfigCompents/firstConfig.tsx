@@ -115,12 +115,12 @@ const FirstConfig = React.forwardRef((props, myRef) => {
           <Input.Password placeholder='请输入真实设备名称' />
         </Form.Item>
         <Form.Item
-          label='目标描述'
+          label='任务描述'
           name='description'
-          rules={[{ message: '请输入目标描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
+          rules={[{ message: '请输入任务描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
           <Input.TextArea
-            placeholder='目标描述'
+            placeholder='任务描述'
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
               formatter({ count }) {

@@ -274,19 +274,22 @@ export interface ResTaskList {
 // 21. 任务详情
 
 export interface ResTaskDetail {
-  bypasses: string[]
-  name: string
-  device_name: string
-  target: any
-  interaction: string
-  exception_handler: string
-  status: number
-  create_time: string
-  desc: string
-  create_user: null
-  exception_handler_id: number
   id: number
-  interaction_id: number
+  name: string
+  create_time: string
+  update_time: string
+  create_user: string
+  update_user: null
+  desc: string
+  device_name: string
+  coverage: number
+  work_time: number
+  crash_num: number
+  status: number
+  project_id: number
+  test_num: number
+  test_speed: number
+  test_time: number
 }
 
 // 22. 任务删除  返回为null
