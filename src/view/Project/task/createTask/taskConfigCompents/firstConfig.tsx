@@ -1,29 +1,101 @@
-import { Form, Input } from 'antd'
+import { Form, Input, Select } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
-import React, { useEffect, useImperativeHandle } from 'react'
+import React, { useEffect, useImperativeHandle, useState } from 'react'
+import { excitationListFn } from 'Src/services/api/excitationApi'
+import { createTaskFn } from 'Src/services/api/taskApi'
+import { throwErrorMessage } from 'Src/until/message'
 import styles from './stepBaseConfig.less'
 
 const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 18 }
 }
+const request = {
+  group_type: 2,
+  key_word: '',
+  status: null,
+  page: 1,
+  page_size: 10,
+  sort_field: 'create_time',
+  sort_order: 'descend'
+}
+interface projectInfoType {
+  id: number
+  name: string
+  port: string
+  status: number | null
+  create_time: string
+  update_time: string
+  create_user: string
+  update_user: string
+}
 
-const FirstConfig = React.forwardRef((props, myRef) => {
+interface Resparams {
+  group_type: number
+  key_word?: string
+  status?: null | number
+  page: number
+  page_size: number
+  sort_field?: string
+  sort_order?: string
+}
+interface propsFn {
+  onChange: (changedFields: any, allFields: any) => void
+  id: number
+}
+const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
+  const { onChange, id } = props
   const [form] = useForm()
+  const { Option } = Select
+  const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
 
+  const createOneExcitationFn = React.useCallback(async () => {
+    const values = await form.validateFields()
+    try {
+      if (values) {
+        const params = {
+          name: values.name,
+          desc: values.description,
+          project_id: id,
+          work_time: values.work_time,
+          crash_num: values.crash_num,
+          group_id: values.group_id
+        }
+        const result = await createTaskFn(params)
+        if (result.data) {
+          return result.data
+        }
+      }
+    } catch (error) {
+      throwErrorMessage(error, { 1009: '项目删除失败' })
+    }
+  }, [form, id])
   useImperativeHandle(myRef, () => ({
     save: () => {
-      const formData = form.getFieldsValue()
-      return formData
+      return createOneExcitationFn()
     },
     delete: () => {},
     validate: () => {},
     clearInteraction: () => {}
   }))
-  useEffect(() => {}, [])
+
+  const getExcitationList = async (value: Resparams) => {
+    try {
+      const result = await excitationListFn(value)
+      if (result.data) {
+        setExcitationList(result.data.results)
+      }
+    } catch (error) {
+      throwErrorMessage(error, { 1004: '请求资源未找到' })
+    }
+  }
+
+  useEffect(() => {
+    getExcitationList(request)
+  }, [])
   return (
     <div className={styles.stepBaseMain}>
-      <Form name='basic' className={styles.stepBaseMain_Form} {...layout} autoComplete='off' form={form} size='large'>
+      <Form name='basic' className={styles.stepBaseMain_Form} {...layout} onFieldsChange={onChange} autoComplete='off' form={form} size='large'>
         <Form.Item
           label='任务名称'
           name='name'
@@ -62,7 +134,7 @@ const FirstConfig = React.forwardRef((props, myRef) => {
 
         <Form.Item
           label='运行时长'
-          name='host'
+          name='work_time'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -86,7 +158,7 @@ const FirstConfig = React.forwardRef((props, myRef) => {
         </Form.Item>
         <Form.Item
           label='Crash数量'
-          name='username'
+          name='crash_num'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -105,14 +177,21 @@ const FirstConfig = React.forwardRef((props, myRef) => {
           <Input placeholder='请输入Crash数量' />
         </Form.Item>
 
-        <Form.Item
-          label='真实设备名称'
-          name='password'
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[{ required: true, message: '请输入密码' }]}
-        >
-          <Input.Password placeholder='请输入真实设备名称' />
+        <Form.Item label='交互' name='group_id' validateFirst validateTrigger={['onBlur']} rules={[{ required: true, message: '请选择交互' }]}>
+          <Select placeholder='请选择选择交互'>
+            {
+              /**
+               * 根据连接方式列表渲染下拉框可选择的设备比特率
+               */
+              excitationList?.map((rate: any) => {
+                return (
+                  <Option key={rate.id} value={rate.id}>
+                    {rate.name}
+                  </Option>
+                )
+              })
+            }
+          </Select>
         </Form.Item>
         <Form.Item
           label='任务描述'

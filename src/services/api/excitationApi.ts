@@ -1,6 +1,6 @@
 import request from 'Src/services/request/request'
-import { ExcitationList, createExcitation, ExcitationParams } from 'Src/globalType/Param'
-import { ResExcitationList, ResCreExcitationList } from 'Src/globalType/Response'
+import { ExcitationList, createExcitation, ExcitationParams, doubleExcitationParams, groupParams } from 'Src/globalType/Param'
+import { ResExcitationList, ResCreExcitationList, getAllRes } from 'Src/globalType/Response'
 
 export function createExcitationListFn(params: createExcitation) {
   return request.post<ResCreExcitationList>('/api/v1.0/stimulus/save', params)
@@ -23,4 +23,16 @@ export function getPortList() {
 
 export function createExcitationFn(params: ExcitationParams) {
   return request.post<any>(`/api/v1.0/temp_and_sti/save/single`, params)
+}
+
+export function createDoubleExcitationFn(params: doubleExcitationParams) {
+  return request.post<any>(`/api/v1.0/temp_and_sti/save/group`, params)
+}
+
+export function getAllExcitationFn(id: number) {
+  return request.get<getAllRes>(`/api/v1.0/temp_and_sti/get/${id}`)
+}
+
+export function createGroupFn(params: groupParams) {
+  return request.post<any>('/api/v1.0/temp_and_sti/save/work', params)
 }

@@ -3,13 +3,15 @@ import { Form, Input } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import * as React from 'react'
 import { useContext, useState } from 'react'
+import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
-import { createExcitationFn, excitationListFn } from 'Src/services/api/excitationApi'
+import { createDoubleExcitationFn, excitationListFn } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/until/message'
 
 import styles from '../excitation.less'
 import ExcitationCard from '../excitationComponent/excitationCard'
+import GetDeatilFn from './getDataDetailFn/getDataDetailFn'
 // import { RouteComponentProps, StaticContext } from 'react-router'
 
 const layout = {
@@ -52,12 +54,14 @@ interface formPorps {
 }
 const DoubleExcitationForm: React.FC = () => {
   const [form] = useForm()
+  const history = useHistory()
   const { isFixForm, info, type } = useContext(GlobalContexted)
   const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
   const [cardArray, setCardArray] = React.useState(1)
-  const [data, setData] = useState({ align_delay_0: {}, align_delay_1: {}, align_delay_2: {}, excitarionList: {} })
+  const [data, setData] = useState<number[]>([])
   const [cardCheckStatus, setCardCheckStatus] = useState(true)
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
+  const Data = GetDeatilFn(info?.id)
   const addCard = React.useCallback(() => {
     setCardArray(pre => pre + 1)
   }, [])
@@ -78,36 +82,12 @@ const DoubleExcitationForm: React.FC = () => {
   }, [cardArray])
 
   const onChange = React.useCallback(
-    (val: any, type: string, index: number) => {
-      if (type === 'align_delay_0') {
-        setData((pre: any) => {
-          const preCopy = pre
-          preCopy[type] = val
-          return { ...pre, align_delay_0: { ...preCopy[type] } }
-        })
-      }
-      if (type === 'align_delay_1') {
-        setData((pre: any) => {
-          const preCopy = pre
-          preCopy[type][index] = val
-          return { ...pre, align_delay_1: { ...preCopy[type] } }
-        })
-      }
-      if (type === 'excitarionList') {
-        setData((pre: any) => {
-          const preCopy = pre
-          preCopy[type][index] = val
-          return { ...pre, excitarionList: { ...preCopy[type] } }
-        })
-      }
-
-      if (type === 'align_delay_2') {
-        setData((pre: any) => {
-          const preCopy = pre
-          preCopy[type] = val
-          return { ...pre, align_delay_2: { ...preCopy[type] } }
-        })
-      }
+    (val: any, index: number) => {
+      setData((pre: number[] | any) => {
+        const preCopy = pre
+        preCopy[index] = val
+        return [...preCopy]
+      })
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data]
@@ -123,21 +103,26 @@ const DoubleExcitationForm: React.FC = () => {
     try {
       if (values) {
         const params = {
-          group_type: 1,
           name: values.name,
-          port: values.port,
-          recycle_count: values.recycle_count,
-          recycle_time: values.recycle_time,
-          desc: values.description,
-          group_info: data
+          desc: values.name,
+          recycle_count_0: +values.recycle_count_0,
+          wait_time_0: +values.wait_time_0,
+          align_delay_0: +values.align_delay_0,
+          align_delay_2: +values.align_delay_2,
+          child_id_list: data
         }
-        const result = await createExcitationFn(params)
-        // ToDo
+        const result = await createDoubleExcitationFn(params)
+        if (result.data) {
+          history.push({
+            pathname: '/excitationList',
+            state: {}
+          })
+        }
       }
     } catch (error) {
-      throwErrorMessage(error, { 1009: '项目删除失败' })
+      throwErrorMessage(error)
     }
-  }, [form, data])
+  }, [form, data, history])
 
   const getLength = React.useCallback(() => {
     const bol = Object.values(data).every(item => {
@@ -178,13 +163,20 @@ const DoubleExcitationForm: React.FC = () => {
     getExcitationList(request)
   }, [])
   React.useEffect(() => {
-    if (info) {
-      const { name, desc, recycle_count, recycle_time, group_info } = info
-      const formData = { name, description: desc, recycle_count, recycle_time }
+    if (Data && isFixForm) {
+      setCardArray(Data?.group_data_list.length)
+      const { name, desc, recycle_count_0, wait_time_0, align_delay_0, align_delay_2 } = Data as any
+      const formData = {
+        name,
+        description: desc,
+        recycle_count_0,
+        wait_time_0,
+        align_delay_0,
+        align_delay_2
+      }
       form.setFieldsValue(formData)
-      setData(group_info)
     }
-  }, [form, info])
+  }, [form, info, Data, isFixForm])
   return (
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.twoForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
@@ -226,7 +218,7 @@ const DoubleExcitationForm: React.FC = () => {
 
         <Form.Item
           label='循环次数'
-          name='recycle_count'
+          name='recycle_count_0'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -250,7 +242,7 @@ const DoubleExcitationForm: React.FC = () => {
         </Form.Item>
         <Form.Item
           label='循环间隔'
-          name='recycle_time'
+          name='wait_time_0'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -338,12 +330,13 @@ const DoubleExcitationForm: React.FC = () => {
           />
         </Form.Item>
       </Form>
+
       <div className={styles.formOperation}>
         {ExcitationCardList?.map((index: number) => {
           return (
             <ExcitationCard
               type={type}
-              formData={data}
+              formData={Data?.group_data_list}
               isFixForm={isFixForm}
               excitationList={excitationList}
               onChange={onChange}
@@ -352,7 +345,7 @@ const DoubleExcitationForm: React.FC = () => {
             />
           )
         })}
-        {ExcitationCardList.length < 10 && (
+        {ExcitationCardList.length < 10 && !isFixForm && (
           <div className={styles.nav_Btn} role='time' onClick={addCard}>
             <PlusOutlined style={{ fontSize: '20px', marginBottom: '3px' }} />
             <span>添</span>
@@ -362,6 +355,7 @@ const DoubleExcitationForm: React.FC = () => {
           </div>
         )}
       </div>
+
       <div className={styles.excitaion_footer}>
         <div className={styles.excitaion_footer_footerConcent}>
           <CommonButton

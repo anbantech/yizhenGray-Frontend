@@ -4,19 +4,21 @@ import { useForm } from 'antd/lib/form/Form'
 
 import * as React from 'react'
 import { useContext, useState } from 'react'
+import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
-import { createExcitationFn, excitationListFn } from 'Src/services/api/excitationApi'
+import { createGroupFn, excitationListFn } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/until/message'
 import styles from '../excitation.less'
 import ExcitationCard from '../excitationComponent/excitationCard'
+import GetDeatilFn from './getDataDetailFn/getDataDetailFn'
 
 const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 18 }
 }
 
-const request = {
+const oneRequest = {
   group_type: 0,
   key_word: '',
   status: null,
@@ -26,15 +28,20 @@ const request = {
   sort_order: 'descend'
 }
 
-interface projectInfoType {
-  id: number
+const doubleRequest = {
+  group_type: 1,
+  key_word: '',
+  status: null,
+  page: 1,
+  page_size: 999,
+  sort_field: 'create_time',
+  sort_order: 'descend'
+}
+interface Option {
+  id: string
   name: string
-  port: string
-  status: number | null
-  create_time: string
-  update_time: string
-  create_user: string
-  update_user: string
+  disabled?: boolean
+  children?: any[]
 }
 
 interface Resparams {
@@ -51,12 +58,27 @@ interface formPorps {
 }
 const GroupExcitationForm: React.FC = () => {
   const { isFixForm, info, type } = useContext(GlobalContexted)
+  const history = useHistory()
   const [form] = useForm()
   const [cardArray, setCardArray] = React.useState(1)
   const [cardCheckStatus, setCardCheckStatus] = useState(true)
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
-  const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
-  const [data, setData] = useState({ align_delay_0: {}, align_delay_1: {}, align_delay_2: {}, excitarionList: {} })
+  const [excitationList, setExcitationList] = useState<Option[]>([
+    {
+      id: '0',
+      name: '单激励',
+      disabled: false,
+      children: []
+    },
+    {
+      id: '1',
+      name: '级联激励',
+      disabled: false,
+      children: []
+    }
+  ])
+  const [data, setData] = useState<number[]>([])
+  const Data = GetDeatilFn(info?.id)
   const addCard = React.useCallback(() => {
     setCardArray(pre => pre + 1)
   }, [])
@@ -66,47 +88,43 @@ const GroupExcitationForm: React.FC = () => {
   }, [cardArray])
 
   const onChange = React.useCallback(
-    (val: any, type: string, index: number) => {
-      if (type === 'align_delay_0') {
-        setData((pre: any) => {
-          const preCopy = pre
-          preCopy[type] = val
-          return { ...pre, align_delay_0: { ...preCopy[type] } }
-        })
-      }
-      if (type === 'align_delay_1') {
-        setData((pre: any) => {
-          const preCopy = pre
-          preCopy[type][index] = val
-          return { ...pre, align_delay_1: { ...preCopy[type] } }
-        })
-      }
-      if (type === 'excitarionList') {
-        setData((pre: any) => {
-          const preCopy = pre
-          preCopy[type][index] = val
-          return { ...pre, excitarionList: { ...preCopy[type] } }
-        })
-      }
-
-      if (type === 'align_delay_2') {
-        setData((pre: any) => {
-          const preCopy = pre
-          preCopy[type] = val
-          return { ...pre, align_delay_2: { ...preCopy[type] } }
-        })
-      }
+    (val: any, index: number) => {
+      setData((pre: number[] | any) => {
+        const preCopy = pre
+        preCopy[index] = val
+        return [...preCopy]
+      })
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data]
   )
 
-  const getExcitationList = async (value: Resparams) => {
+  const getExcitationList = async (oneRequest: Resparams, doubleRequest: Resparams) => {
     try {
-      const result = await excitationListFn(value)
-      if (result.data) {
-        setExcitationList(result.data.results)
-      }
+      const result1 = await excitationListFn(oneRequest)
+      const result2 = await excitationListFn(doubleRequest)
+      Promise.all([result1, result2])
+        .then(value => {
+          const result1Data = value[0].data?.results
+          const result2Data = value[1].data?.results
+          setExcitationList(pre => {
+            const preCopy = pre
+            if (isFixForm) {
+              return [
+                { ...preCopy[0], disabled: isFixForm, children: result1Data },
+                { ...preCopy[1], disabled: isFixForm, children: result2Data }
+              ]
+            }
+            return [
+              { ...preCopy[0], children: result1Data },
+              { ...preCopy[1], children: result2Data }
+            ]
+          })
+          return value
+        })
+        .catch(error => {
+          throwErrorMessage(error)
+        })
     } catch (error) {
       throwErrorMessage(error, { 1004: '请求资源未找到' })
     }
@@ -122,21 +140,22 @@ const GroupExcitationForm: React.FC = () => {
     try {
       if (values) {
         const params = {
-          group_type: 1,
           name: values.name,
-          port: values.port,
-          recycle_count: values.recycle_count,
-          recycle_time: values.recycle_time,
           desc: values.description,
-          group_info: data
+          child_id_list: data
         }
-        const result = await createExcitationFn(params)
-        // ToDo
+        const result = await createGroupFn(params)
+        if (result.data) {
+          history.push({
+            pathname: '/excitationList',
+            state: {}
+          })
+        }
       }
     } catch (error) {
       throwErrorMessage(error, { 1009: '项目删除失败' })
     }
-  }, [form, data])
+  }, [form, data, history])
   const getLength = React.useCallback(() => {
     const bol = Object.values(data).every(item => {
       return Object.keys(item).length > 0
@@ -171,16 +190,21 @@ const GroupExcitationForm: React.FC = () => {
   }, [data, getLength, isDisableStatus])
 
   React.useEffect(() => {
-    getExcitationList(request)
-  }, [])
+    getExcitationList(oneRequest, doubleRequest)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFixForm])
 
   React.useEffect(() => {
-    if (info) {
-      const { name, desc, port, template_id, recycle_count, recycle_time } = info
-      const formData = { name, description: desc, port, template_id, recycle_count, recycle_time }
+    if (Data && isFixForm) {
+      setCardArray(Data?.group_data_list.length)
+      const { name, desc } = Data as any
+      const formData = {
+        name,
+        description: desc
+      }
       form.setFieldsValue(formData)
     }
-  }, [form, info])
+  }, [form, info, Data, isFixForm])
   return (
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.twoForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
@@ -217,96 +241,16 @@ const GroupExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input placeholder='请输入2到6个字符' />
+          <Input disabled={isFixForm} placeholder='请输入2到6个字符' />
         </Form.Item>
 
-        <Form.Item
-          label='循环次数'
-          name='wait_time_0'
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[{ required: true, message: '请输入发送次数' }]}
-        >
-          <Input placeholder='请输入发送次数' />
-        </Form.Item>
-        <Form.Item
-          label='循环间隔'
-          name='host'
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[
-            {
-              required: true,
-              validateTrigger: 'onBlur',
-              validator(_, value) {
-                const reg = /^\d+$/
-                if (reg.test(value)) {
-                  if (value <= 48) {
-                    return Promise.resolve()
-                  }
-                  return Promise.reject(new Error('请输入 0-48 之间的整数'))
-                }
-                return Promise.reject(new Error('请输入 0-48 之间的整数'))
-              }
-            }
-          ]}
-        >
-          <Input placeholder='请输入整数,最大48' suffix='毫秒' />
-        </Form.Item>
-        <Form.Item
-          label='前置时延'
-          name='align_delay_0'
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[
-            {
-              required: true,
-              validateTrigger: 'onBlur',
-              validator(_, value) {
-                const reg = /^\d+$/
-                if (reg.test(value)) {
-                  if (value <= 10) {
-                    return Promise.resolve()
-                  }
-                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
-                }
-                return Promise.reject(new Error('请输入 0-10 之间的整数'))
-              }
-            }
-          ]}
-        >
-          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
-        </Form.Item>
-        <Form.Item
-          label='后置时延'
-          name='align_delay_2'
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[
-            {
-              required: true,
-              validateTrigger: 'onBlur',
-              validator(_, value) {
-                const reg = /^\d+$/
-                if (reg.test(value)) {
-                  if (value <= 10) {
-                    return Promise.resolve()
-                  }
-                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
-                }
-                return Promise.reject(new Error('请输入 0-10 之间的整数'))
-              }
-            }
-          ]}
-        >
-          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
-        </Form.Item>
         <Form.Item
           label='任务描述'
           name='description'
           rules={[{ message: '请输入任务描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
           <Input.TextArea
+            disabled={isFixForm}
             placeholder='任务描述'
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
@@ -325,14 +269,14 @@ const GroupExcitationForm: React.FC = () => {
               excitationList={excitationList}
               isFixForm={isFixForm}
               onChange={onChange}
-              formData={data}
+              formData={Data?.group_data_list}
               index={index}
               key={index}
             />
           )
         })}
 
-        {ExcitationCardList.length < 4 && (
+        {ExcitationCardList.length < 10 && !isFixForm && (
           <div className={styles.nav_Btn} role='time' onClick={addCard}>
             <PlusOutlined style={{ fontSize: '20px', marginBottom: '3px' }} />
             <span>添</span>

@@ -78,6 +78,18 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             </>
           )}
         </div>
+        <div role='button' className={styles.ImageContioner} tabIndex={0} onClick={() => {}}>
+          {[0, 1, 4, 5, 6].includes(status) && (
+            <>
+              <Tooltip placement='bottom' title='重新测试当前实例（重新发送已经测试过的用例）'>
+                <Spin spinning={false} indicator={antIcon}>
+                  <img className={styles.ImageSize} src={Begin} alt='beginCourse' />
+                </Spin>
+              </Tooltip>
+              <span>开始测试</span>
+            </>
+          )}
+        </div>
         {[2, 3].includes(status) && (
           <div className={styles.ImageContioner} role='button' tabIndex={0} onClick={() => {}}>
             {[2].includes(status) ? (

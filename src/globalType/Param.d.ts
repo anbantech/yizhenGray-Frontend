@@ -211,6 +211,15 @@ export interface TaskList {
   status?: string | number | null
 }
 
+export interface taskParamsFn {
+  name: string
+  desc: string
+  project_id: number
+  work_time: number
+  crash_num: number
+  group_id: number
+}
+
 // 21. 任务详情
 
 export interface TaskDetail {
@@ -512,4 +521,20 @@ export interface useCaseParams {
   name: string
   desc: string
   group_id_list: number[]
+}
+
+export interface doubleExcitationParams {
+  name?: string
+  desc?: string
+  recycle_count_0?: number
+  wait_time_0?: number
+  align_delay_0?: number
+  align_delay_2?: number
+  child_id_list?: number[]
+}
+
+export interface groupParams {
+  name?: string
+  desc: string
+  child_id_list?: number[]
 }

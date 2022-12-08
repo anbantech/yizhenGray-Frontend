@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import FirstConfig from './taskConfigCompents/firstConfig'
@@ -23,29 +23,24 @@ interface ChildRef {
   firstForm: React.MutableRefObject<StepRef | null>
 }
 
-const firstFormBaseData = {
-  description: undefined,
-  host: undefined,
-  name: undefined,
-  password: undefined,
-  username: undefined
-}
 const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType<taskInfoType>>> = props => {
   const history = useHistory()
 
   const childRef: ChildRef = {
     firstForm: useRef<StepRef | null>(null)
   }
+  const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
 
   const { taskInfo, projectInfo } = props.location?.state
 
-  const [taskStepDataObj, setTaskStepDataObj] = useState({ firstFormData: firstFormBaseData, secondFormData: {} })
-
-  const createForm = () => {
-    history.push({
-      pathname: '/projects/Tasks',
-      state: { projectInfo }
-    })
+  const createForm = async () => {
+    const result = await childRef.firstForm?.current?.save()
+    if (result) {
+      history.push({
+        pathname: '/projects/Tasks',
+        state: { projectInfo }
+      })
+    }
   }
   const cancenlForm = () => {
     history.push({
@@ -53,25 +48,32 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
       state: { projectInfo }
     })
   }
+  const onFieldsChange = (changedFields: any, allFields: any) => {
+    const disabledData: any = []
+    const errors = allFields.every((item: any) => {
+      return item.errors.length === 0
+    })
+    // eslint-disable-next-line array-callback-return
+    allFields.map((item: any) => {
+      if (item.name[0] !== 'description') return disabledData.push(item.value)
+    })
 
-  //  步骤一
-  // const firstFormFn = () => {
-  //   const formData = childRef.firstForm.current?.save()
-  //   if (formData) {
-  //     setTaskStepDataObj({ ...taskStepDataObj, firstFormData: formData })
-  //   }
-  // }
-
-  // 下一步...完成 根据current进行不同操作逻辑
-  // 上一步...完成 根据current 进行不同操作
-
+    const disabledBoolean = disabledData.every((item: any) => {
+      return item !== undefined && item !== ''
+    })
+    if (disabledBoolean && errors) {
+      setIsDisableStatus(false)
+    } else {
+      setIsDisableStatus(true)
+    }
+  }
   return (
     <div className={styles.taskMain}>
       <div className={styles.taskMain_header}>
         <span className={styles.taskMain_title}>{taskInfo?.editTask ? '修改任务' : '新建任务'}</span>
       </div>
       <div className={styles.taskMain_boby}>
-        <FirstConfig ref={childRef.firstForm} />
+        <FirstConfig ref={childRef.firstForm} id={projectInfo.projectId} onChange={onFieldsChange} />
       </div>
       <div className={styles.taskMain_footer}>
         <div className={styles.taskMain_footerConcent}>
@@ -86,6 +88,7 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
           <CommonButton
             buttonStyle={styles.stepButton}
             type='primary'
+            disabled={isDisableStatus}
             name='创建'
             onClick={() => {
               createForm()
