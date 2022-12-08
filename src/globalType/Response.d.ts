@@ -542,3 +542,21 @@ export interface resUserLog {
   page_count: number
   total: number
 }
+
+export interface getAllRes {
+  id: number
+  name: string
+  port: string
+  group_type: number
+  template_id: number
+  recycle_count: number
+  recycle_time: number
+  enable: boolean
+  cnt0: number
+  wait_time_0: number
+  align_delay_0: number
+  align_delay_2: number
+  next_id: number
+  group_id_list: number[]
+  group_data_list: any[]
+}

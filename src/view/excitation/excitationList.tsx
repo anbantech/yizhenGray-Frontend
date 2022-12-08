@@ -54,12 +54,12 @@ interface projectInfoType {
 const An_ButtonNameMap = {
   0: '新建激励',
   1: '新建级联激励',
-  2: '新建组'
+  2: '新建交互'
 }
 const An_ButtonDetailMap = {
   0: '激励详情',
   1: '级联激励详情',
-  2: '新建组详情'
+  2: '交互详情'
 }
 const An_tabsMap = {
   0: 'one',
@@ -90,17 +90,23 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   //   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
 
   // 创建项目 弹出框
-  const createProjectModal = React.useCallback(() => {
-    history.push({
-      pathname: '/excitationList/createOneExcitation',
-      state: {
-        type: `${An_tabsMap[tabs as keyof typeof An_tabsMap]}`,
-        isFixForm: false,
-        name: `${An_ButtonNameMap[tabs as keyof typeof An_ButtonNameMap]}`
-      }
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tabs])
+  const createProjectModal = React.useCallback(
+    (value: number) => {
+      const createDoubleExcitation = '/excitationList/createDoubleExcitation'
+      const createOneExcitation = '/excitationList/createOneExcitation'
+      const createGroupExcitation = '/excitationList/createGroupExcitation'
+      history.push({
+        pathname: `${+value === 0 ? createOneExcitation : +value === 1 ? createDoubleExcitation : createGroupExcitation}`,
+        state: {
+          type: `${An_tabsMap[tabs as keyof typeof An_tabsMap]}`,
+          isFixForm: false,
+          name: `${An_ButtonNameMap[tabs as keyof typeof An_ButtonNameMap]}`
+        }
+      })
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [history, tabs]
+  )
 
   // 控制弹出框消失隐藏
   //   const cancel = (e: boolean) => {
@@ -117,7 +123,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     history.push({
       pathname: '/excitationList/Deatail',
       state: {
-        info: item,
+        info: { id: item.id },
         type: `${An_tabsMap[tabs as keyof typeof An_tabsMap]}`,
         isFixForm: true,
         name: `${An_ButtonDetailMap[tabs as keyof typeof An_ButtonDetailMap]}`
@@ -251,8 +257,8 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       {
         width: '30%',
         title: '级联激励描述    ',
-        dataIndex: 'port',
-        key: 'port'
+        dataIndex: 'desc',
+        key: 'desc'
       },
       {
         width: '8%',
@@ -302,8 +308,8 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       {
         width: '30%',
         title: '组描述',
-        dataIndex: 'port',
-        key: 'port'
+        dataIndex: 'desc',
+        key: 'desc'
       },
       {
         width: '8%',
@@ -337,11 +343,19 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         <Radio.Group onChange={onChange} defaultValue='0'>
           <Radio.Button value='0'>激励列表</Radio.Button>
           <Radio.Button value='1'>级联列表</Radio.Button>
-          <Radio.Button value='2'>组列表</Radio.Button>
+          <Radio.Button value='2'>交互列表</Radio.Button>
         </Radio.Group>
         <div className={styles.AnBan_header_bottom}>
           <SearchInput placeholder='根据名称搜索激励' onChangeValue={updateParams} />
-          <CreateButton width='146px' name='新建激励 ' size='large' type='primary' onClick={createProjectModal} />
+          <CreateButton
+            width='146px'
+            name={`${An_ButtonNameMap[tabs as keyof typeof An_ButtonDetailMap]}`}
+            size='large'
+            type='primary'
+            onClick={() => {
+              createProjectModal(tabs)
+            }}
+          />
         </div>
       </div>
       <div className={styles.tableConcent}>

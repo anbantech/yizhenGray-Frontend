@@ -1,4 +1,4 @@
-import { TaskList } from 'Src/globalType/Param'
+import { TaskList, taskParamsFn } from 'Src/globalType/Param'
 import { ResTaskList, ResTaskDetail } from 'Src/globalType/Response'
 import request from 'Src/services/request/request'
 
@@ -17,4 +17,10 @@ export function TaskDetail(id: string) {
 // 导出报告
 export function exportReport(id: number) {
   return request.get<any>(`/api/v1.0/instances/report/${id}`)
+}
+
+// 创建任务
+
+export function createTaskFn(params: taskParamsFn) {
+  return request.post<any>('/api/v1.0/tasks/save', params)
 }

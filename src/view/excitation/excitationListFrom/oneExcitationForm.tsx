@@ -9,6 +9,7 @@ import { getPortList, createExcitationFn } from 'Src/services/api/excitationApi'
 import { TelList } from 'Src/services/api/templateApi'
 import { throwErrorMessage } from 'Src/until/message'
 import styles from '../excitation.less'
+import GetDeatilFn from './getDataDetailFn/getDataDetailFn'
 // import { RouteComponentProps, StaticContext } from 'react-router'
 
 const layout = {
@@ -32,6 +33,7 @@ const OneExcotationForm: React.FC = () => {
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
   const [templateList, setTemplateList] = React.useState<any[]>()
   const [portList, setPortList] = React.useState<string[]>([])
+  const Data = GetDeatilFn(info?.id)
   // 获取模版列表
   const fetchTemplateList = React.useCallback(async () => {
     //  Todo code码
@@ -121,8 +123,8 @@ const OneExcotationForm: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   React.useEffect(() => {
-    if (info) {
-      const { name, desc, port, template_id, recycle_count_0, recycle_time, recycle_count, wait_time_0, align_delay_0, align_delay_2 } = info
+    if (Data) {
+      const { name, desc, port, template_id, recycle_count_0, recycle_time, recycle_count, wait_time_0, align_delay_0, align_delay_2 } = Data as any
       const formData = {
         name,
         description: desc,
@@ -137,7 +139,7 @@ const OneExcotationForm: React.FC = () => {
       }
       form.setFieldsValue(formData)
     }
-  }, [form, info])
+  }, [form, info, Data])
   return (
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.oneForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>

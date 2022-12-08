@@ -195,8 +195,8 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     {
       width: '10%',
       title: '运行时长',
-      dataIndex: 'work_time',
-      key: 'work_time',
+      dataIndex: 'test_time',
+      key: 'test_time',
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
         return <span>{`${row.wrok_time}h`}</span>
@@ -239,22 +239,6 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
           <div className={styles.status}>
             <span className={statusMap[row.status].color} />
             <span>{statusMap[row.status].label}</span>
-          </div>
-        )
-      }
-    },
-    {
-      width: '15%',
-      title: '任务操作',
-      dataIndex: 'desc',
-      key: 'desc',
-      // eslint-disable-next-line react/display-name
-      render: (_: any, row: any) => {
-        return (
-          <div className={globalStyle.Opera_detaile}>
-            <span role='button' tabIndex={0} onClick={() => {}}>
-              开始测试
-            </span>
           </div>
         )
       }

@@ -16,8 +16,7 @@ import TaskInfo from 'Src/view/Project/taskDetail/showTaskDetail'
 import ExcitationList from 'Src/view/excitation/excitationList'
 import TaskLog from 'Src/view/Project/taskDetail/taskLog'
 import ExcitationBase from 'Src/view/excitation/ExcitationBase'
-import UseCaseList from 'Src/view/useCase/useCaseList'
-import UseCaseDetail from 'Src/view/useCase/useCase'
+
 // import UserLog from 'Src/view/uesrManagement/userLog/userLog'
 // import UserList from 'Src/view/uesrManagement/userList/userList'
 
@@ -38,9 +37,6 @@ function content() {
         <Route path='/excitationList/createOneExcitation' exact component={ExcitationBase} />
         <Route path='/excitationList/createDoubleExcitation' exact component={ExcitationBase} />
         <Route path='/excitationList/createGroupExcitation' exact component={ExcitationBase} />
-        <Route path='/UseCaseList' exact component={UseCaseList} />
-        <Route path='/UseCaseList/Detail' exact component={UseCaseDetail} />
-        <Route path='/UseCaseList/createUseCase' exact component={UseCaseDetail} />
         <Redirect from='/*' to='/' />
         {/* <Route path='/UserLog' exact component={UserLog} />
         <Route path='/UserList' exact component={UserList} /> */}
