@@ -16,6 +16,7 @@ import { taskList, deleteTasks } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/until/message'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import globalStyle from 'Src/view/Project/project/project.less'
+import UseWebsocket, { getCurretTimeString } from 'Src/webSocket/useWebSocket'
 import styles from './task.less'
 
 const customizeRender = () => <DefaultValueTips content='暂无项目' />
@@ -83,6 +84,9 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
 
   //  删除弹出框
   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
+
+  //  注册 webSocket
+  const [messageInfo] = UseWebsocket()
 
   // 新建任务
   const jumpNewCreateTask = () => {
@@ -153,7 +157,6 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     setCommonModleStatus(value)
   }
   const deleteProjectRight = async () => {
-    console.log(typeof projectInfo.projectId)
     try {
       const res = await deleteTasks(projectInfo.projectId, modalData.taskId)
       if (res.data) {
@@ -291,8 +294,12 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     }
   }
   React.useEffect(() => {
-    getTaskList(params)
-  }, [params])
+    if (messageInfo || params) {
+      getTaskList(params)
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params, messageInfo])
   return (
     <div className={globalStyle.AnBan_main}>
       <div className={globalStyle.AnBan_header}>
