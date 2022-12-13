@@ -24,12 +24,11 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   const history = useHistory()
 
   const [taskDetailInfo, setTaskDetailInfo] = React.useState<ResTaskDetail>()
-
+  const [updateStatus, setUpdateStatus] = React.useState(0)
   const getTaskDetail = async (value: string) => {
     const getTaskDetails = await TaskDetail(value)
     if (getTaskDetails.data) {
       setTaskDetailInfo(getTaskDetails.data)
-      console.log(getTaskDetails.data)
     }
   }
   // 跳转任务详情
@@ -53,13 +52,13 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     if (taskInfo.task_id) {
       getTaskDetail(taskInfo.task_id)
     }
-  }, [taskInfo.task_id])
+  }, [taskInfo.task_id, updateStatus])
 
   return (
     <div className={globalStyle.AnBan_main}>
       {taskDetailInfo && (
         <>
-          <TaskDetailHead taskDetailInfo={taskDetailInfo} jumpLookTaskInfo={jumpLookTaskInfo} />
+          <TaskDetailHead taskDetailInfo={taskDetailInfo} jumpLookTaskInfo={jumpLookTaskInfo} setUpdateStatus={setUpdateStatus} />
           <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
         </>
       )}
