@@ -120,7 +120,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       const res = await deleteExampleTask(project_id, id)
       return res
     } catch (error) {
-      console.log(error)
+      throwErrorMessage(error)
     }
   }, [])
 

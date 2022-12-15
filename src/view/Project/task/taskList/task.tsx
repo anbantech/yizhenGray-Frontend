@@ -16,7 +16,7 @@ import { taskList, deleteTasks } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/until/message'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import globalStyle from 'Src/view/Project/project/project.less'
-import UseWebsocket, { getCurretTimeString } from 'Src/webSocket/useWebSocket'
+import UseWebsocket from 'Src/webSocket/useWebSocket'
 import styles from './task.less'
 
 const customizeRender = () => <DefaultValueTips content='暂无项目' />
