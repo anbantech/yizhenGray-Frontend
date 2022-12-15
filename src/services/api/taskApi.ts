@@ -1,5 +1,16 @@
-import { beginTest, Createtask, exportTestLog, simulateNodeParams, simulateParams, targetsTest, TaskList, taskParamsFn } from 'Src/globalType/Param'
-import { ResTaskList, ResTaskDetail, isCode } from 'Src/globalType/Response'
+import {
+  beginTest,
+  Createtask,
+  exportTestLog,
+  simulateNodeParams,
+  simulateParams,
+  targetsTest,
+  TaskList,
+  taskParamsFn,
+  testAlllogs,
+  testlogs
+} from 'Src/globalType/Param'
+import { ResTaskList, ResTaskDetail, isCode, Restestlogs } from 'Src/globalType/Response'
 import request from 'Src/services/request/request'
 
 export function taskList(params: TaskList) {
@@ -109,4 +120,13 @@ export function getSimulateNode(params: simulateNodeParams) {
 
 export function getUseCase(params: any) {
   return request.get<any>(`/api/v1.0/instances/cases`, { params })
+}
+
+// 任务日志
+export function getTestingLog(params: testlogs) {
+  return request.get<Restestlogs>(`/api/v1.0/test-logs/query`, { params })
+}
+
+export function getAllTestingLog(params: testAlllogs) {
+  return request.get<Restestlogs>(`/api/v1.0/test-logs/query/all`, { params })
 }

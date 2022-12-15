@@ -276,7 +276,7 @@ export interface custom_frames {
 // 29. 测试日志
 
 export interface testlogs {
-  instance_id: number
+  task_id: number
   page: number
   page_size: number
   sort_field?: string
@@ -287,7 +287,13 @@ export interface testlogs {
   system?: string
   diagnosis?: string
 }
-
+export interface testAlllogs {
+  task_id: number
+  page: number
+  page_size: number
+  sort_field?: string
+  sort_order?: string
+}
 // 30. 开始测试
 
 type testRow = {
