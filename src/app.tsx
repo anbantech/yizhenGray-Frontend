@@ -7,7 +7,7 @@ import { Route, Switch, RouteComponentProps } from 'react-router-dom'
 import { Redirect, withRouter } from 'react-router'
 import { ifNeedShowLogo } from 'Src/index'
 import GlobalContextProvider from 'Src/globalContext/globalContext'
-import Report from 'Src/view/Report/Report'
+import Report from 'Src/view/Project/taskDetail/Report/Report'
 import FirstFrameChart from 'Src/until/ifNeedConfig/FirstFrame'
 import styles from './app.less'
 import Head from './layout/Header/header'
@@ -66,7 +66,7 @@ const App: React.FC<RouteComponentProps<any, any, any>> = props => {
       <Switch>
         <Redirect path='/' to='/login' exact />
         <Route path='/login' component={Login} />
-        <Route path='/OnlineReport' exact component={Report} />
+        <Route path='/OnlineReporting' exact component={Report} />
         <Route path='/404' exact component={NoMatch} />
         <Route
           path={`${name}`}
