@@ -11,7 +11,6 @@ function UseGetTestLog(params: testlogs) {
     try {
       const log = await getTestingLog(value)
       if (log.data) {
-        console.log(log.data.results)
         setLogData(log.data.results as any)
         setTotal(log.data.total)
       }
