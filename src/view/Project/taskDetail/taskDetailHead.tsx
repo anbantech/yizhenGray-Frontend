@@ -146,7 +146,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       </div>
       <div className={styles.taskDetailHead_Main_right}>
         {[0, 1].includes(status) && (
-          <Link to={`/OnlineReport?id=${id}?name=${name}`} target='_blank' style={{ color: '#000000' }}>
+          <Link to={`/OnlineReporting?id=${id}?name=${name}`} target='_blank' style={{ color: '#000000' }}>
             <div role='button' className={styles.ImageContioner} tabIndex={0}>
               <img className={styles.ImageSize} src={report} alt='stopCourse' />
               <span>查看报告</span>
