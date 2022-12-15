@@ -13,20 +13,19 @@
                 <span> YIZHEN analysis REPORT </span>
                 <span> 易侦测试报告 </span>
             </div>
-            <div class="report_bottom">
+            <!-- <div class="report_bottom">
                 <span class="report_platform">
                     报告时间:{{ homeDataTestOverview.create_time }}
                 </span>
-            </div>
+            </div> -->
         </div>
 
-        <div style="margin-top: 35px">
+        <!-- <div style="margin-top: 35px">
             <span class="report_progressName">项目:{{ homeDataTestOverview.project_name }}</span>
             <div style="margin-top:9px">
-                <span class="report_platform">被测设备:{{ homeDataTestOverview.device_name }}</span>
                 <span class="report_platform">测试平台:{{ homeDataTestOverview.platform }} </span>
             </div>
-        </div>
+        </div> -->
 
 
         <div class="bottom_line">   

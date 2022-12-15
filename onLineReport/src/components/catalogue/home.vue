@@ -13,11 +13,11 @@
                 <span> YIZHEN analysis REPORT </span>
                 <span> 易侦测试报告 </span>
             </div>
-            <div class="report_bottom">
+            <!-- <div class="report_bottom">
                 <span class="report_platform">
                     报告时间:{{ homeDataTestOverview.create_time }}
                 </span>
-            </div>
+            </div> -->
         </div>
 
         <div style="margin-top: 35px">

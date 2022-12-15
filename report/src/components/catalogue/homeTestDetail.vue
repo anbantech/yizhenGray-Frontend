@@ -5,15 +5,8 @@
         <el-table :data="tableData" style="width: 100%; margin-top: 12px" border
             :header-cell-style="{ background:'#F0F0F0 !important'}" header-row-class-name="statisticsTableHeader"
             header-cell-class-name="statisticsTableCell">
-            <el-table-column width="200%" prop="instance_num" label="实例编号">
-            </el-table-column>
             <el-table-column prop="this_cases" label="用例数量"> </el-table-column>
             <el-table-column prop="this_error_case_num" label="异常用例"> </el-table-column>
-            <el-table-column label="未通过率">
-                <template slot-scope="scope">
-                    <span> {{ scope.row.error_rate ? `${Number(((scope.row.error_rate) * 100).toFixed(4))}%` : '0%'}}</span>
-                </template>
-            </el-table-column>
             <el-table-column prop="elapsed_time" label="耗时">
                 <template slot-scope="scope">
                     <span> {{scope.row.elapsed_time ? `${scope.row.elapsed_time}` : '0' }}</span>
@@ -25,7 +18,7 @@
                 </template>
             </el-table-column>
         </el-table>
-        <span class="title">异常用例</span>
+        <span class="title">本次异常用例</span>
         <el-table :data="tableData[0].this_time_error_cases" style="width: 100%; margin-top: 12px" border
             header-row-class-name="statisticsTableHeader" :header-cell-style="{ background:'#F0F0F0 !important'}"
             header-cell-class-name="statisticsTableCell">
@@ -33,7 +26,7 @@
             </el-table-column>
             <el-table-column prop="frames" label="异常情况描述"> </el-table-column>
         </el-table>
-        <span class="title">累计测试详情</span>
+        <!-- <span class="title">累计测试详情</span>
         <el-table :data="tableData" style="width: 100%; margin-top: 12px" border
             header-row-class-name="statisticsTableHeader" :header-cell-style="{ background:'#F0F0F0 !important'}"
             header-cell-class-name="statisticsTableCell">
@@ -49,7 +42,7 @@
             <el-table-column prop="time" label="时间" width="200%">
             </el-table-column>
             <el-table-column prop="frames" label="异常情况描述"> </el-table-column>
-        </el-table>
+        </el-table> -->
     </div>
 </template>
 

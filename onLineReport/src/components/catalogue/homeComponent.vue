@@ -43,12 +43,12 @@ export default {
     },
     created() {
         this.cloumnType === 'homeDataTestOverviewType' ?
-            this.homeData = [{ 'platform':'测试平台'} ,{ 'device_name': '被测设备' }, { 'test_time': '测试时间' }, { 'create_time': '报告生成' }] 
-            : this.cloumnType === 'homeDataTestPlanType'  
-                ? this.homeData =[{ 'task_name': '任务名称' }, { 'target_name': '目标名称' }, { 'interaction': '协议交互' }, { 'exception_handler': '异常处理器' }]
-            : this.cloumnType === 'homeDataTestSummaryType'  
-                 ? this.homeData =[{ 'cases': '测试用例总数' }, { 'error_cases': '异常用例' }, { 'error_rate': '未通过率' }]
-            : []
+            this.homeData = [{ 'platform': '测试平台' }, { 'test_time': '测试时间' }, { 'create_time': '报告生成' }]
+            : this.cloumnType === 'homeDataTestPlanType'
+                ? this.homeData = [{ 'task_name': '任务名称' }, { 'work_time': '工作时长设定' }, { 'crash_num': 'crash数量设定' }]
+                : this.cloumnType === 'homeDataTestSummaryType'
+                    ? this.homeData = [{ 'coverage': '覆盖率' }, { 'error_cases': '异常用例' }]
+                    : []
     },
     data() {
         return {
