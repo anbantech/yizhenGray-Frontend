@@ -105,7 +105,7 @@ function Report(props: any) {
             <div className={style.positionBtn}>
               <CancelButton buttonStyle={style.step_button} name='下载报告' type='default' onClick={exportReportZip} />
             </div>
-            <iframe id='reportData' src='/onLineReporting/dist/index.html' width='100%' height='100%' allowFullScreen frameBorder='0' title='报告' />
+            <iframe id='reportData' src='/onLineReporting/index.html' width='100%' height='100%' allowFullScreen frameBorder='0' title='报告' />
           </div>
         )
       ) : (
