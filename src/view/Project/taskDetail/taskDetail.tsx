@@ -6,8 +6,8 @@ import { TaskDetail } from 'Src/services/api/taskApi'
 import globalStyle from 'Src/view/Project/project/project.less'
 import { projectInfoType } from '../task/taskList/task'
 import DetailTestingTable from './tasklog/DetailTestingTable'
-import TaskDetailCard from './taskDetailCard'
-import TaskDetailHead from './taskDetailHead'
+import TaskDetailCard from './taskDetailCompoents/taskDetailCard'
+import TaskDetailHead from './taskDetailCompoents/taskDetailHead'
 import DetailTestedTable from './tasklog/taskLog'
 import UseGetTestLog from './taskDetailUtil/getTestLog'
 
@@ -49,11 +49,11 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   // 跳转任务详情
   const jumpLookTaskInfo = React.useCallback(() => {
     history.push({
-      pathname: '/projects/Tasks/lookTaskDetailInfo',
-      state: { projectInfo, taskInfo }
+      pathname: '/projects/Tasks/Detail/lookTaskDetailInfo',
+      state: { projectInfo, taskInfo, taskDetailInfo }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [taskDetailInfo])
   // 跳转日志
   const lookLog = React.useCallback(() => {
     history.push({

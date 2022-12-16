@@ -2,7 +2,7 @@
 import { RightOutlined } from '@ant-design/icons'
 import * as React from 'react'
 import { ResTaskDetail } from 'Src/globalType/Response'
-import styles from './taskDetail.less'
+import styles from '../taskDetail.less'
 
 interface propsResTaskDetailType<T> {
   taskDetailInfo: T
