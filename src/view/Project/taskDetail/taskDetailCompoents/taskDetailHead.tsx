@@ -13,7 +13,7 @@ import over from 'Src/asstes/image/overTask.svg'
 import { throwErrorMessage } from 'Src/until/message'
 import { bgTest, deleteExampleTask, stopcontuine, stoppaused, stoptest, test_target } from 'Src/services/api/taskApi'
 import UseWebsocket from 'Src/webSocket/useWebSocket'
-import styles from './taskDetail.less'
+import styles from '../taskDetail.less'
 
 interface propsResTaskDetailType<T> {
   taskDetailInfo: T

@@ -1,24 +1,13 @@
 import { Form, Input, Select } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
-import React, { useEffect, useImperativeHandle, useState } from 'react'
-import { excitationListFn } from 'Src/services/api/excitationApi'
-import { createTaskFn } from 'Src/services/api/taskApi'
-import { throwErrorMessage } from 'Src/until/message'
-import styles from './stepBaseConfig.less'
+import React, { useEffect, useState } from 'react'
+import styles from 'Src/view/Project/task/createTask/taskConfigCompents/stepBaseConfig.less'
 
 const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 18 }
 }
-const request = {
-  group_type: 2,
-  key_word: '',
-  status: null,
-  page: 1,
-  page_size: 10,
-  sort_field: 'create_time',
-  sort_order: 'descend'
-}
+
 interface projectInfoType {
   id: number
   name: string
@@ -43,59 +32,31 @@ interface propsFn {
   onChange: (changedFields: any, allFields: any) => void
   id: number
 }
-const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
-  const { onChange, id } = props
+
+interface PropType {
+  taskInfo: any
+}
+const TaskForm = (props: PropType) => {
+  const { taskInfo } = props
   const [form] = useForm()
   const { Option } = Select
-  const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
-
-  const createOneExcitationFn = React.useCallback(async () => {
-    const values = await form.validateFields()
-    try {
-      if (values) {
-        const params = {
-          name: values.name,
-          desc: values.description,
-          project_id: id,
-          work_time: values.work_time,
-          crash_num: values.crash_num,
-          group_id: values.group_id
-        }
-        const result = await createTaskFn(params)
-        if (result.data) {
-          return result.data
-        }
-      }
-    } catch (error) {
-      throwErrorMessage(error, { 1009: '任务删除失败' })
-    }
-  }, [form, id])
-  useImperativeHandle(myRef, () => ({
-    save: () => {
-      return createOneExcitationFn()
-    },
-    delete: () => {},
-    validate: () => {},
-    clearInteraction: () => {}
-  }))
-
-  const getExcitationList = async (value: Resparams) => {
-    try {
-      const result = await excitationListFn(value)
-      if (result.data) {
-        setExcitationList(result.data.results)
-      }
-    } catch (error) {
-      throwErrorMessage(error, { 1004: '请求资源未找到' })
-    }
-  }
-
+  const [excitationList] = useState<projectInfoType[]>([])
   useEffect(() => {
-    getExcitationList(request)
-  }, [])
+    if (taskInfo) {
+      const { name, desc, work_time, crash_num, group_id } = taskInfo
+      const formData = {
+        name,
+        description: desc,
+        work_time,
+        crash_num,
+        group_id
+      }
+      form.setFieldsValue(formData)
+    }
+  }, [form, taskInfo])
   return (
     <div className={styles.stepBaseMain}>
-      <Form name='basic' className={styles.stepBaseMain_Form} {...layout} onFieldsChange={onChange} autoComplete='off' form={form} size='large'>
+      <Form name='basic' className={styles.stepBaseMain_Form} {...layout} autoComplete='off' form={form} size='large'>
         <Form.Item
           label='任务名称'
           name='name'
@@ -129,7 +90,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
             }
           ]}
         >
-          <Input placeholder='请输入2到6个字符' />
+          <Input placeholder='请输入2到6个字符' disabled />
         </Form.Item>
 
         <Form.Item
@@ -154,7 +115,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
             }
           ]}
         >
-          <Input placeholder='请输入整数,最大48' suffix='小时' />
+          <Input placeholder='请输入整数,最大48' suffix='小时' disabled />
         </Form.Item>
         <Form.Item
           label='Crash数量'
@@ -174,11 +135,11 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
             }
           ]}
         >
-          <Input placeholder='请输入Crash数量' />
+          <Input placeholder='请输入Crash数量' disabled />
         </Form.Item>
 
         <Form.Item label='交互' name='group_id' validateFirst validateTrigger={['onBlur']} rules={[{ required: true, message: '请选择交互' }]}>
-          <Select placeholder='请选择选择交互'>
+          <Select placeholder='请选择选择交互' disabled>
             {
               /**
                * 根据连接方式列表渲染下拉框可选择的设备比特率
@@ -200,6 +161,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         >
           <Input.TextArea
             placeholder='任务描述'
+            disabled
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
               formatter({ count }) {
@@ -211,7 +173,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
       </Form>
     </div>
   )
-})
+}
 
-FirstConfig.displayName = 'FirstConfig'
-export default FirstConfig
+TaskForm.displayName = 'TaskForm'
+export default TaskForm
