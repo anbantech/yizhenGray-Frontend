@@ -16,6 +16,11 @@ import TaskInfo from 'Src/view/Project/taskDetail/taskDetailCompoents/showTaskDe
 import ExcitationList from 'Src/view/excitation/excitationList'
 import DetailTestAlLTable from 'Src/view/Project/taskDetail/tasklog/taskAllLog'
 import ExcitationBase from 'Src/view/excitation/ExcitationBase'
+import TemplateList from 'Src/view/template/TemplateList/templateList'
+// import CreateResponseTemplateComponent from 'Src/view/template/ResponseTemplate/createResponseTemplate'
+// import createTemplateWrapper from 'Src/view/template/BaseTemplate/createTemplateWrapper'
+// import ChangeArrgement from 'Src/view/arrgement/changeArrgement'
+// import StepSecond from 'Src/view/arrgement/SecondArrgement'
 
 // import UserLog from 'Src/view/uesrManagement/userLog/userLog'
 // import UserList from 'Src/view/uesrManagement/userList/userList'
@@ -37,6 +42,14 @@ function content() {
         <Route path='/excitationList/createOneExcitation' exact component={ExcitationBase} />
         <Route path='/excitationList/createDoubleExcitation' exact component={ExcitationBase} />
         <Route path='/excitationList/createGroupExcitation' exact component={ExcitationBase} />
+        <Route path='/templateList' exact component={TemplateList} />
+        {/* <Route path='/excitationList/createGroupExcitation' exact component={ExcitationBase} /> */}
+        {/* <Route path='/Arrgemnt/StepSecond' exact component={StepSecond} /> */}
+        {/* <Route path='/Arrgemnt/ChangeArrgement' exact component={ChangeArrgement} /> */}
+        {/* <Route path='/Arrgemnt/NewArrgement/responseTemplate' exact component={CreateResponseTemplateComponent} />
+        <Route path='/Arrgemnt/StepSecond/responseTemplate' exact component={CreateResponseTemplateComponent} />
+        <Route path='/Arrgemnt/NewArrgement/baseTemplate' exact component={createTemplateWrapper} />
+        <Route path='/Arrgemnt/StepSecond/baseTemplate' exact component={createTemplateWrapper} /> */}
         <Redirect from='/*' to='/' />
         {/* <Route path='/UserLog' exact component={UserLog} />
         <Route path='/UserList' exact component={UserList} /> */}

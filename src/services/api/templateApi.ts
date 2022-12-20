@@ -1,7 +1,11 @@
-import { protocol_List } from 'Src/globalType/Param'
-import { Resprotocol_List } from 'Src/globalType/Response'
+import { TemplateListParams, DeleteTemplateParams } from 'Src/globalType/Param'
+import { TemplateListResponse } from 'Src/globalType/Response'
 import request from 'Src/services/request/request'
 
-export function TelList(params: protocol_List) {
-  return request.get<Resprotocol_List>('/api/v1.0/templates/query', { params })
+export function getTemplateList(params: TemplateListParams) {
+  return request.get<TemplateListResponse>('/api/v1.0/templates/query', { params })
+}
+
+export function removeTemplate(params: DeleteTemplateParams) {
+  return request.delete('/api/v1.0/templates/delete', { params })
 }
