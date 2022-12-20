@@ -119,11 +119,10 @@ export interface ResprotocolsDetails {
 
 // 9. 模板列表
 
-export interface Resprotocol_List {
+export interface TemplateListResponse {
   results: {
     id: number
     name: string
-    type: string
     desc: string
     create_time: string
     update_time: string

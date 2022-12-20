@@ -6,7 +6,7 @@ import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
 import { getPortList, createExcitationFn } from 'Src/services/api/excitationApi'
-import { TelList } from 'Src/services/api/templateApi'
+import { getTemplateList } from 'Src/services/api/templateApi'
 import { throwErrorMessage } from 'Src/until/message'
 import styles from '../excitation.less'
 import GetDeatilFn from './getDataDetailFn/getDataDetailFn'
@@ -38,7 +38,7 @@ const OneExcotationForm: React.FC = () => {
   const fetchTemplateList = React.useCallback(async () => {
     //  Todo code码
     try {
-      const result = await TelList(templateListRequest)
+      const result = await getTemplateList(templateListRequest)
       if (result.data) {
         const { results } = result.data
         setTemplateList(results)

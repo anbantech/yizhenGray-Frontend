@@ -92,12 +92,16 @@ export interface createTemplate {
 
 // 9. 模板列表
 
-export interface protocol_List {
+export interface TemplateListParams {
   key_word?: string
   page?: number
   page_size?: number
   sort_field?: string
   sort_order?: string
+}
+
+export interface DeleteTemplateParams {
+  templates: number[]
 }
 
 export interface template_Listest {
