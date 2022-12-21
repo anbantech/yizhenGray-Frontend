@@ -3,7 +3,7 @@ import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import CreateButton from 'Src/components/Button/createButton'
 import Table from 'antd/lib/table'
 import ConfigProvider from 'antd/lib/config-provider'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import * as React from 'react'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
 import { message } from 'antd'
@@ -36,6 +36,9 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   // 项目列表
   const [templateList, setTemplateList] = useState<TemplateListResponse['results']>([])
 
+  // 缓存当前点击的模板信息
+  const [currentTemplate, setCurrentTemplate] = useState<TemplateListResponse['results'][number]>()
+
   // 页码
   const [total, setTotal] = useState<number>(0)
 
@@ -48,13 +51,16 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   }, [])
 
   // 查看详情 携带模板ID
-  const jumpTemplate = useCallback((value?: TemplateListResponse['results'][number]) => {
-    const { id: templateId } = value || {}
-    history.push({
-      pathname: '/templateList/template',
-      state: { templateId }
-    })
-  }, [history])
+  const jumpTemplate = useCallback(
+    (value?: TemplateListResponse['results'][number]) => {
+      const { id: templateId } = value || {}
+      history.push({
+        pathname: '/templateList/template',
+        state: { templateId }
+      })
+    },
+    [history]
+  )
 
   // 更改页码
   const changePage = useCallback((page: number, pageSize: number) => {
@@ -62,18 +68,23 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   }, [])
 
   // 删除某个项目
-  const deleteTemplate = useCallback(async (templateId: number) => {
+  const deleteTemplate = useCallback(async () => {
+    if (!currentTemplate?.id) return
     try {
-      const res = await API.removeTemplate({ templates: [templateId] })
+      const res = await API.removeTemplate({ templates: [currentTemplate.id] })
       if (res.data) {
         setParams(params => ({ ...params, key_word: '', page: 1 }))
         changeCommonDialogStatus(false)
-        message.success('删除成功')
+        if (res.data.success_list.length > 0) {
+          message.success('删除成功')
+        } else {
+          message.error(res.data.fail_list[0])
+        }
       }
     } catch (error) {
       throwErrorMessage(error, { 1009: '项目删除失败' })
     }
-  }, [changeCommonDialogStatus])
+  }, [changeCommonDialogStatus, currentTemplate])
 
   // 获取项目列表
   const getTemplateList = useCallback(async (value: TemplateListParams) => {
@@ -88,78 +99,83 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
     }
   }, [])
 
-  React.useEffect(() => {
+  useEffect(() => {
     getTemplateList(params)
   }, [getTemplateList, params])
 
-  const columns = [
-    {
-      width: '20%',
-      title: '模板名称',
-      dataIndex: 'name',
-      key: 'name',
-      // eslint-disable-next-line react/display-name
-      render: (_: any, row: any) => {
-        return (
-          <span
-            className={styles.tableProjectName}
-            role='time'
-            onClick={() => {
-              jumpTemplate(row)
-            }}
-          >
-            {row.name}
-          </span>
-        )
-      }
-    },
-    {
-      width: '30%',
-      title: '模板描述',
-      dataIndex: 'desc',
-      key: 'desc'
-    },
-    {
-      width: '10%',
-      title: '操作',
-      dataIndex: 'operations',
-      key: 'operations',
-      // eslint-disable-next-line react/display-name
-      render: (_: any, row: any) => {
-        return (
-          <div className={styles.Opera_detaile}>
+  const columns = useMemo(
+    () => [
+      {
+        width: '20%',
+        title: '模板名称',
+        dataIndex: 'name',
+        key: 'name',
+        // eslint-disable-next-line react/display-name
+        render: (_: any, row: any) => {
+          return (
             <span
-              role='button'
-              tabIndex={0}
+              className={styles.tableProjectName}
+              role='time'
               onClick={() => {
                 jumpTemplate(row)
               }}
             >
-              查看详情
+              {row.name}
             </span>
-            <span
-              style={{ marginLeft: '10px', marginRight: '10px' }}
-              role='button'
-              tabIndex={0}
-              onClick={() => {
-                // 修改模板
-              }}
-            >
-              修改
-            </span>
-            <img
-              src={deleteImage}
-              alt=''
-              onClick={() => {
-                // deleteTemplate(row.id, true)
-                // 弹出删除框，回调进行删除
-              }}
-            />
-          </div>
-        )
+          )
+        }
+      },
+      {
+        width: '30%',
+        title: '模板描述',
+        dataIndex: 'desc',
+        key: 'desc'
+      },
+      {
+        width: '10%',
+        title: '操作',
+        dataIndex: 'operations',
+        key: 'operations',
+        // eslint-disable-next-line react/display-name
+        render: (_: any, row: any) => {
+          return (
+            <div className={styles.Opera_detaile}>
+              <span
+                role='button'
+                tabIndex={0}
+                onClick={() => {
+                  jumpTemplate(row)
+                }}
+              >
+                查看详情
+              </span>
+              <span
+                style={{ marginLeft: '10px', marginRight: '10px' }}
+                role='button'
+                tabIndex={0}
+                onClick={() => {
+                  // 修改模板
+                }}
+              >
+                修改
+              </span>
+              <img
+                src={deleteImage}
+                alt=''
+                onClick={() => {
+                  setCurrentTemplate(row)
+                  // TODO: 具体删除方式待讨论，目前直接点击删除
+                  // changeCommonDialogStatus(true)
+                  deleteTemplate()
+                }}
+              />
+            </div>
+          )
+        }
       }
-    }
-  ]
+    ],
+    [deleteTemplate, jumpTemplate]
+  )
 
   return (
     <div className={styles.AnBan_main}>
@@ -182,7 +198,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
         IsModalVisible={commonModleStatus}
         deleteProjectRight={deleteTemplate}
         CommonModleClose={changeCommonDialogStatus}
-        name='删除项目'
+        name='删除模板'
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
       />
     </div>
