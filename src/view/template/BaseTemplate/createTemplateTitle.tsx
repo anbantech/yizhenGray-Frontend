@@ -39,7 +39,7 @@ const CreateTemplateTitle: React.FC = () => {
    * 包括模板状态、模板ID、模板基本信息、模板列表和预期模板列表
    */
   const { template, templateDispatch } = useContext(TemplateContext)
-  const { status, baseInfo, templateId, templateElements, responseTemplate } = template
+  const { status, baseInfo, templateId, templateElements } = template
   const readonly = status === TemplateStatus.READ
 
   /**
@@ -54,28 +54,28 @@ const CreateTemplateTitle: React.FC = () => {
    * 预览内容从页面状态组件中获取
    */
   const previewTemplate = useCallback(async () => {
-    function normalizeExpectedElements(elements: any[] | undefined) {
-      if (!elements || !Array.isArray(elements) || elements.length === 0) return []
-      return elements.flat().map(ele => ({
-        name: ele.name,
-        size: ele.size,
-        value: ele.value,
-        rules: ele.rules
-      }))
-    }
+    // function normalizeExpectedElements(elements: any[] | undefined) {
+    //   if (!elements || !Array.isArray(elements) || elements.length === 0) return []
+    //   return elements.flat().map(ele => ({
+    //     name: ele.name,
+    //     size: ele.size,
+    //     value: ele.value,
+    //     rules: ele.rules
+    //   }))
+    // }
     const exportJson = {
       name: baseInfo.name,
       description: baseInfo.description,
       createTime: baseInfo.createTime,
       elements: templateElements,
-      expected_elements: normalizeExpectedElements(responseTemplate.elements),
-      parser: responseTemplate.parser,
+      // expected_elements: normalizeExpectedElements(responseTemplate.elements),
+      // parser: responseTemplate.parser,
       exportTime: new Date(),
       version: TEMPLATE_VERSION
     }
     setPreviewDialogContent(JSON.stringify(exportJson, null, 4))
     setPreviewDialog(true)
-  }, [baseInfo, responseTemplate, templateElements])
+  }, [baseInfo, templateElements])
 
   const closePreviewDialog = useCallback(() => {
     setPreviewDialog(false)
@@ -122,7 +122,8 @@ const CreateTemplateTitle: React.FC = () => {
       // 检查模板能否成功转化
       const [, flag1] = Utils.transformElements2TdList(elements, template.ptList)
       // 检查预期模板格式
-      const flag2 = Utils.responseTemplateChecker(std.expected_elements)
+      // const flag2 = Utils.responseTemplateChecker(std.expected_elements)
+      const flag2 = true
       if (flag1 && flag2) {
         templateDispatch({
           type: 'initTemplateDetail',
@@ -130,11 +131,11 @@ const CreateTemplateTitle: React.FC = () => {
             name: std.name,
             desc: std.description,
             create_time: std.createTime,
-            elements: std.elements,
-            expected_template: {
-              parser: std.parser,
-              elements: std.expected_elements
-            }
+            elements: std.elements
+            // expected_template: {
+            //   parser: std.parser,
+            //   elements: std.expected_elements
+            // }
           }
         })
       } else {

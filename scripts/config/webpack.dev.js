@@ -24,6 +24,7 @@ module.exports = merge(common, {
   },
   plugins: [
     new webpack.DefinePlugin({
+      'process.env.TEMPLATE_VERSION': JSON.stringify(require('../../package.json').templateVersion),
       'process.env.VERSION': JSON.stringify(gitRevisionPlugin.version()),
       'process.env.COMMITHASH': JSON.stringify(gitRevisionPlugin.commithash()),
       'process.env.BRANCH': JSON.stringify(gitRevisionPlugin.branch()),

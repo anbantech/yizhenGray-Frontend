@@ -5,7 +5,8 @@ import { DndProvider } from 'react-dnd'
 import StepTag from 'Src/components/StepTag/StepTag'
 import styles from './createTemplate.less'
 import PrimitiveList from '../PrimitiveList/primitiveList'
-import CreateResponseTemplate from '../ResponseTemplate/createResponseTemplate'
+import CreateTemplateBottom from './createTemplateBottom'
+// import CreateResponseTemplate from '../ResponseTemplate/createResponseTemplate'
 import TemplateForm from '../TemplateForm/templateForm'
 import { TemplateContext } from './templateContext'
 import { TemplateStatus } from './createTemplateWrapper'
@@ -54,7 +55,8 @@ const CreateTemplateComponent: React.FC = () => {
               </div>
             </DndProvider>
           </MainBorder>
-          <CreateResponseTemplate />
+          <CreateTemplateBottom />
+          {/* <CreateResponseTemplate /> */}
         </>
       ) : (
         <>
@@ -62,7 +64,8 @@ const CreateTemplateComponent: React.FC = () => {
           <MainBorder wrapperClass={styles.template_wrapper} containerWrapperStyle={containerWrapperStyle} name={nameRenderFn}>
             <TemplateResult />
           </MainBorder>
-          <CreateResponseTemplate />
+          <CreateTemplateBottom />
+          {/* <CreateResponseTemplate /> */}
         </>
       )}
     </>
