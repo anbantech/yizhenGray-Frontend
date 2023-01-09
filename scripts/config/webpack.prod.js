@@ -25,6 +25,7 @@ module.exports = merge(common, {
     //   banner: '/** @preserve Powered by react-ts-quick-starter (https://github.com/vortesnail/react-ts-quick-starter) */',
     // }),
     new webpack.DefinePlugin({
+      'process.env.TEMPLATE_VERSION': JSON.stringify(require('../../package.json').templateVersion),
       'process.env.VERSION': JSON.stringify(gitRevisionPlugin.version()),
       'process.env.COMMITHASH': JSON.stringify(gitRevisionPlugin.commithash()),
       'process.env.BRANCH': JSON.stringify(gitRevisionPlugin.branch()),

@@ -552,9 +552,9 @@ interface SingleTemplateData {
 
 const requiredParams = {
   name: 'string',
-  parser: 'string',
-  elements: 'array',
-  expected_elements: 'array'
+  // parser: 'string',
+  elements: 'array'
+  // expected_elements: 'array'
 } as const
 
 const capitalsize = (input: string) => input.replace(/\S/, s => s.toUpperCase())
@@ -663,22 +663,22 @@ const templateDataLoader = {
     try {
       const res = await API.getTemplate(`${templateId}`, { type: 'user_defined' })
       if (res.data) {
-        const defaultRules = {
-          condition: '',
-          alg: '',
-          rule: ''
-        }
-        res.data.expected_template.elements.flat().forEach(ele => {
-          Object.assign(ele, {
-            rules: Object.keys(ele.rules).length > 0 ? ele.rules : defaultRules
-          })
-        })
+        // const defaultRules = {
+        //   condition: '',
+        //   alg: '',
+        //   rule: ''
+        // }
+        // res.data.expected_template.elements.flat().forEach(ele => {
+        //   Object.assign(ele, {
+        //     rules: Object.keys(ele.rules).length > 0 ? ele.rules : defaultRules
+        //   })
+        // })
         Object.assign(exportJson, {
           name: res.data.name,
           description: res.data.desc,
           elements: res.data.elements,
-          expected_elements: res.data.expected_template.elements,
-          parser: res.data.expected_template.parser,
+          // expected_elements: res.data.expected_template.elements,
+          // parser: res.data.expected_template.parser,
           exportTime: new Date(),
           version: TEMPLATE_VERSION
         })

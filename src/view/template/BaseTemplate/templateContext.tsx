@@ -23,7 +23,7 @@ interface ClearData {
 
 interface InitTemplateDetail {
   type: 'initTemplateDetail'
-  value: Pick<TemplateDetailInfo, 'elements' | 'expected_template' | 'name' | 'desc' | 'create_time'>
+  value: Pick<TemplateDetailInfo, 'elements' | 'name' | 'desc' | 'create_time'>
 }
 
 interface SetRef {
@@ -38,8 +38,6 @@ type TemplateReducerAction = SetPtListAction | ClearData | InitTemplateDetail | 
  * @param ptList 原语列表，在显示、模板创建和模板校验等诸多功能中用到
  * @param status 模板状态，模板状态分为：创建、修改和查看
  * @param templateId 模板ID，修改模板时需要
- * @param protocolId 协议ID，修改和创建模板时都需要
- * @param projectId 任务ID，从创建任务页面跳转过来时需要回传回去
  * @param baseInfo 模板基础信息，包括名称、描述和创建时间
  *    @param baseInfo.name
  *    @param baseInfo.description
@@ -54,8 +52,6 @@ const defaultTemplateContext = {
     ptList: [] as Primitive[],
     status: 0,
     templateId: 0,
-    protocolId: 0,
-    projectId: 0,
     baseInfo: {} as any,
     templateElements: [] as any,
     responseTemplate: {} as any,
@@ -81,8 +77,6 @@ export interface CheckerRef {
 export const resetDefaultTemplateContextValue = () => {
   defaultTemplateContext.template.status = 0
   defaultTemplateContext.template.templateId = 0
-  defaultTemplateContext.template.protocolId = 0
-  defaultTemplateContext.template.projectId = 0
   defaultTemplateContext.template.baseInfo = {}
   defaultTemplateContext.template.templateElements = []
   defaultTemplateContext.template.responseTemplate = {}
@@ -101,8 +95,6 @@ const templateReducer = (state: any, action: TemplateReducerAction) => {
   if (action.type === 'clear') {
     templateCopy.status = 0
     templateCopy.templateId = 0
-    templateCopy.protocolId = 0
-    templateCopy.projectId = 0
     templateCopy.baseInfo = {}
     templateCopy.templateElements = []
     templateCopy.responseTemplate = {}
@@ -120,7 +112,7 @@ const templateReducer = (state: any, action: TemplateReducerAction) => {
       createTime: templateDetailInfo.create_time
     }
     templateCopy.templateElements = templateDetailInfo.elements
-    templateCopy.responseTemplate = templateDetailInfo.expected_template
+    // templateCopy.responseTemplate = templateDetailInfo.expected_template
 
     return { ...state, templateCopy }
   }
@@ -141,8 +133,6 @@ interface TemplateContextProviderProps {
   defaultContext?: {
     status: TemplateStatus
     templateId?: number
-    protocolId: number
-    projectId: number
   }
 }
 

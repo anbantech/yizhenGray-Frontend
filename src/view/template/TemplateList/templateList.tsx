@@ -5,7 +5,7 @@ import Table from 'antd/lib/table'
 import ConfigProvider from 'antd/lib/config-provider'
 import { useState, useCallback, useMemo, useEffect } from 'react'
 import * as React from 'react'
-import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
+import { RouteComponentProps, StaticContext, useHistory, useLocation, withRouter } from 'react-router'
 import { message } from 'antd'
 import { throwErrorMessage } from 'Src/util/message'
 import zhCN from 'antd/lib/locale/zh_CN'
@@ -30,6 +30,7 @@ const request: TemplateListParams = {
 
 const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () => {
   const history = useHistory()
+  const location = useLocation()
   // 目标列表参数
   const [params, setParams] = useState<TemplateListParams>(request)
 
@@ -50,16 +51,16 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
     setParams(params => ({ ...params, key_word: value }))
   }, [])
 
-  // 查看详情 携带模板ID
+  // 查看/修改/创建末班
   const jumpTemplate = useCallback(
-    (value?: TemplateListResponse['results'][number]) => {
+    (value?: TemplateListResponse['results'][number], editOriginalTemplate = false, readonlyBaseTemplate = false) => {
       const { id: templateId } = value || {}
       history.push({
         pathname: '/templateList/template',
-        state: { templateId }
+        state: { templateId, templateType: 'user_defined', readonlyBaseTemplate, editOriginalTemplate, from: location.pathname }
       })
     },
-    [history]
+    [history, location.pathname]
   )
 
   // 更改页码
@@ -117,7 +118,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
               className={styles.tableProjectName}
               role='time'
               onClick={() => {
-                jumpTemplate(row)
+                jumpTemplate(row, false, true)
               }}
             >
               {row.name}
@@ -144,7 +145,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
                 role='button'
                 tabIndex={0}
                 onClick={() => {
-                  jumpTemplate(row)
+                  jumpTemplate(row, false, true)
                 }}
               >
                 查看详情
@@ -154,7 +155,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
                 role='button'
                 tabIndex={0}
                 onClick={() => {
-                  // 修改模板
+                  jumpTemplate(row, true, false)
                 }}
               >
                 修改
@@ -183,7 +184,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
         <span className={styles.AnBan_header_title}>模板列表</span>
         <div className={styles.AnBan_header_bottom}>
           <SearchInput placeholder='根据名称搜索模板' onChangeValue={changeKeywords} />
-          <CreateButton width='146px' name='新建模板' size='large' type='primary' onClick={() => jumpTemplate()} />
+          <CreateButton width='146px' name='新建模板' size='large' type='primary' onClick={() => jumpTemplate(undefined, false, false)} />
         </div>
       </div>
       <div className={styles.tableConcent}>

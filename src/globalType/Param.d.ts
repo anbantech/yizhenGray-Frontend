@@ -80,13 +80,13 @@ export interface CreateTemplateParams {
   desc: string
   // is_expected: boolean
   // template_id: number
-  parser: string
-  engine_id: number
-  protocol_id: number
+  // parser: string
+  // engine_id: number
+  // protocol_id: number
 }
 
 export interface UpdateTemplateParams extends CreateTemplateParams {
-  templates_id: string
+  templates_id: number
 }
 
 // 9. 模板列表

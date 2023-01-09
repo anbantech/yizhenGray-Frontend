@@ -1,6 +1,7 @@
 {
-  "name": "yizhen",
-  "version": "0.0.41",
+  "name": "yizhen-grey",
+  "version": "v1.0.000.20230128",
+  "templateVersion": "v1.0.000.20230128",
   "main": "index.js",
   "description": "yizhen-frontend",
   "author": "AnbanTech/Anban-Vue-Group",

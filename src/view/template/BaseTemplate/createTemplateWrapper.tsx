@@ -7,11 +7,9 @@ interface LocationStateType {
   // 区分模板查看、修改和创建状态
   readonlyBaseTemplate: boolean
   editOriginalTemplate: boolean
-  // 创建或修改模板所需信息：模板ID和协议ID
+  // 创建或修改模板所需信息：模板ID
   templateId: number
-  protocolId: number
-  // 创建或修改任务所需信息：项目ID和是否处于修改状态
-  projectId: number
+  // 创建或修改任务所需信息：是否处于修改状态
   editTaskMode: boolean
   // 从哪里来，创建完，回哪里去
   from: string
@@ -52,11 +50,11 @@ const CreateTemplateWrapper: React.FC<RouteComponentProps<any, any, LocationStat
   const status = getTemplateStatusFromLocationState(location.state)
 
   // 获取模板ID、协议ID和项目ID
-  const { templateId, projectId, protocolId } = location.state
+  const { templateId } = location.state
   // 模板类型
   const { templateType } = location.state
 
-  const defaultContext = { status, templateId, projectId, protocolId, templateType }
+  const defaultContext = { status, templateId, templateType }
 
   // 清除 context 闭包里的对象
   resetDefaultTemplateContextValue()

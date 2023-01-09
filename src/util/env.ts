@@ -31,7 +31,7 @@ export function normalizeVersion(targetVersion: string) {
 }
 
 export function checkVersion(targetVersion = '') {
-  const _currentVersion = normalizeVersion(window.TAGS.version || '')
+  const _currentVersion = normalizeVersion(window.TAGS.template_version || '')
   const _targetVersion = normalizeVersion(targetVersion)
   return _currentVersion.version === _targetVersion.version
 }
