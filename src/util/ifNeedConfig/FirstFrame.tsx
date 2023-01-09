@@ -3,7 +3,7 @@ import React from 'react'
 import * as echarts from 'echarts/core'
 import { GraphicComponent, GraphicComponentOption } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
-import { useEffectOnce } from 'Src/until/Hooks/useEffectOnce'
+import { useEffectOnce } from 'Src/util/Hooks/useEffectOnce'
 
 echarts.use([GraphicComponent, CanvasRenderer])
 

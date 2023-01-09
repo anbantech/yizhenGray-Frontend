@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useIsomorphicLayoutEffect } from 'Src/until/Hooks/useIsomorphicLayoutEffect'
+import { useIsomorphicLayoutEffect } from 'Src/util/Hooks/useIsomorphicLayoutEffect'
 /**
  *
  * @param callback interval callback function

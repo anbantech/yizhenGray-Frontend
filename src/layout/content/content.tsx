@@ -18,7 +18,7 @@ import DetailTestAlLTable from 'Src/view/Project/taskDetail/tasklog/taskAllLog'
 import ExcitationBase from 'Src/view/excitation/ExcitationBase'
 import TemplateList from 'Src/view/template/TemplateList/templateList'
 // import CreateResponseTemplateComponent from 'Src/view/template/ResponseTemplate/createResponseTemplate'
-// import createTemplateWrapper from 'Src/view/template/BaseTemplate/createTemplateWrapper'
+import CreateTemplateWrapper from 'Src/view/template/BaseTemplate/createTemplateWrapper'
 // import ChangeArrgement from 'Src/view/arrgement/changeArrgement'
 // import StepSecond from 'Src/view/arrgement/SecondArrgement'
 
@@ -43,6 +43,7 @@ function content() {
         <Route path='/excitationList/createDoubleExcitation' exact component={ExcitationBase} />
         <Route path='/excitationList/createGroupExcitation' exact component={ExcitationBase} />
         <Route path='/templateList' exact component={TemplateList} />
+        <Route path='/templateList/template' exact component={CreateTemplateWrapper} />
         {/* <Route path='/excitationList/createGroupExcitation' exact component={ExcitationBase} /> */}
         {/* <Route path='/Arrgemnt/StepSecond' exact component={StepSecond} /> */}
         {/* <Route path='/Arrgemnt/ChangeArrgement' exact component={ChangeArrgement} /> */}

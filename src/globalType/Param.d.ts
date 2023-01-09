@@ -74,13 +74,8 @@ export interface protocolsDetails {
 }
 
 // 8.创建模板
-type elementIs_expected = {
-  name: string
-  size: number
-}[]
-
-export interface createTemplate {
-  elements: elementIs_expected | any
+export interface CreateTemplateParams {
+  elements: any
   name: string
   desc: string
   // is_expected: boolean
@@ -88,6 +83,10 @@ export interface createTemplate {
   parser: string
   engine_id: number
   protocol_id: number
+}
+
+export interface UpdateTemplateParams extends CreateTemplateParams {
+  templates_id: string
 }
 
 // 9. 模板列表

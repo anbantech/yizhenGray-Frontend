@@ -1,11 +1,11 @@
 /* eslint-disable unicorn/no-useless-undefined */
-import { warn } from 'Src/utils/common'
+import { warn } from 'Utils/common'
 import JSZip from 'jszip'
-import { temDetails } from 'Src/Api/templateApi'
-import { checkVersion } from 'Src/utils/env'
+import API from 'Src/services/api'
+import { rcFile } from 'Src/view/template/TemplateUpload/TemplateUpload'
+import { checkVersion } from 'Utils/env'
 import { shouldHaveChildrenBlockNameList, blockNameList } from '../DragSFC/ItemTypes'
 import { DefaultResponseTemplateListType } from '../ResponseTemplate/createResponseTemplate'
-import { rcFile } from '../../project/arrgement/arrgementCompent/TemplateUpload'
 import { TreeNode } from './templateResult'
 import { Primitive } from '../PrimitiveList/primitiveList'
 import { TEMPLATE_VERSION } from '../BaseTemplate/templateContext'
@@ -559,11 +559,26 @@ const requiredParams = {
 
 const capitalsize = (input: string) => input.replace(/\S/, s => s.toUpperCase())
 
+interface SingleTemplateDataOptions {
+  validator: (std: SingleTemplateData) => boolean
+  message: string
+}
+
+const defaultSingleTemplateDataOptions: SingleTemplateDataOptions = {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  validator: _std => true,
+  message: ''
+}
+
 const templateDataChecker = {
   /**
    * 单模板对象校验
    */
-  singleTemplateChecker(std: SingleTemplateData) {
+  singleTemplateChecker(std: SingleTemplateData, opts?: SingleTemplateDataOptions) {
+    if (!opts) {
+      // eslint-disable-next-line no-param-reassign
+      opts = defaultSingleTemplateDataOptions
+    }
     if (typeof std !== 'object') {
       throw new TypeError(`校验失败 => ${typeof std}不能转换为有效的模板数据`)
     }
@@ -572,6 +587,9 @@ const templateDataChecker = {
     }
     if (!checkVersion(std.version)) {
       throw new Error(`校验失败 => 模板与当前版本不匹配`)
+    }
+    if (!opts.validator(std)) {
+      throw new Error(`校验失败 => ${opts.message || '模板格式不正确'}`)
     }
     forEach(requiredParams, (requiredType, requiredKey) => {
       if (!std[requiredKey as keyof SingleTemplateData]) {
@@ -643,7 +661,7 @@ const templateDataLoader = {
     }
     const exportJson = {}
     try {
-      const res = await temDetails(`${templateId}`, { type: 'user_defined' })
+      const res = await API.getTemplate(`${templateId}`, { type: 'user_defined' })
       if (res.data) {
         const defaultRules = {
           condition: '',
@@ -693,7 +711,7 @@ const templateDataLoader = {
       const exportJson = {} as any
       try {
         // eslint-disable-next-line no-await-in-loop
-        const res = await temDetails(`${templateId}`, { type: 'user_defined' })
+        const res = await API.getTemplate(`${templateId}`, { type: 'user_defined' })
         if (res.data) {
           Object.assign(exportJson, {
             id: res.data.id,

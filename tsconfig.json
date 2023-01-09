@@ -13,11 +13,10 @@
     "baseUrl": "./",
     "paths": {
       "Src/*": ["src/*"],
-      "Api/*": ["src/Api/*"],
-      "Image/*": ["src/Image/*"],
-      "Common/*": ["src/common/*"],
+      "Api/*": ["src/services/api/*"],
+      "Image/*": ["src/assets/image/*"],
       "Components/*": ["src/components/*"],
-      "Utils/*": ["src/utils/*"]
+      "Utils/*": ["src/util/*"]
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

@@ -1,8 +1,8 @@
 import React, { useReducer, createContext, useCallback } from 'react'
-import { defaultTemplate, getPrimitivesList, temDetails } from 'Src/Api/templateApi'
-import { throwErrorMessage } from 'Src/utils/common'
-import { useEffectOnce } from 'Src/utils/hooks/useEffectOnce'
-import { RestemplateDetails } from 'Src/typings/Response'
+import API from 'Src/services/api'
+import { throwErrorMessage } from 'Utils/common'
+import { useEffectOnce } from 'Utils/Hooks/useEffectOnce'
+import { TemplateDetailInfo } from 'src/globalType/Response'
 import { Primitive } from '../PrimitiveList/primitiveList'
 import { TemplateStatus } from './createTemplateWrapper'
 
@@ -23,7 +23,7 @@ interface ClearData {
 
 interface InitTemplateDetail {
   type: 'initTemplateDetail'
-  value: Pick<RestemplateDetails, 'elements' | 'expected_template' | 'name' | 'desc' | 'create_time'>
+  value: Pick<TemplateDetailInfo, 'elements' | 'expected_template' | 'name' | 'desc' | 'create_time'>
 }
 
 interface SetRef {
@@ -163,7 +163,7 @@ const TemplateContextProvider: React.FC<TemplateContextProviderProps> = ({ child
    */
   const fetchListFormApi = useCallback(async () => {
     try {
-      const res = await getPrimitivesList()
+      const res = await API.getPrimitivesList()
       if (res.data) {
         templateDispatch({ type: 'setPtList', value: res.data as any })
       }
@@ -178,12 +178,9 @@ const TemplateContextProvider: React.FC<TemplateContextProviderProps> = ({ child
   const fetchTemplateInfo = useCallback(async () => {
     try {
       if (templateType === 'default') {
-        const res = await defaultTemplate({ template_id: `${templateId}` })
-        if (res.data) {
-          templateDispatch({ type: 'initTemplateDetail', value: res.data })
-        }
+        // pass，仿真暂无系统内置模板
       } else {
-        const res = await temDetails(`${templateId}`, { type: templateType })
+        const res = await API.getTemplate(`${templateId}`, { type: templateType })
         if (res.data) {
           templateDispatch({ type: 'initTemplateDetail', value: res.data })
         }

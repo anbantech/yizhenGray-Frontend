@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
 import { Modal, Input, Form, Button, message } from 'antd'
-import { throwErrorMessage } from 'Src/until/message'
+import { throwErrorMessage } from 'Src/util/message'
 import { createExcitationListFn, updateExcitation } from 'Src/services/api/excitationApi'
 import styles from '../BaseModle.less'
 

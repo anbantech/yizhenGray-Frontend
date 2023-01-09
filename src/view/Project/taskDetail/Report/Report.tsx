@@ -1,11 +1,3 @@
-/*
- * @Author: youjiaqi 2430284055@qq.com
- * @Date: 2022-08-09 11:10:02
- * @LastEditors: youjiaqi 2430284055@qq.com
- * @LastEditTime: 2022-10-08 16:01:48
- * @FilePath: /yizhen-frontend/src/views/project/Detail/Report/Report.tsx
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from 'react'
 
@@ -13,7 +5,7 @@ import axios from 'axios'
 import JSZip from 'jszip'
 import { message } from 'antd'
 import CancelButton from 'Src/components/Button/commonButton'
-import { throwErrorMessage } from 'Src/until/message'
+import { throwErrorMessage } from 'Src/util/message'
 import { exportReport } from 'Src/services/api/taskApi'
 import style from './Report.less'
 import ReportLoading from './reportLoading'

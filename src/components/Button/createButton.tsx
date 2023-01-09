@@ -1,5 +1,5 @@
 import React from 'react'
-import add from 'Src/asstes/image/Add.svg'
+import add from 'Image/Add.svg'
 import { Button } from 'antd'
 import styles from './Button.less'
 import 'antd/dist/antd.css'

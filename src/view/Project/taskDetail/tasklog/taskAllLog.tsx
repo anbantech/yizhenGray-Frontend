@@ -1,21 +1,13 @@
 /* eslint-disable indent */
 /* eslint-disable react/display-name */
-/*
- * @Author: youjiaqi 2430284055@qq.com
- * @Date: 2022-07-01 18:06:48
- * @LastEditors: youjiaqi 2430284055@qq.com
- * @LastEditTime: 2022-10-08 10:49:51
- * @FilePath: /yizhen-frontend/src/views/project/Detail/DetailComponent/DetailTestingTable.tsx
- * @Description:'-'修改成'无'
- */
 import { DownOutlined } from '@ant-design/icons'
 import { Dropdown, Menu, Space, Table, Tooltip } from 'antd'
 import { getAllTestingLog } from 'Src/services/api/taskApi'
-import { throwErrorMessage } from 'Src/until/message'
+import { throwErrorMessage } from 'Src/util/message'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import { RouteComponentProps, StaticContext } from 'react-router'
 import React, { useEffect, useState } from 'react'
-import { getTime } from 'Src/until/baseFn'
+import { getTime } from 'Src/util/baseFn'
 import { testAlllogs } from 'Src/globalType/Param'
 import styles from '../taskDetailUtil/Detail.less'
 import tableStyle from '../taskDetail.less'

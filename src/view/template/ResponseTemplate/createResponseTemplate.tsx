@@ -5,11 +5,11 @@ import MainBorder from 'Src/components/MainBorder/MainBorder'
 import { message, Select } from 'antd'
 import AddIcon from 'Image/Template/add.svg'
 import DeleteIcon from 'Image/Template/delete.svg'
-import TitleInput from 'Src/components/Input/TitleInput'
+import TitleInput from 'Src/components/Input/titleInput/TitleInput'
 import { useHistory, withRouter, RouteComponentProps } from 'react-router-dom'
-import { sleep, throwErrorMessage, warn } from 'Src/utils/common'
-import { GlobalContext } from 'Src/components/Common/GlobalContext'
-import { CreateTel, editTel } from 'Src/Api/templateApi'
+import { sleep, throwErrorMessage, warn } from 'Src/util/common'
+import { GlobalContext } from 'Src/globalContext/globalContext'
+import API from 'Src/services/api'
 import StepTag from 'Src/components/StepTag/StepTag'
 import styles from './createResponseTemplate.less'
 import ResponseTemplateListItem from './responseTemplateListItem'
@@ -391,7 +391,7 @@ const CreateResponseTemplateComponent: React.FC<RouteComponentProps<any, any, an
       if (eidt) {
         try {
           Object.assign(params, { templates_id: templateId })
-          await editTel(params as any)
+          await API.updateTemplate(params)
           message.success('修改成功')
           routerPush()
         } catch (error) {
@@ -400,7 +400,7 @@ const CreateResponseTemplateComponent: React.FC<RouteComponentProps<any, any, an
       } else {
         try {
           // TODO 接口类型定义错误
-          await CreateTel(params as any)
+          await API.createTemplate(params)
           message.success('创建成功')
           routerPush()
         } catch (error) {

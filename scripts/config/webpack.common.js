@@ -57,11 +57,10 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js', '.json'],
     alias: {
       'Src': resolve(PROJECT_PATH, './src'),
-      'Api': resolve(PROJECT_PATH, './src/Api'),
-      'Image': resolve(PROJECT_PATH, './src/Image'),
-      'Common': resolve(PROJECT_PATH, './src/common'),
+      'Api': resolve(PROJECT_PATH, './src/services/api'),
+      'Image': resolve(PROJECT_PATH, './src/assets/image'),
       'Components': resolve(PROJECT_PATH, './src/components'),
-      'Utils': resolve(PROJECT_PATH, './src/utils')
+      'Utils': resolve(PROJECT_PATH, './src/util')
     }
   },
   module: {

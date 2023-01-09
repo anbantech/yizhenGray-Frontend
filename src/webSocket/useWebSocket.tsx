@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import { sleep } from 'Src/until/baseFn'
-import { useBindEventListener } from 'Src/until/Hooks/useBindEventListener'
+import { sleep } from 'Src/util/baseFn'
+import { useBindEventListener } from 'Src/util/Hooks/useBindEventListener'
 
 export const getCurretTimeString = () => `${+new Date()}`.slice(0, 10)
 const UseWebsocket = () => {

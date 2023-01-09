@@ -3,7 +3,7 @@ import { useForm } from 'antd/lib/form/Form'
 import React, { useEffect, useImperativeHandle, useState } from 'react'
 import { excitationListFn } from 'Src/services/api/excitationApi'
 import { createTaskFn } from 'Src/services/api/taskApi'
-import { throwErrorMessage } from 'Src/until/message'
+import { throwErrorMessage } from 'Src/util/message'
 import styles from './stepBaseConfig.less'
 
 const layout = {

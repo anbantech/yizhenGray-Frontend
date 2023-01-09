@@ -1,18 +1,10 @@
 /* eslint-disable indent */
 /* eslint-disable react/display-name */
-/*
- * @Author: youjiaqi 2430284055@qq.com
- * @Date: 2022-07-01 18:06:48
- * @LastEditors: youjiaqi 2430284055@qq.com
- * @LastEditTime: 2022-10-08 10:49:51
- * @FilePath: /yizhen-frontend/src/views/project/Detail/DetailComponent/DetailTestingTable.tsx
- * @Description:'-'修改成'无'
- */
 import { DownOutlined } from '@ant-design/icons'
 import { Dropdown, Menu, Space, Table, Tooltip } from 'antd'
 import globalStyle from 'Src/view/Project/project/project.less'
 import React, { useState } from 'react'
-import { getTime } from 'Src/until/baseFn'
+import { getTime } from 'Src/util/baseFn'
 
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import styles from '../taskDetailUtil/Detail.less'
@@ -186,7 +178,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
       dataIndex: 'operations',
       key: 'operations',
       // eslint-disable-next-line react/display-name
-      render: (_: any, row: any) => {
+      render: () => {
         return (
           <div className={globalStyle.Opera_detaile}>
             <span role='button' tabIndex={0} onClick={() => {}}>
