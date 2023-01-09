@@ -1,5 +1,5 @@
 import React from 'react'
-import defaultValueImage from 'Src/asstes/image/defalutValue.svg'
+import defaultValueImage from 'Image/defalutValue.svg'
 import styles from './defaultValueTips.less'
 
 type contentType = string

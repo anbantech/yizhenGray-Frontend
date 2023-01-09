@@ -1,6 +1,6 @@
-import UseIsLength from 'Src/until/Hooks/useIsLength'
+import UseIsLength from 'Src/util/Hooks/useIsLength'
 
-import UseIsType from 'Src/until/Hooks/useIsType'
+import UseIsType from 'Src/util/Hooks/useIsType'
 
 interface ObjectType {
   [key: string]: any

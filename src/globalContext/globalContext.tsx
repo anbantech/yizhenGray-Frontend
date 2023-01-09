@@ -1,8 +1,8 @@
 import React, { createContext, useCallback, useEffect, useReducer } from 'react'
 import { getUserInfo } from 'Src/services/api/loginApi'
-import { throwErrorMessage } from 'Src/until/message'
-import { getHiddenPropertyName } from 'Src/until/baseFn'
-import { useBindEventListener } from 'Src/until/Hooks/useBindEventListener'
+import { throwErrorMessage } from 'Src/util/message'
+import { getHiddenPropertyName } from 'Src/util/baseFn'
+import { useBindEventListener } from 'Src/util/Hooks/useBindEventListener'
 
 interface UserInfo {
   id: number

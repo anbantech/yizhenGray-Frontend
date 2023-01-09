@@ -13,7 +13,7 @@ function useDepCollect(baseData: any) {
   // 判断时间是否超过
   const [isClose, setIsClose] = useState<boolean>(false)
 
-  const depCollection = (isCollection: boolean, info: Info, time:number) => {
+  const depCollection = (isCollection: boolean, info: Info, time: number) => {
     setIsClose(false)
     clearTimeout(timerRef.current)
     timerRef.current = setTimeout(() => {

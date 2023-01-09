@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
 import { Modal, Input, Form, Button, message } from 'antd'
-import { throwErrorMessage } from 'Src/until/message'
+import { throwErrorMessage } from 'Src/util/message'
 import { updateProject, createProject } from 'Src/services/api/projectApi'
 import styles from '../BaseModle.less'
 

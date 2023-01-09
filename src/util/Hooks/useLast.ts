@@ -5,4 +5,3 @@ export function useLatest<T>(value: T) {
   ref.current = value
   return ref
 }
-

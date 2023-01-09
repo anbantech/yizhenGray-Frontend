@@ -1,7 +1,7 @@
 import { Button, Form, Input, message } from 'antd'
 import React, { useState } from 'react'
 import { loginIn } from 'Src/services/api/loginApi'
-import LoginImg from 'Src/asstes/image/bg.png'
+import LoginImg from 'Image/bg.png'
 import { useHistory, withRouter } from 'react-router-dom'
 import styles from './login.less'
 

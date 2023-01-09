@@ -7,7 +7,7 @@ import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
 import { createDoubleExcitationFn, excitationListFn } from 'Src/services/api/excitationApi'
-import { throwErrorMessage } from 'Src/until/message'
+import { throwErrorMessage } from 'Src/util/message'
 
 import styles from '../excitation.less'
 import ExcitationCard from '../excitationComponent/excitationCard'

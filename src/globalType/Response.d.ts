@@ -1,6 +1,6 @@
 // 1. 获取所有源语
 
-export interface PrimitivesList {
+export interface PrimitiveAttributes {
   id: number
   name: string
   type: string
@@ -12,10 +12,11 @@ export interface PrimitivesList {
   update_user: string
 }
 
-export interface ResPrimitives<T> {
+export interface Primitive {
   id: number
   type: string
-  attrs: T[]
+  desc: string
+  attrs: PrimitiveAttributes[]
 }
 export interface isCode {
   code: number
@@ -136,7 +137,7 @@ export interface TemplateListResponse {
 
 // 10. 模板详情
 
-export interface RestemplateDetails {
+export interface TemplateDetailInfo {
   id: number
   name: string
   elements: any
@@ -486,14 +487,14 @@ export interface systemLookRes {
   update_time: string
   create_user: null
   update_user: null
-  monitor: {}
+  monitor: any
   // 0 结束 1 备份中
   backup_status: 0 | 1
   // 0 结束 1 进行中
   import_status: 0 | 1
 }
 
-//备份记录查询
+// 备份记录查询
 export interface backupDataRecordRes {
   results: {
     id: string

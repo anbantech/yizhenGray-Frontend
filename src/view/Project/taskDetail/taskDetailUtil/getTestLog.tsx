@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useEffect } from 'react'
 import { testlogs } from 'Src/globalType/Param'
 import { getTestingLog } from 'Src/services/api/taskApi'
-import { throwErrorMessage } from 'Src/until/message'
+import { throwErrorMessage } from 'Src/util/message'
 
 function UseGetTestLog(params: testlogs) {
   const [total, setTotal] = React.useState(-1)

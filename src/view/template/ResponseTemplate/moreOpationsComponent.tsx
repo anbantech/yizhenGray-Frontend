@@ -1,9 +1,9 @@
+/* eslint-disable indent */
 import { Input, Select } from 'antd'
-import { memo, useState } from 'react'
+import { memo, useState, useMemo } from 'react'
 import * as React from 'react'
-import { GlobalContext } from 'Src/components/Common/GlobalContext'
+import { GlobalContext } from 'Src/globalContext/globalContext'
 import styles from './createResponseTemplate.less'
-import { useMemo } from 'react'
 
 interface ResponseTemplateListItem {
   value?: string
@@ -22,7 +22,16 @@ interface ResponseTemplateListItem {
   parserSelectorValue?: string
 }
 
-const MoreOpationsComponent: React.FC<ResponseTemplateListItem> = ({ parserSelectorValue, rules, index, onChange, attr, readonly, resize, style }) => {
+const MoreOpationsComponent: React.FC<ResponseTemplateListItem> = ({
+  parserSelectorValue,
+  rules,
+  index,
+  onChange,
+  attr,
+  readonly,
+  resize,
+  style
+}) => {
   const refs = React.useRef(null!)
   const { condition, member, relationship } = React.useContext(GlobalContext).config
   const { Option } = Select
@@ -95,21 +104,33 @@ const MoreOpationsComponent: React.FC<ResponseTemplateListItem> = ({ parserSelec
     setValue('', 'rule', index, attr)
   }
 
-  const ifConditionDisabled = React.useCallback((label: string) => {
-    if (!parserSelectorValue) return false
-    const isTextProtocolParser = ['HTTP', 'FTP', 'TFTP'].includes(parserSelectorValue)
-    if (isTextProtocolParser && label === '限定值范围') return true
-    return false
-  }, [parserSelectorValue])
+  const ifConditionDisabled = React.useCallback(
+    (label: string) => {
+      if (!parserSelectorValue) return false
+      const isTextProtocolParser = ['HTTP', 'FTP', 'TFTP'].includes(parserSelectorValue)
+      if (isTextProtocolParser && label === '限定值范围') return true
+      return false
+    },
+    [parserSelectorValue]
+  )
 
   return (
     <div className={`${styles.selectBase} ${styles.selectSize}`} style={readonly ? { ...style } : { ...style }}>
       <div>
-        <Select onClear={clearLimit} style={{ width: 120 }} allowClear value={rules?.condition as any as string} onChange={handleChange} disabled={readonly}>
+        <Select
+          onClear={clearLimit}
+          style={{ width: 120 }}
+          allowClear
+          value={(rules?.condition as any) as string}
+          onChange={handleChange}
+          disabled={readonly}
+        >
           {condition.map(item => {
             return (
               <>
-                <Option value={item.value} disabled={ifConditionDisabled(item.label)}>{item.label}</Option>
+                <Option value={item.value} disabled={ifConditionDisabled(item.label)}>
+                  {item.label}
+                </Option>
               </>
             )
           })}
@@ -124,19 +145,19 @@ const MoreOpationsComponent: React.FC<ResponseTemplateListItem> = ({ parserSelec
         >
           {rules?.condition
             ? member.map(item => {
-              return (
-                <>
-                  <Option value={item.value}>{item.label}</Option>
-                </>
-              )
-            })
+                return (
+                  <>
+                    <Option value={item.value}>{item.label}</Option>
+                  </>
+                )
+              })
             : relationship.map(item => {
-              return (
-                <>
-                  <Option value={item.value}>{item.label}</Option>
-                </>
-              )
-            })}
+                return (
+                  <>
+                    <Option value={item.value}>{item.label}</Option>
+                  </>
+                )
+              })}
         </Select>
       </div>
       {['between', 'not_between'].includes(limit as string) ? (
@@ -166,7 +187,9 @@ const MoreOpationsComponent: React.FC<ResponseTemplateListItem> = ({ parserSelec
             ref={refs}
             autoSize={readonly ? { minRows: 3, maxRows: 3 } : true}
             style={{ minHeight: '65px', borderColor: 'transparent', textAlign: 'center' }}
-            placeholder={readonly ? '无' : rules!.condition === '' ? '请输入内容' : +rules!.condition! !== 0 ? '请输入内容' : '请输入内容（16进制数）' }
+            placeholder={
+              readonly ? '无' : rules!.condition === '' ? '请输入内容' : +rules!.condition! !== 0 ? '请输入内容' : '请输入内容（16进制数）'
+            }
             value={String(rules?.rule)}
             onChange={e => changeRuleObject(e.target.value, 'rule', index, attr)}
             disabled={readonly || !rules?.alg}
