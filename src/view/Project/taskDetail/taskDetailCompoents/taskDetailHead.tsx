@@ -127,7 +127,15 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
   return (
     <div className={styles.taskDetailHead_Main}>
       <div className={styles.taskDetailHead_Main_left}>
-        <span className={styles.taskDetailHead_Main_left_title}>{`${name}`}</span>
+        <div className={styles.taskDetailHead_Main_titlelayout}>
+          <span className={styles.taskDetailHead_Main_left_title}>{`${name}`}</span>
+          <div style={{ marginTop: '6px' }} className={styles.taskDetailCard_Main_left_footer_detail}>
+            <span role='time' onClick={lookTaskInfo}>
+              查看任务信息
+            </span>
+            <RightOutlined />
+          </div>
+        </div>
         <div className={styles.taskDetailHead_Main_left_footer}>
           <span> 任务描述:121</span>
           <span style={{ paddingLeft: '20px', paddingRight: '20px' }}>
@@ -136,12 +144,6 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
               ? `  开始时间 : ${getTime(update_time)} | 结束时间 : ${getTime(update_time)}`
               : `  开始时间 : ${getTime(update_time)}`}{' '}
           </span>
-          <div className={styles.taskDetailCard_Main_left_footer_detail}>
-            <span role='time' onClick={lookTaskInfo}>
-              查看任务信息
-            </span>
-            <RightOutlined />
-          </div>
         </div>
       </div>
       <div className={styles.taskDetailHead_Main_right}>
