@@ -2,7 +2,7 @@ import { Form, Input, Select } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useEffect, useImperativeHandle, useState } from 'react'
 import { excitationListFn } from 'Src/services/api/excitationApi'
-import { createTaskFn } from 'Src/services/api/taskApi'
+import { createTaskFn, updateTask } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from './stepBaseConfig.less'
 
@@ -42,9 +42,10 @@ interface Resparams {
 interface propsFn {
   onChange: (changedFields: any, allFields: any) => void
   id: number
+  taskInfo: any
 }
 const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
-  const { onChange, id } = props
+  const { onChange, id, taskInfo } = props
   const [form] = useForm()
   const { Option } = Select
   const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
@@ -61,15 +62,22 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           crash_num: values.crash_num,
           group_id: values.group_id
         }
-        const result = await createTaskFn(params)
-        if (result.data) {
-          return result.data
+        if (taskInfo?.editTask) {
+          const result = await updateTask(taskInfo.data.id, params)
+          if (result.data) {
+            return result.data
+          }
+        } else {
+          const result = await createTaskFn(params)
+          if (result.data) {
+            return result.data
+          }
         }
       }
     } catch (error) {
       throwErrorMessage(error, { 1009: '任务删除失败' })
     }
-  }, [form, id])
+  }, [form, id, taskInfo.data.id, taskInfo?.editTask])
   useImperativeHandle(myRef, () => ({
     save: () => {
       return createOneExcitationFn()
@@ -92,7 +100,19 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
 
   useEffect(() => {
     getExcitationList(request)
-  }, [])
+    if (taskInfo.data) {
+      const { name, desc, project_id, work_time, crash_num, group_id } = taskInfo.data as any
+      const formData = {
+        name,
+        description: desc,
+        project_id,
+        work_time,
+        crash_num,
+        group_id
+      }
+      form.setFieldsValue(formData)
+    }
+  }, [form, taskInfo.data])
   return (
     <div className={styles.stepBaseMain}>
       <Form name='basic' className={styles.stepBaseMain_Form} {...layout} onFieldsChange={onChange} autoComplete='off' form={form} size='large'>

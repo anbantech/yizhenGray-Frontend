@@ -1,6 +1,5 @@
 import {
   beginTest,
-  Createtask,
   exportTestLog,
   simulateNodeParams,
   simulateParams,
@@ -91,7 +90,7 @@ export function deleteExampleTask(project_id: any, id: number) {
   return request.delete<any>('/api/v1.0/instances/remove', { params: { project_id, task: id } })
 }
 // 更新任务信息
-export function updateTask(id: number, params: Createtask) {
+export function updateTask(id: number, params: taskParamsFn) {
   return request.put<any>(`/api/v1.0/tasks/update/${id}`, params)
 }
 

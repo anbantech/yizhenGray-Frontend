@@ -21,7 +21,7 @@ import style from './excitation.less'
 const customizeRender = () => <DefaultValueTips content='暂无项目' />
 
 const request = {
-  group_type: 0,
+  group_type: '0',
   key_word: '',
   status: null,
   page: 1,
@@ -31,7 +31,7 @@ const request = {
 }
 
 interface Resparams {
-  group_type: number
+  group_type: number | string
   key_word?: string
   status?: null | number
   page: number
@@ -163,7 +163,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   // 切换页面
   const onChange = (e: RadioChangeEvent) => {
     setTabs(e.target.value)
-    setParams({ ...params, group_type: e.target.value })
+    setParams({ ...params, group_type: `${e.target.value}` })
   }
 
   React.useEffect(() => {

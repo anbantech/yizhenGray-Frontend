@@ -73,7 +73,7 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
         <span className={styles.taskMain_title}>{taskInfo?.editTask ? '修改任务' : '新建任务'}</span>
       </div>
       <div className={styles.taskMain_boby}>
-        <FirstConfig ref={childRef.firstForm} id={projectInfo.projectId} onChange={onFieldsChange} />
+        <FirstConfig ref={childRef.firstForm} taskInfo={taskInfo} id={projectInfo.projectId} onChange={onFieldsChange} />
       </div>
       <div className={styles.taskMain_footer}>
         <div className={styles.taskMain_footerConcent}>
@@ -89,7 +89,7 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
             buttonStyle={styles.stepButton}
             type='primary'
             disabled={isDisableStatus}
-            name='创建'
+            name={taskInfo?.editTask ? '修改' : '创建'}
             onClick={() => {
               createForm()
             }}

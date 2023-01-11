@@ -117,7 +117,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     if (value === '') {
       setParams({ ...params, status: null })
     } else {
-      setParams({ ...params, status: value })
+      setParams({ ...params, status: `${value}` })
     }
     setStatusOperationStatus(false)
   }
@@ -173,6 +173,18 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   const CommonModleClose = (value: boolean) => {
     setCommonModleStatus(value)
   }
+
+  // 修改任务
+  const fixTask = (value: any) => {
+    if ([0, 1, 4].includes(value.status)) {
+      history.push({
+        pathname: '/projects/Tasks/fixTask',
+        state: { projectInfo, taskInfo: { editTask: true, data: value } }
+      })
+    } else {
+      message.error('任务正在运行中,请结束任务')
+    }
+  }
   // 表格title
   const columns = [
     {
@@ -202,14 +214,14 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       key: 'test_time',
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
-        return <span>{`${row.wrok_time}h`}</span>
+        return <span>{`${row.test_time}h`}</span>
       }
     },
     {
       width: '10%',
       title: 'Crash数量',
-      dataIndex: 'crash_num',
-      key: 'crash_num'
+      dataIndex: 'error_num',
+      key: 'error_num'
     },
     {
       width: '8%',
@@ -264,7 +276,14 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
             >
               查看详情
             </span>
-            <span style={{ marginLeft: '10px', marginRight: '10px' }} role='button' tabIndex={0} onClick={() => {}}>
+            <span
+              style={{ marginLeft: '10px', marginRight: '10px' }}
+              role='button'
+              tabIndex={0}
+              onClick={() => {
+                fixTask(row)
+              }}
+            >
               修改
             </span>
             <img
