@@ -123,7 +123,6 @@
     "@types/react-router-dom": "^5.1.7",
     "antd": "^4.15.6",
     "axios": "^0.21.1",
-    "caniuse-lite": "^1.0.30001441",
     "colorette": "^2.0.17",
     "compression-webpack-plugin": "^5.0.1",
     "echarts": "^5.3.0",

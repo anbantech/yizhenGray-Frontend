@@ -32,7 +32,7 @@ export interface ProjectList {
 
 // 激励
 export interface ExcitationList {
-  group_type: number
+  group_type: string | number
   key_word?: string
   page: number
   status?: number | null
