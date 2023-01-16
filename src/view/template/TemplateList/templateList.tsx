@@ -14,7 +14,7 @@ import PaginationsAge from 'Src/components/Pagination/Pagina'
 import API from 'Src/services/api'
 import { TemplateListParams } from 'Src/globalType/Param'
 import { TemplateListResponse } from 'Src/globalType/Response'
-import deleteImage from 'Image/Deletes.svg'
+// import deleteImage from 'Image/Deletes.svg'
 import { useDialog } from 'Src/util/Hooks/useDialog'
 import styles from './templateList.less'
 
@@ -38,7 +38,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   const [templateList, setTemplateList] = useState<TemplateListResponse['results']>([])
 
   // 缓存当前点击的模板信息
-  const [currentTemplate, setCurrentTemplate] = useState<TemplateListResponse['results'][number]>()
+  const [currentTemplate] = useState<TemplateListResponse['results'][number]>()
 
   // 页码
   const [total, setTotal] = useState<number>(0)
@@ -150,7 +150,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
               >
                 查看详情
               </span>
-              <span
+              {/* <span
                 style={{ marginLeft: '10px', marginRight: '10px' }}
                 role='button'
                 tabIndex={0}
@@ -169,13 +169,13 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
                   // changeCommonDialogStatus(true)
                   deleteTemplate()
                 }}
-              />
+              /> */}
             </div>
           )
         }
       }
     ],
-    [deleteTemplate, jumpTemplate]
+    [jumpTemplate]
   )
 
   return (
