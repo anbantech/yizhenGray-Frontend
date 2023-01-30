@@ -105,9 +105,12 @@ const DoubleExcitationForm: React.FC = () => {
         const params = {
           name: values.name,
           desc: values.name,
-          recycle_count_0: +values.recycle_count_0,
-          wait_time_0: +values.wait_time_0,
+          cnt0: +values.cnt0,
+          w0: +values.w0,
+          cnt1: +values.cnt1,
+          w1: +values.w1,
           align_delay_0: +values.align_delay_0,
+          align_delay_1: +values.align_delay_1,
           align_delay_2: +values.align_delay_2,
           child_id_list: data
         }
@@ -165,13 +168,16 @@ const DoubleExcitationForm: React.FC = () => {
   React.useEffect(() => {
     if (Data && isFixForm) {
       setCardArray(Data?.group_data_list.length)
-      const { name, desc, recycle_count_0, wait_time_0, align_delay_0, align_delay_2 } = Data as any
+      const { name, desc, cnt0, w0, w1, cnt1, align_delay_0, align_delay_2, align_delay_1 } = Data as any
       const formData = {
         name,
         description: desc,
-        recycle_count_0,
-        wait_time_0,
+        cnt0,
+        w0,
+        cnt1,
+        w1,
         align_delay_0,
+        align_delay_1,
         align_delay_2
       }
       form.setFieldsValue(formData)
@@ -217,8 +223,8 @@ const DoubleExcitationForm: React.FC = () => {
         </Form.Item>
 
         <Form.Item
-          label='循环次数'
-          name='recycle_count_0'
+          label='内置循环次数'
+          name='cnt0'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -241,8 +247,8 @@ const DoubleExcitationForm: React.FC = () => {
           <Input placeholder='请输入循环次数' disabled={isFixForm} />
         </Form.Item>
         <Form.Item
-          label='循环间隔'
-          name='wait_time_0'
+          label='内置循环间隔'
+          name='w0'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -264,10 +270,81 @@ const DoubleExcitationForm: React.FC = () => {
         >
           <Input placeholder='请输入整数,最大10' suffix='毫秒' disabled={isFixForm} />
         </Form.Item>
-
+        <Form.Item
+          label='外部循环次数'
+          name='cnt1'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[
+            {
+              required: true,
+              validateTrigger: 'onBlur',
+              validator(_, value) {
+                const reg = /^\d+$/
+                if (reg.test(value)) {
+                  if (value <= 20) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('请输入 0-20 之间的整数'))
+                }
+                return Promise.reject(new Error('请输入 0-20 之间的整数'))
+              }
+            }
+          ]}
+        >
+          <Input placeholder='请输入循环次数' disabled={isFixForm} />
+        </Form.Item>
+        <Form.Item
+          label='外部循环间隔'
+          name='w1'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[
+            {
+              required: true,
+              validateTrigger: 'onBlur',
+              validator(_, value) {
+                const reg = /^\d+$/
+                if (reg.test(value)) {
+                  if (value <= 10) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                }
+                return Promise.reject(new Error('请输入 0-10 之间的整数'))
+              }
+            }
+          ]}
+        >
+          <Input placeholder='请输入整数,最大10' suffix='毫秒' disabled={isFixForm} />
+        </Form.Item>
         <Form.Item
           label='前置时延'
           name='align_delay_0'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[
+            {
+              required: true,
+              validateTrigger: 'onBlur',
+              validator(_, value) {
+                const reg = /^\d+$/
+                if (reg.test(value)) {
+                  if (value <= 10) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                }
+                return Promise.reject(new Error('请输入 0-10 之间的整数'))
+              }
+            }
+          ]}
+        >
+          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
+        </Form.Item>
+        <Form.Item
+          label='等待时延'
+          name='align_delay_1'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[

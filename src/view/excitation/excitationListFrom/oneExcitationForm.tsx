@@ -77,11 +77,12 @@ const OneExcotationForm: React.FC = () => {
           name: values.name,
           port: values.port,
           template_id: +values.template_id,
-          recycle_count: +values.recycle_count,
-          recycle_count_0: +values.recycle_count_0,
-          recycle_time: +values.recycle_time,
+          cnt1: +values.cnt1,
+          cnt0: +values.cnt0,
+          w1: +values.w1,
           desc: values.description,
-          wait_time_0: +values.wait_time_0,
+          w0: +values.w0,
+          align_delay_1: +values.align_delay_1,
           align_delay_0: +values.align_delay_0,
           align_delay_2: +values.align_delay_2
         }
@@ -124,17 +125,18 @@ const OneExcotationForm: React.FC = () => {
   }, [])
   React.useEffect(() => {
     if (Data) {
-      const { name, desc, port, template_id, recycle_count_0, recycle_time, recycle_count, wait_time_0, align_delay_0, align_delay_2 } = Data as any
+      const { name, desc, port, template_id, align_delay_1, cnt0, cnt1, w1, w0, align_delay_0, align_delay_2 } = Data as any
       const formData = {
         name,
         description: desc,
         port,
         template_id,
-        recycle_count_0,
-        recycle_count,
-        recycle_time,
-        wait_time_0,
+        cnt0,
+        cnt1,
+        w1,
+        w0,
         align_delay_0,
+        align_delay_1,
         align_delay_2
       }
       form.setFieldsValue(formData)
@@ -212,8 +214,8 @@ const OneExcotationForm: React.FC = () => {
           </Select>
         </Form.Item>
         <Form.Item
-          label='发送次数'
-          name='recycle_count_0'
+          label='内置发送次数'
+          name='cnt0'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -236,8 +238,8 @@ const OneExcotationForm: React.FC = () => {
           <Input disabled={isFixForm} placeholder='请输入发送次数' />
         </Form.Item>
         <Form.Item
-          label='等待时间'
-          name='wait_time_0'
+          label='内置等待时间'
+          name='w0'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -261,8 +263,8 @@ const OneExcotationForm: React.FC = () => {
         </Form.Item>
 
         <Form.Item
-          label='循环次数'
-          name='recycle_count'
+          label='外部循环次数'
+          name='cnt1'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -285,8 +287,8 @@ const OneExcotationForm: React.FC = () => {
           <Input disabled={isFixForm} placeholder='请输入发送次数' />
         </Form.Item>
         <Form.Item
-          label='循环间隔'
-          name='recycle_time'
+          label='外部循环间隔'
+          name='w1'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -311,6 +313,30 @@ const OneExcotationForm: React.FC = () => {
         <Form.Item
           label='前置时延'
           name='align_delay_0'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[
+            {
+              required: true,
+              validateTrigger: 'onBlur',
+              validator(_, value) {
+                const reg = /^\d+$/
+                if (reg.test(value)) {
+                  if (value <= 10) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                }
+                return Promise.reject(new Error('请输入 0-10 之间的整数'))
+              }
+            }
+          ]}
+        >
+          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
+        </Form.Item>
+        <Form.Item
+          label='等待时延'
+          name='align_delay_1'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
