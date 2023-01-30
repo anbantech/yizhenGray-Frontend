@@ -77,7 +77,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     } catch (error) {
       throwErrorMessage(error, { 1009: '任务删除失败' })
     }
-  }, [form, id, taskInfo.data.id, taskInfo?.editTask])
+  }, [form, id, taskInfo.data?.id, taskInfo?.editTask])
   useImperativeHandle(myRef, () => ({
     save: () => {
       return createOneExcitationFn()
