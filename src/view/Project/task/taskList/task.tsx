@@ -344,7 +344,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
         IsModalVisible={CommonModleStatus}
         deleteProjectRight={deleteProjectRight}
         CommonModleClose={CommonModleClose}
-        name='删除项目'
+        name='删除任务'
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
       />
     </div>
