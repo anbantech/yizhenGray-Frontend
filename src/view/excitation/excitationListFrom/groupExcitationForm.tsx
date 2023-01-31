@@ -98,7 +98,12 @@ const GroupExcitationForm: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data]
   )
-
+  const cancelForm = () => {
+    history.push({
+      pathname: '/excitationList',
+      state: {}
+    })
+  }
   const getExcitationList = async (oneRequest: Resparams, doubleRequest: Resparams) => {
     try {
       const result1 = await excitationListFn(oneRequest)
@@ -209,7 +214,7 @@ const GroupExcitationForm: React.FC = () => {
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.twoForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
         <Form.Item
-          label='次联激励名称'
+          label='交互名称'
           name='name'
           validateFirst
           validateTrigger={['onBlur']}
@@ -293,7 +298,7 @@ const GroupExcitationForm: React.FC = () => {
             name='取消'
             type='default'
             onClick={() => {
-              //   cancenlForm()
+              cancelForm()
             }}
           />
           <CommonButton

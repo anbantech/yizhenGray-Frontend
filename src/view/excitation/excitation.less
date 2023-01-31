@@ -1,13 +1,12 @@
 .excitaion_operation{
     display: flex;
     align-items: center;
-    color: #2979ff;
+    color: #488FF0;
     font-weight: 500;
     font-size: 16px;
     font-style: normal;
     line-height: 22px;
-    cursor: pointer;
-        
+    cursor: pointer;     
 }
 
 .excitationCard_main{
@@ -62,6 +61,7 @@
 .formOperation{
     width:96%;
     overflow-x: scroll;
+    overflow-y: hidden;
     height: 184px;
     display: flex;
     margin: 0 2%;
@@ -163,4 +163,11 @@
     padding: 16px;
     justify-content: center;
     background-color: #F5F6F7;
+}
+
+.AnBan_headerRadio{
+    :global(.ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)) {
+        background: #488FF0 !important;
+        border-color: #488FF0 !important;
+    }
 }

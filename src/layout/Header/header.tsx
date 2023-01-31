@@ -154,14 +154,11 @@ function Header(props: any) {
     '/projects/Tasks/Detail/TaskLog': '日志',
     '/excitationList': '激励列表',
     '/excitationList/Deatail': '激励详情',
-    '/excitationList/createOneExcitation': '新建激励',
-    '/excitationList/createDoubleExcitation': '新建级联激励',
+    '/excitationList/createOneExcitation': '新建激励Group',
+    '/excitationList/createDoubleExcitation': '新建级联Group',
     '/excitationList/createGroupExcitation': '新建交互',
-    '/byPass': '旁路列表',
-    '/UserLog': '操作日志',
-    '/UserList': '用户列表',
-    '/backupData': '备份设置',
-    '/OnlineReport': '报告预览'
+    '/templateList': '模版列表',
+    '/templateList/template': `${data.editOriginalTemplate ? '修改模版' : '创建模版'}`
   }
   const history = useHistory()
   const jumpTest = (value: any) => {

@@ -98,7 +98,12 @@ const OneExcotationForm: React.FC = () => {
       throwErrorMessage(error, { 1009: '激励创建失败' })
     }
   }
-
+  const cancelForm = () => {
+    history.push({
+      pathname: '/excitationList',
+      state: {}
+    })
+  }
   const onFieldsChange = (changedFields: any, allFields: any) => {
     const disabledData: any = []
     const errors = allFields.every((item: any) => {
@@ -146,7 +151,7 @@ const OneExcotationForm: React.FC = () => {
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.oneForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
         <Form.Item
-          label='激励名称'
+          label='单激励Group名称'
           name='name'
           validateFirst
           validateTrigger={['onBlur']}
@@ -155,7 +160,7 @@ const OneExcotationForm: React.FC = () => {
               validateTrigger: 'onBlur',
               validator(_, value) {
                 if (typeof value === 'undefined' || value === '') {
-                  return Promise.reject(new Error('请输入旁路名称'))
+                  return Promise.reject(new Error('单激励Group名称'))
                 }
                 return Promise.resolve()
               }
@@ -164,7 +169,7 @@ const OneExcotationForm: React.FC = () => {
               required: true,
               max: 6,
               min: 2,
-              message: '任务名称长度为2到6个字符'
+              message: '单激励Group名称为2到6个字符'
             },
             {
               validateTrigger: 'onBlur',
@@ -173,12 +178,12 @@ const OneExcotationForm: React.FC = () => {
                 if (reg.test(value)) {
                   return Promise.resolve()
                 }
-                return Promise.reject(new Error('任务名称由汉字、数字、字母和下划线组成'))
+                return Promise.reject(new Error('单激励Group名称名称由汉字、数字、字母和下划线组成'))
               }
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入2到6个字符' />
+          <Input disabled={isFixForm} placeholder='请输入单激励Group名称' />
         </Form.Item>
 
         <Form.Item name='port' label='端口类别' rules={[{ required: true, message: '请选择选择端口类别' }]}>
@@ -214,7 +219,31 @@ const OneExcotationForm: React.FC = () => {
           </Select>
         </Form.Item>
         <Form.Item
-          label='内置发送次数'
+          label='前置时延'
+          name='align_delay_0'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[
+            {
+              required: true,
+              validateTrigger: 'onBlur',
+              validator(_, value) {
+                const reg = /^\d+$/
+                if (reg.test(value)) {
+                  if (value <= 10) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                }
+                return Promise.reject(new Error('请输入 0-10 之间的整数'))
+              }
+            }
+          ]}
+        >
+          <Input disabled={isFixForm} placeholder='请输入前置时延' suffix='毫秒' />
+        </Form.Item>
+        <Form.Item
+          label='发送次数'
           name='cnt0'
           validateFirst
           validateTrigger={['onBlur']}
@@ -238,7 +267,7 @@ const OneExcotationForm: React.FC = () => {
           <Input disabled={isFixForm} placeholder='请输入发送次数' />
         </Form.Item>
         <Form.Item
-          label='内置等待时间'
+          label='等待时间'
           name='w0'
           validateFirst
           validateTrigger={['onBlur']}
@@ -259,35 +288,10 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
-        </Form.Item>
-
-        <Form.Item
-          label='外部循环次数'
-          name='cnt1'
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[
-            {
-              required: true,
-              validateTrigger: 'onBlur',
-              validator(_, value) {
-                const reg = /^\d+$/
-                if (reg.test(value)) {
-                  if (value <= 20) {
-                    return Promise.resolve()
-                  }
-                  return Promise.reject(new Error('请输入 0-20 之间的整数'))
-                }
-                return Promise.reject(new Error('请输入 0-20 之间的整数'))
-              }
-            }
-          ]}
-        >
-          <Input disabled={isFixForm} placeholder='请输入发送次数' />
+          <Input disabled={isFixForm} placeholder='请输入等待时间' suffix='毫秒' />
         </Form.Item>
         <Form.Item
-          label='外部循环间隔'
+          label='循环间隔'
           name='w1'
           validateFirst
           validateTrigger={['onBlur']}
@@ -308,11 +312,11 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入循环间隔' suffix='毫秒' />
         </Form.Item>
         <Form.Item
-          label='前置时延'
-          name='align_delay_0'
+          label='循环次数'
+          name='cnt1'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -322,20 +326,21 @@ const OneExcotationForm: React.FC = () => {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value <= 10) {
+                  if (value <= 20) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                  return Promise.reject(new Error('请输入 0-20 之间的整数'))
                 }
-                return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                return Promise.reject(new Error('请输入 0-20 之间的整数'))
               }
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入循环次数' />
         </Form.Item>
+
         <Form.Item
-          label='等待时延'
+          label='中间时延'
           name='align_delay_1'
           validateFirst
           validateTrigger={['onBlur']}
@@ -356,7 +361,7 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入中间时延' suffix='毫秒' />
         </Form.Item>
         <Form.Item
           label='后置时延'
@@ -380,7 +385,7 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入后置时延' suffix='毫秒' />
         </Form.Item>
         <Form.Item
           label='任务描述'
@@ -406,7 +411,7 @@ const OneExcotationForm: React.FC = () => {
             name='取消'
             type='default'
             onClick={() => {
-              //   cancenlForm()
+              cancelForm()
             }}
           />
           <CommonButton

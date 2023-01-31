@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import { Cascader, Form, Input, Select } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import { StepRef } from 'Src/view/Project/task/createTask/newCreateTask'
-import { PlusOutlined } from '@ant-design/icons'
+// import { PlusOutlined } from '@ant-design/icons'
 import styles from '../excitation.less'
 
 interface PropsTypeFn {
@@ -162,23 +162,22 @@ const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
 ThreeExcitationCard.displayName = 'ThreeExcitationCard'
 const ThreeExcitationCardCompoent = React.memo(ThreeExcitationCard)
 
-const FiveExcitationCard: React.FC<PropsTypeFn> = (props: PropsTypeFn) => {
-  const { onClick, type } = props
-  return (
-    <div role='time' onClick={onClick} className={styles.card_middle}>
-      <div className={styles.card_concent}>
-        <PlusOutlined style={{ fontSize: '18px' }} />
-        {type === 'two' ? <span>选择单激励Group </span> : <span>选择单激励Group/级联Group</span>}
-      </div>
-    </div>
-  )
-}
-FiveExcitationCard.displayName = 'FiveExcitationCard'
-const FiveExcitationCardCompoent = React.memo(FiveExcitationCard)
+// const FiveExcitationCard: React.FC<PropsTypeFn> = (props: PropsTypeFn) => {
+//   const { onClick, type } = props
+//   return (
+//     <div role='time' onClick={onClick} className={styles.card_middle}>
+//       <div className={styles.card_concent}>
+//         <PlusOutlined style={{ fontSize: '18px' }} />
+//         {type === 'two' ? <span>选择单激励Group </span> : <span>选择单激励Group/级联Group</span>}
+//       </div>
+//     </div>
+//   )
+// }
+// FiveExcitationCard.displayName = 'FiveExcitationCard'
+// const FiveExcitationCardCompoent = React.memo(FiveExcitationCard)
 
 const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
   const { index, excitationList, onChange, formData, isFixForm, type } = props
-  const [showCard, setShowCard] = useState(false)
   const childRef: ChildRef = {
     oneForm: useRef<StepRef | null>(null),
     twoForm: useRef<StepRef | null>(null),
@@ -188,14 +187,7 @@ const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
 
   return (
     <div className={styles.card_main}>
-      {!showCard && !isFixForm ? (
-        <FiveExcitationCardCompoent
-          type={type}
-          onClick={() => {
-            setShowCard(true)
-          }}
-        />
-      ) : type === 'two' ? (
+      {type === 'two' ? (
         <TwoExcitationCardCompoent
           formData={formData}
           excitationList={excitationList}
