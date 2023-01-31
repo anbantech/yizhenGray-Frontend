@@ -173,7 +173,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     0: [
       {
         width: '15%',
-        title: '激励名称',
+        title: '单激励Group名称',
         dataIndex: 'name',
         key: 'name',
         // eslint-disable-next-line react/display-name
@@ -192,23 +192,18 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         }
       },
       {
-        width: '20%',
-        title: '激励属性',
+        width: '15%',
+        title: '端口名称',
         dataIndex: 'port',
         key: 'port'
       },
       {
         width: '20%',
         title: '激励描述 ',
-        dataIndex: 'port',
-        key: 'port'
+        dataIndex: 'desc',
+        key: 'desc'
       },
-      {
-        width: '15%',
-        title: '激励端点名称',
-        dataIndex: 'port',
-        key: 'port'
-      },
+
       {
         width: '10%',
         title: '操作',
@@ -236,7 +231,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     1: [
       {
         width: '20%',
-        title: '级联激励名称',
+        title: '级联Group名称',
         dataIndex: 'name',
         key: 'name',
         // eslint-disable-next-line react/display-name
@@ -256,7 +251,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       },
       {
         width: '30%',
-        title: '级联激励描述    ',
+        title: ' 描述    ',
         dataIndex: 'desc',
         key: 'desc'
       },

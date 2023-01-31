@@ -74,8 +74,8 @@ const TwoExcitationCard = React.forwardRef((props: AllPropsType) => {
   return (
     <div className={styles.card_middle}>
       <Form name='middle' autoComplete='off' className={styles.card_middle_form} onValuesChange={onValuesChange} form={form}>
-        <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择选择端口类别' }]}>
-          <Select placeholder='请选择端口类别' onSelect={onSelect} disabled={isFixForm}>
+        <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择激励' }]}>
+          <Select placeholder='请选择激励' onSelect={onSelect} disabled={isFixForm}>
             {
               /**
                * 根据连接方式列表渲染下拉框可选择的设备比特率
@@ -145,7 +145,7 @@ const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
   return (
     <div className={styles.card_middle}>
       <Form name='middle' autoComplete='off' className={styles.card_middle_form} onValuesChange={onValuesChange} form={form}>
-        <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择选择端口类别' }]}>
+        <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择激励' }]}>
           <Cascader disabled={isFixForm} fieldNames={{ label: 'name', value: 'id' }} options={excitationList} onChange={onSelect} />
         </Form.Item>
         <Form.Item
