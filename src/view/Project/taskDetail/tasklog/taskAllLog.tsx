@@ -9,8 +9,10 @@ import { RouteComponentProps, StaticContext } from 'react-router'
 import React, { useEffect, useState } from 'react'
 import { getTime } from 'Src/util/baseFn'
 import { testAlllogs } from 'Src/globalType/Param'
+import style from 'Src/view/Project/project/project.less'
 import styles from '../taskDetailUtil/Detail.less'
 import tableStyle from '../taskDetail.less'
+
 import { projectInfoType } from '../../task/taskList/task'
 
 interface propsType {
@@ -176,7 +178,9 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       <div style={{ marginTop: '24px' }} className={styles.tableBoby}>
         <Table rowKey={(record: any) => `${record.id}_${new Date()}`} pagination={false} dataSource={logData} columns={columns as any} bordered />
       </div>
-      <PaginationsAge length={total} num={10} getParams={getParams} pagenums={params.page} />
+      <div className={style.AnBan_PaginationsAge}>
+        <PaginationsAge length={total} num={10} getParams={getParams} pagenums={params.page} />
+      </div>
     </div>
   )
 }

@@ -278,6 +278,8 @@ export interface ResTaskDetail {
   name: string
   create_time: string
   update_time: string
+  end_time: string
+  start_time: string
   create_user: string
   update_user: null
   desc: string

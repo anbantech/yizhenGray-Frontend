@@ -7,6 +7,7 @@ import React, { useState } from 'react'
 import { getTime } from 'Src/util/baseFn'
 
 import PaginationsAge from 'Src/components/Pagination/Pagina'
+import style from 'Src/view/Project/project/project.less'
 import styles from '../taskDetailUtil/Detail.less'
 
 import tableStyle from '../taskDetail.less'
@@ -209,7 +210,9 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
         dataSource={logData}
         pagination={false}
       />
-      <PaginationsAge length={total} num={10} getParams={changePage} pagenums={params.page} />
+      <div className={style.AnBan_PaginationsAge}>
+        <PaginationsAge length={total} num={10} getParams={changePage} pagenums={params.page} />
+      </div>
     </div>
   )
 }
