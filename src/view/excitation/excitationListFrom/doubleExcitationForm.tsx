@@ -402,7 +402,7 @@ const DoubleExcitationForm: React.FC = () => {
         >
           <Input.TextArea
             disabled={isFixForm}
-            placeholder='任务描述'
+            placeholder='请输入级联激励描述'
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
               formatter({ count }) {

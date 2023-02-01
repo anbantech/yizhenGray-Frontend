@@ -388,13 +388,13 @@ const OneExcotationForm: React.FC = () => {
           <Input disabled={isFixForm} placeholder='请输入后置时延' suffix='毫秒' />
         </Form.Item>
         <Form.Item
-          label='任务描述'
+          label='单激励Group描述'
           name='description'
-          rules={[{ message: '请输入激励描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
+          rules={[{ message: '请输入单激励Group描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
           <Input.TextArea
             disabled={isFixForm}
-            placeholder='激励描述'
+            placeholder='请输入单激励Group描述'
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
               formatter({ count }) {
