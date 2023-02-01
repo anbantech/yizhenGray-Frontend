@@ -105,9 +105,12 @@ const DoubleExcitationForm: React.FC = () => {
         const params = {
           name: values.name,
           desc: values.name,
-          recycle_count_0: +values.recycle_count_0,
-          wait_time_0: +values.wait_time_0,
+          cnt0: +values.cnt0,
+          w0: +values.w0,
+          cnt1: +values.cnt1,
+          w1: +values.w1,
           align_delay_0: +values.align_delay_0,
+          align_delay_1: +values.align_delay_1,
           align_delay_2: +values.align_delay_2,
           child_id_list: data
         }
@@ -131,6 +134,12 @@ const DoubleExcitationForm: React.FC = () => {
     return bol
   }, [data])
 
+  const cancelForm = () => {
+    history.push({
+      pathname: '/excitationList',
+      state: {}
+    })
+  }
   const onFieldsChange = (changedFields: any, allFields: any) => {
     const disabledData: any = []
     const errors = allFields.every((item: any) => {
@@ -165,13 +174,16 @@ const DoubleExcitationForm: React.FC = () => {
   React.useEffect(() => {
     if (Data && isFixForm) {
       setCardArray(Data?.group_data_list.length)
-      const { name, desc, recycle_count_0, wait_time_0, align_delay_0, align_delay_2 } = Data as any
+      const { name, desc, cnt0, w0, w1, cnt1, align_delay_0, align_delay_2, align_delay_1 } = Data as any
       const formData = {
         name,
         description: desc,
-        recycle_count_0,
-        wait_time_0,
+        cnt0,
+        w0,
+        cnt1,
+        w1,
         align_delay_0,
+        align_delay_1,
         align_delay_2
       }
       form.setFieldsValue(formData)
@@ -181,7 +193,7 @@ const DoubleExcitationForm: React.FC = () => {
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.twoForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
         <Form.Item
-          label='级联名称'
+          label='级联Group名称'
           name='name'
           validateFirst
           validateTrigger={['onBlur']}
@@ -190,7 +202,7 @@ const DoubleExcitationForm: React.FC = () => {
               validateTrigger: 'onBlur',
               validator(_, value) {
                 if (typeof value === 'undefined' || value === '') {
-                  return Promise.reject(new Error('请输入旁路名称'))
+                  return Promise.reject(new Error('请输入级联Group名称'))
                 }
                 return Promise.resolve()
               }
@@ -199,7 +211,7 @@ const DoubleExcitationForm: React.FC = () => {
               required: true,
               max: 6,
               min: 2,
-              message: '任务名称长度为2到6个字符'
+              message: '级联Group名称长度为2到6个字符'
             },
             {
               validateTrigger: 'onBlur',
@@ -208,17 +220,88 @@ const DoubleExcitationForm: React.FC = () => {
                 if (reg.test(value)) {
                   return Promise.resolve()
                 }
-                return Promise.reject(new Error('任务名称由汉字、数字、字母和下划线组成'))
+                return Promise.reject(new Error('级联Group名称由汉字、数字、字母和下划线组成'))
               }
             }
           ]}
         >
-          <Input placeholder='请输入2到6个字符' disabled={isFixForm} />
+          <Input placeholder='请输入级联Group名称' disabled={isFixForm} />
         </Form.Item>
-
+        <Form.Item
+          label='前置时延'
+          name='align_delay_0'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[
+            {
+              required: true,
+              validateTrigger: 'onBlur',
+              validator(_, value) {
+                const reg = /^\d+$/
+                if (reg.test(value)) {
+                  if (value <= 10) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                }
+                return Promise.reject(new Error('请输入 0-10 之间的整数'))
+              }
+            }
+          ]}
+        >
+          <Input disabled={isFixForm} placeholder='请输入前置时延' suffix='毫秒' />
+        </Form.Item>
+        <Form.Item
+          label='发送次数'
+          name='cnt0'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[
+            {
+              required: true,
+              validateTrigger: 'onBlur',
+              validator(_, value) {
+                const reg = /^\d+$/
+                if (reg.test(value)) {
+                  if (value <= 20) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('请输入 0-20 之间的整数'))
+                }
+                return Promise.reject(new Error('请输入 0-20 之间的整数'))
+              }
+            }
+          ]}
+        >
+          <Input placeholder='请输入循环次数' disabled={isFixForm} />
+        </Form.Item>
+        <Form.Item
+          label='等待时间'
+          name='w0'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[
+            {
+              required: true,
+              validateTrigger: 'onBlur',
+              validator(_, value) {
+                const reg = /^\d+$/
+                if (reg.test(value)) {
+                  if (value <= 10) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                }
+                return Promise.reject(new Error('请输入 0-10 之间的整数'))
+              }
+            }
+          ]}
+        >
+          <Input placeholder='请输入等待时间' suffix='毫秒' disabled={isFixForm} />
+        </Form.Item>
         <Form.Item
           label='循环次数'
-          name='recycle_count_0'
+          name='cnt1'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -242,7 +325,7 @@ const DoubleExcitationForm: React.FC = () => {
         </Form.Item>
         <Form.Item
           label='循环间隔'
-          name='wait_time_0'
+          name='w1'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -262,12 +345,11 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input placeholder='请输入整数,最大10' suffix='毫秒' disabled={isFixForm} />
+          <Input placeholder='请输入循环间隔' suffix='毫秒' disabled={isFixForm} />
         </Form.Item>
-
         <Form.Item
-          label='前置时延'
-          name='align_delay_0'
+          label='中间时延'
+          name='align_delay_1'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -287,7 +369,7 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入中间时延' suffix='毫秒' />
         </Form.Item>
         <Form.Item
           label='后置时延'
@@ -311,7 +393,7 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入后置时延' suffix='毫秒' />
         </Form.Item>
         <Form.Item
           label='级联描述'
@@ -363,7 +445,7 @@ const DoubleExcitationForm: React.FC = () => {
             name='取消'
             type='default'
             onClick={() => {
-              //   cancenlForm()
+              cancelForm()
             }}
           />
           <CommonButton

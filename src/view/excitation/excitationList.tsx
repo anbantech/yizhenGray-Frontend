@@ -52,8 +52,8 @@ interface projectInfoType {
 }
 
 const An_ButtonNameMap = {
-  0: '新建激励',
-  1: '新建级联激励',
+  0: '新建单激励Group',
+  1: '新建级联Group',
   2: '新建交互'
 }
 const An_ButtonDetailMap = {
@@ -173,7 +173,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     0: [
       {
         width: '15%',
-        title: '激励名称',
+        title: '单激励Group名称',
         dataIndex: 'name',
         key: 'name',
         // eslint-disable-next-line react/display-name
@@ -192,23 +192,18 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         }
       },
       {
-        width: '20%',
-        title: '激励属性',
+        width: '15%',
+        title: '端口名称',
         dataIndex: 'port',
         key: 'port'
       },
       {
         width: '20%',
         title: '激励描述 ',
-        dataIndex: 'port',
-        key: 'port'
+        dataIndex: 'desc',
+        key: 'desc'
       },
-      {
-        width: '15%',
-        title: '激励端点名称',
-        dataIndex: 'port',
-        key: 'port'
-      },
+
       {
         width: '10%',
         title: '操作',
@@ -236,7 +231,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     1: [
       {
         width: '20%',
-        title: '级联激励名称',
+        title: '级联Group名称',
         dataIndex: 'name',
         key: 'name',
         // eslint-disable-next-line react/display-name
@@ -256,7 +251,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       },
       {
         width: '30%',
-        title: '级联激励描述    ',
+        title: ' 描述    ',
         dataIndex: 'desc',
         key: 'desc'
       },
@@ -287,7 +282,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     2: [
       {
         width: '20%',
-        title: '组名称',
+        title: '交互名称',
         dataIndex: 'name',
         key: 'name',
         // eslint-disable-next-line react/display-name
@@ -307,7 +302,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       },
       {
         width: '30%',
-        title: '组描述',
+        title: '交互描述',
         dataIndex: 'desc',
         key: 'desc'
       },
@@ -339,16 +334,15 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
 
   return (
     <div className={styles.AnBan_main}>
-      <div className={styles.AnBan_header}>
-        <Radio.Group onChange={onChange} defaultValue='0'>
-          <Radio.Button value='0'>激励列表</Radio.Button>
-          <Radio.Button value='1'>级联列表</Radio.Button>
+      <div className={(styles.AnBan_header, style.AnBan_headerRadio)}>
+        <Radio.Group onChange={onChange} buttonStyle='solid' optionType='button' defaultValue='0'>
+          <Radio.Button value='0'>单激励Group列表</Radio.Button>
+          <Radio.Button value='1'>级联Group列表</Radio.Button>
           <Radio.Button value='2'>交互列表</Radio.Button>
         </Radio.Group>
         <div className={styles.AnBan_header_bottom}>
           <SearchInput placeholder='根据名称搜索激励' onChangeValue={updateParams} />
           <CreateButton
-            width='146px'
             name={`${An_ButtonNameMap[tabs as keyof typeof An_ButtonDetailMap]}`}
             size='large'
             type='primary'
