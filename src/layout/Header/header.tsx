@@ -158,7 +158,7 @@ function Header(props: any) {
     '/excitationList/createDoubleExcitation': '新建级联Group',
     '/excitationList/createGroupExcitation': '新建交互',
     '/templateList': '模版列表',
-    '/templateList/template': `${data?.editOriginalTemplate ? '修改模版' : '创建模版'}`
+    '/templateList/template': `${data && data?.editOriginalTemplate ? '修改模版' : '创建模版'}`
   }
   const history = useHistory()
   const jumpTest = (value: any) => {
