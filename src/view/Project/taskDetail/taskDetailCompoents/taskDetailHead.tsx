@@ -205,7 +205,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
           >
             {[0, 1, 4, 5, 6].includes(status) && (
               <>
-                <Tooltip placement='bottom' title='重新测试当前实例（重新发送已经测试过的用例）'>
+                <Tooltip placement='bottom' title='开始测试当前实例'>
                   <Spin spinning={spinStatus && index === 3} indicator={antIcon}>
                     <img className={styles.ImageSize} src={Begin} alt='beginCourse' />
                   </Spin>
