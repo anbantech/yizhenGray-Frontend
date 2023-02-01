@@ -19,7 +19,7 @@ const layout = {
 }
 
 const oneRequest = {
-  group_type: 0,
+  group_type: '0',
   key_word: '',
   status: null,
   page: 1,
@@ -45,7 +45,7 @@ interface Option {
 }
 
 interface Resparams {
-  group_type: number
+  group_type: number | string
   key_word?: string
   status?: null | number
   page: number
@@ -250,13 +250,13 @@ const GroupExcitationForm: React.FC = () => {
         </Form.Item>
 
         <Form.Item
-          label='任务描述'
+          label='交互描述'
           name='description'
-          rules={[{ message: '请输入任务描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
+          rules={[{ message: '请输入交互描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
           <Input.TextArea
             disabled={isFixForm}
-            placeholder='任务描述'
+            placeholder='交互描述'
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
               formatter({ count }) {

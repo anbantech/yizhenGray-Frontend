@@ -9,14 +9,14 @@ const layout = {
 }
 
 interface projectInfoType {
-  id: number
-  name: string
-  port: string
-  status: number | null
-  create_time: string
-  update_time: string
-  create_user: string
-  update_user: string
+  id?: number | string
+  name?: string
+  port?: string
+  status?: number | null
+  create_time?: string
+  update_time?: string
+  create_user?: string
+  update_user?: string
 }
 
 interface Resparams {
@@ -40,10 +40,14 @@ const TaskForm = (props: PropType) => {
   const { taskInfo } = props
   const [form] = useForm()
   const { Option } = Select
-  const [excitationList] = useState<projectInfoType[]>([])
+  const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
   useEffect(() => {
     if (taskInfo) {
-      const { name, desc, work_time, crash_num, group_id } = taskInfo
+      const { name, desc, work_time, crash_num, group_id, group_name } = taskInfo
+      setExcitationList(() => {
+        const excitationInfo = { id: group_id, name: group_name }
+        return [excitationInfo]
+      })
       const formData = {
         name,
         description: desc,
