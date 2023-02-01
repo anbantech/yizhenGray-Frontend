@@ -214,7 +214,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       key: 'test_time',
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
-        return <span>{`${row.test_time}h`}</span>
+        return <span>{`${row.test_time}`}</span>
       }
     },
     {
