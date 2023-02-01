@@ -182,14 +182,14 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
-            { required: true, message: '请输入账号' },
+            { required: true, message: '请输入Crash数量' },
             {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
                   return Promise.resolve()
                 }
-                return Promise.reject(new Error('请输入 0-48 之间的整数'))
+                return Promise.reject(new Error('请输入 0-100 之间的整数'))
               }
             }
           ]}
