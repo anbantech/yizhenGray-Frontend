@@ -47,6 +47,7 @@ export const statusMap = {
 }
 const CardComponents = (props: cardProps) => {
   const { value, concent, lookLog } = props
+
   return (
     <div className={styles.taskDetailCard_Main}>
       <div className={styles.card_Header}>

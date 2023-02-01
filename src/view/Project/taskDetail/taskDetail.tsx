@@ -78,7 +78,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
           {updateStatus === 2 ? (
             <DetailTestingTable params={params} logData={logData} />
           ) : (
-            logData && <DetailTestedTable changePage={changePage} total={total as number} params={params} logData={logData} />
+            <DetailTestedTable changePage={changePage} total={total as number} params={params} logData={logData} />
           )}
         </>
       )}
