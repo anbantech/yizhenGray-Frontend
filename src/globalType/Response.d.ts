@@ -25,7 +25,7 @@ export interface isCode {
 
 // 2. 创建项目  返回为null
 
-// 3. 项目列表
+// 3. 项目管理
 
 export interface ResProjectList {
   results: {

@@ -72,7 +72,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   // 目标列表参数
   const [params, setParams] = useState(request)
 
-  // 项目列表
+  // 项目管理
   const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
 
   // 页码

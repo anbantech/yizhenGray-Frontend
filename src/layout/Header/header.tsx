@@ -145,7 +145,7 @@ function Header(props: any) {
     return url
   })
   const name: any = {
-    '/projects': '项目列表',
+    '/projects': '项目管理',
     '/projects/Tasks': '任务列表',
     '/projects/Tasks/Detail': '任务详情',
     '/projects/Tasks/createTask': '新建任务',

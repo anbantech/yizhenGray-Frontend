@@ -20,7 +20,7 @@ export interface updateTasksExampleParams {
   project_id: number | string
 }
 
-// 3. 项目列表
+// 3. 项目管理
 
 export interface ProjectList {
   key_word?: string

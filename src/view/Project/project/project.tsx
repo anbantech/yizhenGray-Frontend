@@ -37,6 +37,7 @@ interface Resparams {
 interface projectListType {
   [key: string]: string | number
 }
+
 interface projectInfoType {
   id: number
   name: string
@@ -51,7 +52,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   // 目标列表参数
   const [params, setParams] = useState(request)
 
-  // 项目列表
+  // 项目管理
   const [projectList, setProjectList] = useState<projectListType[]>([])
 
   // 页码
@@ -126,7 +127,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
     }
   }
 
-  // 获取项目列表
+  // 获取项目管理
   const getProjectList = async (value: Resparams) => {
     try {
       const result = await ProList(value)
