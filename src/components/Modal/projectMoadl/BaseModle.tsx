@@ -10,6 +10,11 @@ interface FormInstance {
   desc: string
 }
 
+const layout = {
+  labelCol: { span: 5 },
+  wrapperCol: { span: 19 }
+}
+
 function ModalpPop(props: any) {
   const { TextArea } = Input
   const { visible, width, hideModal, fixTitle, id, projectInfo } = props
@@ -85,7 +90,7 @@ function ModalpPop(props: any) {
 
   return (
     <Modal
-      className={styles}
+      className={styles.formModal}
       width={width}
       visible={visible}
       title={fixTitle ? '修改项目' : '新建项目'}
@@ -107,14 +112,15 @@ function ModalpPop(props: any) {
           取消
         </Button>,
         <Button className={styles.btn_create} key='submit' disabled={isDisableStatus} type='primary' onClick={() => formVali()}>
-          {fixTitle ? '确认修改' : '确认新建'}
+          {fixTitle ? '确认' : '确认'}
         </Button>
       ]}
     >
-      <Form form={form} autoComplete='off' onValuesChange={onValuesChange}>
+      <Form form={form} className={styles.projectForm} autoComplete='off' {...layout} onValuesChange={onValuesChange}>
         <Form.Item
           name='name'
           validateFirst
+          label='项目名称'
           validateTrigger={['onBlur']}
           rules={[
             { required: true, message: '请输入项目名称' },
@@ -133,7 +139,7 @@ function ModalpPop(props: any) {
         >
           <Input placeholder='请输入项目名称' />
         </Form.Item>
-        <Form.Item name='desc' rules={[{ type: 'string', max: 50, message: '字数不能超过50个' }]}>
+        <Form.Item name='desc' label='项目描述' rules={[{ type: 'string', max: 50, message: '字数不能超过50个' }]}>
           <TextArea
             placeholder='请添加针对项目的相关描述'
             autoSize={{ minRows: 4, maxRows: 5 }}
