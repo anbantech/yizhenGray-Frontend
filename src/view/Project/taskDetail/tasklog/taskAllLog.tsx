@@ -12,7 +12,6 @@ import { testAlllogs } from 'Src/globalType/Param'
 import style from 'Src/view/Project/project/project.less'
 import styles from '../taskDetailUtil/Detail.less'
 import tableStyle from '../taskDetail.less'
-
 import { projectInfoType } from '../../task/taskList/task'
 
 interface propsType {
