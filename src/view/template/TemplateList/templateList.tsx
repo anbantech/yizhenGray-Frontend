@@ -34,7 +34,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   // 目标列表参数
   const [params, setParams] = useState<TemplateListParams>(request)
 
-  // 项目列表
+  // 项目管理
   const [templateList, setTemplateList] = useState<TemplateListResponse['results']>([])
 
   // 缓存当前点击的模板信息
@@ -87,7 +87,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
     }
   }, [changeCommonDialogStatus, currentTemplate])
 
-  // 获取项目列表
+  // 获取项目管理
   const getTemplateList = useCallback(async (value: TemplateListParams) => {
     try {
       const result = await API.getTemplateList(value)
