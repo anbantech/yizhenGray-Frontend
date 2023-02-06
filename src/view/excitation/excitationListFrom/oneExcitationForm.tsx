@@ -169,7 +169,7 @@ const OneExcotationForm: React.FC = () => {
               required: true,
               max: 20,
               min: 2,
-              message: '单激励Group名称为20个字符'
+              message: '单激励Group名称为2到20个字符'
             },
             {
               validateTrigger: 'onBlur',
