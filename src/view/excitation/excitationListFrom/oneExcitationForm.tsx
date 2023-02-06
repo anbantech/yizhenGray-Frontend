@@ -167,9 +167,9 @@ const OneExcotationForm: React.FC = () => {
             },
             {
               required: true,
-              max: 6,
+              max: 20,
               min: 2,
-              message: '单激励Group名称为项目管理个字符'
+              message: '单激励Group名称为20个字符'
             },
             {
               validateTrigger: 'onBlur',
