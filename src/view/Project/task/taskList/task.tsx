@@ -323,8 +323,8 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     <div className={globalStyle.AnBan_main}>
       <div className={globalStyle.AnBan_header}>
         <div>
-          <span className={globalStyle.AnBan_header_title}>{projectInfo?.projectName || '暂无'}</span>
-          <span className={styles.projectDescStyle}>{`项目描述 : ${projectInfo?.projectDesc || '暂无'}`}</span>
+          <span className={globalStyle.AnBan_header_title}>{projectInfo?.projectName || ''}</span>
+          <span className={styles.projectDescStyle}>{`项目描述 : ${projectInfo?.projectDesc || ''}`}</span>
         </div>
 
         <div className={globalStyle.AnBan_header_bottom}>
