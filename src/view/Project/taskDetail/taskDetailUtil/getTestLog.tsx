@@ -28,4 +28,11 @@ function UseGetTestLog(params: testlogs) {
   return [total, logData]
 }
 
-export default UseGetTestLog
+function changeParams(val: string, setParams: (value: testlogs) => void, params: testlogs, name: string, isClear?: boolean, baseData?: testlogs) {
+  if (isClear) {
+    return setParams(baseData as testlogs)
+  }
+  setParams({ ...params, [name]: val })
+}
+
+export { UseGetTestLog, changeParams }
