@@ -9,7 +9,7 @@ import DetailTestingTable from './tasklog/DetailTestingTable'
 import TaskDetailCard from './taskDetailCompoents/taskDetailCard'
 import TaskDetailHead from './taskDetailCompoents/taskDetailHead'
 import DetailTestedTable from './tasklog/taskLog'
-import UseGetTestLog from './taskDetailUtil/getTestLog'
+import { UseGetTestLog } from './taskDetailUtil/getTestLog'
 
 export interface taskDetailInfoType {
   editTask: false
