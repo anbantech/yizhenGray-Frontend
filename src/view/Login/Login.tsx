@@ -59,11 +59,11 @@ function Login() {
           <Form name='basic' onValuesChange={onValuesChange} layout='vertical' initialValues={{ remember: true }} form={form} autoComplete='off'>
             {/* 紫琼说不要感叹号，2022年9月23日15点54分 */}
             <Form.Item name='username' label='用户名' rules={[{ required: true, message: '请输入用户名' }]}>
-              <Input />
+              <Input type='text' autoComplete='off' />
             </Form.Item>
 
             <Form.Item label='密码' name='password' rules={[{ required: true, message: '请输入密码' }]}>
-              <Input.Password />
+              <Input.Password type='text' autoComplete='off' />
             </Form.Item>
 
             <Form.Item>
