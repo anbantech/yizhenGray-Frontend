@@ -239,12 +239,12 @@ const DoubleExcitationForm: React.FC = () => {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value <= 10) {
+                  if (value <= 100) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                  return Promise.reject(new Error('请输入 0-100 之间的整数'))
                 }
-                return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                return Promise.reject(new Error('请输入 0-100 之间的整数'))
               }
             }
           ]}
@@ -263,12 +263,12 @@ const DoubleExcitationForm: React.FC = () => {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value <= 20) {
+                  if (value > 0 && value <= 20) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('请输入 0-20 之间的整数'))
+                  return Promise.reject(new Error('请输入 1-20 之间的整数'))
                 }
-                return Promise.reject(new Error('请输入 0-20 之间的整数'))
+                return Promise.reject(new Error('请输入 1-20 之间的整数'))
               }
             }
           ]}
@@ -311,12 +311,12 @@ const DoubleExcitationForm: React.FC = () => {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value <= 20) {
+                  if (value > 0 && value <= 20) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('请输入 0-20 之间的整数'))
+                  return Promise.reject(new Error('请输入 1-20 之间的整数'))
                 }
-                return Promise.reject(new Error('请输入 0-20 之间的整数'))
+                return Promise.reject(new Error('请输入 1-20 之间的整数'))
               }
             }
           ]}
@@ -359,12 +359,12 @@ const DoubleExcitationForm: React.FC = () => {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value <= 10) {
+                  if (value <= 100) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                  return Promise.reject(new Error('请输入 0-100 之间的整数'))
                 }
-                return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                return Promise.reject(new Error('请输入 0-100之间的整数'))
               }
             }
           ]}
@@ -383,12 +383,12 @@ const DoubleExcitationForm: React.FC = () => {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value <= 10) {
+                  if (value <= 100) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                  return Promise.reject(new Error('请输入 0-100 之间的整数'))
                 }
-                return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                return Promise.reject(new Error('请输入 0-100 之间的整数'))
               }
             }
           ]}
