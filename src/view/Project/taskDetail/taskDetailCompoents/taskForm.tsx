@@ -78,9 +78,9 @@ const TaskForm = (props: PropType) => {
             },
             {
               required: true,
-              max: 6,
+              max: 20,
               min: 2,
-              message: '任务名称长度为2到6个字符'
+              message: '任务名称长度为2到20个字符'
             },
             {
               validateTrigger: 'onBlur',
@@ -94,7 +94,7 @@ const TaskForm = (props: PropType) => {
             }
           ]}
         >
-          <Input placeholder='请输入2到6个字符' disabled />
+          <Input placeholder='请输入2到20个字符' disabled />
         </Form.Item>
 
         <Form.Item
