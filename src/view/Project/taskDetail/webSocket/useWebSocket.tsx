@@ -8,7 +8,7 @@ const UseWebsocket = () => {
   const [wsInstance, setWsInstance] = useState<WebSocket | null | undefined>()
 
   const createWsInstance = useCallback(async (cb?: (ws: WebSocket | null | undefined) => void) => {
-    const ws = new WebSocket(`wss://${window.location.host}/socket/message`)
+    const ws = new WebSocket(`ws://${window.location.host}/socket/message`)
     while (ws.readyState !== 1) {
       if (ws.readyState === 2 || ws.readyState === 3) {
         await sleep(5000)

@@ -186,7 +186,7 @@ const OneExcotationForm: React.FC = () => {
           <Input disabled={isFixForm} placeholder='请输入单激励Group名称' />
         </Form.Item>
 
-        <Form.Item name='port' label='端口类别' rules={[{ required: true, message: '请选择选择端口类别' }]}>
+        <Form.Item name='port' label='端口类别' rules={[{ required: true, message: '请选择端口类别' }]}>
           <Select placeholder='请选择端口类别' disabled={isFixForm}>
             {
               /**
@@ -202,8 +202,8 @@ const OneExcotationForm: React.FC = () => {
             }
           </Select>
         </Form.Item>
-        <Form.Item name='template_id' label='模版名称' rules={[{ required: true, message: '请选择选择模版' }]}>
-          <Select placeholder='请选择选择模版' disabled={isFixForm}>
+        <Form.Item name='template_id' label='模版名称' rules={[{ required: true, message: '请选择模版' }]}>
+          <Select placeholder='请选择模版' disabled={isFixForm}>
             {
               /**
                * 根据连接方式列表渲染下拉框可选择的设备比特率
@@ -406,23 +406,27 @@ const OneExcotationForm: React.FC = () => {
       </Form>
       <div className={styles.excitaion_footer}>
         <div className={styles.excitaion_footer_footerConcent}>
-          <CommonButton
-            buttonStyle={styles.stepButton}
-            name='取消'
-            type='default'
-            onClick={() => {
-              cancelForm()
-            }}
-          />
-          <CommonButton
-            buttonStyle={styles.stepButton}
-            type='primary'
-            name='确认'
-            disabled={isDisableStatus}
-            onClick={() => {
-              createOneExcitationFn()
-            }}
-          />
+          {!isFixForm ? (
+            <CommonButton
+              buttonStyle={styles.stepButton}
+              name='取消'
+              type='default'
+              onClick={() => {
+                cancelForm()
+              }}
+            />
+          ) : null}
+          {!isFixForm ? (
+            <CommonButton
+              buttonStyle={styles.stepButton}
+              type='primary'
+              name='确认'
+              disabled={isDisableStatus}
+              onClick={() => {
+                createOneExcitationFn()
+              }}
+            />
+          ) : null}
         </div>
       </div>
     </div>
