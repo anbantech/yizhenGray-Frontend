@@ -198,7 +198,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         </Form.Item>
 
         <Form.Item label='交互' name='group_id' validateFirst validateTrigger={['onBlur']} rules={[{ required: true, message: '请选择交互' }]}>
-          <Select placeholder='请选择选择交互'>
+          <Select placeholder='请选择交互'>
             {
               /**
                * 根据连接方式列表渲染下拉框可选择的设备比特率

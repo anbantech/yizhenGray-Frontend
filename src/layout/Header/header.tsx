@@ -153,7 +153,9 @@ function Header(props: any) {
     '/projects/Tasks/Detail/lookTaskDetailInfo': '任务信息',
     '/projects/Tasks/Detail/TaskLog': '日志',
     '/excitationList': '激励列表',
-    '/excitationList/Deatail': '激励详情',
+    '/excitationList/Deatail': `${
+      data && data?.name === '查看单激励Group' ? '查看单激励Group' : data?.name === '查看级联激励Group' ? '查看级联Group' : '查看交互'
+    }`,
     '/excitationList/createOneExcitation': '新建激励Group',
     '/excitationList/createDoubleExcitation': '新建级联Group',
     '/excitationList/createGroupExcitation': '新建交互',

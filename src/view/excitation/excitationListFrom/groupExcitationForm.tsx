@@ -162,6 +162,7 @@ const GroupExcitationForm: React.FC = () => {
     }
   }, [form, data, history])
   const getLength = React.useCallback(() => {
+    if (data.length === 0) return false
     const bol = Object.values(data).every(item => {
       return Object.keys(item).length > 0
     })
@@ -293,23 +294,27 @@ const GroupExcitationForm: React.FC = () => {
       </div>
       <div className={styles.excitaion_footer}>
         <div className={styles.excitaion_footer_footerConcent}>
-          <CommonButton
-            buttonStyle={styles.stepButton}
-            name='取消'
-            type='default'
-            onClick={() => {
-              cancelForm()
-            }}
-          />
-          <CommonButton
-            buttonStyle={styles.stepButton}
-            type='primary'
-            name='确认'
-            disabled={isFixForm ? true : cardCheckStatus}
-            onClick={() => {
-              createOneExcitationFn()
-            }}
-          />
+          {!isFixForm ? (
+            <CommonButton
+              buttonStyle={styles.stepButton}
+              name='取消'
+              type='default'
+              onClick={() => {
+                cancelForm()
+              }}
+            />
+          ) : null}
+          {!isFixForm ? (
+            <CommonButton
+              buttonStyle={styles.stepButton}
+              type='primary'
+              name='确认'
+              disabled={isFixForm ? true : cardCheckStatus}
+              onClick={() => {
+                createOneExcitationFn()
+              }}
+            />
+          ) : null}
         </div>
       </div>
     </div>
