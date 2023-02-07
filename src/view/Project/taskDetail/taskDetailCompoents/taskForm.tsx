@@ -109,12 +109,12 @@ const TaskForm = (props: PropType) => {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value <= 48) {
+                  if (value >= 1 && value <= 48) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('请输入 0-48 之间的整数'))
+                  return Promise.reject(new Error('请输入 1-48 之间的整数'))
                 }
-                return Promise.reject(new Error('请输入 0-48 之间的整数'))
+                return Promise.reject(new Error('请输入 1-48 之间的整数'))
               }
             }
           ]}

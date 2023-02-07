@@ -23,7 +23,7 @@ interface propsResTaskDetailType<T> {
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
 function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
-  const { name, start_time, end_time, status, id, project_id } = props.taskDetailInfo
+  const { name, start_time, end_time, status, id, project_id, desc } = props.taskDetailInfo
   const [messageInfo] = UseWebsocket()
   const [spinStatus, setSpinStatus] = React.useState(false)
 
@@ -137,7 +137,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
           </div>
         </div>
         <div className={styles.taskDetailHead_Main_left_footer}>
-          <span> 任务描述:121</span>
+          <span> 任务描述:`${desc}`</span>
           <span style={{ paddingLeft: '20px', paddingRight: '20px' }}>
             {' '}
             {[0, 1, 4, 5].includes(status)

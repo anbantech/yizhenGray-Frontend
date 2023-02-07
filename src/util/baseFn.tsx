@@ -14,6 +14,7 @@ export function getTime(Data: string) {
     const time = Data?.split('.')
     return time[0]
   }
+  return ''
 }
 
 export async function sleep(ms: number) {
