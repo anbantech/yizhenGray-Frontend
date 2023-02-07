@@ -137,7 +137,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
           </div>
         </div>
         <div className={styles.taskDetailHead_Main_left_footer}>
-          <span> 任务描述:`${desc}`</span>
+          <span> {`任务描述:${desc}`}</span>
           <span style={{ paddingLeft: '20px', paddingRight: '20px' }}>
             {' '}
             {[0, 1, 4, 5].includes(status)
