@@ -19,7 +19,7 @@ import globalStyle from 'Src/view/Project/project/project.less'
 import UseWebsocket from 'Src/webSocket/useWebSocket'
 import styles from './task.less'
 
-const customizeRender = () => <DefaultValueTips content='暂无项目' />
+const customizeRender = () => <DefaultValueTips content='暂无任务' />
 
 const request = {
   project_id: -1,

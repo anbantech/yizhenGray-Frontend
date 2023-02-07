@@ -57,9 +57,9 @@ const An_ButtonNameMap = {
   2: '新建交互'
 }
 const An_ButtonDetailMap = {
-  0: '激励详情',
-  1: '级联激励详情',
-  2: '交互详情'
+  0: '查看单激励Group',
+  1: '查看级联激励Group',
+  2: '查看交互'
 }
 const An_tabsMap = {
   0: 'one',
@@ -67,6 +67,7 @@ const An_tabsMap = {
   2: 'three'
 }
 
+const inputPlaceholder = { 0: '根据名称搜索单激励Group', 1: '根据名称搜索级联激励Group', 2: '根据名称搜索交互' }
 const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () => {
   const history = useHistory()
   // 目标列表参数
@@ -341,7 +342,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
           <Radio.Button value='2'>交互列表</Radio.Button>
         </Radio.Group>
         <div className={styles.AnBan_header_bottom}>
-          <SearchInput placeholder='根据名称搜索激励' onChangeValue={updateParams} />
+          <SearchInput placeholder={`${inputPlaceholder[tabs as keyof typeof inputPlaceholder]}`} onChangeValue={updateParams} />
           <CreateButton
             name={`${An_ButtonNameMap[tabs as keyof typeof An_ButtonDetailMap]}`}
             size='large'
