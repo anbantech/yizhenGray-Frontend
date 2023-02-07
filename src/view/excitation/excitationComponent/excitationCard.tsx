@@ -93,9 +93,9 @@ const TwoExcitationCard = React.forwardRef((props: AllPropsType) => {
         <Form.Item
           label='描述'
           name='description'
-          rules={[{ message: '请输入任务描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
+          rules={[{ message: '请输入激励描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
-          <Input.TextArea disabled style={{ width: '222px' }} placeholder='任务描述' autoSize={{ minRows: 2, maxRows: 3 }} />
+          <Input.TextArea disabled style={{ width: '222px' }} placeholder='激励描述' autoSize={{ minRows: 2, maxRows: 3 }} />
         </Form.Item>
       </Form>
     </div>
@@ -153,7 +153,7 @@ const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
           name='description'
           rules={[{ message: '请输入激励描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
-          <Input.TextArea disabled style={{ width: '222px' }} placeholder='任务描述' autoSize={{ minRows: 2, maxRows: 3 }} />
+          <Input.TextArea disabled style={{ width: '222px' }} placeholder='激励描述' autoSize={{ minRows: 2, maxRows: 3 }} />
         </Form.Item>
       </Form>
     </div>
