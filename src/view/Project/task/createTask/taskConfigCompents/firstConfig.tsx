@@ -259,7 +259,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
                */
               excitationList?.map((rate: any) => {
                 return (
-                  <Option key={rate.id} value={rate.id}>
+                  <Option key={rate.sender_id} value={rate.sender_id}>
                     {rate.name}
                   </Option>
                 )
