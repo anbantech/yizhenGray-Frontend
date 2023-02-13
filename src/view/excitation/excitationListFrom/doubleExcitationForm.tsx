@@ -11,7 +11,7 @@ import { throwErrorMessage } from 'Src/util/message'
 
 import styles from '../excitation.less'
 import ExcitationCard from '../excitationComponent/excitationCard'
-import GetDeatilFn from './getDataDetailFn/getDataDetailFn'
+import { GetDeatilFn } from './getDataDetailFn/getDataDetailFn'
 // import { RouteComponentProps, StaticContext } from 'react-router'
 
 const layout = {
@@ -20,7 +20,7 @@ const layout = {
 }
 
 const request = {
-  group_type: 0,
+  target_type: 0,
   key_word: '',
   status: null,
   page: 1,
@@ -41,7 +41,7 @@ interface projectInfoType {
 }
 
 interface Resparams {
-  group_type: number
+  target_type: number
   key_word?: string
   status?: null | number
   page: number
@@ -105,10 +105,10 @@ const DoubleExcitationForm: React.FC = () => {
         const params = {
           name: values.name,
           desc: values.name,
-          cnt0: +values.cnt0,
-          w0: +values.w0,
-          cnt1: +values.cnt1,
-          w1: +values.w1,
+          gu_cnt0: +values.gu_cnt0,
+          gu_w0: +values.gu_w0,
+          gu_cnt1: +values.gu_cnt1,
+          gu_w1: +values.gu_w1,
           align_delay_0: +values.align_delay_0,
           align_delay_1: +values.align_delay_1,
           align_delay_2: +values.align_delay_2,
@@ -118,14 +118,14 @@ const DoubleExcitationForm: React.FC = () => {
         if (result.data) {
           history.push({
             pathname: '/excitationList',
-            state: {}
+            state: { type }
           })
         }
       }
     } catch (error) {
       throwErrorMessage(error)
     }
-  }, [form, data, history])
+  }, [form, data, history, type])
 
   const getLength = React.useCallback(() => {
     if (data.length === 0) return false
@@ -138,7 +138,7 @@ const DoubleExcitationForm: React.FC = () => {
   const cancelForm = () => {
     history.push({
       pathname: '/excitationList',
-      state: {}
+      state: { type }
     })
   }
   const onFieldsChange = (changedFields: any, allFields: any) => {
@@ -175,14 +175,14 @@ const DoubleExcitationForm: React.FC = () => {
   React.useEffect(() => {
     if (Data && isFixForm) {
       setCardArray(Data?.group_data_list.length)
-      const { name, desc, cnt0, w0, w1, cnt1, align_delay_0, align_delay_2, align_delay_1 } = Data as any
+      const { name, desc, gu_cnt0, gu_w0, gu_w1, gu_cnt1, align_delay_0, align_delay_2, align_delay_1 } = Data as any
       const formData = {
         name,
         description: desc,
-        cnt0,
-        w0,
-        cnt1,
-        w1,
+        gu_cnt0,
+        gu_w0,
+        gu_cnt1,
+        gu_w1,
         align_delay_0,
         align_delay_1,
         align_delay_2
@@ -254,7 +254,7 @@ const DoubleExcitationForm: React.FC = () => {
         </Form.Item>
         <Form.Item
           label='发送次数'
-          name='cnt0'
+          name='gu_cnt0'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -278,7 +278,7 @@ const DoubleExcitationForm: React.FC = () => {
         </Form.Item>
         <Form.Item
           label='等待时间'
-          name='w0'
+          name='gu_w0'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -302,7 +302,7 @@ const DoubleExcitationForm: React.FC = () => {
         </Form.Item>
         <Form.Item
           label='循环次数'
-          name='cnt1'
+          name='gu_cnt1'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -326,7 +326,7 @@ const DoubleExcitationForm: React.FC = () => {
         </Form.Item>
         <Form.Item
           label='循环间隔'
-          name='w1'
+          name='gu_w1'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[

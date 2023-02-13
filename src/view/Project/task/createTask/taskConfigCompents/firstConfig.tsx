@@ -2,7 +2,7 @@ import { Form, Input, Select } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useEffect, useImperativeHandle, useState } from 'react'
 import { excitationListFn } from 'Src/services/api/excitationApi'
-import { createTaskFn, updateTask } from 'Src/services/api/taskApi'
+import { createTaskFn, getSimulateNode, updateTask } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from './stepBaseConfig.less'
 
@@ -11,7 +11,7 @@ const layout = {
   wrapperCol: { span: 18 }
 }
 const request = {
-  group_type: 2,
+  target_type: 2,
   key_word: '',
   status: null,
   page: 1,
@@ -31,7 +31,7 @@ interface projectInfoType {
 }
 
 interface Resparams {
-  group_type: number
+  target_type: number
   key_word?: string
   status?: null | number
   page: number
@@ -49,6 +49,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   const [form] = useForm()
   const { Option } = Select
   const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
+  const [nodeList, setNodeList] = useState<number[]>([])
 
   const createOneExcitationFn = React.useCallback(async () => {
     const values = await form.validateFields()
@@ -86,7 +87,16 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     validate: () => {},
     clearInteraction: () => {}
   }))
-
+  const getNode = async () => {
+    try {
+      const result = await getSimulateNode()
+      if (result.data) {
+        setNodeList(result.data)
+      }
+    } catch (error) {
+      throwErrorMessage(error, {})
+    }
+  }
   const getExcitationList = async (value: Resparams) => {
     try {
       const result = await excitationListFn(value)
@@ -100,15 +110,18 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
 
   useEffect(() => {
     getExcitationList(request)
+    getNode()
     if (taskInfo.data) {
-      const { name, desc, project_id, work_time, crash_num, group_id } = taskInfo.data as any
+      const { name, desc, project_id, work_time, crash_num, group_id, simu_instance_id, beat_unit } = taskInfo.data as any
       const formData = {
         name,
         description: desc,
         project_id,
         work_time,
         crash_num,
-        group_id
+        group_id,
+        beat_unit,
+        simu_instance_id
       }
       form.setFieldsValue(formData)
     }
@@ -196,7 +209,48 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         >
           <Input placeholder='请输入Crash数量' />
         </Form.Item>
-
+        <Form.Item
+          label='节拍单元'
+          name='beat_unit'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[
+            { required: true, message: '请输入节拍单元' },
+            {
+              validator(_, value) {
+                const reg = /^\d+$/
+                if (reg.test(value) && value <= 4294967296) {
+                  return Promise.resolve()
+                }
+                return Promise.reject(new Error('请输入 0-4294967296 之间的整数'))
+              }
+            }
+          ]}
+        >
+          <Input placeholder='请输入节拍单元' suffix='秒' />
+        </Form.Item>
+        <Form.Item
+          label='仿真节点'
+          name='simu_instance_id'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[{ required: true, message: '请选择交互' }]}
+        >
+          <Select placeholder='请选择交互'>
+            {
+              /**
+               * 根据连接方式列表渲染下拉框可选择的设备比特率
+               */
+              nodeList?.map((rate: any) => {
+                return (
+                  <Option key={rate} value={rate}>
+                    {rate}
+                  </Option>
+                )
+              })
+            }
+          </Select>
+        </Form.Item>
         <Form.Item label='交互' name='group_id' validateFirst validateTrigger={['onBlur']} rules={[{ required: true, message: '请选择交互' }]}>
           <Select placeholder='请选择交互'>
             {

@@ -5,11 +5,12 @@ import { useContext } from 'react'
 import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
-import { getPortList, createExcitationFn } from 'Src/services/api/excitationApi'
+import { createExcitationFn, excitationListFn } from 'Src/services/api/excitationApi'
 import { getTemplateList } from 'Src/services/api/templateApi'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from '../excitation.less'
-import GetDeatilFn from './getDataDetailFn/getDataDetailFn'
+import { GetDeatilFn } from './getDataDetailFn/getDataDetailFn'
+
 // import { RouteComponentProps, StaticContext } from 'react-router'
 
 const layout = {
@@ -25,14 +26,28 @@ const templateListRequest = {
   sort_order: 'descend'
 }
 
+const oneRequest = {
+  target_type: '3',
+  key_word: '',
+  status: null,
+  page: 1,
+  page_size: 999,
+  sort_field: 'create_time',
+  sort_order: 'descend'
+}
+
+interface listArray {
+  [propName: string]: string | number
+}
+
 const OneExcotationForm: React.FC = () => {
   const history = useHistory()
-  const { isFixForm, info } = useContext(GlobalContexted)
+  const { isFixForm, info, type } = useContext(GlobalContexted)
   const { Option } = Select
   const [form] = useForm()
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
   const [templateList, setTemplateList] = React.useState<any[]>()
-  const [portList, setPortList] = React.useState<string[]>([])
+  const [portList, setPortList] = React.useState<listArray[]>([])
   const Data = GetDeatilFn(info?.id)
   // 获取模版列表
   const fetchTemplateList = React.useCallback(async () => {
@@ -52,10 +67,10 @@ const OneExcotationForm: React.FC = () => {
   const fetchPortList = React.useCallback(async () => {
     //  Todo code码
     try {
-      const result = await getPortList()
+      const result = await excitationListFn(oneRequest)
       if (result.data) {
         const results = result.data
-        setPortList(results)
+        setPortList(results.results)
       }
       return result
     } catch (error) {
@@ -73,15 +88,14 @@ const OneExcotationForm: React.FC = () => {
     try {
       if (values) {
         const params = {
-          group_type: 0,
           name: values.name,
-          port: values.port,
+          target_id: values.target_id,
           template_id: +values.template_id,
-          cnt1: +values.cnt1,
-          cnt0: +values.cnt0,
-          w1: +values.w1,
+          gu_cnt1: +values.gu_cnt1,
+          gu_cnt0: +values.gu_cnt0,
+          gu_w1: +values.gu_w1,
           desc: values.description,
-          w0: +values.w0,
+          gu_w0: +values.gu_w0,
           align_delay_1: +values.align_delay_1,
           align_delay_0: +values.align_delay_0,
           align_delay_2: +values.align_delay_2
@@ -90,7 +104,7 @@ const OneExcotationForm: React.FC = () => {
         if (result.data) {
           history.push({
             pathname: '/excitationList',
-            state: {}
+            state: { type }
           })
         }
       }
@@ -101,7 +115,7 @@ const OneExcotationForm: React.FC = () => {
   const cancelForm = () => {
     history.push({
       pathname: '/excitationList',
-      state: {}
+      state: { type }
     })
   }
   const onFieldsChange = (changedFields: any, allFields: any) => {
@@ -130,16 +144,16 @@ const OneExcotationForm: React.FC = () => {
   }, [])
   React.useEffect(() => {
     if (Data) {
-      const { name, desc, port, template_id, align_delay_1, cnt0, cnt1, w1, w0, align_delay_0, align_delay_2 } = Data as any
+      const { name, desc, target_id, template_id, align_delay_1, gu_cnt0, gu_cnt1, gu_w1, gu_w0, align_delay_0, align_delay_2 } = Data as any
       const formData = {
         name,
         description: desc,
-        port,
+        target_id,
         template_id,
-        cnt0,
-        cnt1,
-        w1,
-        w0,
+        gu_cnt0,
+        gu_cnt1,
+        gu_w1,
+        gu_w0,
         align_delay_0,
         align_delay_1,
         align_delay_2
@@ -178,7 +192,7 @@ const OneExcotationForm: React.FC = () => {
                 if (reg.test(value)) {
                   return Promise.resolve()
                 }
-                return Promise.reject(new Error('单激励Group名称名称由汉字、数字、字母和下划线组成'))
+                return Promise.reject(new Error('单激励Group名称由汉字、数字、字母和下划线组成'))
               }
             }
           ]}
@@ -186,16 +200,16 @@ const OneExcotationForm: React.FC = () => {
           <Input disabled={isFixForm} placeholder='请输入单激励Group名称' />
         </Form.Item>
 
-        <Form.Item name='port' label='端口类别' rules={[{ required: true, message: '请选择端口类别' }]}>
-          <Select placeholder='请选择端口类别' disabled={isFixForm}>
+        <Form.Item name='target_id' label='激励' rules={[{ required: true, message: '请选择端口类别' }]}>
+          <Select placeholder='激励' disabled={isFixForm}>
             {
               /**
                * 根据连接方式列表渲染下拉框可选择的设备比特率
                */
               portList?.map(rate => {
                 return (
-                  <Option key={rate} value={rate}>
-                    {rate}
+                  <Option key={rate.stimulus} value={rate.stimulus_id}>
+                    {rate.stimulus_name}
                   </Option>
                 )
               })
@@ -244,7 +258,7 @@ const OneExcotationForm: React.FC = () => {
         </Form.Item>
         <Form.Item
           label='发送次数'
-          name='cnt0'
+          name='gu_cnt0'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -268,7 +282,7 @@ const OneExcotationForm: React.FC = () => {
         </Form.Item>
         <Form.Item
           label='等待时间'
-          name='w0'
+          name='gu_w0'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -292,7 +306,7 @@ const OneExcotationForm: React.FC = () => {
         </Form.Item>
         <Form.Item
           label='循环间隔'
-          name='w1'
+          name='gu_w1'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -316,7 +330,7 @@ const OneExcotationForm: React.FC = () => {
         </Form.Item>
         <Form.Item
           label='循环次数'
-          name='cnt1'
+          name='gu_cnt1'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
