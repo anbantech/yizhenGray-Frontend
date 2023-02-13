@@ -42,6 +42,7 @@ function content() {
         <Route path='/excitationList/createOneExcitation' exact component={ExcitationBase} />
         <Route path='/excitationList/createDoubleExcitation' exact component={ExcitationBase} />
         <Route path='/excitationList/createGroupExcitation' exact component={ExcitationBase} />
+        <Route path='/excitationList/createExcitation' exact component={ExcitationBase} />
         <Route path='/templateList' exact component={TemplateList} />
         <Route path='/templateList/template' exact component={CreateTemplateWrapper} />
         {/* <Route path='/excitationList/createGroupExcitation' exact component={ExcitationBase} /> */}

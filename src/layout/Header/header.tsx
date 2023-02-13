@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import React, { useCallback, useContext, useState } from 'react'
 import { DownOutlined } from '@ant-design/icons'
 import { Breadcrumb, Dropdown, Menu, Space, Modal, Form, Input, message, Button } from 'antd'
@@ -154,11 +155,18 @@ function Header(props: any) {
     '/projects/Tasks/Detail/TaskLog': '日志',
     '/excitationList': '激励列表',
     '/excitationList/Deatail': `${
-      data && data?.name === '查看单激励Group' ? '查看单激励Group' : data?.name === '查看级联激励Group' ? '查看级联Group' : '查看交互'
+      data && data?.name === '查看单激励Group'
+        ? '查看单激励Group'
+        : data?.name === '查看级联激励Group'
+        ? '查看级联Group'
+        : data?.name === '查看交互'
+        ? '查看交互'
+        : '查看激励'
     }`,
-    '/excitationList/createOneExcitation': '新建激励Group',
+    '/excitationList/createOneExcitation': '新建单激励Group',
     '/excitationList/createDoubleExcitation': '新建级联Group',
     '/excitationList/createGroupExcitation': '新建交互',
+    '/excitationList/createExcitation': '新建激励',
     '/templateList': '模版列表',
     '/templateList/template': `${data && data?.editOriginalTemplate ? '修改模版' : '创建模版'}`
   }

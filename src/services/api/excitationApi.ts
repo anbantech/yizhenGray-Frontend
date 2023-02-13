@@ -1,6 +1,6 @@
 import request from 'Src/services/request/request'
-import { ExcitationList, createExcitation, ExcitationParams, doubleExcitationParams, groupParams } from 'Src/globalType/Param'
-import { ResExcitationList, ResCreExcitationList, getAllRes } from 'Src/globalType/Response'
+import { ExcitationList, createExcitation, ExcitationParams, doubleExcitationParams, groupParams, excitation_1Params } from 'Src/globalType/Param'
+import { ResExcitationList, ResCreExcitationList, getAllRes, excitationRes } from 'Src/globalType/Response'
 
 export function createExcitationListFn(params: createExcitation) {
   return request.post<ResCreExcitationList>('/api/v1.0/stimulus/save', params)
@@ -35,4 +35,16 @@ export function getAllExcitationFn(id: number) {
 
 export function createGroupFn(params: groupParams) {
   return request.post<any>('/api/v1.0/temp_and_sti/save/work', params)
+}
+
+// 创建激励
+
+export function createExcitationFn_1(params: excitation_1Params) {
+  return request.post<excitationRes>('/api/v1.0/temp_and_sti/save/sti', params)
+}
+
+//
+
+export function getExcitationFn_1(id: number) {
+  return request.get<excitationRes>(`/api/v1.0/temp_and_sti/get/sti/${id}`)
 }

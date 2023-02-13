@@ -11,7 +11,7 @@ import { createGroupFn, excitationListFn } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from '../excitation.less'
 import ExcitationCard from '../excitationComponent/excitationCard'
-import GetDeatilFn from './getDataDetailFn/getDataDetailFn'
+import { GetDeatilFn } from './getDataDetailFn/getDataDetailFn'
 
 const layout = {
   labelCol: { span: 4 },
@@ -19,7 +19,7 @@ const layout = {
 }
 
 const oneRequest = {
-  group_type: '0',
+  target_type: '0',
   key_word: '',
   status: null,
   page: 1,
@@ -29,7 +29,7 @@ const oneRequest = {
 }
 
 const doubleRequest = {
-  group_type: 1,
+  target_type: 1,
   key_word: '',
   status: null,
   page: 1,
@@ -38,14 +38,14 @@ const doubleRequest = {
   sort_order: 'descend'
 }
 interface Option {
-  id: string
+  sender_id: string
   name: string
   disabled?: boolean
   children?: any[]
 }
 
 interface Resparams {
-  group_type: number | string
+  target_type: number | string
   key_word?: string
   status?: null | number
   page: number
@@ -65,13 +65,13 @@ const GroupExcitationForm: React.FC = () => {
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
   const [excitationList, setExcitationList] = useState<Option[]>([
     {
-      id: '0',
+      sender_id: '0',
       name: '单激励',
       disabled: false,
       children: []
     },
     {
-      id: '1',
+      sender_id: '1',
       name: '级联激励',
       disabled: false,
       children: []
@@ -101,7 +101,7 @@ const GroupExcitationForm: React.FC = () => {
   const cancelForm = () => {
     history.push({
       pathname: '/excitationList',
-      state: {}
+      state: { type }
     })
   }
   const getExcitationList = async (oneRequest: Resparams, doubleRequest: Resparams) => {
@@ -153,14 +153,14 @@ const GroupExcitationForm: React.FC = () => {
         if (result.data) {
           history.push({
             pathname: '/excitationList',
-            state: {}
+            state: { type }
           })
         }
       }
     } catch (error) {
       throwErrorMessage(error, { 1009: '项目删除失败' })
     }
-  }, [form, data, history])
+  }, [form, data, history, type])
   const getLength = React.useCallback(() => {
     if (data.length === 0) return false
     const bol = Object.values(data).every(item => {

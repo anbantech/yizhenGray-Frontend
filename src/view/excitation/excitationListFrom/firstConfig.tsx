@@ -11,7 +11,7 @@ const layout = {
   wrapperCol: { span: 18 }
 }
 const request = {
-  group_type: 2,
+  target_type: 2,
   key_word: '',
   status: null,
   page: 1,
@@ -31,7 +31,7 @@ interface projectInfoType {
 }
 
 interface Resparams {
-  group_type: number
+  target_type: number
   key_word?: string
   status?: null | number
   page: number
