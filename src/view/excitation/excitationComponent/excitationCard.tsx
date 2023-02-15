@@ -52,7 +52,7 @@ const TwoExcitationCard = React.forwardRef((props: AllPropsType) => {
   }
   const onSelect = (val: string) => {
     excitationList.find((item: any) => {
-      if (item.id === val) {
+      if (item.sender_id === val) {
         setDesc(item.desc)
       }
       return ''
@@ -61,7 +61,7 @@ const TwoExcitationCard = React.forwardRef((props: AllPropsType) => {
   React.useEffect(() => {
     if (formData && isFixForm) {
       const excitarionListes = formData[index]
-      form.setFieldsValue({ port: excitarionListes.id, description: excitarionListes.desc })
+      form.setFieldsValue({ port: excitarionListes.sender_id, description: excitarionListes.desc })
     } else {
       form.setFieldsValue({ description: desc })
     }
@@ -82,7 +82,7 @@ const TwoExcitationCard = React.forwardRef((props: AllPropsType) => {
                */
               excitationList?.map((rate: any) => {
                 return (
-                  <Option key={rate.id} value={rate.id}>
+                  <Option key={rate.sender_id} value={rate.sender_id}>
                     {rate.name}
                   </Option>
                 )
@@ -117,7 +117,7 @@ const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
   const onSelect = (value: any) => {
     excitationList.forEach((item: any) => {
       item.children.find((pre: any) => {
-        if (+value[1] === pre.id) {
+        if (+value[1] === pre.sender_id) {
           setDesc(pre.desc)
         }
         return ''
@@ -131,13 +131,9 @@ const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
     if (formData && isFixForm) {
       const excitarionListes = formData[index]
       form.setFieldsValue({
-        port: [excitarionListes.group_type === 0 ? '单激励' : '级联激励', excitarionListes.name],
+        port: [excitarionListes.target_type === 0 ? '单激励' : '级联激励', excitarionListes.name],
         description: excitarionListes.desc
       })
-
-      // if (excitarionList.group_type === 1) {
-      //   form.setFieldsValue({ port: excitarionList.id, description: excitarionList.desc })
-      // }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [desc, formData, form, isFixForm, index])
@@ -146,7 +142,7 @@ const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
     <div className={styles.card_middle}>
       <Form name='middle' autoComplete='off' className={styles.card_middle_form} onValuesChange={onValuesChange} form={form}>
         <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择激励' }]}>
-          <Cascader disabled={isFixForm} fieldNames={{ label: 'name', value: 'id' }} options={excitationList} onChange={onSelect} />
+          <Cascader disabled={isFixForm} fieldNames={{ label: 'name', value: 'sender_id' }} options={excitationList} onChange={onSelect} />
         </Form.Item>
         <Form.Item
           label='描述'

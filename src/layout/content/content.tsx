@@ -19,6 +19,7 @@ import ExcitationBase from 'Src/view/excitation/ExcitationBase'
 import TemplateList from 'Src/view/template/TemplateList/templateList'
 // import CreateResponseTemplateComponent from 'Src/view/template/ResponseTemplate/createResponseTemplate'
 import CreateTemplateWrapper from 'Src/view/template/BaseTemplate/createTemplateWrapper'
+import ExcitationDraw from 'Src/view/excitation/excitationComponent/excitationDraw'
 // import ChangeArrgement from 'Src/view/arrgement/changeArrgement'
 // import StepSecond from 'Src/view/arrgement/SecondArrgement'
 
@@ -42,6 +43,8 @@ function content() {
         <Route path='/excitationList/createOneExcitation' exact component={ExcitationBase} />
         <Route path='/excitationList/createDoubleExcitation' exact component={ExcitationBase} />
         <Route path='/excitationList/createGroupExcitation' exact component={ExcitationBase} />
+        <Route path='/excitationList/createExcitation' exact component={ExcitationBase} />
+        <Route path='/excitationList/createExcitation/ExcitationDraw' exact component={ExcitationDraw} />
         <Route path='/templateList' exact component={TemplateList} />
         <Route path='/templateList/template' exact component={CreateTemplateWrapper} />
         {/* <Route path='/excitationList/createGroupExcitation' exact component={ExcitationBase} /> */}

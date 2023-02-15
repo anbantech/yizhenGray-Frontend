@@ -32,7 +32,7 @@ export interface ProjectList {
 
 // 激励
 export interface ExcitationList {
-  group_type: string | number
+  target_type: string | number
   key_word?: string
   page: number
   status?: number | null
@@ -220,7 +220,7 @@ export interface taskParamsFn {
   project_id: number
   work_time: number
   crash_num: number
-  group_id: number
+  sender_id: number
 }
 
 // 21. 任务详情
@@ -546,4 +546,10 @@ export interface groupParams {
   name?: string
   desc: string
   child_id_list?: number[]
+}
+
+export interface excitation_1Params {
+  stimulus_name: string
+  is_enable: boolean
+  stimulus_value: string
 }

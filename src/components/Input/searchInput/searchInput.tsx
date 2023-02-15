@@ -1,5 +1,5 @@
 import Input from 'antd/lib/input'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useImperativeHandle, useMemo } from 'react'
 import clearImage from 'Image/Delete.svg'
 import searchImage from 'Image/search.svg'
 import useRequestRate from 'Src/util/Hooks/useRequestRate'
@@ -43,7 +43,7 @@ const ClearSuffix = React.memo(function ClearSuffix(isShowProp: isShowProps<isSh
   )
 })
 
-function SearchInput(props: searchTypes) {
+const SearchInput = React.forwardRef((props: searchTypes, myRef) => {
   const { placeholder, onChangeValue } = props
   const changeValueFn = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
@@ -51,6 +51,14 @@ function SearchInput(props: searchTypes) {
   }
 
   const [nowValue, isCancel, controlRate] = useRequestRate(changeValueFn, 300)
+  useImperativeHandle(myRef, () => ({
+    save: () => {
+      return controlRate('')
+    },
+    delete: () => {},
+    validate: () => {},
+    clearInteraction: () => {}
+  }))
   useEffect(() => {
     if (isCancel) {
       onChangeValue(nowValue)
@@ -70,6 +78,7 @@ function SearchInput(props: searchTypes) {
       />
     </div>
   )
-}
+})
 
+SearchInput.displayName = 'SearchInput'
 export default SearchInput

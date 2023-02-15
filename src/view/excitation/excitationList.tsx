@@ -6,7 +6,7 @@ import Table from 'antd/lib/table'
 import ConfigProvider from 'antd/lib/config-provider'
 import { useState } from 'react'
 import * as React from 'react'
-import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
+import { RouteComponentProps, StaticContext, useHistory, useLocation, withRouter } from 'react-router'
 // import { message } from 'antd'
 import { excitationListFn } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
@@ -14,14 +14,17 @@ import zhCN from 'antd/lib/locale/zh_CN'
 // import deleteImage from 'Src/assets/image/Deletes.svg'
 // import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { Radio, RadioChangeEvent } from 'antd'
+import useDepCollect from 'Src/util/Hooks/useDepCollect'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import styles from 'Src/view/Project/project/project.less'
 import style from './excitation.less'
+import { StepRef } from '../Project/task/createTask/newCreateTask'
+// import { changeParams } from '../Project/taskDetail/taskDetailUtil/getTestLog'
 
 const customizeRender = () => <DefaultValueTips content='暂无项目' />
 
 const request = {
-  group_type: '0',
+  target_type: '0',
   key_word: '',
   status: null,
   page: 1,
@@ -31,7 +34,7 @@ const request = {
 }
 
 interface Resparams {
-  group_type: number | string
+  target_type: number | string
   key_word?: string
   status?: null | number
   page: number
@@ -54,24 +57,42 @@ interface projectInfoType {
 const An_ButtonNameMap = {
   0: '新建单激励Group',
   1: '新建级联Group',
-  2: '新建交互'
+  2: '新建交互',
+  3: '新建激励'
 }
 const An_ButtonDetailMap = {
   0: '查看单激励Group',
   1: '查看级联激励Group',
-  2: '查看交互'
+  2: '查看交互',
+  3: '查看激励'
 }
 const An_tabsMap = {
   0: 'one',
   1: 'two',
-  2: 'three'
+  2: 'three',
+  3: 'four'
 }
 
-const inputPlaceholder = { 0: '根据名称搜索单激励Group', 1: '根据名称搜索级联激励Group', 2: '根据名称搜索交互' }
+const callBackAn_tabs = {
+  one: 0,
+  two: 1,
+  three: 2,
+  four: 3
+}
+interface ChildRef {
+  inputRef: React.MutableRefObject<StepRef | null>
+}
+
+type stateType = { [key: string]: string }
+const inputPlaceholder = { 0: '根据名称搜索单激励Group', 1: '根据名称搜索级联激励Group', 2: '根据名称搜索交互', 3: '根据名称搜索激励' }
 const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () => {
+  const childRef: ChildRef = {
+    inputRef: React.useRef<StepRef | null>(null)
+  }
+
+  const state = useLocation()?.state as stateType
+
   const history = useHistory()
-  // 目标列表参数
-  const [params, setParams] = useState(request)
 
   // 项目管理
   const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
@@ -80,7 +101,9 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   const [total, setTotal] = useState<number>()
 
   // 切换tabs
-  const [tabs, setTabs] = useState<number>(0)
+  const [tabs, setTabs] = useState<number>(-1)
+
+  const [status, depCollect, depData] = useDepCollect(request)
   // 存储单个项目信息
   //   const [excitationInfo, setExcitationInfo] = useState('')
 
@@ -96,8 +119,11 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       const createDoubleExcitation = '/excitationList/createDoubleExcitation'
       const createOneExcitation = '/excitationList/createOneExcitation'
       const createGroupExcitation = '/excitationList/createGroupExcitation'
+      const createExcitation = './excitationList/createExcitation'
       history.push({
-        pathname: `${+value === 0 ? createOneExcitation : +value === 1 ? createDoubleExcitation : createGroupExcitation}`,
+        pathname: `${
+          +value === 0 ? createOneExcitation : +value === 1 ? createDoubleExcitation : +value === 2 ? createGroupExcitation : createExcitation
+        }`,
         state: {
           type: `${An_tabsMap[tabs as keyof typeof An_tabsMap]}`,
           isFixForm: false,
@@ -120,11 +146,11 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   //   }
 
   // 查看详情
-  const lookDetail = (item: any) => {
+  const lookDetail = (item: any, type: number) => {
     history.push({
       pathname: '/excitationList/Deatail',
       state: {
-        info: { id: item.id },
+        info: { id: type !== 3 ? item.sender_id : item.stimulus_id },
         type: `${An_tabsMap[tabs as keyof typeof An_tabsMap]}`,
         isFixForm: true,
         name: `${An_ButtonDetailMap[tabs as keyof typeof An_ButtonDetailMap]}`
@@ -133,9 +159,12 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   }
 
   // 更新参数获取列表
-  const updateParams = (value: string) => {
-    setParams({ ...params, key_word: value })
-  }
+  const updateParams = React.useCallback(
+    (value: string) => {
+      depCollect(true, { key_word: value })
+    },
+    [depCollect]
+  )
 
   // 删除项目弹出框
   //   const deleteProject = (id: string, value: boolean) => {
@@ -145,7 +174,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
 
   // 更改页码
   const changePage = (page: number, pageSize: number) => {
-    setParams({ ...params, page, page_size: pageSize })
+    depCollect(true, { page, page_size: pageSize })
   }
 
   // 获取激励列表
@@ -162,14 +191,32 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   }
 
   // 切换页面
-  const onChange = (e: RadioChangeEvent) => {
-    setTabs(e.target.value)
-    setParams({ ...params, group_type: `${e.target.value}` })
-  }
+  const onChange = React.useCallback(
+    (e: RadioChangeEvent) => {
+      childRef.inputRef.current?.save()
+      depCollect(true, { ...request, target_type: `${e.target.value}` })
+      setTabs(e.target.value)
+    },
+    [childRef.inputRef, depCollect]
+  )
 
   React.useEffect(() => {
-    getExcitationList(params)
-  }, [params, tabs])
+    if (state === undefined) {
+      setTabs(3)
+      depCollect(true, { target_type: '3' })
+    } else {
+      setTabs(callBackAn_tabs[state?.type as keyof typeof callBackAn_tabs])
+      depCollect(true, { target_type: `${callBackAn_tabs[state?.type as keyof typeof callBackAn_tabs]}` })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  React.useEffect(() => {
+    if (status) {
+      getExcitationList(depData)
+    }
+  }, [depData, status])
+
   const cloumnMap = {
     0: [
       {
@@ -184,7 +231,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
               className={styles.tableProjectName}
               role='time'
               onClick={() => {
-                lookDetail(row)
+                lookDetail(row, 0)
               }}
             >
               {row.name}
@@ -219,7 +266,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
                 role='button'
                 tabIndex={0}
                 onClick={() => {
-                  lookDetail(row)
+                  lookDetail(row, 0)
                 }}
               >
                 查看详情
@@ -242,7 +289,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
               className={styles.tableProjectName}
               role='time'
               onClick={() => {
-                lookDetail(row)
+                lookDetail(row, 1)
               }}
             >
               {row.name}
@@ -270,7 +317,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
                 role='button'
                 tabIndex={0}
                 onClick={() => {
-                  lookDetail(row)
+                  lookDetail(row, 1)
                 }}
               >
                 查看详情
@@ -293,7 +340,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
               className={styles.tableProjectName}
               role='time'
               onClick={() => {
-                lookDetail(row)
+                lookDetail(row, 2)
               }}
             >
               {row.name}
@@ -321,7 +368,69 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
                 role='button'
                 tabIndex={0}
                 onClick={() => {
-                  lookDetail(row)
+                  lookDetail(row, 2)
+                }}
+              >
+                查看详情
+              </span>
+            </div>
+          )
+        }
+      }
+    ],
+    3: [
+      {
+        width: '15%',
+        title: '激励名称',
+        dataIndex: 'stimulus_name',
+        key: 'stimulus_name',
+        // eslint-disable-next-line react/display-name
+        render: (_: any, row: any) => {
+          return (
+            <span
+              className={styles.tableProjectName}
+              role='time'
+              onClick={() => {
+                lookDetail(row, 3)
+              }}
+            >
+              {row.stimulus_name}
+            </span>
+          )
+        }
+      },
+      {
+        width: '15%',
+        title: '是否生效',
+        dataIndex: 'is_enable',
+        key: 'is_enable',
+        // eslint-disable-next-line react/display-name
+        render: (_: any, row: any) => {
+          return <span>{row.is_enable ? '是' : '否'}</span>
+        }
+      },
+      {
+        width: '15%',
+        title: '端口类别',
+        dataIndex: 'stimulus_value',
+        key: 'stimulus_value'
+      },
+
+      {
+        width: '10%',
+        title: '操作',
+        dataIndex: 'operations',
+        key: 'operations',
+        // eslint-disable-next-line react/display-name
+        render: (_: any, row: any) => {
+          return (
+            <div className={style.excitaion_operation}>
+              <span
+                style={{ marginLeft: '10px', marginRight: '10px' }}
+                role='button'
+                tabIndex={0}
+                onClick={() => {
+                  lookDetail(row, 3)
                 }}
               >
                 查看详情
@@ -336,15 +445,20 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   return (
     <div className={styles.AnBan_main}>
       <div className={(styles.AnBan_header, style.AnBan_headerRadio)}>
-        <Radio.Group onChange={onChange} buttonStyle='solid' optionType='button' defaultValue='0'>
+        <Radio.Group onChange={onChange} buttonStyle='solid' optionType='button' value={`${tabs}`}>
+          <Radio.Button value='3'>激励列表</Radio.Button>
           <Radio.Button value='0'>单激励Group列表</Radio.Button>
           <Radio.Button value='1'>级联Group列表</Radio.Button>
           <Radio.Button value='2'>交互列表</Radio.Button>
         </Radio.Group>
         <div className={styles.AnBan_header_bottom}>
-          <SearchInput placeholder={`${inputPlaceholder[tabs as keyof typeof inputPlaceholder]}`} onChangeValue={updateParams} />
+          <SearchInput
+            ref={childRef.inputRef}
+            placeholder={`${inputPlaceholder[tabs as keyof typeof inputPlaceholder]}`}
+            onChangeValue={updateParams}
+          />
           <CreateButton
-            name={`${An_ButtonNameMap[tabs as keyof typeof An_ButtonDetailMap]}`}
+            name={`${An_ButtonNameMap[tabs as keyof typeof An_ButtonNameMap]}`}
             size='large'
             type='primary'
             onClick={() => {
@@ -359,7 +473,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         </ConfigProvider>
       </div>
       <div className={styles.AnBan_PaginationsAge}>
-        <PaginationsAge length={total} num={10} getParams={changePage} pagenums={params.page} />
+        <PaginationsAge length={total} num={10} getParams={changePage} pagenums={depData.page} />
       </div>
       {/* <ExcitationModal
         visible={modalData.isModalVisible}

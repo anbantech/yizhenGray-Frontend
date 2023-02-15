@@ -562,3 +562,10 @@ export interface getAllRes {
   group_id_list: number[]
   group_data_list: any[]
 }
+
+export interface excitationRes {
+  stimulus_id: number
+  stimulus_name: string
+  is_enable: boolean
+  stimulus_value: string
+}

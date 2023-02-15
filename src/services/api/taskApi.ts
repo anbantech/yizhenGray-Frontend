@@ -1,14 +1,4 @@
-import {
-  beginTest,
-  exportTestLog,
-  simulateNodeParams,
-  simulateParams,
-  targetsTest,
-  TaskList,
-  taskParamsFn,
-  testAlllogs,
-  testlogs
-} from 'Src/globalType/Param'
+import { beginTest, exportTestLog, simulateParams, targetsTest, TaskList, taskParamsFn, testAlllogs, testlogs } from 'Src/globalType/Param'
 import { ResTaskList, ResTaskDetail, isCode, Restestlogs } from 'Src/globalType/Response'
 import request from 'Src/services/request/request'
 
@@ -101,8 +91,8 @@ export function simulate(params: simulateParams) {
 }
 // 寄存器/内存信息查询
 
-export function simulateOption(params: simulateParams) {
-  return request.get<any>(`/api/v1.0/simulate/action`, { params })
+export function simulateOption() {
+  return request.get<any>(`/api/v1.0/simulate/action`)
 }
 
 // 寄存器信息
@@ -111,8 +101,8 @@ export function getRegister(params: any) {
 }
 
 // 仿真节点查询
-export function getSimulateNode(params: simulateNodeParams) {
-  return request.get<any>(`/api/v1.0/simulate/node`, { params })
+export function getSimulateNode() {
+  return request.get<any>(`/api/v1.0/simulate/node`)
 }
 
 // 用例生成详情
@@ -129,3 +119,5 @@ export function getTestingLog(params: testlogs) {
 export function getAllTestingLog(params: testAlllogs) {
   return request.get<Restestlogs>(`/api/v1.0/test-logs/query/all`, { params })
 }
+
+// 获取仿真节点
