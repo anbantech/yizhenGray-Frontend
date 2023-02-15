@@ -19,6 +19,7 @@ import PaginationsAge from 'Src/components/Pagination/Pagina'
 import styles from 'Src/view/Project/project/project.less'
 import style from './excitation.less'
 import { StepRef } from '../Project/task/createTask/newCreateTask'
+// import { changeParams } from '../Project/taskDetail/taskDetailUtil/getTestLog'
 
 const customizeRender = () => <DefaultValueTips content='暂无项目' />
 
@@ -92,8 +93,6 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   const state = useLocation()?.state as stateType
 
   const history = useHistory()
-  // 目标列表参数
-  const [params, setParams] = useState(request)
 
   // 项目管理
   const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
@@ -104,7 +103,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   // 切换tabs
   const [tabs, setTabs] = useState<number>(-1)
 
-  const [status, depCollect, depData] = useDepCollect(params)
+  const [status, depCollect, depData] = useDepCollect(request)
   // 存储单个项目信息
   //   const [excitationInfo, setExcitationInfo] = useState('')
 
@@ -175,7 +174,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
 
   // 更改页码
   const changePage = (page: number, pageSize: number) => {
-    setParams({ ...params, page, page_size: pageSize })
+    depCollect(true, { page, page_size: pageSize })
   }
 
   // 获取激励列表
@@ -195,7 +194,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   const onChange = React.useCallback(
     (e: RadioChangeEvent) => {
       childRef.inputRef.current?.save()
-      depCollect(true, { target_type: `${e.target.value}` })
+      depCollect(true, { ...request, target_type: `${e.target.value}` })
       setTabs(e.target.value)
     },
     [childRef.inputRef, depCollect]
@@ -204,23 +203,20 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   React.useEffect(() => {
     if (state === undefined) {
       setTabs(3)
-      depCollect(true, { ...params, target_type: '3' })
+      depCollect(true, { target_type: '3' })
     } else {
       setTabs(callBackAn_tabs[state?.type as keyof typeof callBackAn_tabs])
-      depCollect(true, { ...params, target_type: `${callBackAn_tabs[state?.type as keyof typeof callBackAn_tabs]}` })
+      depCollect(true, { target_type: `${callBackAn_tabs[state?.type as keyof typeof callBackAn_tabs]}` })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   React.useEffect(() => {
     if (status) {
-      setParams({ ...depData })
+      getExcitationList(depData)
     }
   }, [depData, status])
 
-  React.useEffect(() => {
-    getExcitationList(params)
-  }, [params])
   const cloumnMap = {
     0: [
       {
@@ -477,7 +473,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         </ConfigProvider>
       </div>
       <div className={styles.AnBan_PaginationsAge}>
-        <PaginationsAge length={total} num={10} getParams={changePage} pagenums={params.page} />
+        <PaginationsAge length={total} num={10} getParams={changePage} pagenums={depData.page} />
       </div>
       {/* <ExcitationModal
         visible={modalData.isModalVisible}

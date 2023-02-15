@@ -220,7 +220,7 @@ export interface taskParamsFn {
   project_id: number
   work_time: number
   crash_num: number
-  group_id: number
+  sender_id: number
 }
 
 // 21. 任务详情

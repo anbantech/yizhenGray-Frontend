@@ -18,7 +18,7 @@ function useDepCollect(baseData: any) {
     clearTimeout(timerRef.current)
     timerRef.current = setTimeout(() => {
       setIsClose(true)
-    }, 100)
+    }, 300)
     if (isCollection) {
       setDepData({ ...depData, ...info })
     }
