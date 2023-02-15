@@ -59,9 +59,10 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           name: values.name,
           desc: values.description,
           project_id: id,
+          beat_unit: values.beat_unit,
           work_time: values.work_time,
           crash_num: values.crash_num,
-          group_id: values.group_id
+          sender_id: values.sender_id
         }
         if (taskInfo?.editTask) {
           const result = await updateTask(taskInfo.data.id, params)
@@ -112,14 +113,14 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     getExcitationList(request)
     getNode()
     if (taskInfo.data) {
-      const { name, desc, project_id, work_time, crash_num, group_id, simu_instance_id, beat_unit } = taskInfo.data as any
+      const { name, desc, project_id, work_time, crash_num, sender_id, simu_instance_id, beat_unit } = taskInfo.data as any
       const formData = {
         name,
         description: desc,
         project_id,
         work_time,
         crash_num,
-        group_id,
+        sender_id,
         beat_unit,
         simu_instance_id
       }
@@ -219,15 +220,15 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
             {
               validator(_, value) {
                 const reg = /^\d+$/
-                if (reg.test(value) && value <= 4294967296) {
+                if (reg.test(value) && value <= 4294967296000) {
                   return Promise.resolve()
                 }
-                return Promise.reject(new Error('请输入 0-4294967296 之间的整数'))
+                return Promise.reject(new Error('请输入 0-4294967296000 之间的整数'))
               }
             }
           ]}
         >
-          <Input placeholder='请输入节拍单元' suffix='秒' />
+          <Input placeholder='请输入节拍单元' suffix='毫秒' />
         </Form.Item>
         <Form.Item
           label='仿真节点'
@@ -251,7 +252,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
             }
           </Select>
         </Form.Item>
-        <Form.Item label='交互' name='group_id' validateFirst validateTrigger={['onBlur']} rules={[{ required: true, message: '请选择交互' }]}>
+        <Form.Item label='交互' name='sender_id' validateFirst validateTrigger={['onBlur']} rules={[{ required: true, message: '请选择交互' }]}>
           <Select placeholder='请选择交互'>
             {
               /**

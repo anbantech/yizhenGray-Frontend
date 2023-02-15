@@ -1,14 +1,4 @@
-import {
-  beginTest,
-  exportTestLog,
-  simulateNodeParams,
-  simulateParams,
-  targetsTest,
-  TaskList,
-  taskParamsFn,
-  testAlllogs,
-  testlogs
-} from 'Src/globalType/Param'
+import { beginTest, exportTestLog, simulateParams, targetsTest, TaskList, taskParamsFn, testAlllogs, testlogs } from 'Src/globalType/Param'
 import { ResTaskList, ResTaskDetail, isCode, Restestlogs } from 'Src/globalType/Response'
 import request from 'Src/services/request/request'
 
