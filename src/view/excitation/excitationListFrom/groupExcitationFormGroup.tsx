@@ -7,7 +7,7 @@ import { useContext, useState } from 'react'
 import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
-import { createGroup_unitFn, excitationListFn } from 'Src/services/api/excitationApi'
+import { createGroupFn, excitationListFn } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from '../excitation.less'
 import ExcitationCard from '../excitationComponent/excitationCard'
@@ -56,7 +56,7 @@ interface Resparams {
 interface formPorps {
   [key: number]: any
 }
-const GroupExcitationForm: React.FC = () => {
+const GroupExcitationFormGroup: React.FC = () => {
   const { isFixForm, info, type } = useContext(GlobalContexted)
   const history = useHistory()
   const [form] = useForm()
@@ -149,7 +149,7 @@ const GroupExcitationForm: React.FC = () => {
           desc: values.description,
           child_id_list: data
         }
-        const result = await createGroup_unitFn(params)
+        const result = await createGroupFn(params)
         if (result.data) {
           history.push({
             pathname: '/excitationList',
@@ -321,4 +321,4 @@ const GroupExcitationForm: React.FC = () => {
   )
 }
 
-export default GroupExcitationForm
+export default GroupExcitationFormGroup

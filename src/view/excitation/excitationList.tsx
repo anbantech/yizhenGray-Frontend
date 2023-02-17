@@ -56,35 +56,45 @@ interface projectInfoType {
 
 const An_ButtonNameMap = {
   0: '新建单激励Group',
-  1: '新建级联Group',
+  1: '新建级联',
   2: '新建交互',
-  3: '新建激励'
+  3: '新建激励',
+  4: '新建级联Group'
 }
 const An_ButtonDetailMap = {
   0: '查看单激励Group',
-  1: '查看级联激励Group',
+  1: '查看级联激励',
   2: '查看交互',
-  3: '查看激励'
+  3: '查看激励',
+  4: '查看级联激励Group'
 }
 const An_tabsMap = {
   0: 'one',
   1: 'two',
   2: 'three',
-  3: 'four'
+  3: 'four',
+  4: 'five'
 }
 
 const callBackAn_tabs = {
   one: 0,
   two: 1,
   three: 2,
-  four: 3
+  four: 3,
+  five: 4
 }
 interface ChildRef {
   inputRef: React.MutableRefObject<StepRef | null>
 }
 
 type stateType = { [key: string]: string }
-const inputPlaceholder = { 0: '根据名称搜索单激励Group', 1: '根据名称搜索级联激励Group', 2: '根据名称搜索交互', 3: '根据名称搜索激励' }
+const inputPlaceholder = {
+  0: '根据名称搜索单激励Group',
+  1: '根据名称搜索级联激励',
+  2: '根据名称搜索交互',
+  3: '根据名称搜索激励',
+  4: '根据名称搜索级联激励Group'
+}
 const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () => {
   const childRef: ChildRef = {
     inputRef: React.useRef<StepRef | null>(null)
@@ -119,10 +129,19 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       const createDoubleExcitation = '/excitationList/createDoubleExcitation'
       const createOneExcitation = '/excitationList/createOneExcitation'
       const createGroupExcitation = '/excitationList/createGroupExcitation'
-      const createExcitation = './excitationList/createExcitation'
+      const createExcitation = '/excitationList/createExcitation'
+      const createExcitationGroup = '/excitationList/createDoubleExcitationGroup'
       history.push({
         pathname: `${
-          +value === 0 ? createOneExcitation : +value === 1 ? createDoubleExcitation : +value === 2 ? createGroupExcitation : createExcitation
+          +value === 0
+            ? createOneExcitation
+            : +value === 1
+            ? createDoubleExcitation
+            : +value === 2
+            ? createGroupExcitation
+            : +value === 4
+            ? createExcitationGroup
+            : createExcitation
         }`,
         state: {
           type: `${An_tabsMap[tabs as keyof typeof An_tabsMap]}`,
@@ -448,7 +467,8 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         <Radio.Group onChange={onChange} buttonStyle='solid' optionType='button' value={`${tabs}`}>
           <Radio.Button value='3'>激励列表</Radio.Button>
           <Radio.Button value='0'>单激励Group列表</Radio.Button>
-          <Radio.Button value='1'>级联Group列表</Radio.Button>
+          <Radio.Button value='1'>级联列表</Radio.Button>
+          <Radio.Button value='4'>级联Group列表</Radio.Button>
           <Radio.Button value='2'>交互列表</Radio.Button>
         </Radio.Group>
         <div className={styles.AnBan_header_bottom}>
