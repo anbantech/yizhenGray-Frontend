@@ -140,6 +140,7 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
+    "react-sizeme": "^3.0.2",
     "save": "^2.5.0",
     "socket.io-client": "^4.1.2"
   },
