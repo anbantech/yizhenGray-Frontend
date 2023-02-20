@@ -546,10 +546,15 @@ export interface groupParams {
   name?: string
   desc: string
   child_id_list?: number[]
+  group_data_list: any
 }
 
 export interface excitation_1Params {
   stimulus_name: string
   is_enable: boolean
   stimulus_value: string
+}
+
+export interface dataStructureParams {
+  child_id_list?: number[]
 }

@@ -1,6 +1,14 @@
 import request from 'Src/services/request/request'
-import { ExcitationList, createExcitation, ExcitationParams, doubleExcitationParams, groupParams, excitation_1Params } from 'Src/globalType/Param'
-import { ResExcitationList, ResCreExcitationList, getAllRes, excitationRes } from 'Src/globalType/Response'
+import {
+  ExcitationList,
+  createExcitation,
+  ExcitationParams,
+  doubleExcitationParams,
+  groupParams,
+  excitation_1Params,
+  dataStructureParams
+} from 'Src/globalType/Param'
+import { ResExcitationList, ResCreExcitationList, getAllRes, excitationRes, checkoutDataStructureRes } from 'Src/globalType/Response'
 
 export function createExcitationListFn(params: createExcitation) {
   return request.post<ResCreExcitationList>('/api/v1.0/stimulus/save', params)
@@ -52,4 +60,10 @@ export function createExcitationFn_1(params: excitation_1Params) {
 
 export function getExcitationFn_1(id: number) {
   return request.get<excitationRes>(`/api/v1.0/temp_and_sti/get/sti/${id}`)
+}
+
+// 交互结构校验
+
+export function checkDataStructure(params: dataStructureParams) {
+  return request.post<checkoutDataStructureRes>('/api/v1.0/temp_and_sti/save/work_check', params)
 }

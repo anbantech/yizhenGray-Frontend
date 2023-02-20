@@ -569,3 +569,7 @@ export interface excitationRes {
   is_enable: boolean
   stimulus_value: string
 }
+
+export interface checkoutDataStructureRes {
+  [key: string]: any
+}

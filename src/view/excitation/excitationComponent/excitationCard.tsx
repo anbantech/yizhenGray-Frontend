@@ -74,8 +74,8 @@ const TwoExcitationCard = React.forwardRef((props: AllPropsType) => {
   return (
     <div className={styles.card_middle}>
       <Form name='middle' autoComplete='off' className={styles.card_middle_form} onValuesChange={onValuesChange} form={form}>
-        <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择激励' }]}>
-          <Select placeholder='请选择激励' onSelect={onSelect} disabled={isFixForm}>
+        <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择配置项' }]}>
+          <Select placeholder='请选择配置项' allowClear onSelect={onSelect} disabled={isFixForm}>
             {
               /**
                * 根据连接方式列表渲染下拉框可选择的设备比特率
@@ -90,12 +90,8 @@ const TwoExcitationCard = React.forwardRef((props: AllPropsType) => {
             }
           </Select>
         </Form.Item>
-        <Form.Item
-          label='描述'
-          name='description'
-          rules={[{ message: '请输入激励描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
-        >
-          <Input.TextArea disabled style={{ width: '222px' }} placeholder='激励描述' autoSize={{ minRows: 2, maxRows: 3 }} />
+        <Form.Item label='描述' name='description' rules={[{ message: '请输入描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}>
+          <Input.TextArea disabled style={{ width: '222px' }} placeholder='描述' autoSize={{ minRows: 2, maxRows: 3 }} />
         </Form.Item>
       </Form>
     </div>
@@ -115,6 +111,9 @@ const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
     }
   }
   const onSelect = (value: any) => {
+    if (value === undefined) {
+      return form.setFieldsValue({ description: '' })
+    }
     excitationList.forEach((item: any) => {
       item.children.find((pre: any) => {
         if (+value[1] === pre.sender_id) {
@@ -128,7 +127,7 @@ const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
     if (desc) {
       form.setFieldsValue({ description: desc })
     }
-    if (formData && isFixForm) {
+    if (formData) {
       const excitarionListes = formData[index]
       form.setFieldsValue({
         port: [excitarionListes.target_type === 0 ? '单激励Group' : '级联Group', excitarionListes.name],
@@ -150,12 +149,8 @@ const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
             onChange={onSelect}
           />
         </Form.Item>
-        <Form.Item
-          label='描述'
-          name='description'
-          rules={[{ message: '请输入激励描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
-        >
-          <Input.TextArea disabled style={{ width: '222px' }} placeholder='激励描述' autoSize={{ minRows: 2, maxRows: 3 }} />
+        <Form.Item label='描述' name='description' rules={[{ message: '请输入描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}>
+          <Input.TextArea disabled style={{ width: '222px' }} placeholder='描述' autoSize={{ minRows: 2, maxRows: 3 }} />
         </Form.Item>
       </Form>
     </div>
@@ -189,7 +184,7 @@ const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
 
   return (
     <div className={styles.card_main}>
-      {type === 'two' || type === 'five' ? (
+      {type === 'five' ? (
         <TwoExcitationCardCompoent
           formData={formData}
           excitationList={excitationList}

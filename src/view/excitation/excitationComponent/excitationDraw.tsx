@@ -1,6 +1,10 @@
+import { Tooltip } from 'antd'
 import React, { useCallback, useLayoutEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
+import CommonButton from 'Src/components/Button/commonButton'
+import { createGroupFn } from 'Src/services/api/excitationApi'
 import { useLatest } from 'Src/util/Hooks/useLast'
+import styles from 'Src/view/excitation/excitation.less'
 import StyleSheet from './excitationDraw.less'
 
 interface al {
@@ -8,118 +12,10 @@ interface al {
 }
 const ExcitationDraw: React.FC = () => {
   const history = useHistory()
-  const state = useLocation()?.state
+  const state = useLocation()?.state as al
+
   const lineQef = useLatest<any>({})
-  const reslut = [
-    {
-      id: '1',
-      name: '级联Group',
-      type: 0,
-      children: [
-        {
-          id: '1-22',
-          name: '级联1',
-          type: 1,
-          children: [
-            {
-              id: '1-222',
-              name: 'group',
-              type: 2,
-              children: [
-                {
-                  id: '1-222',
-                  name: 'group12',
-                  type: 2
-                },
-                {
-                  id: '1-22',
-                  name: 'group11',
-                  type: 2
-                }
-              ]
-            },
-            {
-              id: '1-22',
-              name: 'group1',
-              type: 2
-            }
-          ]
-        },
-        {
-          id: '1-222',
-          name: '级联2',
-          type: 1,
-          children: [
-            {
-              id: '1-222嘻嘻2',
-              name: 'group3',
-              type: 2
-            }
-          ]
-        },
-        {
-          id: '1-222',
-          name: '级联4',
-          type: 1,
-          children: [
-            {
-              id: '1-222嘻12',
-              name: 'group32',
-              type: 21
-            }
-          ]
-        },
-        {
-          id: '1-22222',
-          name: '级联5',
-          type: 1,
-          children: [
-            {
-              id: '12嘻12',
-              name: 'groupx32',
-              type: 21
-            }
-          ]
-        },
-        {
-          id: '1-22222',
-          name: '级联5',
-          type: 1,
-          children: [
-            {
-              id: '12嘻12',
-              name: 'groupx32',
-              type: 21
-            }
-          ]
-        },
-        {
-          id: '1-22222',
-          name: '级联5',
-          type: 1,
-          children: [
-            {
-              id: '12嘻12',
-              name: 'groupx32',
-              type: 21
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: '2',
-      type: 0,
-      name: '级联group2',
-      children: [
-        {
-          id: '1-222313',
-          name: '级联3',
-          type: 1
-        }
-      ]
-    }
-  ]
+
   const [widths, setWidth] = useState<al>({})
 
   const getRef = (dom: any, item: number, key: string) => {
@@ -148,26 +44,30 @@ const ExcitationDraw: React.FC = () => {
   const Deep = (props: any) => {
     const { value } = props
     return (
-      <div className={StyleSheet.a}>
+      <div className={StyleSheet.drawBody}>
         {value?.map((item: any, index: number) => {
           return (
             <div
               key={item.sender_id}
-              className={StyleSheet.a_body}
+              className={StyleSheet.drawBody_concentBody}
               ref={el => {
                 getRef(el, item.type, item.name)
               }}
             >
-              <div className={StyleSheet.a_1}>
-                <div className={StyleSheet.position_1}>
-                  <div className={StyleSheet.a_1_1}>
+              <div className={StyleSheet.drawBody_concentBody_Header}>
+                <div className={StyleSheet.drawBody_concentBody_Header_position}>
+                  <div className={StyleSheet.drawBody_concentBody_Header_title}>
                     {' '}
-                    <span>{item.name}</span>{' '}
+                    <Tooltip title={item.name} placement='bottom'>
+                      <span className={StyleSheet.name}>{item.name}</span>{' '}
+                    </Tooltip>
                   </div>
-                  {value.length - 1 !== index ? <div style={{ width: acl(item.target_type, item.name) }} className={StyleSheet.a_1_line} /> : null}
+                  {value.length - 1 !== index ? (
+                    <div style={{ width: acl(item.target_type, item.name) }} className={StyleSheet.drawBody_concentBody_line} />
+                  ) : null}
                 </div>
 
-                {item.group_data_list?.length > 0 ? <div className={StyleSheet.a_1_cloumn} /> : null}
+                {item.group_data_list?.length > 0 ? <div className={StyleSheet.drawBody_concentBody_cloumn} /> : null}
 
                 {item.group_data_list?.length > 0 ? <Deep value={item.group_data_list} /> : null}
               </div>
@@ -177,12 +77,30 @@ const ExcitationDraw: React.FC = () => {
       </div>
     )
   }
-
+  const createOneExcitationFn = async () => {
+    const result = await createGroupFn(state.Data)
+    if (result.data) {
+      history.push({
+        pathname: '/excitationList',
+        state: { type: state.type }
+      })
+    }
+  }
   return (
-    <div>
-      <div>
-        <span>交互</span>
-        {state && <Deep value={[state]} />}
+    <div className={StyleSheet.drawbodys}>
+      <div>{state && <Deep value={[state.Data]} />}</div>
+      <div className={StyleSheet.footer}>
+        {!state.isFixForm ? (
+          <CommonButton
+            buttonStyle={styles.stepButton}
+            type='primary'
+            name='确认'
+            disabled={state.isFixForm}
+            onClick={() => {
+              createOneExcitationFn()
+            }}
+          />
+        ) : null}
       </div>
     </div>
   )
