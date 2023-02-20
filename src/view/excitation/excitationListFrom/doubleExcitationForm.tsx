@@ -20,7 +20,7 @@ const layout = {
 }
 
 const request = {
-  target_type: 0,
+  target_type: '0',
   key_word: '',
   status: null,
   page: 1,
@@ -28,7 +28,15 @@ const request = {
   sort_field: 'create_time',
   sort_order: 'descend'
 }
-
+const request1 = {
+  target_type: 1,
+  key_word: '',
+  status: null,
+  page: 1,
+  page_size: 999,
+  sort_field: 'create_time',
+  sort_order: 'descend'
+}
 interface projectInfoType {
   id: number
   name: string
@@ -41,7 +49,7 @@ interface projectInfoType {
 }
 
 interface Resparams {
-  target_type: number
+  target_type: number | string
   key_word?: string
   status?: null | number
   page: number
@@ -52,11 +60,30 @@ interface Resparams {
 interface formPorps {
   [key: number]: any
 }
+interface Option {
+  sender_id: string
+  name: string
+  disabled?: boolean
+  children?: any[]
+}
 const DoubleExcitationForm: React.FC = () => {
   const [form] = useForm()
   const history = useHistory()
   const { isFixForm, info, type } = useContext(GlobalContexted)
-  const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
+  const [excitationList, setExcitationList] = useState<Option[]>([
+    {
+      sender_id: '1',
+      name: '级联',
+      disabled: false,
+      children: []
+    },
+    {
+      sender_id: '0',
+      name: '单激励Group',
+      disabled: false,
+      children: []
+    }
+  ])
   const [cardArray, setCardArray] = React.useState(1)
   const [data, setData] = useState<number[]>([])
   const [cardCheckStatus, setCardCheckStatus] = useState(true)
@@ -65,16 +92,16 @@ const DoubleExcitationForm: React.FC = () => {
   const addCard = React.useCallback(() => {
     setCardArray(pre => pre + 1)
   }, [])
-  const getExcitationList = async (value: Resparams) => {
-    try {
-      const result = await excitationListFn(value)
-      if (result.data) {
-        setExcitationList(result.data.results)
-      }
-    } catch (error) {
-      throwErrorMessage(error, { 1004: '请求资源未找到' })
-    }
-  }
+  // const getExcitationList = async (value: Resparams) => {
+  //   try {
+  //     const result = await excitationListFn(value)
+  //     if (result.data) {
+  //       setExcitationList(result.data.results)
+  //     }
+  //   } catch (error) {
+  //     throwErrorMessage(error, { 1004: '请求资源未找到' })
+  //   }
+  // }
 
   const ExcitationCardList = React.useMemo(() => {
     const data = Array.from({ length: cardArray }, (v, i) => i)
@@ -92,6 +119,36 @@ const DoubleExcitationForm: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data]
   )
+  const getExcitationList = async (request1: Resparams, doubleRequest: Resparams) => {
+    try {
+      const result2 = await excitationListFn(doubleRequest)
+      const result1 = await excitationListFn(request1)
+      Promise.all([result1, result2])
+        .then(value => {
+          const result1Data = value[0].data?.results
+          const result2Data = value[1].data?.results
+          setExcitationList(pre => {
+            const preCopy = pre
+            if (isFixForm) {
+              return [
+                { ...preCopy[1], disabled: isFixForm, children: result2Data },
+                { ...preCopy[0], disabled: isFixForm, children: result1Data }
+              ]
+            }
+            return [
+              { ...preCopy[1], children: result2Data },
+              { ...preCopy[0], children: result1Data }
+            ]
+          })
+          return value
+        })
+        .catch(error => {
+          throwErrorMessage(error)
+        })
+    } catch (error) {
+      throwErrorMessage(error, { 1004: '请求资源未找到' })
+    }
+  }
 
   const createOneExcitationFn = React.useCallback(async () => {
     let values
@@ -127,12 +184,10 @@ const DoubleExcitationForm: React.FC = () => {
     }
   }, [form, data, history, type])
 
-  const getLength = React.useCallback(() => {
-    if (data.length === 0) return false
-    const bol = Object.values(data).every(item => {
-      return Object.keys(item).length > 0
-    })
-    return bol
+  const getLength = React.useMemo(() => {
+    if (data) {
+      return data.length
+    }
   }, [data])
 
   const cancelForm = () => {
@@ -162,15 +217,18 @@ const DoubleExcitationForm: React.FC = () => {
   }
 
   React.useEffect(() => {
-    if (!getLength() && isDisableStatus) {
-      setCardCheckStatus(true)
-    } else {
-      setCardCheckStatus(false)
+    if (!isDisableStatus) {
+      if (getLength) {
+        setCardCheckStatus(false)
+      } else {
+        setCardCheckStatus(true)
+      }
     }
   }, [data, getLength, isDisableStatus])
 
   React.useEffect(() => {
-    getExcitationList(request)
+    getExcitationList(request1, request)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   React.useEffect(() => {
     if (Data && isFixForm) {
@@ -194,7 +252,7 @@ const DoubleExcitationForm: React.FC = () => {
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.twoForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
         <Form.Item
-          label='级联Group名称'
+          label='级联名称'
           name='name'
           validateFirst
           validateTrigger={['onBlur']}
@@ -203,7 +261,7 @@ const DoubleExcitationForm: React.FC = () => {
               validateTrigger: 'onBlur',
               validator(_, value) {
                 if (typeof value === 'undefined' || value === '') {
-                  return Promise.reject(new Error('请输入级联Group名称'))
+                  return Promise.reject(new Error('请输入级联名称'))
                 }
                 return Promise.resolve()
               }

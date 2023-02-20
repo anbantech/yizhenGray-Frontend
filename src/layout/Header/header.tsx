@@ -170,6 +170,8 @@ function Header(props: any) {
     '/excitationList/createDoubleExcitationGroup': '新建级联Group',
     '/excitationList/createGroupExcitation': '新建交互',
     '/excitationList/createExcitation': '新建激励',
+    '/excitationList/Deatail/ExcitationDraw': '预览',
+    '/excitationList/createGroupExcitation/ExcitationDraw': '预览',
     '/templateList': '模版列表',
     '/templateList/template': `${data && data?.readonlyBaseTemplate ? '查看模版' : data && data?.editOriginalTemplate ? '修改模版' : '创建模版'}`
   }
