@@ -54,7 +54,6 @@ const ExcitationComponents: React.FC = () => {
           is_enable: values.is_enable,
           stimulus_value: values.stimulus_value
         }
-        console.log(values)
         const result = await createExcitationFn_1(params)
         if (result.data) {
           history.push({
@@ -75,7 +74,6 @@ const ExcitationComponents: React.FC = () => {
   }
   const onFieldsChange = (changedFields: any, allFields: any) => {
     const disabledData: any = []
-    console.log(allFields)
     const errors = allFields.every((item: any) => {
       return item.errors.length === 0
     })

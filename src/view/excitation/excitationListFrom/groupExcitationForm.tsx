@@ -7,7 +7,7 @@ import { useContext, useState } from 'react'
 import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
-import { createGroup_unitFn, excitationListFn } from 'Src/services/api/excitationApi'
+import { checkDataStructure, excitationListFn } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from '../excitation.less'
 import ExcitationCard from '../excitationComponent/excitationCard'
@@ -16,16 +16,6 @@ import { GetDeatilFn } from './getDataDetailFn/getDataDetailFn'
 const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 18 }
-}
-
-const oneRequest = {
-  target_type: '0',
-  key_word: '',
-  status: null,
-  page: 1,
-  page_size: 999,
-  sort_field: 'create_time',
-  sort_order: 'descend'
 }
 
 const doubleRequest = {
@@ -57,7 +47,7 @@ interface formPorps {
   [key: number]: any
 }
 const GroupExcitationForm: React.FC = () => {
-  const { isFixForm, info, type } = useContext(GlobalContexted)
+  const { isFixForm, info, type, propsDatas, name } = useContext(GlobalContexted)
   const history = useHistory()
   const [form] = useForm()
   const [cardArray, setCardArray] = React.useState(1)
@@ -78,7 +68,7 @@ const GroupExcitationForm: React.FC = () => {
     }
   ])
   const [data, setData] = useState<number[]>([])
-  const Data = GetDeatilFn(info?.id)
+  const propsData = GetDeatilFn(info?.id ? info?.id : propsDatas?.sender_id)
   const addCard = React.useCallback(() => {
     setCardArray(pre => pre + 1)
   }, [])
@@ -96,34 +86,31 @@ const GroupExcitationForm: React.FC = () => {
       })
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data]
+    []
   )
+  const getLength = React.useMemo(() => {
+    if (data) {
+      return data.length
+    }
+  }, [data])
   const cancelForm = () => {
     history.push({
       pathname: '/excitationList',
       state: { type }
     })
   }
-  const getExcitationList = async (oneRequest: Resparams, doubleRequest: Resparams) => {
+  const getExcitationList = async (doubleRequest: Resparams) => {
     try {
-      const result1 = await excitationListFn(oneRequest)
       const result2 = await excitationListFn(doubleRequest)
-      Promise.all([result1, result2])
+      Promise.all([result2])
         .then(value => {
-          const result1Data = value[0].data?.results
-          const result2Data = value[1].data?.results
+          const result2Data = value[0].data?.results
           setExcitationList(pre => {
             const preCopy = pre
             if (isFixForm) {
-              return [
-                { ...preCopy[0], disabled: isFixForm, children: result1Data },
-                { ...preCopy[1], disabled: isFixForm, children: result2Data }
-              ]
+              return [{ ...preCopy[1], disabled: isFixForm, children: result2Data }]
             }
-            return [
-              { ...preCopy[0], children: result1Data },
-              { ...preCopy[1], children: result2Data }
-            ]
+            return [{ ...preCopy[1], children: result2Data }]
           })
           return value
         })
@@ -135,14 +122,15 @@ const GroupExcitationForm: React.FC = () => {
     }
   }
 
-  //  预览功能
-  const viewDraw = () => {
+  const isFixFormviewDraw = () => {
     history.push({
-      pathname: '/excitationList/createExcitation/ExcitationDraw',
-      state: Data
+      pathname: '/excitationList/Deatail/ExcitationDraw',
+      state: { Data: propsData, type, isFixForm, name }
     })
   }
-  const createOneExcitationFn = React.useCallback(async () => {
+  //  预览功能
+
+  const viewDraw = React.useCallback(async () => {
     let values
     try {
       values = await form.validateFields()
@@ -151,30 +139,29 @@ const GroupExcitationForm: React.FC = () => {
     }
     try {
       if (values) {
-        const params = {
-          name: values.name,
-          desc: values.description,
+        console.log(values)
+        const params2 = {
           child_id_list: data
         }
-        const result = await createGroup_unitFn(params)
+        const result = await checkDataStructure(params2)
         if (result.data) {
+          const params1 = {
+            name: values.name,
+            desc: values.description,
+            child_id_list: data,
+            group_data_list: result.data.group_data_list
+          }
           history.push({
-            pathname: '/excitationList',
-            state: { type }
+            pathname: '/excitationList/createGroupExcitation/ExcitationDraw',
+            state: { Data: params1, type, isFixForm, name }
           })
         }
       }
     } catch (error) {
       throwErrorMessage(error, { 1009: '项目删除失败' })
     }
-  }, [form, data, history, type])
-  const getLength = React.useCallback(() => {
-    if (data.length === 0) return false
-    const bol = Object.values(data).every(item => {
-      return Object.keys(item).length > 0
-    })
-    return bol
-  }, [data])
+  }, [form, data, history, type, isFixForm, name])
+
   const onFieldsChange = (changedFields: any, allFields: any) => {
     const disabledData: any = []
     const errors = allFields.every((item: any) => {
@@ -195,29 +182,46 @@ const GroupExcitationForm: React.FC = () => {
     }
   }
   React.useEffect(() => {
-    if (!getLength() && isDisableStatus) {
-      setCardCheckStatus(true)
-    } else {
+    if (!isDisableStatus) {
+      if (getLength) {
+        setCardCheckStatus(false)
+      } else {
+        setCardCheckStatus(true)
+      }
+    }
+    if (propsDatas?.group_data_list.length > 0) {
       setCardCheckStatus(false)
     }
-  }, [data, getLength, isDisableStatus])
+  }, [data, getLength, isDisableStatus, propsDatas?.group_data_list.length])
 
   React.useEffect(() => {
-    getExcitationList(oneRequest, doubleRequest)
+    getExcitationList(doubleRequest)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFixForm])
 
   React.useEffect(() => {
-    if (Data && isFixForm) {
-      setCardArray(Data?.group_data_list.length)
-      const { name, desc } = Data as any
+    if (propsData && isFixForm) {
+      setCardArray(propsData?.group_data_list.length)
+      const { name, desc } = propsData as any
       const formData = {
         name,
         description: desc
       }
       form.setFieldsValue(formData)
     }
-  }, [form, info, Data, isFixForm])
+
+    if (propsDatas && !isFixForm) {
+      setCardArray(propsDatas?.group_data_list.length)
+      setData(propsDatas?.child_id_list)
+      const { name, desc } = propsDatas as any
+      const formData = {
+        name,
+        description: desc
+      }
+      form.setFieldsValue(formData)
+      setIsDisableStatus(false)
+    }
+  }, [form, info, propsData, propsDatas, isFixForm])
   return (
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.twoForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
@@ -282,7 +286,7 @@ const GroupExcitationForm: React.FC = () => {
               excitationList={excitationList}
               isFixForm={isFixForm}
               onChange={onChange}
-              formData={Data?.group_data_list}
+              formData={propsData?.group_data_list ?? propsDatas?.group_data_list}
               index={index}
               key={index}
             />
@@ -315,20 +319,21 @@ const GroupExcitationForm: React.FC = () => {
             <CommonButton
               buttonStyle={styles.stepButton}
               type='primary'
-              name='确认'
+              name='预览'
               disabled={isFixForm ? true : cardCheckStatus}
               onClick={() => {
-                createOneExcitationFn()
+                viewDraw()
               }}
             />
           ) : null}
+
           {isFixForm ? (
             <CommonButton
               buttonStyle={styles.stepButton}
               type='primary'
               name='预览'
               onClick={() => {
-                viewDraw()
+                isFixFormviewDraw()
               }}
             />
           ) : null}

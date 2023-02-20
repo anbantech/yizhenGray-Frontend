@@ -6,7 +6,7 @@ import { useContext, useState } from 'react'
 import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
-import { createDoubleExcitationFn, excitationListFn } from 'Src/services/api/excitationApi'
+import { createGroup_unitFn, excitationListFn } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 
 import styles from '../excitation.less'
@@ -51,6 +51,12 @@ interface Resparams {
 }
 interface formPorps {
   [key: number]: any
+}
+interface Option {
+  sender_id: string
+  name: string
+  disabled?: boolean
+  children?: any[]
 }
 const GroupExcitationFormGroup: React.FC = () => {
   const [form] = useForm()
@@ -114,7 +120,7 @@ const GroupExcitationFormGroup: React.FC = () => {
           align_delay_2: +values.align_delay_2,
           child_id_list: data
         }
-        const result = await createDoubleExcitationFn(params)
+        const result = await createGroup_unitFn(params)
         if (result.data) {
           history.push({
             pathname: '/excitationList',
@@ -127,12 +133,10 @@ const GroupExcitationFormGroup: React.FC = () => {
     }
   }, [form, data, history, type])
 
-  const getLength = React.useCallback(() => {
-    if (data.length === 0) return false
-    const bol = Object.values(data).every(item => {
-      return Object.keys(item).length > 0
-    })
-    return bol
+  const getLength = React.useMemo(() => {
+    if (data) {
+      return data.length
+    }
   }, [data])
 
   const cancelForm = () => {
@@ -162,10 +166,12 @@ const GroupExcitationFormGroup: React.FC = () => {
   }
 
   React.useEffect(() => {
-    if (!getLength() && isDisableStatus) {
-      setCardCheckStatus(true)
-    } else {
-      setCardCheckStatus(false)
+    if (!isDisableStatus) {
+      if (getLength) {
+        setCardCheckStatus(false)
+      } else {
+        setCardCheckStatus(true)
+      }
     }
   }, [data, getLength, isDisableStatus])
 

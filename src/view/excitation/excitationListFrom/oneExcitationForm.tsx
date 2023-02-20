@@ -208,7 +208,7 @@ const OneExcotationForm: React.FC = () => {
                */
               portList?.map(rate => {
                 return (
-                  <Option key={rate.stimulus} value={rate.stimulus_id}>
+                  <Option key={rate.stimulus} disabled={rate.disabled} value={rate.stimulus_id}>
                     {rate.stimulus_name}
                   </Option>
                 )

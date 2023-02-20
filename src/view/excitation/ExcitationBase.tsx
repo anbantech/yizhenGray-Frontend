@@ -7,8 +7,7 @@ import ExcitationComponents from './excitationListFrom/excitation'
 import GroupExcitationFormGroup from './excitationListFrom/groupExcitationFormGroup'
 
 const ExcitationBase: React.FC = (props: any) => {
-  const { type, isFixForm, name, info } = props.location.state
-
+  const { type, isFixForm, name, info, Data } = props.location.state
   const item = {
     one: <OneExcotationForm />,
     two: <DoubleExcitationForm />,
@@ -17,7 +16,7 @@ const ExcitationBase: React.FC = (props: any) => {
     five: <GroupExcitationFormGroup />
   }
   return (
-    <GlobalBaseMain name={name} isFixForm={isFixForm} type={type} info={info}>
+    <GlobalBaseMain name={name} isFixForm={isFixForm} type={type} info={info} Data={Data}>
       {item[type as keyof typeof item]}
     </GlobalBaseMain>
   )

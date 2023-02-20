@@ -20,7 +20,6 @@ function useDepCollect(baseData: any) {
       setIsClose(true)
     }, 300)
     if (isCollection) {
-      console.log(depData, info)
       setDepData({ ...depData, ...info })
     }
   }
