@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import SearchInput from 'Src/components/Input/searchInput/searchInput'
 import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import CreateButton from 'Src/components/Button/createButton'
@@ -21,7 +22,7 @@ import style from './excitation.less'
 import { StepRef } from '../Project/task/createTask/newCreateTask'
 // import { changeParams } from '../Project/taskDetail/taskDetailUtil/getTestLog'
 
-const customizeRender = () => <DefaultValueTips content='暂无项目' />
+const customizeRender = () => <DefaultValueTips content='暂无数据' />
 
 const request = {
   target_type: '0',
@@ -225,7 +226,11 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       depCollect(true, { target_type: '3' })
     } else {
       setTabs(callBackAn_tabs[state?.type as keyof typeof callBackAn_tabs])
-      depCollect(true, { target_type: `${callBackAn_tabs[state?.type as keyof typeof callBackAn_tabs]}` })
+      depCollect(true, {
+        target_type: state?.type
+          ? `${callBackAn_tabs[state?.type as keyof typeof callBackAn_tabs]}`
+          : `${An_tabsMap[+state?.target_type as keyof typeof An_tabsMap]}`
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -450,6 +455,58 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
                 tabIndex={0}
                 onClick={() => {
                   lookDetail(row, 3)
+                }}
+              >
+                查看详情
+              </span>
+            </div>
+          )
+        }
+      }
+    ],
+    4: [
+      {
+        width: '15%',
+        title: '级联Group名称',
+        dataIndex: 'name',
+        key: 'name',
+        // eslint-disable-next-line react/display-name
+        render: (_: any, row: any) => {
+          return (
+            <span
+              className={styles.tableProjectName}
+              role='time'
+              onClick={() => {
+                lookDetail(row, 4)
+              }}
+            >
+              {row.name}
+            </span>
+          )
+        }
+      },
+      {
+        width: '15%',
+        title: '描述',
+        dataIndex: 'desc',
+        key: 'desc'
+      },
+
+      {
+        width: '10%',
+        title: '操作',
+        dataIndex: 'operations',
+        key: 'operations',
+        // eslint-disable-next-line react/display-name
+        render: (_: any, row: any) => {
+          return (
+            <div className={style.excitaion_operation}>
+              <span
+                style={{ marginLeft: '10px', marginRight: '10px' }}
+                role='button'
+                tabIndex={0}
+                onClick={() => {
+                  lookDetail(row, 4)
                 }}
               >
                 查看详情
