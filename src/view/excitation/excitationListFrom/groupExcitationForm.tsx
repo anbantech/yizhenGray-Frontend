@@ -139,7 +139,6 @@ const GroupExcitationForm: React.FC = () => {
     }
     try {
       if (values) {
-        console.log(values)
         const params2 = {
           child_id_list: data
         }
