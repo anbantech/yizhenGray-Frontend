@@ -1,4 +1,5 @@
 import React, { useCallback, useLayoutEffect, useState } from 'react'
+import { useHistory, useLocation } from 'react-router'
 import { useLatest } from 'Src/util/Hooks/useLast'
 import StyleSheet from './excitationDraw.less'
 
@@ -6,6 +7,8 @@ interface al {
   [key: string]: any
 }
 const ExcitationDraw: React.FC = () => {
+  const history = useHistory()
+  const state = useLocation()?.state
   const lineQef = useLatest<any>({})
   const reslut = [
     {
@@ -131,7 +134,7 @@ const ExcitationDraw: React.FC = () => {
   const acl = useCallback(
     (type, name) => {
       if (name || type) {
-        if (type === 2) {
+        if (type === 0) {
           return '60px'
         }
         if (type === 1) {
@@ -149,7 +152,7 @@ const ExcitationDraw: React.FC = () => {
         {value?.map((item: any, index: number) => {
           return (
             <div
-              key={item.id}
+              key={item.sender_id}
               className={StyleSheet.a_body}
               ref={el => {
                 getRef(el, item.type, item.name)
@@ -161,12 +164,12 @@ const ExcitationDraw: React.FC = () => {
                     {' '}
                     <span>{item.name}</span>{' '}
                   </div>
-                  {value.length - 1 !== index ? <div style={{ width: acl(item.type, item.name) }} className={StyleSheet.a_1_line} /> : null}
+                  {value.length - 1 !== index ? <div style={{ width: acl(item.target_type, item.name) }} className={StyleSheet.a_1_line} /> : null}
                 </div>
 
-                {item.children?.length > 0 ? <div className={StyleSheet.a_1_cloumn} /> : null}
+                {item.group_data_list?.length > 0 ? <div className={StyleSheet.a_1_cloumn} /> : null}
 
-                {item.children?.length > 0 ? <Deep value={item.children} /> : null}
+                {item.group_data_list?.length > 0 ? <Deep value={item.group_data_list} /> : null}
               </div>
             </div>
           )
@@ -179,7 +182,7 @@ const ExcitationDraw: React.FC = () => {
     <div>
       <div>
         <span>交互</span>
-        <Deep value={reslut} />
+        {state && <Deep value={[state]} />}
       </div>
     </div>
   )

@@ -29,7 +29,7 @@ const oneRequest = {
 }
 
 const doubleRequest = {
-  target_type: 1,
+  target_type: 4,
   key_word: '',
   status: null,
   page: 1,
@@ -66,13 +66,13 @@ const GroupExcitationForm: React.FC = () => {
   const [excitationList, setExcitationList] = useState<Option[]>([
     {
       sender_id: '0',
-      name: '单激励',
+      name: '单激励Group',
       disabled: false,
       children: []
     },
     {
       sender_id: '1',
-      name: '级联激励',
+      name: '级联Group',
       disabled: false,
       children: []
     }
@@ -135,6 +135,13 @@ const GroupExcitationForm: React.FC = () => {
     }
   }
 
+  //  预览功能
+  const viewDraw = () => {
+    history.push({
+      pathname: '/excitationList/createExcitation/ExcitationDraw',
+      state: Data
+    })
+  }
   const createOneExcitationFn = React.useCallback(async () => {
     let values
     try {
@@ -312,6 +319,16 @@ const GroupExcitationForm: React.FC = () => {
               disabled={isFixForm ? true : cardCheckStatus}
               onClick={() => {
                 createOneExcitationFn()
+              }}
+            />
+          ) : null}
+          {isFixForm ? (
+            <CommonButton
+              buttonStyle={styles.stepButton}
+              type='primary'
+              name='预览'
+              onClick={() => {
+                viewDraw()
               }}
             />
           ) : null}

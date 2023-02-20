@@ -82,7 +82,7 @@ const TwoExcitationCard = React.forwardRef((props: AllPropsType) => {
                */
               excitationList?.map((rate: any) => {
                 return (
-                  <Option key={rate.sender_id} value={rate.sender_id}>
+                  <Option key={rate.sender_id} disabled={rate.disabled} value={rate.sender_id}>
                     {rate.name}
                   </Option>
                 )
@@ -131,7 +131,7 @@ const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
     if (formData && isFixForm) {
       const excitarionListes = formData[index]
       form.setFieldsValue({
-        port: [excitarionListes.target_type === 0 ? '单激励' : '级联激励', excitarionListes.name],
+        port: [excitarionListes.target_type === 0 ? '单激励Group' : '级联Group', excitarionListes.name],
         description: excitarionListes.desc
       })
     }
@@ -142,7 +142,13 @@ const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
     <div className={styles.card_middle}>
       <Form name='middle' autoComplete='off' className={styles.card_middle_form} onValuesChange={onValuesChange} form={form}>
         <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择激励' }]}>
-          <Cascader disabled={isFixForm} fieldNames={{ label: 'name', value: 'sender_id' }} options={excitationList} onChange={onSelect} />
+          <Cascader
+            disabled={isFixForm}
+            placeholder='选择配置'
+            fieldNames={{ label: 'name', value: 'sender_id' }}
+            options={excitationList}
+            onChange={onSelect}
+          />
         </Form.Item>
         <Form.Item
           label='描述'
@@ -183,7 +189,7 @@ const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
 
   return (
     <div className={styles.card_main}>
-      {type === 'two' ? (
+      {type === 'two' || type === 'five' ? (
         <TwoExcitationCardCompoent
           formData={formData}
           excitationList={excitationList}
