@@ -1,5 +1,7 @@
+import { MinusSquareTwoTone, PlusSquareTwoTone } from '@ant-design/icons'
 import { Tooltip } from 'antd'
-import React, { useCallback, useLayoutEffect, useState } from 'react'
+import { use } from 'echarts/core'
+import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { createGroupFn } from 'Src/services/api/excitationApi'
@@ -10,6 +12,8 @@ import StyleSheet from './excitationDraw.less'
 interface al {
   [key: string]: any
 }
+type K = number
+type V = number
 const ExcitationDraw: React.FC = () => {
   const history = useHistory()
   const state = useLocation()?.state as al
@@ -18,6 +22,7 @@ const ExcitationDraw: React.FC = () => {
 
   const [widths, setWidth] = useState<al>({})
 
+  const [map, setMap] = useState<Map<K, V>>(new Map())
   const getRef = (dom: any, item: number, key: string) => {
     if (item === 0 || item === 1) {
       lineQef.current[key] = dom?.offsetWidth
@@ -27,6 +32,12 @@ const ExcitationDraw: React.FC = () => {
     setWidth(lineQef.current)
   }, [lineQef])
 
+  const meomMap = useCallback(
+    (id: number) => {
+      return !map.has(id)
+    },
+    [map]
+  )
   const acl = useCallback(
     (type, name) => {
       if (name || type) {
@@ -40,7 +51,17 @@ const ExcitationDraw: React.FC = () => {
     },
     [widths]
   )
-
+  const showCharts = (id: number) => {
+    setMap(pre => {
+      const temp = new Map(pre)
+      if (temp.has(id)) {
+        temp.delete(id)
+        return temp
+      }
+      temp.set(id, id)
+      return temp
+    })
+  }
   const Deep = (props: any) => {
     const { value } = props
     return (
@@ -54,22 +75,32 @@ const ExcitationDraw: React.FC = () => {
                 getRef(el, item.type, item.name)
               }}
             >
-              <div className={StyleSheet.drawBody_concentBody_Header}>
+              <div className={meomMap(item.sender_id) ? StyleSheet.drawBody_concentBody_Header : StyleSheet.drawBody_concentBody_Headers}>
                 <div className={StyleSheet.drawBody_concentBody_Header_position}>
                   <div className={StyleSheet.drawBody_concentBody_Header_title}>
-                    {' '}
                     <Tooltip title={item.name} placement='bottom'>
                       <span className={StyleSheet.name}>{item.name}</span>{' '}
                     </Tooltip>
+                    {item.group_data_list?.length > 0 ? (
+                      <div
+                        className={StyleSheet.icon}
+                        role='time'
+                        onClick={() => {
+                          showCharts(item.sender_id)
+                        }}
+                      >
+                        {meomMap(item.sender_id) ? <MinusSquareTwoTone /> : <PlusSquareTwoTone />}
+                      </div>
+                    ) : null}
                   </div>
                   {value.length - 1 !== index ? (
                     <div style={{ width: acl(item.target_type, item.name) }} className={StyleSheet.drawBody_concentBody_line} />
                   ) : null}
                 </div>
 
-                {item.group_data_list?.length > 0 ? <div className={StyleSheet.drawBody_concentBody_cloumn} /> : null}
+                {item.group_data_list?.length > 0 && meomMap(item.sender_id) ? <div className={StyleSheet.drawBody_concentBody_cloumn} /> : null}
 
-                {item.group_data_list?.length > 0 ? <Deep value={item.group_data_list} /> : null}
+                {item.group_data_list?.length > 0 && meomMap(item.sender_id) ? <Deep value={item.group_data_list} /> : null}
               </div>
             </div>
           )

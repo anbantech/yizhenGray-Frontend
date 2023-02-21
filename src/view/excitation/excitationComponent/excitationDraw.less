@@ -1,4 +1,6 @@
 .drawBody {
+     min-width:200px ;
+    min-height: 400px;
     display: flex; 
     overflow-x: scroll;
 }
@@ -7,6 +9,7 @@
     width: 100px;
     height: 32px;
     text-align: center;
+    position: relative;
     vertical-align: middle;
     font-size: 12px;
     background-color: white;
@@ -35,15 +38,19 @@
     margin-right: 10px;
 }
 .drawBody_concentBody_Header_position{
+    height: 33px;
     display: flex;
 }
 
 .drawBody_concentBody_Header{
-
    display: flex;
    flex-direction: column;
 }
-
+.drawBody_concentBody_Headers {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+}
 .footer{
     display: flex;
     align-items: center;
@@ -69,4 +76,11 @@
     text-align: center;
     text-overflow: ellipsis;
     overflow: hidden;
+}
+
+.icon{
+    position: absolute;
+    bottom: -10px;
+    left: 42px;
+    z-index: 100;
 }

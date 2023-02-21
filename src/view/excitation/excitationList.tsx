@@ -115,6 +115,10 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   const [tabs, setTabs] = useState<number>(-1)
 
   const [status, depCollect, depData] = useDepCollect(request)
+
+  // loading加载
+
+  const [loading, setLoading] = useState(true)
   // 存储单个项目信息
   //   const [excitationInfo, setExcitationInfo] = useState('')
 
@@ -177,25 +181,45 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       }
     })
   }
+  const updateParams = (value: string) => {
+    depCollect(true, { key_word: value })
+  }
 
-  // 更新参数获取列表
-  const updateParams = React.useCallback(
-    (value: string) => {
-      depCollect(true, { key_word: value })
+  const changePage = (page: number, pageSize: number) => {
+    depCollect(true, { page, page_size: pageSize })
+  }
+  // 切换页面
+  const onChange = React.useCallback(
+    (value: number) => {
+      childRef.inputRef.current?.save()
+      depCollect(true, { ...request, target_type: `${value}` })
+      setTabs(value)
     },
-    [depCollect]
+    [childRef.inputRef, depCollect]
   )
+  const setOperation = (value1?: any, type?: string, value2?: any) => {
+    setLoading(true)
+    switch (type) {
+      case 'page':
+        changePage(value1, value2)
+        break
+      case 'key_word':
+        updateParams(value1)
+        break
+      case 'type_tag':
+        onChange(value1)
+        break
+      default:
+        return null
+    }
+  }
+  // 更新参数获取列表
 
   // 删除项目弹出框
   //   const deleteProject = (id: string, value: boolean) => {
   //     setModalData({ ...modalData, excitationId: id })
   //     setCommonModleStatus(value)
   //   }
-
-  // 更改页码
-  const changePage = (page: number, pageSize: number) => {
-    depCollect(true, { page, page_size: pageSize })
-  }
 
   // 获取激励列表
   const getExcitationList = async (value: Resparams) => {
@@ -205,20 +229,11 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         setTotal(result.data.total)
         setExcitationList(result.data.results)
       }
+      setLoading(false)
     } catch (error) {
       throwErrorMessage(error, { 1004: '请求资源未找到' })
     }
   }
-
-  // 切换页面
-  const onChange = React.useCallback(
-    (e: RadioChangeEvent) => {
-      childRef.inputRef.current?.save()
-      depCollect(true, { ...request, target_type: `${e.target.value}` })
-      setTabs(e.target.value)
-    },
-    [childRef.inputRef, depCollect]
-  )
 
   React.useEffect(() => {
     if (state === undefined) {
@@ -521,7 +536,14 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   return (
     <div className={styles.AnBan_main}>
       <div className={(styles.AnBan_header, style.AnBan_headerRadio)}>
-        <Radio.Group onChange={onChange} buttonStyle='solid' optionType='button' value={`${tabs}`}>
+        <Radio.Group
+          onChange={(e: RadioChangeEvent) => {
+            setOperation(e.target.value, 'type_tag')
+          }}
+          buttonStyle='solid'
+          optionType='button'
+          value={`${tabs}`}
+        >
           <Radio.Button value='3'>激励列表</Radio.Button>
           <Radio.Button value='0'>单激励Group列表</Radio.Button>
           <Radio.Button value='1'>级联列表</Radio.Button>
@@ -532,7 +554,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
           <SearchInput
             ref={childRef.inputRef}
             placeholder={`${inputPlaceholder[tabs as keyof typeof inputPlaceholder]}`}
-            onChangeValue={updateParams}
+            onChangeValue={setOperation}
           />
           <CreateButton
             name={`${An_ButtonNameMap[tabs as keyof typeof An_ButtonNameMap]}`}
@@ -546,11 +568,11 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       </div>
       <div className={styles.tableConcent}>
         <ConfigProvider locale={zhCN} renderEmpty={customizeRender}>
-          <Table rowKey='id' dataSource={excitationList} columns={cloumnMap[tabs as keyof typeof cloumnMap]} pagination={false} />
+          <Table rowKey='id' dataSource={excitationList} loading={loading} columns={cloumnMap[tabs as keyof typeof cloumnMap]} pagination={false} />
         </ConfigProvider>
       </div>
       <div className={styles.AnBan_PaginationsAge}>
-        <PaginationsAge length={total} num={10} getParams={changePage} pagenums={depData.page} />
+        <PaginationsAge length={total} num={10} getParams={setOperation} pagenums={depData.page} />
       </div>
       {/* <ExcitationModal
         visible={modalData.isModalVisible}
