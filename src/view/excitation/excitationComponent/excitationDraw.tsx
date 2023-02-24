@@ -400,11 +400,13 @@ const ExcitationDraw: React.FC = () => {
   return (
     <div className={StyleSheet.DrawBody}>
       <div className={StyleSheet.DrawBody_head}>
-        <Steps current={current}>
-          {steps.map(item => (
-            <Step key={item.title} title={item.title} />
-          ))}
-        </Steps>
+        <div className={StyleSheet.stepHeader_concent}>
+          <Steps current={current}>
+            {steps.map(item => (
+              <Step key={item.title} title={item.title} />
+            ))}
+          </Steps>
+        </div>
       </div>
 
       <div className={StyleSheet.DrawBody_Main} style={{ width: '100% ' }}>
