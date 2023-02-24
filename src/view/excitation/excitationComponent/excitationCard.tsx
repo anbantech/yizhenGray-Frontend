@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { Cascader, Form, Input, Select } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import { isArray } from 'lodash'
@@ -45,7 +45,7 @@ interface Option {
   disabled?: boolean
   children?: Option[]
 }
-const TwoExcitationCard = React.forwardRef((props: AllPropsType) => {
+const TwoExcitationCard = (props: AllPropsType) => {
   const [form] = useForm()
   const { excitationList, onChange, index, isFixForm, formData } = props
   const [desc, setDesc] = useState('')
@@ -101,11 +101,11 @@ const TwoExcitationCard = React.forwardRef((props: AllPropsType) => {
       </Form>
     </div>
   )
-})
+}
 TwoExcitationCard.displayName = 'TwoExcitationCard'
 const TwoExcitationCardCompoent = React.memo(TwoExcitationCard)
 
-const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
+const ThreeExcitationCard = (props: AllPropsType) => {
   const [form] = useForm()
   const { excitationList, onChange, index, isFixForm, formData } = props
   const [desc, setDesc] = useState('')
@@ -135,10 +135,12 @@ const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
     if (formData) {
       if (isArray(formData)) {
         const excitarionListes = formData[index]
-        form.setFieldsValue({
-          port: [excitarionListes.target_type === 0 ? '单激励Group' : '级联Group', excitarionListes.name],
-          description: excitarionListes.desc
-        })
+        if (formData.length > 0) {
+          form.setFieldsValue({
+            port: [excitarionListes.target_type === 0 ? '单激励Group' : '级联Group', excitarionListes.name],
+            description: excitarionListes.desc
+          })
+        }
       } else {
         const excitarionListes = formData
         form.setFieldsValue({
@@ -168,7 +170,7 @@ const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
       </Form>
     </div>
   )
-})
+}
 ThreeExcitationCard.displayName = 'ThreeExcitationCard'
 const ThreeExcitationCardCompoent = React.memo(ThreeExcitationCard)
 
@@ -188,12 +190,6 @@ const ThreeExcitationCardCompoent = React.memo(ThreeExcitationCard)
 
 const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
   const { index, excitationList, idArray, onChange, formData, isFixForm, type } = props
-  const childRef: ChildRef = {
-    oneForm: useRef<StepRef | null>(null),
-    twoForm: useRef<StepRef | null>(null),
-    threeForm: useRef<StepRef | null>(null),
-    fourForm: useRef<StepRef | null>(null)
-  }
   const Data = GetDeatilFn(idArray)
   return (
     <div className={styles.card_main}>
@@ -203,7 +199,6 @@ const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
           excitationList={excitationList}
           index={index}
           isFixForm={isFixForm}
-          ref={childRef.twoForm}
           onChange={onChange}
         />
       ) : (
@@ -212,7 +207,6 @@ const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
           excitationList={excitationList}
           index={index}
           isFixForm={isFixForm}
-          ref={childRef.twoForm}
           onChange={onChange}
         />
       )}

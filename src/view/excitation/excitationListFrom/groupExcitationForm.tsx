@@ -599,11 +599,13 @@ const GroupExcitationForm: React.FC = () => {
           </Form.Item>
         </Form>
         <div className={styles.stepHeader}>
-          <Steps current={current}>
-            {steps.map(item => (
-              <Step key={item.title} title={item.title} />
-            ))}
-          </Steps>
+          <div className={styles.stepHeader_concent}>
+            <Steps current={current}>
+              {steps.map(item => (
+                <Step key={item.title} title={item.title} />
+              ))}
+            </Steps>
+          </div>
         </div>
         <div style={{ width: '100% ' }}>{steps[current].content}</div>
         <div className={styles.excitaion_footer}>
@@ -620,7 +622,7 @@ const GroupExcitationForm: React.FC = () => {
             )}
             {current < steps.length - 1 && (
               <CommonButton
-                buttonStyle={styles.stepButton}
+                buttonStyle={styles.active_button}
                 name='下一步'
                 type='default'
                 onClick={() => {
@@ -629,7 +631,7 @@ const GroupExcitationForm: React.FC = () => {
               />
             )}
             {current === steps.length - 1 && (
-              <CommonButton buttonStyle={styles.stepButton} name='预览' type='default' onClick={isFixForm ? isFixFormDrawView : viewDraw} />
+              <CommonButton buttonStyle={styles.active_button} name='预览' type='default' onClick={isFixForm ? isFixFormDrawView : viewDraw} />
             )}
           </div>
         </div>
