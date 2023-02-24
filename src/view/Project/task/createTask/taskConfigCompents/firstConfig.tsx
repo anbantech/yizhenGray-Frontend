@@ -60,6 +60,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           desc: values.description,
           project_id: id,
           beat_unit: values.beat_unit,
+          simu_instance_id: values.simu_instance_id,
           work_time: values.work_time,
           crash_num: values.crash_num,
           sender_id: values.sender_id
@@ -213,22 +214,23 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         <Form.Item
           label='节拍单元'
           name='beat_unit'
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[
-            { required: true, message: '请输入节拍单元' },
-            {
-              validator(_, value) {
-                const reg = /^\d+$/
-                if (reg.test(value) && value <= 4294967296000) {
-                  return Promise.resolve()
-                }
-                return Promise.reject(new Error('请输入 0-4294967296000 之间的整数'))
-              }
-            }
-          ]}
+          initialValue={200}
+          // validateFirst
+          // validateTrigger={['onBlur']}
+          // rules={[
+          //   { required: true, message: '请输入节拍单元' },
+          //   {
+          //     validator(_, value) {
+          //       const reg = /^\d+$/
+          //       if (reg.test(value) && value <= 4294967296000) {
+          //         return Promise.resolve()
+          //       }
+          //       return Promise.reject(new Error('请输入 0-4294967296000 之间的整数'))
+          //     }
+          //   }
+          // ]}
         >
-          <Input placeholder='请输入节拍单元' suffix='毫秒' />
+          <Input placeholder='请输入节拍单元' disabled suffix='毫秒' />
         </Form.Item>
         <Form.Item
           label='仿真节点'

@@ -57,24 +57,24 @@ interface projectInfoType {
 
 const An_ButtonNameMap = {
   0: '新建单激励Group',
-  1: '新建级联',
+  1: '新建级联Group',
   2: '新建交互',
-  3: '新建激励',
-  4: '新建级联Group'
+  3: '新建激励'
+  // 4: '新建级联Group'
 }
 const An_ButtonDetailMap = {
   0: '查看单激励Group',
-  1: '查看级联激励',
+  1: '查看级联Group',
   2: '查看交互',
-  3: '查看激励',
-  4: '查看级联激励Group'
+  3: '查看激励'
+  // 4: '查看级联激励Group'
 }
 const An_tabsMap = {
   0: 'one',
   1: 'two',
   2: 'three',
-  3: 'four',
-  4: 'five'
+  3: 'four'
+  // 4: 'five'
 }
 
 const callBackAn_tabs = {
@@ -91,10 +91,10 @@ interface ChildRef {
 type stateType = { [key: string]: string }
 const inputPlaceholder = {
   0: '根据名称搜索单激励Group',
-  1: '根据名称搜索级联激励',
+  1: '根据名称搜索级联Group',
   2: '根据名称搜索交互',
-  3: '根据名称搜索激励',
-  4: '根据名称搜索级联激励Group'
+  3: '根据名称搜索激励'
+  // 4: '根据名称搜索级联激励Group'
 }
 const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () => {
   const childRef: ChildRef = {
@@ -135,18 +135,13 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       const createOneExcitation = '/excitationList/createOneExcitation'
       const createGroupExcitation = '/excitationList/createGroupExcitation'
       const createExcitation = '/excitationList/createExcitation'
-      const createExcitationGroup = '/excitationList/createDoubleExcitationGroup'
+      // const createExcitationGroup = '/excitationList/createDoubleExcitationGroup'
       history.push({
         pathname: `${
-          +value === 0
-            ? createOneExcitation
-            : +value === 1
-            ? createDoubleExcitation
-            : +value === 2
-            ? createGroupExcitation
-            : +value === 4
-            ? createExcitationGroup
-            : createExcitation
+          +value === 0 ? createOneExcitation : +value === 1 ? createDoubleExcitation : +value === 2 ? createGroupExcitation : createExcitation
+          // : +value === 4
+          // createExcitationGroup
+          // createExcitation
         }`,
         state: {
           type: `${An_tabsMap[tabs as keyof typeof An_tabsMap]}`,
@@ -283,12 +278,6 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         title: '端口名称',
         dataIndex: 'port',
         key: 'port'
-      },
-      {
-        width: '20%',
-        title: '激励描述 ',
-        dataIndex: 'desc',
-        key: 'desc'
       },
 
       {
@@ -478,58 +467,6 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
           )
         }
       }
-    ],
-    4: [
-      {
-        width: '15%',
-        title: '级联Group名称',
-        dataIndex: 'name',
-        key: 'name',
-        // eslint-disable-next-line react/display-name
-        render: (_: any, row: any) => {
-          return (
-            <span
-              className={styles.tableProjectName}
-              role='time'
-              onClick={() => {
-                lookDetail(row, 4)
-              }}
-            >
-              {row.name}
-            </span>
-          )
-        }
-      },
-      {
-        width: '15%',
-        title: '描述',
-        dataIndex: 'desc',
-        key: 'desc'
-      },
-
-      {
-        width: '10%',
-        title: '操作',
-        dataIndex: 'operations',
-        key: 'operations',
-        // eslint-disable-next-line react/display-name
-        render: (_: any, row: any) => {
-          return (
-            <div className={style.excitaion_operation}>
-              <span
-                style={{ marginLeft: '10px', marginRight: '10px' }}
-                role='button'
-                tabIndex={0}
-                onClick={() => {
-                  lookDetail(row, 4)
-                }}
-              >
-                查看详情
-              </span>
-            </div>
-          )
-        }
-      }
     ]
   }
 
@@ -546,8 +483,8 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         >
           <Radio.Button value='3'>激励列表</Radio.Button>
           <Radio.Button value='0'>单激励Group列表</Radio.Button>
-          <Radio.Button value='1'>级联列表</Radio.Button>
-          <Radio.Button value='4'>级联Group列表</Radio.Button>
+          <Radio.Button value='1'>级联Group列表</Radio.Button>
+          {/* <Radio.Button value='4'>级联Group列表</Radio.Button> */}
           <Radio.Button value='2'>交互列表</Radio.Button>
         </Radio.Group>
         <div className={styles.AnBan_header_bottom}>
