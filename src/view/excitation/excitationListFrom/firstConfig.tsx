@@ -60,7 +60,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           project_id: id,
           work_time: values.work_time,
           crash_num: values.crash_num,
-          group_id: values.group_id
+          sender_id: values.sender_id
         }
         if (taskInfo?.editTask) {
           const result = await updateTask(taskInfo.data.id, params)
@@ -197,7 +197,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           <Input placeholder='请输入Crash数量' />
         </Form.Item>
 
-        <Form.Item label='交互' name='group_id' validateFirst validateTrigger={['onBlur']} rules={[{ required: true, message: '请选择交互' }]}>
+        <Form.Item label='交互' name='sender_id' validateFirst validateTrigger={['onBlur']} rules={[{ required: true, message: '请选择交互' }]}>
           <Select placeholder='请选择交互'>
             {
               /**

@@ -3,8 +3,8 @@ import { excitationRes, getAllRes } from 'Src/globalType/Response'
 import { getAllExcitationFn, getExcitationFn_1 } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 
-function GetDeatilFn(value: number) {
-  const [Data, setData] = React.useState<getAllRes>()
+function GetDeatilFn(value: number | undefined) {
+  const [Data, setData] = React.useState<getAllRes | ''>()
   const getDetailFn = async (value: number) => {
     try {
       const res = await getAllExcitationFn(value)
@@ -18,6 +18,8 @@ function GetDeatilFn(value: number) {
   React.useEffect(() => {
     if (value) {
       getDetailFn(value)
+    } else {
+      setData('')
     }
   }, [value])
   return Data

@@ -157,16 +157,14 @@ function Header(props: any) {
     '/excitationList/Deatail': `${
       data && data?.name === '查看单激励Group'
         ? '查看单激励Group'
-        : data?.name === '查看级联'
-        ? '查看级联'
+        : data?.name === '查看级联激励Group'
+        ? '查看级联Group'
         : data?.name === '查看交互'
         ? '查看交互'
-        : data?.name === '查看级联Group'
-        ? '查看级联Group'
         : '查看激励'
     }`,
     '/excitationList/createOneExcitation': '新建单激励Group',
-    '/excitationList/createDoubleExcitation': '新建级联',
+    '/excitationList/createDoubleExcitation': '新建级联Group',
     '/excitationList/createDoubleExcitationGroup': '新建级联Group',
     '/excitationList/createGroupExcitation': '新建交互',
     '/excitationList/createExcitation': '新建激励',
