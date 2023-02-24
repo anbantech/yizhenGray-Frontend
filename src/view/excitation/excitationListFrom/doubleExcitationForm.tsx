@@ -6,7 +6,8 @@ import { useContext, useState } from 'react'
 import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
-import { createDoubleExcitationFn, excitationListFn } from 'Src/services/api/excitationApi'
+import { getAllRes } from 'Src/globalType/Response'
+import { createGroup_unitFn, excitationListFn } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 
 import styles from '../excitation.less'
@@ -73,7 +74,7 @@ const DoubleExcitationForm: React.FC = () => {
   const [excitationList, setExcitationList] = useState<Option[]>([
     {
       sender_id: '1',
-      name: '级联',
+      name: '级联Group',
       disabled: false,
       children: []
     },
@@ -88,7 +89,7 @@ const DoubleExcitationForm: React.FC = () => {
   const [data, setData] = useState<number[]>([])
   const [cardCheckStatus, setCardCheckStatus] = useState(true)
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
-  const Data = GetDeatilFn(info?.id)
+  const Data = GetDeatilFn(info?.id) as getAllRes
   const addCard = React.useCallback(() => {
     setCardArray(pre => pre + 1)
   }, [])
@@ -171,7 +172,7 @@ const DoubleExcitationForm: React.FC = () => {
           align_delay_2: +values.align_delay_2,
           child_id_list: data
         }
-        const result = await createDoubleExcitationFn(params)
+        const result = await createGroup_unitFn(params)
         if (result.data) {
           history.push({
             pathname: '/excitationList',

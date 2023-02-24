@@ -1,4 +1,6 @@
 .drawBody {
+    min-width:200px ;
+    min-height: 400px;
     display: flex; 
     overflow-x: scroll;
 }
@@ -7,6 +9,7 @@
     width: 100px;
     height: 32px;
     text-align: center;
+    position: relative;
     vertical-align: middle;
     font-size: 12px;
     background-color: white;
@@ -31,36 +34,48 @@
     display: flex;
     
 }
+
 .drawBody_concentBody:last-child{
     margin-right: 10px;
 }
+
 .drawBody_concentBody_Header_position{
+    height: 33px;
     display: flex;
 }
 
 .drawBody_concentBody_Header{
-
    display: flex;
    flex-direction: column;
 }
 
+.drawBody_concentBody_Headers {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
 .footer{
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    width: calc(100% - 240px);
     height: 64px;
     margin: auto;
     background-color: white;
-    position: absolute;
+    position: fixed;
     bottom: 0;
 }
+
 .drawbodys{
   padding-top: 24px;
-  height:calc(100vh - 58px);
+  margin-left: 24px;
+  height:calc(100vh - 146px);
   overflow-y: scroll;
   position: relative;
 }
+
 .name {
     width: 100px;
     display: inline-block;
@@ -69,4 +84,33 @@
     text-align: center;
     text-overflow: ellipsis;
     overflow: hidden;
+}
+
+.icon{
+    position: absolute;
+    bottom: -10px;
+    left: 42px;
+    z-index: 10000;
+    cursor: pointer;
+}
+
+.DrawBody_head{
+    width: 100%;
+    height: 88px;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    border-top: 1px solid #E9E9E9;
+    padding: 24px;
+    background-color: white;
+}
+
+.DrawBody_Main{
+    overflow-y: scroll;
+}
+
+.footerConcent{
+   width:250px;
+   display: flex;
+   justify-content: space-between;
 }

@@ -7,7 +7,7 @@ import styles from './searchInput.less'
 
 interface searchTypes {
   placeholder: string
-  onChangeValue: (value: string) => void
+  onChangeValue: (value: string, tyepe?: string) => void
 }
 
 type isShowType = string | number
@@ -47,7 +47,7 @@ const SearchInput = React.forwardRef((props: searchTypes, myRef) => {
   const { placeholder, onChangeValue } = props
   const changeValueFn = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
-    onChangeValue(value)
+    onChangeValue(value, 'key_word')
   }
 
   const [nowValue, isCancel, controlRate] = useRequestRate(changeValueFn, 300)
@@ -61,7 +61,7 @@ const SearchInput = React.forwardRef((props: searchTypes, myRef) => {
   }))
   useEffect(() => {
     if (isCancel) {
-      onChangeValue(nowValue)
+      onChangeValue(nowValue, 'key_word')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nowValue, isCancel])

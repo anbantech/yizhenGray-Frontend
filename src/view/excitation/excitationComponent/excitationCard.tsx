@@ -1,9 +1,12 @@
 import React, { useRef, useState } from 'react'
 import { Cascader, Form, Input, Select } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
+import { isArray } from 'lodash'
 import { StepRef } from 'Src/view/Project/task/createTask/newCreateTask'
 // import { PlusOutlined } from '@ant-design/icons'
 import styles from '../excitation.less'
+
+import { GetDeatilFn } from '../excitationListFrom/getDataDetailFn/getDataDetailFn'
 
 interface PropsTypeFn {
   type: string
@@ -24,6 +27,8 @@ interface propsType {
   isFixForm: boolean
   excitationList: any
   index: number
+  // eslint-disable-next-line react/require-default-props
+  idArray?: number
   onChange: (value: any, index: number) => void
 }
 
@@ -104,7 +109,7 @@ const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
   const [form] = useForm()
   const { excitationList, onChange, index, isFixForm, formData } = props
   const [desc, setDesc] = useState('')
-  const onValuesChange = (changedValues: any) => {
+  const onValuesChange = async (changedValues: any) => {
     const formData = changedValues
     if (formData.port) {
       onChange(formData.port[1], index)
@@ -128,11 +133,19 @@ const ThreeExcitationCard = React.forwardRef((props: AllPropsType) => {
       form.setFieldsValue({ description: desc })
     }
     if (formData) {
-      const excitarionListes = formData[index]
-      form.setFieldsValue({
-        port: [excitarionListes.target_type === 0 ? '单激励Group' : '级联Group', excitarionListes.name],
-        description: excitarionListes.desc
-      })
+      if (isArray(formData)) {
+        const excitarionListes = formData[index]
+        form.setFieldsValue({
+          port: [excitarionListes.target_type === 0 ? '单激励Group' : '级联Group', excitarionListes.name],
+          description: excitarionListes.desc
+        })
+      } else {
+        const excitarionListes = formData
+        form.setFieldsValue({
+          port: [excitarionListes.target_type === 0 ? '单激励Group' : '级联Group', excitarionListes.name],
+          description: excitarionListes.desc
+        })
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [desc, formData, form, isFixForm, index])
@@ -174,19 +187,19 @@ const ThreeExcitationCardCompoent = React.memo(ThreeExcitationCard)
 // const FiveExcitationCardCompoent = React.memo(FiveExcitationCard)
 
 const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
-  const { index, excitationList, onChange, formData, isFixForm, type } = props
+  const { index, excitationList, idArray, onChange, formData, isFixForm, type } = props
   const childRef: ChildRef = {
     oneForm: useRef<StepRef | null>(null),
     twoForm: useRef<StepRef | null>(null),
     threeForm: useRef<StepRef | null>(null),
     fourForm: useRef<StepRef | null>(null)
   }
-
+  const Data = GetDeatilFn(idArray)
   return (
     <div className={styles.card_main}>
       {type === 'five' ? (
         <TwoExcitationCardCompoent
-          formData={formData}
+          formData={formData ?? Data}
           excitationList={excitationList}
           index={index}
           isFixForm={isFixForm}
@@ -195,7 +208,7 @@ const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
         />
       ) : (
         <ThreeExcitationCardCompoent
-          formData={formData}
+          formData={formData ?? Data}
           excitationList={excitationList}
           index={index}
           isFixForm={isFixForm}

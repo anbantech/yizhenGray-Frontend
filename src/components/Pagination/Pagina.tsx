@@ -8,9 +8,9 @@ function PaginationsAge(props: any) {
   const { length, getParams, num, pagenums, tag } = props
   const onPage = (page: number, pageSize: number) => {
     if (tag === 'detail') {
-      getParams('page', page)
+      getParams(page, 'page')
     } else {
-      getParams(page, pageSize)
+      getParams(page, 'page', pageSize)
     }
   }
 
