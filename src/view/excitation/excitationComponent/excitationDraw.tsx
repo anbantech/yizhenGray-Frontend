@@ -399,7 +399,7 @@ const ExcitationDraw: React.FC = () => {
 
   return (
     <div className={StyleSheet.DrawBody}>
-      <div className={StyleSheet.DrawBody_head}>
+      <div className={StyleSheet.DrawBody_headers}>
         <div className={StyleSheet.stepHeader_concent}>
           <Steps current={current}>
             {steps.map(item => (
