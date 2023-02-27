@@ -445,6 +445,11 @@ const GroupExcitationForm: React.FC = () => {
     })
   }
   const next = async () => {
+    if (stepCurrentRef.current[1] || childRef.step2Ref.current?.validate() || isFixForm) {
+      setCurrent(current + 1)
+    } else {
+      message.error('请配置激励数据')
+    }
     switch (current) {
       case 0: {
         const res1 = await childRef.step1Ref.current?.save()
@@ -455,22 +460,16 @@ const GroupExcitationForm: React.FC = () => {
         setCurrent(current + 1)
         break
       }
-      case 1: {
-        const res2 = await childRef.step2Ref.current?.save()
-        if (res2 && res2.length >= 1) {
-          stepCurrentRef.current.push(res2)
+
+      case 2: {
+        const res3 = await childRef.step3Ref.current?.save()
+        if (res3 && res3.length >= 1 && res3.length <= 3) {
+          stepCurrentRef.current.push(res3)
         }
         break
       }
       default:
         return null
-    }
-    if (current === 1) {
-      if (stepCurrentRef.current[1] || childRef.step2Ref.current?.validate() || isFixForm) {
-        setCurrent(current + 1)
-      } else {
-        message.error('请配置激励数据')
-      }
     }
   }
 
