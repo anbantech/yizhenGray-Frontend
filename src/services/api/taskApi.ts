@@ -1,4 +1,14 @@
-import { beginTest, exportTestLog, simulateParams, targetsTest, TaskList, taskParamsFn, testAlllogs, testlogs } from 'Src/globalType/Param'
+import {
+  beginTest,
+  exportTestLog,
+  ReplayIDArrayParams,
+  simulateParams,
+  targetsTest,
+  TaskList,
+  taskParamsFn,
+  testAlllogs,
+  testlogs
+} from 'Src/globalType/Param'
 import { ResTaskList, ResTaskDetail, isCode, Restestlogs } from 'Src/globalType/Response'
 import request from 'Src/services/request/request'
 
@@ -65,8 +75,8 @@ export function diagnose(id: string, log_index: number) {
 export function test_target(params: targetsTest) {
   return request.post<isCode>('/api/v1.0/targets/test-connection', params)
 }
-// 查询关联任务
 
+// 查询关联任务
 export function findTask(params: any) {
   return request.get<any>('/api/v1.0/tasks/query-tasks', { params })
 }
@@ -121,3 +131,9 @@ export function getAllTestingLog(params: testAlllogs) {
 }
 
 // 获取仿真节点
+
+// 重放
+
+export function rePlayTask(params: ReplayIDArrayParams) {
+  return request.post<any>('/api/v1.0/tasks/replay', { params })
+}
