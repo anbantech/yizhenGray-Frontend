@@ -1,15 +1,14 @@
 /* eslint-disable indent */
 /* eslint-disable react/display-name */
 import { DownOutlined } from '@ant-design/icons'
-import { Dropdown, Menu, Space, Table, Tooltip } from 'antd'
+import { Dropdown, Menu, message, Space, Tooltip } from 'antd'
 import globalStyle from 'Src/view/Project/project/project.less'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { getTime } from 'Src/util/baseFn'
-
+import { copyText } from 'Src/util/common'
+import errorFrameCopy from 'Src/assets/image/errorFrameCopy.svg'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import styles from '../taskDetailUtil/Detail.less'
-
-import tableStyle from '../taskDetail.less'
 
 interface propsType {
   params: any
@@ -17,8 +16,22 @@ interface propsType {
   total: number | undefined
   changePage: () => void
 }
+
+interface DataType {
+  case_content: string
+  case_type: number
+  crash_info: string
+  create_time: string
+  create_user: string
+  id: number
+  recv_data: string[]
+  send_data: string[]
+  update_time: string
+  update_user: string
+}
 const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   const { params, total, logData, changePage } = props
+
   const statusDesc = [
     '未处理',
     '熵过滤通过',
@@ -32,14 +45,19 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     '处理失败',
     '异常停止'
   ]
+  const [currentOpenId, setCurrentOpenId] = useState<number>(-1)
+
   const [currentType, setCurrentType] = useState('all')
+
   const [currentTypeTime, setCurrentTypeTime] = useState('ascend')
+
   const changeCurrentType = (e: any) => {
     setCurrentType(e.key)
   }
   const changeTimeType = (e: any) => {
     setCurrentTypeTime(e.key)
   }
+
   const menu = (
     <Menu selectable onClick={changeCurrentType} selectedKeys={[currentType]}>
       <Menu.Item key='all' style={{ textAlign: 'center' }}>
@@ -86,129 +104,118 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
       </Dropdown>
     )
   }
-  const columns = [
-    {
-      title: '用例编号',
-      dataIndex: 'id',
-      key: 'id',
-      ellipsis: true,
-      width: '10%'
-    },
-    {
-      title: '发送数据',
-      dataIndex: 'send_data',
-      key: 'send_data',
-      ellipsis: true,
-      width: '12.5%',
-      render: (text: any, record: any) => (
-        <div className={styles.funNameing} key={record.id}>
-          <Tooltip
-            overlayClassName={tableStyle.overlay}
-            color='#ffffff'
-            title={typeof record.send_data === 'string' ? record.send_data : record.send_data[0] || ''}
-            placement='bottomLeft'
-          >
-            <span className={styles.casetitles}>{typeof record.send_data === 'string' ? record.send_data : record.send_data[0] || ''}</span>
-          </Tooltip>
-        </div>
-      )
-    },
-    {
-      title: '接收数据',
-      dataIndex: 'recv_data',
-      key: 'recv_data',
-      ellipsis: true,
-      width: '12.5%',
-      render: (text: any, record: any) => (
-        <div className={styles.funNameing} key={record.id}>
-          <Tooltip
-            overlayClassName={tableStyle.overlay}
-            color='#ffffff'
-            title={typeof record.recv_data === 'string' ? record.recv_data : record.recv_data[0] || ''}
-            placement='bottomLeft'
-          >
-            <span className={styles.casetitles}>{typeof record.recv_data === 'string' ? record.recv_data : record.recv_data[0] || ''} </span>
-          </Tooltip>
-        </div>
-      )
-    },
-    {
-      title: () => {
-        return <IsWrongDownMenu />
-      },
-      dataIndex: 'is_wrong',
-      key: 'is_wrong',
-      ellipsis: true,
-      render: (text: any, record: any) => (
-        <div className={styles.checkDetail} key={record.id}>
-          {record.is_wrong ? '是' : '否'}
-        </div>
-      ),
-      width: '10%'
-    },
-    {
-      title: '用例状态',
-      dataIndex: 'status',
-      key: 'status',
-      ellipsis: true,
-      render: (text: any, record: any) => (
-        <div className={styles.checkDetail} key={record.id}>
-          当前第{record.frame_index}帧{statusDesc[record.status]}
-        </div>
-      ),
-      width: '15%'
-    },
-    {
-      title: () => {
-        return <TimeDownMenu />
-      },
-      dataIndex: 'update_time',
-      key: 'update_time',
-      ellipsis: true,
-      render: (text: any, record: any) => (
-        <div className={styles.checkDetail} key={record.id}>
-          {getTime(record.update_time)}
-        </div>
-      ),
-      width: '15%'
-    },
-    {
-      width: '15%',
-      title: '更多操作',
-      dataIndex: 'operations',
-      key: 'operations',
-      // eslint-disable-next-line react/display-name
-      render: () => {
-        return (
-          <div className={globalStyle.Opera_detaile}>
-            <span role='button' tabIndex={0} onClick={() => {}}>
-              仿真信息
-            </span>
-            <span role='button' tabIndex={0} onClick={() => {}}>
-              展开
-            </span>
-            <span style={{ marginRight: '20px' }} role='button' tabIndex={0} onClick={() => {}}>
-              重放
-            </span>
-          </div>
-        )
+
+  const changeToggleStatus = (id: number) => {
+    setCurrentOpenId(id === currentOpenId ? -1 : id)
+  }
+
+  const copyTextFn = useCallback((text: string) => {
+    return function c() {
+      copyText(text)
+      if (text) {
+        message.success('复制成功')
+      } else {
+        message.error('空白文本无需复制')
       }
     }
-  ]
+  }, [])
+
+  const HearConcentArray = ['用例编号', '发送数据 ', '发送时间', '用例状态', '接受数据', '是否异常', '操作']
   return (
     <div className={styles.tableList}>
       <div className={styles.tableListleftq}>
         <span className={styles.log}>测试详情</span>
       </div>
-      <Table
-        rowKey={record => record.id}
-        columns={columns}
-        rowClassName={record => {
-          return record.is_wrong ? `${styles.tableStyleBackground}` : ''
-        }}
-        dataSource={logData}
-        pagination={false}
-      />
+      <div className={styles.container}>
+        <div className={styles.Header}>
+          {HearConcentArray.map((item: string) => {
+            return (
+              <div className={styles.Header_Main} key={Math.random()}>
+                {item === '发送时间' ? <TimeDownMenu /> : item === '用例状态' ? <IsWrongDownMenu /> : <span>{item} </span>}
+              </div>
+            )
+          })}
+        </div>
+        <div className={styles.Table_Boby}>
+          {logData.map((item: DataType) => {
+            return (
+              <div key={item.id} className={styles.Table_concent}>
+                <Tooltip title={item.id}>
+                  <div>{item.id}</div>
+                </Tooltip>
+                <div>
+                  <div className={styles.dataInfoContainer}>
+                    <Tooltip title={item.send_data[0]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                      <span className={styles.dataLongInfo}>{item.send_data[0] || '无'}</span>
+                    </Tooltip>
+                    <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(item.send_data[0])}>
+                      <img src={errorFrameCopy} alt='' />
+                    </span>
+                  </div>
+                  <div className={styles.dataShowContainer}>
+                    {item.send_data.length > 1 &&
+                      item.send_data.slice(1).map((send_data: string) => {
+                        return (
+                          <div className={styles.dataShowItem} key={`${send_data}_${Math.random()}`}>
+                            <Tooltip title={send_data} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                              <span className={styles.dataLongInfo}>{send_data || '无'}</span>
+                            </Tooltip>
+                            <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(send_data)}>
+                              <img src={errorFrameCopy} alt='' />
+                            </span>
+                          </div>
+                        )
+                      })}
+                  </div>
+                </div>
+
+                <div>{getTime(item.update_time)}</div>
+
+                <div>{item.crash_info}</div>
+                <div className={styles.footerresve}>
+                  <div className={styles.dataInfoContainer}>
+                    <Tooltip title={item.recv_data[0]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                      <span className={styles.dataLongInfo}>{item.recv_data[0] || '无'}</span>
+                    </Tooltip>
+                    <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(item.recv_data[0])}>
+                      <img src={errorFrameCopy} alt='' />
+                    </span>
+                  </div>
+                  <div className={styles.dataShowContainer}>
+                    {item.recv_data.length > 1 &&
+                      item.recv_data.slice(1).map((recv_data: string) => {
+                        return (
+                          <div className={styles.dataShowItem} key={`${recv_data}_${Math.random()}`}>
+                            <Tooltip title={recv_data} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                              <span className={styles.dataLongInfo}>{recv_data || '无'}</span>
+                            </Tooltip>
+                            <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(recv_data)}>
+                              <img src={errorFrameCopy} alt='' />
+                            </span>
+                          </div>
+                        )
+                      })}
+                  </div>
+                </div>
+                <div>{item.case_type ? '是' : '否'}</div>
+                <div className={globalStyle.Opera_detaile}>
+                  <span role='button' tabIndex={0} onClick={() => {}}>
+                    仿真信息
+                  </span>
+                  {item.send_data.length > 1 && (
+                    <span role='button' tabIndex={0} onClick={() => changeToggleStatus(item.id)}>
+                      {currentOpenId === item.id ? '收起' : '展开'}
+                    </span>
+                  )}
+                  <span role='button' tabIndex={0} onClick={() => {}}>
+                    重放
+                  </span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
       <div className={globalStyle.AnBan_PaginationsAge}>
         <PaginationsAge length={total} num={10} getParams={changePage} pagenums={params.page} />
       </div>

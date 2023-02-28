@@ -558,3 +558,8 @@ export interface excitation_1Params {
 export interface dataStructureParams {
   child_id_list?: number[][]
 }
+
+export interface ReplayIDArrayParams {
+  task_id: number
+  error_id?: number
+}
