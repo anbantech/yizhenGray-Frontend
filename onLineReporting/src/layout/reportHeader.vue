@@ -14,7 +14,7 @@
     <div class="line">
 
     </div>
-    <span class="header_titilechart">易侦测试报告</span>
+    <span class="header_titilechart">易复测试报告</span>
   </div>
 </template>
 

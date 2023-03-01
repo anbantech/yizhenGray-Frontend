@@ -45,8 +45,8 @@ function Login() {
     <div className={styles.loginBody}>
       <div className={styles.loginLeftBody}>
         <div className={styles.loginLeftConcent}>
-          {/* <span>易侦协议模糊测试</span>
-          <span>易侦是一款灵活的黑盒测试产品，通过协议模糊测试帮助用户及时发现软件漏洞，确保软件的安全可靠。</span> */}
+          {/* <span>易复协议模糊测试</span>
+          <span>易复是一款灵活的黑盒测试产品，通过协议模糊测试帮助用户及时发现软件漏洞，确保软件的安全可靠。</span> */}
         </div>
         <img src={LoginImg} alt='' className={styles.img} />
       </div>
@@ -54,7 +54,7 @@ function Login() {
         <div className={styles.loginRightDes}>
           <span>登录</span>
           {/* <span> 欢迎使用网络协议模糊测试工具 </span> */}
-          <span>欢迎使用易侦协议模糊测试系统 </span>
+          <span>欢迎使用易复协议模糊测试系统 </span>
         </div>
         <div className={styles.loginRightForm}>
           <Form name='basic' onValuesChange={onValuesChange} layout='vertical' initialValues={{ remember: true }} form={form} autoComplete='off'>

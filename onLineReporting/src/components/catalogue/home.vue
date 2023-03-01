@@ -11,7 +11,7 @@
         <div class="nav">
             <div class="reportHomeTitle">
                 <span> YIZHEN analysis REPORT </span>
-                <span>易侦测试报告</span>
+                <span>易复测试报告</span>
             </div>
         </div>
         <div class="bottom_line">   
