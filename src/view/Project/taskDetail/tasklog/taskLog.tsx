@@ -14,7 +14,9 @@ interface propsType {
   params: any
   logData: any
   total: number | undefined
-  changePage: () => void
+  changePage: (page: number, pageSize: number) => void
+  testTimeSort: (value: string) => void
+  caseSort: (value: string) => void
 }
 
 interface DataType {
@@ -30,43 +32,61 @@ interface DataType {
   update_user: string
 }
 const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
-  const { params, total, logData, changePage } = props
+  const { params, total, logData, changePage, testTimeSort, caseSort } = props
 
-  const statusDesc = [
-    '未处理',
-    '熵过滤通过',
-    '熵过滤失败',
-    '发送完成',
-    '发送失败',
-    '异常重试中',
-    '处理中',
-    '处理完成',
-    '诊断错误',
-    '处理失败',
-    '异常停止'
-  ]
+  // const statusDesc = [
+  //   '未处理',
+  //   '熵过滤通过',
+  //   '熵过滤失败',
+  //   '发送完成',
+  //   '发送失败',
+  //   '异常重试中',
+  //   '处理中',
+  //   '处理完成',
+  //   '诊断错误',
+  //   '处理失败',
+  //   '异常停止'
+  // ]
   const [currentOpenId, setCurrentOpenId] = useState<number>(-1)
 
   const [currentType, setCurrentType] = useState('all')
 
   const [currentTypeTime, setCurrentTypeTime] = useState('ascend')
 
+  const setOperation = (value1?: any, type?: string, value2?: any) => {
+    switch (type) {
+      case 'page':
+        changePage(value1, value2)
+        break
+      case 'time':
+        testTimeSort(value1)
+        break
+      case 'case_type':
+        caseSort(value1)
+        break
+      default:
+        return null
+    }
+  }
+
   const changeCurrentType = (e: any) => {
     setCurrentType(e.key)
+    setOperation(e.key, 'case_type')
   }
   const changeTimeType = (e: any) => {
     setCurrentTypeTime(e.key)
+    setOperation(e.key, 'time')
   }
 
   const menu = (
     <Menu selectable onClick={changeCurrentType} selectedKeys={[currentType]}>
-      <Menu.Item key='all' style={{ textAlign: 'center' }}>
+      <Menu.Item key='' style={{ textAlign: 'center' }}>
         全部
       </Menu.Item>
-      <Menu.Item key='yes' style={{ textAlign: 'center' }}>
+      <Menu.Item key='1' style={{ textAlign: 'center' }}>
         是
       </Menu.Item>
-      <Menu.Item key='no' style={{ textAlign: 'center' }}>
+      <Menu.Item key='0' style={{ textAlign: 'center' }}>
         否
       </Menu.Item>
     </Menu>
@@ -217,7 +237,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
         </div>
       </div>
       <div className={globalStyle.AnBan_PaginationsAge}>
-        <PaginationsAge length={total} num={10} getParams={changePage} pagenums={params.page} />
+        <PaginationsAge length={total} num={10} getParams={setOperation} pagenums={params.page} />
       </div>
     </div>
   )
