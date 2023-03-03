@@ -41,19 +41,26 @@ const TaskForm = (props: PropType) => {
   const [form] = useForm()
   const { Option } = Select
   const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
+  const [nodeList, setnodeList] = useState<number[] | unknown[]>([])
   useEffect(() => {
     if (taskInfo) {
-      const { name, desc, work_time, crash_num, group_id, group_name } = taskInfo
+      const { name, desc, work_time, crash_num, sender_id, group_name, beat_unit, simu_instance_id } = taskInfo
       setExcitationList(() => {
-        const excitationInfo = { id: group_id, name: group_name }
+        const excitationInfo = { id: sender_id, name: group_name }
         return [excitationInfo]
+      })
+      setnodeList(() => {
+        const nodeList = simu_instance_id
+        return [nodeList]
       })
       const formData = {
         name,
         description: desc,
         work_time,
         crash_num,
-        group_id
+        sender_id,
+        beat_unit,
+        simu_instance_id
       }
       form.setFieldsValue(formData)
     }
@@ -94,7 +101,7 @@ const TaskForm = (props: PropType) => {
             }
           ]}
         >
-          <Input placeholder='请输入2到20个字符' disabled />
+          <Input disabled placeholder='请输入2到20个字符' />
         </Form.Item>
 
         <Form.Item
@@ -119,7 +126,7 @@ const TaskForm = (props: PropType) => {
             }
           ]}
         >
-          <Input placeholder='请输入整数,最大48' suffix='小时' disabled />
+          <Input disabled placeholder='请输入整数,最大48' suffix='小时' />
         </Form.Item>
         <Form.Item
           label='Crash数量'
@@ -127,34 +134,72 @@ const TaskForm = (props: PropType) => {
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
+            { required: true, message: '请输入Crash数量' },
             {
-              required: true,
-              validateTrigger: 'onBlur',
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value <= 100) {
-                    return Promise.resolve()
-                  }
-                  return Promise.reject(new Error('请输入 0-100 之间的整数'))
+                  return Promise.resolve()
                 }
                 return Promise.reject(new Error('请输入 0-100 之间的整数'))
               }
             }
           ]}
         >
-          <Input placeholder='请输入Crash数量' disabled />
+          <Input disabled placeholder='请输入Crash数量' />
         </Form.Item>
-
-        <Form.Item label='交互' name='group_id' validateFirst validateTrigger={['onBlur']} rules={[{ required: true, message: '请选择交互' }]}>
-          <Select placeholder='请选择交互' disabled>
+        <Form.Item
+          label='节拍单元'
+          name='beat_unit'
+          initialValue={200}
+          // validateFirst
+          // validateTrigger={['onBlur']}
+          // rules={[
+          //   { required: true, message: '请输入节拍单元' },
+          //   {
+          //     validator(_, value) {
+          //       const reg = /^\d+$/
+          //       if (reg.test(value) && value <= 4294967296000) {
+          //         return Promise.resolve()
+          //       }
+          //       return Promise.reject(new Error('请输入 0-4294967296000 之间的整数'))
+          //     }
+          //   }
+          // ]}
+        >
+          <Input disabled placeholder='请输入节拍单元' suffix='毫秒' />
+        </Form.Item>
+        <Form.Item
+          label='仿真节点'
+          name='simu_instance_id'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[{ required: true, message: '请选择仿真节点' }]}
+        >
+          <Select disabled placeholder='请选择仿真节点'>
+            {
+              /**
+               * 根据连接方式列表渲染下拉框可选择的设备比特率
+               */
+              nodeList?.map((rate: any) => {
+                return (
+                  <Option key={rate} value={rate}>
+                    {rate}
+                  </Option>
+                )
+              })
+            }
+          </Select>
+        </Form.Item>
+        <Form.Item label='交互' name='sender_id' validateFirst validateTrigger={['onBlur']} rules={[{ required: true, message: '请选择交互' }]}>
+          <Select disabled placeholder='请选择交互'>
             {
               /**
                * 根据连接方式列表渲染下拉框可选择的设备比特率
                */
               excitationList?.map((rate: any) => {
                 return (
-                  <Option key={rate.id} value={rate.id}>
+                  <Option key={rate.sender_id} value={rate.sender_id}>
                     {rate.name}
                   </Option>
                 )
@@ -168,8 +213,8 @@ const TaskForm = (props: PropType) => {
           rules={[{ message: '请输入任务描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
           <Input.TextArea
-            placeholder='任务描述'
             disabled
+            placeholder='任务描述'
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
               formatter({ count }) {
