@@ -35,7 +35,6 @@ interface DataType {
 
 const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   const { params, total, logData, changePage, testTimeSort, caseSort } = props
-
   // const statusDesc = [
   //   '未处理',
   //   '熵过滤通过',
@@ -158,9 +157,9 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
             )
           })}
         </div>
-        <div className={styles.Table_Boby}>
-          {logData &&
-            logData.map((item: DataType) => {
+        {logData && (
+          <div className={styles.Table_Boby}>
+            {logData.map((item: DataType) => {
               return (
                 <div key={item.id} className={styles.Table_concent}>
                   <Tooltip title={item.id}>
@@ -175,7 +174,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                         <img src={errorFrameCopy} alt='' />
                       </span>
                     </div>
-                    <div className={styles.dataShowContainer}>
+                    <div style={{ display: currentOpenId === item.id ? 'block' : 'none' }} className={styles.dataShowContainer}>
                       {item.send_data.length > 1 &&
                         item.send_data.slice(1).map((send_data: string) => {
                           return (
@@ -204,7 +203,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                         <img src={errorFrameCopy} alt='' />
                       </span>
                     </div>
-                    <div className={styles.dataShowContainer}>
+                    <div style={{ display: currentOpenId === item.id ? 'block' : 'none' }} className={styles.dataShowContainer}>
                       {item.recv_data.length > 1 &&
                         item.recv_data.slice(1).map((recv_data: string) => {
                           return (
@@ -237,8 +236,9 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                 </div>
               )
             })}
-          {logData.length === 0 ? <NoData title='暂无数据' /> : null}
-        </div>
+            {logData.length === 0 ? <NoData title='暂无数据' /> : null}
+          </div>
+        )}
       </div>
       <div className={globalStyle.AnBan_PaginationsAge}>
         <PaginationsAge length={total} num={10} getParams={setOperation} pagenums={params.page} />
