@@ -11,7 +11,7 @@ import DeleteCourse from 'Image/DeleteCourse.svg'
 import report from 'Image/report.svg'
 import over from 'Image/overTask.svg'
 import { throwErrorMessage } from 'Src/util/message'
-import { bgTest, deleteExampleTask, rePlayTask, stopcontuine, stoppaused, stoptest, test_target } from 'Src/services/api/taskApi'
+import { bgTest, deleteExampleTask, rePlayTask, stopcontuine, stoppaused, stoptest } from 'Src/services/api/taskApi'
 import UseWebsocket from 'Src/webSocket/useWebSocket'
 import styles from '../taskDetail.less'
 
