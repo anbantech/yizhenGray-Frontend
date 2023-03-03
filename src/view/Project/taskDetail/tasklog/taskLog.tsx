@@ -157,88 +157,90 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
             )
           })}
         </div>
-        {logData && (
-          <div className={styles.Table_Boby}>
-            {logData.map((item: DataType) => {
-              return (
-                <div key={item.id} className={styles.Table_concent}>
-                  <Tooltip title={item.id}>
-                    <div>{item.id}</div>
-                  </Tooltip>
-                  <div>
-                    <div className={styles.dataInfoContainer}>
-                      <Tooltip title={item.send_data[0]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
-                        <span className={styles.dataLongInfo}>{item.send_data[0] || '无'}</span>
-                      </Tooltip>
-                      <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(item.send_data[0])}>
-                        <img src={errorFrameCopy} alt='' />
-                      </span>
+        <div className={styles.Table_Boby}>
+          {logData && (
+            <>
+              {logData.map((item: DataType) => {
+                return (
+                  <div key={item.id} className={styles.Table_concent}>
+                    <Tooltip title={item.id}>
+                      <div>{item.id}</div>
+                    </Tooltip>
+                    <div>
+                      <div className={styles.dataInfoContainer}>
+                        <Tooltip title={item.send_data[0]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                          <span className={styles.dataLongInfo}>{item.send_data[0] || '无'}</span>
+                        </Tooltip>
+                        <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(item.send_data[0])}>
+                          <img src={errorFrameCopy} alt='' />
+                        </span>
+                      </div>
+                      <div style={{ display: currentOpenId === item.id ? 'block' : 'none' }} className={styles.dataShowContainer}>
+                        {item.send_data.length > 1 &&
+                          item.send_data.slice(1).map((send_data: string) => {
+                            return (
+                              <div className={styles.dataShowItem} key={`${send_data}_${Math.random()}`}>
+                                <Tooltip title={send_data} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                                  <span className={styles.dataLongInfo}>{send_data || '无'}</span>
+                                </Tooltip>
+                                <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(send_data)}>
+                                  <img src={errorFrameCopy} alt='' />
+                                </span>
+                              </div>
+                            )
+                          })}
+                      </div>
                     </div>
-                    <div style={{ display: currentOpenId === item.id ? 'block' : 'none' }} className={styles.dataShowContainer}>
-                      {item.send_data.length > 1 &&
-                        item.send_data.slice(1).map((send_data: string) => {
-                          return (
-                            <div className={styles.dataShowItem} key={`${send_data}_${Math.random()}`}>
-                              <Tooltip title={send_data} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
-                                <span className={styles.dataLongInfo}>{send_data || '无'}</span>
-                              </Tooltip>
-                              <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(send_data)}>
-                                <img src={errorFrameCopy} alt='' />
-                              </span>
-                            </div>
-                          )
-                        })}
-                    </div>
-                  </div>
 
-                  <div>{getTime(item.update_time)}</div>
+                    <div>{getTime(item.update_time)}</div>
 
-                  <div>{item.crash_info}</div>
-                  <div className={styles.footerresve}>
-                    <div className={styles.dataInfoContainer}>
-                      <Tooltip title={item.recv_data[0]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
-                        <span className={styles.dataLongInfo}>{item.recv_data[0] || '无'}</span>
-                      </Tooltip>
-                      <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(item.recv_data[0])}>
-                        <img src={errorFrameCopy} alt='' />
+                    <div>{item.crash_info}</div>
+                    <div className={styles.footerresve}>
+                      <div className={styles.dataInfoContainer}>
+                        <Tooltip title={item.recv_data[0]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                          <span className={styles.dataLongInfo}>{item.recv_data[0] || '无'}</span>
+                        </Tooltip>
+                        <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(item.recv_data[0])}>
+                          <img src={errorFrameCopy} alt='' />
+                        </span>
+                      </div>
+                      <div style={{ display: currentOpenId === item.id ? 'block' : 'none' }} className={styles.dataShowContainer}>
+                        {item.recv_data.length > 1 &&
+                          item.recv_data.slice(1).map((recv_data: string) => {
+                            return (
+                              <div className={styles.dataShowItem} key={`${recv_data}_${Math.random()}`}>
+                                <Tooltip title={recv_data} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                                  <span className={styles.dataLongInfo}>{recv_data || '无'}</span>
+                                </Tooltip>
+                                <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(recv_data)}>
+                                  <img src={errorFrameCopy} alt='' />
+                                </span>
+                              </div>
+                            )
+                          })}
+                      </div>
+                    </div>
+                    <div>{item.case_type ? '是' : '否'}</div>
+                    <div className={globalStyle.Opera_detaile}>
+                      <span role='button' tabIndex={0} onClick={() => {}}>
+                        仿真信息
+                      </span>
+                      {item.send_data.length > 1 && (
+                        <span role='button' tabIndex={0} onClick={() => changeToggleStatus(item.id)}>
+                          {currentOpenId === item.id ? '收起' : '展开'}
+                        </span>
+                      )}
+                      <span role='button' tabIndex={0} onClick={() => {}}>
+                        重放
                       </span>
                     </div>
-                    <div style={{ display: currentOpenId === item.id ? 'block' : 'none' }} className={styles.dataShowContainer}>
-                      {item.recv_data.length > 1 &&
-                        item.recv_data.slice(1).map((recv_data: string) => {
-                          return (
-                            <div className={styles.dataShowItem} key={`${recv_data}_${Math.random()}`}>
-                              <Tooltip title={recv_data} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
-                                <span className={styles.dataLongInfo}>{recv_data || '无'}</span>
-                              </Tooltip>
-                              <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(recv_data)}>
-                                <img src={errorFrameCopy} alt='' />
-                              </span>
-                            </div>
-                          )
-                        })}
-                    </div>
                   </div>
-                  <div>{item.case_type ? '是' : '否'}</div>
-                  <div className={globalStyle.Opera_detaile}>
-                    <span role='button' tabIndex={0} onClick={() => {}}>
-                      仿真信息
-                    </span>
-                    {item.send_data.length > 1 && (
-                      <span role='button' tabIndex={0} onClick={() => changeToggleStatus(item.id)}>
-                        {currentOpenId === item.id ? '收起' : '展开'}
-                      </span>
-                    )}
-                    <span role='button' tabIndex={0} onClick={() => {}}>
-                      重放
-                    </span>
-                  </div>
-                </div>
-              )
-            })}
-            {logData.length === 0 ? <NoData title='暂无数据' /> : null}
-          </div>
-        )}
+                )
+              })}
+            </>
+          )}
+          {logData.length === 0 ? <NoData title='暂无数据' /> : null}
+        </div>
       </div>
       <div className={globalStyle.AnBan_PaginationsAge}>
         <PaginationsAge length={total} num={10} getParams={setOperation} pagenums={params.page} />
