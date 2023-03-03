@@ -11,7 +11,7 @@
     <reportHeader />
     <div class="main">
       <div class="left_nav">
-        <span class="left_nav_title">易侦测试报告</span>
+        <span class="left_nav_title">易复测试报告</span>
         <div v-for="(value,index) in titleArray" style="cursor: pointer;">
           <span class="title_menu" :key='index' @click="scroll(index)">{{value}}</span>
         </div>

@@ -18,7 +18,7 @@ function changeFaviconAndTitle() {
   iconLink.href = PROJECT_BASE_CONFIG.logo ? '/favicon.ico' : 'data:;'
   document.head.appendChild(iconLink)
   const title = document.createElement('title')
-  title.innerHTML = PROJECT_BASE_CONFIG.logo ? '易侦 | 协议模糊测试系统' : '网络协议模糊测试工具'
+  title.innerHTML = PROJECT_BASE_CONFIG.logo ? '易复 | 协议模糊测试系统' : '网络协议模糊测试工具'
   document.head.appendChild(title)
 }
 

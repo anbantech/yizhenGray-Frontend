@@ -1,11 +1,13 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { RouteComponentProps, StaticContext, useHistory } from 'react-router'
 import { ResTaskDetail } from 'Src/globalType/Response'
+import useDepCollect from 'Src/util/Hooks/useDepCollect'
 import { TaskDetail } from 'Src/services/api/taskApi'
 import globalStyle from 'Src/view/Project/project/project.less'
 import { projectInfoType } from '../task/taskList/task'
 import DetailTestingTable from './tasklog/DetailTestingTable'
+
 import TaskDetailCard from './taskDetailCompoents/taskDetailCard'
 import TaskDetailHead from './taskDetailCompoents/taskDetailHead'
 import DetailTestedTable from './tasklog/taskLog'
@@ -29,17 +31,19 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     page_size: 6,
     start_time: '',
     end_time: '',
-    is_wrong: '',
+    case_type: '',
     sort_field: 'create_time',
     sort_order: 'descend',
     system: 'hex',
     diagnosis: ''
   }
   const history = useHistory()
-  const [params, setParams] = useState(RequsetParams)
+
   const [taskDetailInfo, setTaskDetailInfo] = React.useState<ResTaskDetail>()
   const [updateStatus, setUpdateStatus] = React.useState(0)
-  const [total, logData] = UseGetTestLog(params)
+
+  const [status, depCollect, depData] = useDepCollect(RequsetParams)
+  const [total, logData] = UseGetTestLog(depData, updateStatus)
   const getTaskDetail = async (value: string) => {
     const getTaskDetails = await TaskDetail(value)
     if (getTaskDetails.data) {
@@ -54,6 +58,16 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskDetailInfo])
+
+  // 测试降序
+  const testTimeSort = (value: string) => {
+    depCollect(true, { sort_order: value })
+  }
+
+  // 筛选异常用例
+  const caseSort = (value: string) => {
+    depCollect(true, { case_type: value })
+  }
   // 跳转日志
   const lookLog = React.useCallback(() => {
     history.push({
@@ -62,7 +76,10 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  const changePage = () => {}
+
+  const changePage = (page: number, pageSize: number) => {
+    depCollect(true, { page, page_size: pageSize })
+  }
   useEffect(() => {
     if (taskInfo.task_id) {
       getTaskDetail(taskInfo.task_id)
@@ -76,9 +93,16 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
           <TaskDetailHead taskDetailInfo={taskDetailInfo} jumpLookTaskInfo={jumpLookTaskInfo} setUpdateStatus={setUpdateStatus} />
           <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
           {updateStatus === 2 ? (
-            <DetailTestingTable params={params} logData={logData} />
+            <DetailTestingTable params={depData} logData={logData} />
           ) : (
-            <DetailTestedTable changePage={changePage} total={total as number} params={params} logData={logData} />
+            <DetailTestedTable
+              testTimeSort={testTimeSort}
+              caseSort={caseSort}
+              changePage={changePage}
+              total={total as number}
+              params={depData}
+              logData={logData}
+            />
           )}
         </>
       )}

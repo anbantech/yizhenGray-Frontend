@@ -7,7 +7,7 @@ import ac_items from 'Image/ac_items.svg'
 import ac_configImage from 'Image/ac_config.svg'
 import Arge from 'Image/Arge.svg'
 import ac_Arge from 'Image/ac_Arge.svg'
-import sidebarLogo from 'Image/sidebarLogo.svg'
+import sidebarLogo from 'Image/yifu_logo.svg'
 import { useHistory, withRouter } from 'react-router-dom'
 import { UpOutlined } from '@ant-design/icons'
 import { GlobalContext } from 'Src/globalContext/globalContext'
@@ -16,7 +16,7 @@ import styles from './leftNav.less'
 
 const Logo: React.FC = () => {
   return ifNeedShowLogo ? (
-    <img src={sidebarLogo} alt='logo' style={{ padding: '20px 0 20px 38px', marginBottom: '12px' }} />
+    <img src={sidebarLogo} alt='logo' style={{ padding: '20px 0 20px 32px', marginBottom: '12px' }} />
   ) : (
     <div style={{ marginBottom: '5px', width: '110px', height: '5px' }} />
   )
