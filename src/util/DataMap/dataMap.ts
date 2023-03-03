@@ -13,31 +13,43 @@ export const statusList = [
 
 export const statusMap = {
   0: {
-    label: '结束',
-    color: styles.roundStatusGray
+    label: '正常结束',
+    color: styles.roundStatusNormalEnd
   },
   1: {
-    label: '异常',
-    color: styles.roundStatusRed
+    label: '测试中',
+    color: styles.roundStatusTesting
   },
   2: {
-    label: '测试中',
-    color: styles.roundStatusGreen
+    label: '暂停',
+    color: styles.roundStatusPaused
   },
   3: {
-    label: '暂停',
-    color: styles.roundStatusBlack
+    label: '异常暂停',
+    color: styles.roundStatusErrorPaused
   },
   4: {
-    label: '待测试',
-    color: styles.roundStatusYellow
+    label: '异常结束',
+    color: styles.roundStatusErrorEnd
   },
   5: {
-    label: '离线',
-    color: styles.roundStatusGray
+    label: '待测试',
+    color: styles.roundStatusWaitTesting
   },
   6: {
     label: '重放中',
+    color: styles.roundStatusReplay
+  },
+  7: {
+    label: '停止中',
+    color: styles.roundStatusStoping
+  },
+  8: {
+    label: '准备中',
+    color: styles.roundStatusReady
+  },
+  9: {
+    label: '未知',
     color: styles.roundStatusBlue
   }
 }
