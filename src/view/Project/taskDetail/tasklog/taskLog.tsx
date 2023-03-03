@@ -32,6 +32,7 @@ interface DataType {
   update_time: string
   update_user: string
 }
+
 const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   const { params, total, logData, changePage, testTimeSort, caseSort } = props
 
