@@ -237,9 +237,9 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           name='simu_instance_id'
           validateFirst
           validateTrigger={['onBlur']}
-          rules={[{ required: true, message: '请选择交互' }]}
+          rules={[{ required: true, message: '请选择仿真节点' }]}
         >
-          <Select placeholder='请选择交互'>
+          <Select placeholder='请选择仿真节点'>
             {
               /**
                * 根据连接方式列表渲染下拉框可选择的设备比特率

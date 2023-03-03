@@ -4,7 +4,7 @@ import { testlogs } from 'Src/globalType/Param'
 import { getTestingLog } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
 
-function UseGetTestLog(params: testlogs) {
+function UseGetTestLog(params: testlogs, updateStatus: number) {
   const [total, setTotal] = React.useState(-1)
   const [logData, setLogData] = React.useState([])
   const getlog = async (value: testlogs) => {
@@ -23,7 +23,7 @@ function UseGetTestLog(params: testlogs) {
     if (params) {
       getlog(params)
     }
-  }, [params])
+  }, [params, updateStatus])
 
   return [total, logData]
 }

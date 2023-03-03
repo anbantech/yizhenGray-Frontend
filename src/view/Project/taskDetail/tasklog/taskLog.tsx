@@ -6,6 +6,7 @@ import globalStyle from 'Src/view/Project/project/project.less'
 import React, { useCallback, useState } from 'react'
 import { getTime } from 'Src/util/baseFn'
 import { copyText } from 'Src/util/common'
+import NoData from 'Src/view/404/NoData/NoData'
 import errorFrameCopy from 'Src/assets/image/errorFrameCopy.svg'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import styles from '../taskDetailUtil/Detail.less'
@@ -234,6 +235,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
               </div>
             )
           })}
+          {logData.length === 0 ? <NoData title='暂无数据' /> : null}
         </div>
       </div>
       <div className={globalStyle.AnBan_PaginationsAge}>
