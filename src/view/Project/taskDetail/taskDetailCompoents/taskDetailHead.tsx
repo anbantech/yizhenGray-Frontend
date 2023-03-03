@@ -11,7 +11,7 @@ import DeleteCourse from 'Image/DeleteCourse.svg'
 import report from 'Image/report.svg'
 import over from 'Image/overTask.svg'
 import { throwErrorMessage } from 'Src/util/message'
-import { bgTest, deleteExampleTask, stopcontuine, stoppaused, stoptest, test_target } from 'Src/services/api/taskApi'
+import { bgTest, deleteExampleTask, rePlayTask, stopcontuine, stoppaused, stoptest, test_target } from 'Src/services/api/taskApi'
 import UseWebsocket from 'Src/webSocket/useWebSocket'
 import styles from '../taskDetail.less'
 
@@ -90,7 +90,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setSpinStatus(true)
       setIndex(2)
       try {
-        const res = await test_target({ task_id: id })
+        const res = await rePlayTask({ task_id: id })
         return res
       } catch (error) {
         setSpinStatus(false)

@@ -18,7 +18,7 @@ import deleteImage from 'Image/Deletes.svg'
 import { useDialog } from 'Src/util/Hooks/useDialog'
 import styles from './templateList.less'
 
-const customizeRender = () => <DefaultValueTips content='暂无项目' />
+const customizeRender = () => <DefaultValueTips content='暂无模版' />
 
 const request: TemplateListParams = {
   key_word: '',
@@ -64,7 +64,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   )
 
   // 更改页码
-  const changePage = useCallback((page: number, pageSize: number) => {
+  const changePage = useCallback((page: number, type?: string, pageSize?: number) => {
     setParams(params => ({ ...params, page, page_size: pageSize }))
   }, [])
 
