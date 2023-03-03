@@ -43,7 +43,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   const [updateStatus, setUpdateStatus] = React.useState(0)
 
   const [status, depCollect, depData] = useDepCollect(RequsetParams)
-  const [total, logData] = UseGetTestLog(depData)
+  const [total, logData] = UseGetTestLog(depData, updateStatus)
   const getTaskDetail = async (value: string) => {
     const getTaskDetails = await TaskDetail(value)
     if (getTaskDetails.data) {
