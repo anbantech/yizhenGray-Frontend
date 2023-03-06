@@ -7,6 +7,7 @@ import React, { useCallback, useState } from 'react'
 import { getTime } from 'Src/util/baseFn'
 import { copyText } from 'Src/util/common'
 import NoData from 'Src/view/404/NoData/NoData'
+import { rePlayTask } from 'Src/services/api/taskApi'
 import errorFrameCopy from 'Src/assets/image/errorFrameCopy.svg'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import styles from '../taskDetailUtil/Detail.less'
@@ -14,6 +15,7 @@ import styles from '../taskDetailUtil/Detail.less'
 interface propsType {
   params: any
   logData: any
+  task_id: number
   total: number | undefined
   changePage: (page: number, pageSize: number) => void
   testTimeSort: (value: string) => void
@@ -27,6 +29,8 @@ interface DataType {
   create_time: string
   create_user: string
   id: number
+  task_id: number
+  error_id: number
   recv_data: string[]
   send_data: string[]
   update_time: string
@@ -34,7 +38,7 @@ interface DataType {
 }
 
 const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
-  const { params, total, logData, changePage, testTimeSort, caseSort } = props
+  const { task_id, params, total, logData, changePage, testTimeSort, caseSort } = props
   // const statusDesc = [
   //   '未处理',
   //   '熵过滤通过',
@@ -130,6 +134,15 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     setCurrentOpenId(id === currentOpenId ? -1 : id)
   }
 
+  // 单个用例的重放
+  const oneCaseReplay = async (taskID: number, caseID: number) => {
+    const idArray = {
+      task_id: taskID,
+      error_id: caseID
+    }
+    const res = await rePlayTask(idArray)
+    // todo  还没处理重放过程中的逻辑
+  }
   const copyTextFn = useCallback((text: string) => {
     return function c() {
       copyText(text)
@@ -230,7 +243,13 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                           {currentOpenId === item.id ? '收起' : '展开'}
                         </span>
                       )}
-                      <span role='button' tabIndex={0} onClick={() => {}}>
+                      <span
+                        role='button'
+                        tabIndex={0}
+                        onClick={() => {
+                          oneCaseReplay(task_id, item.id)
+                        }}
+                      >
                         重放
                       </span>
                     </div>
