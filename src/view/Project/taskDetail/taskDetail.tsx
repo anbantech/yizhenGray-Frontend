@@ -96,6 +96,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
             <DetailTestingTable params={depData} logData={logData} />
           ) : (
             <DetailTestedTable
+              task_id={+taskInfo.task_id}
               testTimeSort={testTimeSort}
               caseSort={caseSort}
               changePage={changePage}
