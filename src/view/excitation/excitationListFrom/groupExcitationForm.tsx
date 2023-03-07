@@ -105,7 +105,7 @@ const SetUp = React.forwardRef((props: any, myRef) => {
   }
   React.useEffect(() => {
     if (Data) {
-      setCardArray(Data?.group_data_list[0].group_data_list.length)
+      setCardArray(Data?.group_data_list[0]?.group_data_list?.length)
     }
   }, [Data])
   React.useImperativeHandle(myRef, () => ({
@@ -186,12 +186,12 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
     return data
   }
 
-  const checkData = () => {
-    if (data.length >= 1) {
+  const checkData = React.useCallback(() => {
+    if (data.length >= 1 || (Data && Data?.group_data_list[1].group_data_list.length >= 1)) {
       return true
     }
     return false
-  }
+  }, [Data, data.length])
   React.useEffect(() => {
     if (Data) {
       setCardArray(Data?.group_data_list[1].group_data_list.length)
@@ -345,7 +345,7 @@ const GroupExcitationForm: React.FC = () => {
     }
   ])
 
-  const stepCurrentRef = React.useRef<number[][]>([])
+  const stepCurrentRef = React.useRef<number[][]>([[], [], []])
   const childRef: ChildRef = {
     step1Ref: React.useRef<StepRef | null>(null),
     step2Ref: React.useRef<StepRef | null>(null),
@@ -445,26 +445,32 @@ const GroupExcitationForm: React.FC = () => {
     })
   }
   const next = async () => {
-    if (stepCurrentRef.current[1] || childRef.step2Ref.current?.validate() || isFixForm) {
-      setCurrent(current + 1)
-    } else {
-      message.error('请配置激励数据')
+    if (current === 1) {
+      if (stepCurrentRef.current[1].length >= 1 || childRef.step2Ref.current?.validate() || isFixForm) {
+        const res2 = await childRef.step2Ref.current?.save()
+        if (res2 && res2.length >= 1 && res2.length <= 3) {
+          stepCurrentRef.current[1] = res2
+        }
+        setCurrent(current + 1)
+      } else {
+        message.error('请配置激励数据')
+      }
     }
+
     switch (current) {
       case 0: {
         const res1 = await childRef.step1Ref.current?.save()
-        if (res1) {
-          stepCurrentRef.current.push(res1)
+        if (res1 && res1.length >= 1 && res1.length <= 3) {
+          stepCurrentRef.current[0] = res1
         }
         checkIdUseStatus()
         setCurrent(current + 1)
         break
       }
-
       case 2: {
         const res3 = await childRef.step3Ref.current?.save()
         if (res3 && res3.length >= 1 && res3.length <= 3) {
-          stepCurrentRef.current.push(res3)
+          stepCurrentRef.current[2] = res3
         }
         break
       }
@@ -474,15 +480,14 @@ const GroupExcitationForm: React.FC = () => {
   }
 
   const prev = () => {
-    stepCurrentRef.current.splice(current, 1)
     setCurrent(current - 1)
   }
 
   const viewDraw = async () => {
     if (current === steps.length - 1) {
       const res3 = await childRef.step3Ref.current?.save()
-      if (res3) {
-        stepCurrentRef.current.push(res3)
+      if (res3 && res3.length >= 1 && res3.length <= 3) {
+        stepCurrentRef.current[2] = res3
       }
     }
     let values
@@ -491,12 +496,12 @@ const GroupExcitationForm: React.FC = () => {
     } catch {
       message.error('请填写交互名称')
     }
+
     try {
       if (values) {
         const params2 = {
           child_id_list: stepCurrentRef.current
         }
-
         const result = await checkDataStructure(params2)
         if (result.data) {
           const params1 = {

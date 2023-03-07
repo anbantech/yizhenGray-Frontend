@@ -166,7 +166,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     }
   }, [])
 
-  const HearConcentArray = ['用例编号', '发送数据 ', '发送时间', '缺陷结果', '接受数据', '是否异常', '操作']
+  const HearConcentArray = ['用例编号', '发送数据 ', '接收数据', '异常用例', '发送时间', '缺陷结果', '操作']
 
   return (
     <div className={styles.tableList}>
@@ -178,7 +178,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
           {HearConcentArray.map((item: string) => {
             return (
               <div className={styles.Header_Main} key={Math.random()}>
-                {item === '发送时间' ? <TimeDownMenu /> : item === '是否异常' ? <IsWrongDownMenu /> : <span>{item} </span>}
+                {item === '发送时间' ? <TimeDownMenu /> : item === '异常用例' ? <IsWrongDownMenu /> : <span>{item} </span>}
               </div>
             )
           })}
@@ -217,10 +217,6 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                           })}
                       </div>
                     </div>
-
-                    <div>{getTime(item.update_time)}</div>
-
-                    <div>{item.crash_info}</div>
                     <div className={styles.footerresve}>
                       <div className={styles.dataInfoContainer}>
                         <Tooltip title={item.recv_data[0]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
@@ -247,6 +243,10 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                       </div>
                     </div>
                     <div>{item.case_type ? '是' : '否'}</div>
+                    <div>{getTime(item.update_time)}</div>
+
+                    <div>{item.crash_info}</div>
+
                     <div className={globalStyle.Opera_detaile}>
                       {item.case_type ? (
                         <span
