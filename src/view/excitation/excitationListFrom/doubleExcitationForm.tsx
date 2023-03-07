@@ -253,7 +253,7 @@ const DoubleExcitationForm: React.FC = () => {
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.twoForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
         <Form.Item
-          label='级联名称'
+          label='级联Group名称'
           name='name'
           validateFirst
           validateTrigger={['onBlur']}
@@ -347,12 +347,12 @@ const DoubleExcitationForm: React.FC = () => {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value <= 10) {
+                  if (value <= 100) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                  return Promise.reject(new Error('请输入 0-100 之间的整数'))
                 }
-                return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                return Promise.reject(new Error('请输入 0-100 之间的整数'))
               }
             }
           ]}

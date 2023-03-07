@@ -27,7 +27,8 @@ const request: TemplateListParams = {
   sort_field: 'create_time',
   sort_order: 'descend'
 }
-
+// TODO 隐藏 删除,修改功能
+const disPlayNone = false
 const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () => {
   const history = useHistory()
   const location = useLocation()
@@ -150,26 +151,30 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
               >
                 查看详情
               </span>
-              <span
-                style={{ marginLeft: '10px', marginRight: '10px' }}
-                role='button'
-                tabIndex={0}
-                onClick={() => {
-                  jumpTemplate(row, true, false)
-                }}
-              >
-                修改
-              </span>
-              <img
-                src={deleteImage}
-                alt=''
-                onClick={() => {
-                  setCurrentTemplate(row)
-                  // TODO: 具体删除方式待讨论，目前直接点击删除
-                  // changeCommonDialogStatus(true)
-                  deleteTemplate()
-                }}
-              />
+              {disPlayNone && (
+                <>
+                  <span
+                    style={{ marginLeft: '10px', marginRight: '10px' }}
+                    role='button'
+                    tabIndex={0}
+                    onClick={() => {
+                      jumpTemplate(row, true, false)
+                    }}
+                  >
+                    修改
+                  </span>
+                  <img
+                    src={deleteImage}
+                    alt=''
+                    onClick={() => {
+                      setCurrentTemplate(row)
+                      // TODO: 具体删除方式待讨论，目前直接点击删除
+                      // changeCommonDialogStatus(true)
+                      deleteTemplate()
+                    }}
+                  />
+                </>
+              )}
             </div>
           )
         }

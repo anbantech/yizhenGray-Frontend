@@ -2,6 +2,7 @@
 /* eslint-disable react/display-name */
 import { DownOutlined } from '@ant-design/icons'
 import { Dropdown, Menu, message, Space, Tooltip } from 'antd'
+import { useHistory } from 'react-router'
 import globalStyle from 'Src/view/Project/project/project.less'
 import React, { useCallback, useState } from 'react'
 import { getTime } from 'Src/util/baseFn'
@@ -39,6 +40,8 @@ interface DataType {
 
 const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   const { task_id, params, total, logData, changePage, testTimeSort, caseSort } = props
+
+  const history = useHistory()
   // const statusDesc = [
   //   '未处理',
   //   '熵过滤通过',
@@ -143,6 +146,15 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     const res = await rePlayTask(idArray)
     // todo  还没处理重放过程中的逻辑
   }
+
+  // 跳转仿真
+  const inScale = (id: number, value: boolean) => {
+    history.push({
+      pathname: '/projects/TaskList/ReExamle/Detail/Scale',
+      state: { isTesting: value, logId: id }
+    })
+  }
+
   const copyTextFn = useCallback((text: string) => {
     return function c() {
       copyText(text)
@@ -154,7 +166,8 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     }
   }, [])
 
-  const HearConcentArray = ['用例编号', '发送数据 ', '发送时间', '用例状态', '接受数据', '是否异常', '操作']
+  const HearConcentArray = ['用例编号', '发送数据 ', '发送时间', '缺陷结果', '接受数据', '是否异常', '操作']
+
   return (
     <div className={styles.tableList}>
       <div className={styles.tableListleftq}>
@@ -165,7 +178,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
           {HearConcentArray.map((item: string) => {
             return (
               <div className={styles.Header_Main} key={Math.random()}>
-                {item === '发送时间' ? <TimeDownMenu /> : item === '用例状态' ? <IsWrongDownMenu /> : <span>{item} </span>}
+                {item === '发送时间' ? <TimeDownMenu /> : item === '是否异常' ? <IsWrongDownMenu /> : <span>{item} </span>}
               </div>
             )
           })}
@@ -235,9 +248,17 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     </div>
                     <div>{item.case_type ? '是' : '否'}</div>
                     <div className={globalStyle.Opera_detaile}>
-                      <span role='button' tabIndex={0} onClick={() => {}}>
-                        仿真信息
-                      </span>
+                      {item.case_type ? (
+                        <span
+                          role='button'
+                          tabIndex={0}
+                          onClick={() => {
+                            inScale(item.id, false)
+                          }}
+                        >
+                          仿真信息
+                        </span>
+                      ) : null}
                       {item.send_data.length > 1 && (
                         <span role='button' tabIndex={0} onClick={() => changeToggleStatus(item.id)}>
                           {currentOpenId === item.id ? '收起' : '展开'}
