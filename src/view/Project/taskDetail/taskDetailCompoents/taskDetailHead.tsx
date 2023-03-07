@@ -31,8 +31,8 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
   const history = useHistory()
   const inScale = () => {
     history.push({
-      pathname: '/projects/TaskDetail/Scale',
-      state: { isTesting: true }
+      pathname: '/projects/Tasks/Scale',
+      state: { test_Id: id, logId: id, isTesting: true }
     })
   }
 

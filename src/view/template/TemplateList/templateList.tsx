@@ -14,7 +14,7 @@ import PaginationsAge from 'Src/components/Pagination/Pagina'
 import API from 'Src/services/api'
 import { TemplateListParams } from 'Src/globalType/Param'
 import { TemplateListResponse } from 'Src/globalType/Response'
-// import deleteImage from 'Image/Deletes.svg'
+import deleteImage from 'Image/Deletes.svg'
 import { useDialog } from 'Src/util/Hooks/useDialog'
 import styles from './templateList.less'
 
@@ -27,7 +27,8 @@ const request: TemplateListParams = {
   sort_field: 'create_time',
   sort_order: 'descend'
 }
-
+// TODO 隐藏 删除,修改功能
+const disPlayNone = false
 const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () => {
   const history = useHistory()
   const location = useLocation()
@@ -38,7 +39,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   const [templateList, setTemplateList] = useState<TemplateListResponse['results']>([])
 
   // 缓存当前点击的模板信息
-  const [currentTemplate] = useState<TemplateListResponse['results'][number]>()
+  const [currentTemplate, setCurrentTemplate] = useState<TemplateListResponse['results'][number]>()
 
   // 页码
   const [total, setTotal] = useState<number>(0)
@@ -150,32 +151,36 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
               >
                 查看详情
               </span>
-              {/* <span
-                style={{ marginLeft: '10px', marginRight: '10px' }}
-                role='button'
-                tabIndex={0}
-                onClick={() => {
-                  jumpTemplate(row, true, false)
-                }}
-              >
-                修改
-              </span>
-              <img
-                src={deleteImage}
-                alt=''
-                onClick={() => {
-                  setCurrentTemplate(row)
-                  // TODO: 具体删除方式待讨论，目前直接点击删除
-                  // changeCommonDialogStatus(true)
-                  deleteTemplate()
-                }}
-              /> */}
+              {disPlayNone && (
+                <>
+                  <span
+                    style={{ marginLeft: '10px', marginRight: '10px' }}
+                    role='button'
+                    tabIndex={0}
+                    onClick={() => {
+                      jumpTemplate(row, true, false)
+                    }}
+                  >
+                    修改
+                  </span>
+                  <img
+                    src={deleteImage}
+                    alt=''
+                    onClick={() => {
+                      setCurrentTemplate(row)
+                      // TODO: 具体删除方式待讨论，目前直接点击删除
+                      // changeCommonDialogStatus(true)
+                      deleteTemplate()
+                    }}
+                  />
+                </>
+              )}
             </div>
           )
         }
       }
     ],
-    [jumpTemplate]
+    [deleteTemplate, jumpTemplate]
   )
 
   return (

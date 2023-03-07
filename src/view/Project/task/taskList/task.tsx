@@ -61,6 +61,8 @@ export interface projectInfoType {
   projectDesc: string
   projectName: string
 }
+// Todo 隐藏删除修改功能
+const disPlayNone = false
 const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<projectInfoType>>> = props => {
   const { projectInfo } = props.location?.state
   const history = useHistory()
@@ -276,23 +278,28 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
             >
               查看详情
             </span>
-            <span
-              style={{ marginLeft: '10px', marginRight: '10px' }}
-              role='button'
-              tabIndex={0}
-              onClick={() => {
-                fixTask(row)
-              }}
-            >
-              修改
-            </span>
-            <img
-              src={deleteImage}
-              alt=''
-              onClick={() => {
-                deleteTask(true, row.id)
-              }}
-            />
+            {disPlayNone && (
+              <>
+                {' '}
+                <span
+                  style={{ marginLeft: '10px', marginRight: '10px' }}
+                  role='button'
+                  tabIndex={0}
+                  onClick={() => {
+                    fixTask(row)
+                  }}
+                >
+                  修改
+                </span>
+                <img
+                  src={deleteImage}
+                  alt=''
+                  onClick={() => {
+                    deleteTask(true, row.id)
+                  }}
+                />
+              </>
+            )}
           </div>
         )
       }

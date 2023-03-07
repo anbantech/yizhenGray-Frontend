@@ -101,8 +101,8 @@ export function simulate(params: simulateParams) {
 }
 // 寄存器/内存信息查询
 
-export function simulateOption() {
-  return request.get<any>(`/api/v1.0/simulate/action`)
+export function simulateOption(params: simulateParams) {
+  return request.get<any>(`/api/v1.0/simulate/action`, { params })
 }
 
 // 寄存器信息
