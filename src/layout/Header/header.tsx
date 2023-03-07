@@ -153,6 +153,7 @@ function Header(props: any) {
     '/projects/Tasks/fixTask': '修改任务',
     '/projects/Tasks/Detail/lookTaskDetailInfo': '任务信息',
     '/projects/Tasks/Detail/TaskLog': '日志',
+    '/projects/Tasks/Scale': '动态监控',
     '/excitationList': '激励列表',
     '/excitationList/Deatail': `${
       data && data?.name === '查看单激励Group'
