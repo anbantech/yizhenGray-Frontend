@@ -202,7 +202,10 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  return Promise.resolve()
+                  if (value >= 1 && value <= 100) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('请输入 0-100 之间的整数'))
                 }
                 return Promise.reject(new Error('请输入 0-100 之间的整数'))
               }
