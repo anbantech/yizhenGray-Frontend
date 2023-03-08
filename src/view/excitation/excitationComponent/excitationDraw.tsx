@@ -414,6 +414,16 @@ const ExcitationDraw: React.FC = () => {
       </div>
       <div className={StyleSheet.footer}>
         <div className={StyleSheet.footerConcent}>
+          {current > 0 && (
+            <CommonButton
+              buttonStyle={styles.stepButton}
+              name='上一步'
+              type='default'
+              onClick={() => {
+                prev()
+              }}
+            />
+          )}
           {current < steps.length - 1 && (
             <CommonButton
               buttonStyle={styles.stepButton}
@@ -430,16 +440,6 @@ const ExcitationDraw: React.FC = () => {
               name={state?.isFixForm ? '返回' : '创建'}
               type='default'
               onClick={state?.isFixForm ? goBackGroupList : createOneExcitationFn}
-            />
-          )}
-          {current > 0 && (
-            <CommonButton
-              buttonStyle={styles.stepButton}
-              name='上一步'
-              type='default'
-              onClick={() => {
-                prev()
-              }}
             />
           )}
         </div>

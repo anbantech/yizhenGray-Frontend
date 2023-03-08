@@ -70,22 +70,24 @@ interface ChildRef {
 const SetUp = React.forwardRef((props: any, myRef) => {
   const { type, Data, isFixForm, idArray, changePre, excitationList } = props
   const [cardArray, setCardArray] = React.useState(1)
+  const [flag, setFlag] = useState(false)
   const [data, setData] = useState<number[]>([])
   const addCard = React.useCallback(() => {
     setCardArray(pre => pre + 1)
+    setFlag(true)
   }, [])
 
   const ExcitationCardList = React.useMemo(() => {
-    if (idArray && idArray?.length !== 0) {
+    if (idArray && idArray?.length !== 0 && !flag) {
       const data = Array.from({ length: idArray.length }, (v, i) => i)
       return data
     }
-    if (cardArray) {
+    if (cardArray && flag) {
       const data = Array.from({ length: cardArray }, (v, i) => i)
       return data
     }
     return [1]
-  }, [cardArray, idArray])
+  }, [cardArray, flag, idArray])
 
   const onChange = React.useCallback(
     (val: any, index: number) => {
@@ -155,24 +157,25 @@ const SetUp = React.forwardRef((props: any, myRef) => {
 })
 const Fuzzing = React.forwardRef((props: any, myRef) => {
   const { type, Data, isFixForm, idArray, changePre, excitationList } = props
+  const [flag, setFlag] = useState(false)
   const [data, setData] = useState<number[]>([])
   const [cardArray, setCardArray] = React.useState(1)
-
   const addCard = React.useCallback(() => {
     setCardArray(pre => pre + 1)
+    setFlag(true)
   }, [])
 
   const ExcitationCardList = React.useMemo(() => {
-    if (idArray && idArray?.length !== 0) {
+    if (idArray && idArray?.length !== 0 && !flag) {
       const data = Array.from({ length: idArray.length }, (v, i) => i)
       return data
     }
-    if (cardArray) {
+    if (cardArray && flag) {
       const data = Array.from({ length: cardArray }, (v, i) => i)
       return data
     }
     return [1]
-  }, [cardArray, idArray])
+  }, [cardArray, flag, idArray])
 
   const onChange = React.useCallback(
     (val: any, index: number) => {
@@ -252,23 +255,24 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
 const TearDown = React.forwardRef((props: any, myRef) => {
   const { type, Data, isFixForm, idArray, excitationList, changePre } = props
   const [cardArray, setCardArray] = React.useState(1)
-
+  const [flag, setFlag] = useState(false)
   const [data, setData] = useState<number[]>([])
   const addCard = React.useCallback(() => {
     setCardArray(pre => pre + 1)
+    setFlag(true)
   }, [])
 
   const ExcitationCardList = React.useMemo(() => {
-    if (idArray && idArray?.length !== 0) {
+    if (idArray && idArray?.length !== 0 && !flag) {
       const data = Array.from({ length: idArray.length }, (v, i) => i)
       return data
     }
-    if (cardArray) {
+    if (cardArray && flag) {
       const data = Array.from({ length: cardArray }, (v, i) => i)
       return data
     }
     return [1]
-  }, [cardArray, idArray])
+  }, [cardArray, flag, idArray])
 
   const onChange = React.useCallback(
     (val: any, index: number) => {
