@@ -109,7 +109,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
     setCommonModleStatus(value)
   }
   // 更改页码
-  const changePage = (page: number, pageSize: number) => {
+  const changePage = (page: number, type: string, pageSize: number) => {
     setParams({ ...params, page, page_size: pageSize })
   }
 
