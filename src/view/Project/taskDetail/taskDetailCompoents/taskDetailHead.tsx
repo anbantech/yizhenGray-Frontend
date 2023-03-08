@@ -138,7 +138,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
         </div>
         <div className={styles.taskDetailHead_Main_left_footer}>
           <span> {`任务描述:${desc}`}</span>
-          <span style={{ paddingLeft: '20px', paddingRight: '20px' }}>
+          <span>
             {' '}
             {[0, 1, 4, 5].includes(status)
               ? `  开始时间 : ${getTime(start_time)} | 结束时间 : ${getTime(end_time)}`
@@ -183,7 +183,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
               </Spin>
               <span>结束实例</span>
             </>
-          ) : (
+          ) : [0, 1].includes(status) ? (
             <>
               <Tooltip placement='bottom' title='重新测试当前实例（重新发送已经测试过的用例）'>
                 <Spin spinning={spinStatus && index === 2} indicator={antIcon}>
@@ -192,7 +192,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
               </Tooltip>
               <span>重测实例</span>
             </>
-          )}
+          ) : null}
         </div>
         {[0, 1, 4, 5, 6].includes(status) && (
           <div

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Cascader, Form, Input, Select } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
-import { isArray } from 'lodash'
 import { StepRef } from 'Src/view/Project/task/createTask/newCreateTask'
 // import { PlusOutlined } from '@ant-design/icons'
 import styles from '../excitation.less'
@@ -117,6 +116,7 @@ const ThreeExcitationCard = (props: AllPropsType) => {
   }
   const onSelect = (value: any) => {
     if (value === undefined) {
+      onChange(undefined, index)
       return form.setFieldsValue({ description: '' })
     }
     excitationList.forEach((item: any) => {
@@ -133,22 +133,29 @@ const ThreeExcitationCard = (props: AllPropsType) => {
       form.setFieldsValue({ description: desc })
     }
     if (formData) {
-      if (isArray(formData)) {
-        const excitarionListes = formData[index]
-        if (formData.length > 0) {
-          form.setFieldsValue({
-            port: [excitarionListes.target_type === 0 ? '单激励Group' : '级联Group', excitarionListes.name],
-            description: excitarionListes.desc
-          })
-        }
-      } else {
-        const excitarionListes = formData
-        form.setFieldsValue({
-          port: [excitarionListes.target_type === 0 ? '单激励Group' : '级联Group', excitarionListes.name],
-          description: excitarionListes.desc
-        })
-      }
+      const excitarionListes = formData[index] || formData
+      form.setFieldsValue({
+        port: [excitarionListes.target_type === 0 ? '单激励Group' : '级联Group', excitarionListes.name],
+        description: excitarionListes.desc
+      })
     }
+    // if (formData) {
+    //   if (isArray(formData)) {
+    //     const excitarionListes = formData[index]
+    //     if (Object.keys(excitarionListes)?.length > 0) {
+    //       form.setFieldsValue({
+    //         port: [excitarionListes.target_type === 0 ? '单激励Group' : '级联Group', excitarionListes.name],
+    //         description: excitarionListes.desc
+    //       })
+    //     }
+    //   } else {
+    //     const excitarionListes = formData
+    //     form.setFieldsValue({
+    //       port: [excitarionListes.target_type === 0 ? '单激励Group' : '级联Group', excitarionListes.name],
+    //       description: excitarionListes.desc
+    //     })
+    //   }
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [desc, formData, form, isFixForm, index])
 
@@ -195,7 +202,7 @@ const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
     <div className={styles.card_main}>
       {type === 'five' ? (
         <TwoExcitationCardCompoent
-          formData={formData ?? Data}
+          formData={isFixForm ? formData : Data}
           excitationList={excitationList}
           index={index}
           isFixForm={isFixForm}
@@ -203,7 +210,7 @@ const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
         />
       ) : (
         <ThreeExcitationCardCompoent
-          formData={formData ?? Data}
+          formData={isFixForm ? formData : Data}
           excitationList={excitationList}
           index={index}
           isFixForm={isFixForm}
