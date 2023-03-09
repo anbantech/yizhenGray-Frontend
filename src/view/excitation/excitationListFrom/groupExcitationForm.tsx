@@ -68,6 +68,16 @@ interface ChildRef {
   step2Ref: React.MutableRefObject<StepRef | null>
   step3Ref: React.MutableRefObject<StepRef | null>
 }
+
+const ChartComponents = () => {
+  return (
+    <div>
+      <span>发送阶段</span>
+      <span style={{ color: 'red' }}>*</span>
+    </div>
+  )
+}
+
 const SetUp = React.forwardRef((props: any, myRef) => {
   const { type, Data, isFixForm, idArray, changePre, excitationList } = props
   const [cardArray, setCardArray] = React.useState(1)
@@ -138,7 +148,7 @@ const SetUp = React.forwardRef((props: any, myRef) => {
                 onChange={onChange}
                 formData={Data && Data?.group_data_list[0].group_data_list}
                 index={index}
-                key={generateUUID()}
+                key={index}
               />
             )
           })}
@@ -236,7 +246,7 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
                 onChange={onChange}
                 formData={Data && Data?.group_data_list[1].group_data_list}
                 index={index}
-                key={generateUUID()}
+                key={index}
               />
             )
           })}
@@ -322,7 +332,7 @@ const TearDown = React.forwardRef((props: any, myRef) => {
                 onChange={onChange}
                 formData={Data && Data?.group_data_list[2]?.group_data_list}
                 index={index}
-                key={generateUUID()}
+                key={index}
               />
             )
           })}
@@ -460,7 +470,7 @@ const GroupExcitationForm: React.FC = () => {
       )
     },
     {
-      title: '发送阶段',
+      title: <ChartComponents />,
       content: (
         <Fuzzing
           ref={childRef.step2Ref}
@@ -698,7 +708,7 @@ const GroupExcitationForm: React.FC = () => {
           <div className={styles.stepHeader_concent}>
             <Steps current={current}>
               {steps.map(item => (
-                <Step key={item.title} title={item.title} />
+                <Step key={generateUUID()} title={item.title} />
               ))}
             </Steps>
           </div>
