@@ -9,6 +9,7 @@ import { createExcitationFn, excitationListFn } from 'Src/services/api/excitatio
 import { getTemplateList } from 'Src/services/api/templateApi'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from '../excitation.less'
+import Tip from '../excitationComponent/Tip'
 import { GetDeatilFn } from './getDataDetailFn/getDataDetailFn'
 
 // import { RouteComponentProps, StaticContext } from 'react-router'
@@ -161,6 +162,7 @@ const OneExcotationForm: React.FC = () => {
       form.setFieldsValue(formData)
     }
   }, [form, info, Data])
+
   return (
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.oneForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
@@ -254,7 +256,8 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入前置时延' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入前置时延' />
+          <Tip />
         </Form.Item>
         <Form.Item
           label='发送次数'
@@ -302,7 +305,8 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入等待时间' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入等待时间' />
+          <Tip />
         </Form.Item>
         <Form.Item
           label='循环间隔'
@@ -326,7 +330,8 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入循环间隔' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入循环间隔' />
+          <Tip />
         </Form.Item>
         <Form.Item
           label='循环次数'
@@ -375,7 +380,8 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入中间时延' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入中间时延' />
+          <Tip />
         </Form.Item>
         <Form.Item
           label='后置时延'
@@ -399,7 +405,8 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入后置时延' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入后置时延' />
+          <Tip />
         </Form.Item>
         <Form.Item
           label='单激励Group描述'

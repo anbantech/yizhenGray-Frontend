@@ -12,6 +12,7 @@ import { throwErrorMessage } from 'Src/util/message'
 
 import styles from '../excitation.less'
 import ExcitationCard from '../excitationComponent/excitationCard'
+import Tip from '../excitationComponent/Tip'
 import { GetDeatilFn } from './getDataDetailFn/getDataDetailFn'
 // import { RouteComponentProps, StaticContext } from 'react-router'
 
@@ -309,7 +310,8 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入前置时延' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入前置时延' />
+          <Tip />
         </Form.Item>
         <Form.Item
           label='发送次数'
@@ -357,7 +359,8 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input placeholder='请输入等待时间' suffix='毫秒' disabled={isFixForm} />
+          <Input placeholder='请输入等待时间' disabled={isFixForm} />
+          <Tip />
         </Form.Item>
         <Form.Item
           label='循环次数'
@@ -405,7 +408,8 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input placeholder='请输入循环间隔' suffix='毫秒' disabled={isFixForm} />
+          <Input placeholder='请输入循环间隔' disabled={isFixForm} />
+          <Tip />
         </Form.Item>
         <Form.Item
           label='中间时延'
@@ -429,7 +433,8 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入中间时延' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入中间时延' />
+          <Tip />
         </Form.Item>
         <Form.Item
           label='后置时延'
@@ -453,7 +458,8 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入后置时延' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入后置时延' />
+          <Tip />
         </Form.Item>
         <Form.Item
           label='级联描述'

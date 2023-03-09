@@ -101,7 +101,7 @@ interface sacleMapType {
 export const Context = createContext<contextType>(null!)
 
 function Scale(props: any) {
-  const test_id = props.location?.state?.test.id
+  const test_id = props.location?.state?.test_Id
   const logId = props.location?.state?.logId
   const isTesting = props.location?.state?.isTesting
   const [currentType, setCurrentType] = useState<string>(isTesting ? ' Memory' : 'Register')

@@ -12,6 +12,13 @@ import { rePlayTask } from 'Src/services/api/taskApi'
 import errorFrameCopy from 'Src/assets/image/errorFrameCopy.svg'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import styles from '../taskDetailUtil/Detail.less'
+import { taskDetailInfoType } from '../taskDetail'
+import { projectInfoType } from '../../task/taskList/task'
+
+interface taskDetailType<S, T> {
+  projectInfo: T
+  taskInfo: S
+}
 
 interface propsType {
   params: any
@@ -21,6 +28,7 @@ interface propsType {
   changePage: (page: number, pageSize: number) => void
   testTimeSort: (value: string) => void
   caseSort: (value: string) => void
+  infoMap: taskDetailType<taskDetailInfoType, projectInfoType>
 }
 
 interface DataType {
@@ -40,7 +48,7 @@ interface DataType {
 
 const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   const { task_id, params, total, logData, changePage, testTimeSort, caseSort } = props
-
+  const { taskInfo, projectInfo } = props.infoMap
   const history = useHistory()
   // const statusDesc = [
   //   '未处理',
@@ -150,8 +158,8 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   // 跳转仿真
   const inScale = (id: number, value: boolean) => {
     history.push({
-      pathname: '/projects/TaskList/ReExamle/Detail/Scale',
-      state: { isTesting: value, logId: id }
+      pathname: '/projects/Tasks/Detail/Scale',
+      state: { taskInfo, projectInfo, isTesting: value, logId: id }
     })
   }
 

@@ -39,7 +39,7 @@ function content() {
         <Route path='/projects/Tasks/fixTask' exact component={OperationTask} />
         <Route path='/projects/Tasks/Detail/lookTaskDetailInfo' exact component={TaskInfo} />
         <Route path='/projects/Tasks/Detail/TaskLog' exact component={DetailTestAlLTable} />
-        <Route path='/projects/Tasks/Scale' exact component={Scale} />
+        <Route path='/projects/Tasks/Detail/Scale' exact component={Scale} />
         <Route path='/excitationList' exact component={ExcitationList} />
         <Route path='/excitationList/Deatail' exact component={ExcitationBase} />
         <Route path='/excitationList/createOneExcitation' exact component={ExcitationBase} />

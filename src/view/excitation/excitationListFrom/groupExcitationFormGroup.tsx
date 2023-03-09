@@ -256,7 +256,7 @@ const GroupExcitationFormGroup: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入前置时延' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入前置时延' />
         </Form.Item>
         <Form.Item
           label='发送次数'
@@ -304,7 +304,7 @@ const GroupExcitationFormGroup: React.FC = () => {
             }
           ]}
         >
-          <Input placeholder='请输入等待时间' suffix='毫秒' disabled={isFixForm} />
+          <Input placeholder='请输入等待时间' disabled={isFixForm} />
         </Form.Item>
         <Form.Item
           label='循环次数'
@@ -352,7 +352,7 @@ const GroupExcitationFormGroup: React.FC = () => {
             }
           ]}
         >
-          <Input placeholder='请输入循环间隔' suffix='毫秒' disabled={isFixForm} />
+          <Input placeholder='请输入循环间隔' disabled={isFixForm} />
         </Form.Item>
         <Form.Item
           label='中间时延'
@@ -376,7 +376,7 @@ const GroupExcitationFormGroup: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入中间时延' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入中间时延' />
         </Form.Item>
         <Form.Item
           label='后置时延'
@@ -400,7 +400,7 @@ const GroupExcitationFormGroup: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入后置时延' suffix='毫秒' />
+          <Input disabled={isFixForm} placeholder='请输入后置时延' />
         </Form.Item>
         <Form.Item
           label='级联描述'

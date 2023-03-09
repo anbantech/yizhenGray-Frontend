@@ -8,6 +8,7 @@ import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
 import { checkDataStructure, excitationListFn } from 'Src/services/api/excitationApi'
+import { generateUUID } from 'Src/util/common'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from '../excitation.less'
 import ExcitationCard from '../excitationComponent/excitationCard'
@@ -67,25 +68,38 @@ interface ChildRef {
   step2Ref: React.MutableRefObject<StepRef | null>
   step3Ref: React.MutableRefObject<StepRef | null>
 }
+
+const ChartComponents = () => {
+  return (
+    <div>
+      <span>发送阶段</span>
+      <span style={{ color: 'red' }}>*</span>
+    </div>
+  )
+}
+
 const SetUp = React.forwardRef((props: any, myRef) => {
   const { type, Data, isFixForm, idArray, changePre, excitationList } = props
   const [cardArray, setCardArray] = React.useState(1)
+  const [flag, setFlag] = useState(false)
   const [data, setData] = useState<number[]>([])
   const addCard = React.useCallback(() => {
     setCardArray(pre => pre + 1)
+    setFlag(true)
   }, [])
 
   const ExcitationCardList = React.useMemo(() => {
+    if (flag) {
+      const data = Array.from({ length: cardArray }, (v, i) => i)
+      return data
+    }
     if (idArray && idArray?.length !== 0) {
       const data = Array.from({ length: idArray.length }, (v, i) => i)
       return data
     }
-    if (cardArray) {
-      const data = Array.from({ length: cardArray }, (v, i) => i)
-      return data
-    }
-    return [1]
-  }, [cardArray, idArray])
+
+    return [0]
+  }, [cardArray, flag, idArray])
 
   const onChange = React.useCallback(
     (val: any, index: number) => {
@@ -124,7 +138,7 @@ const SetUp = React.forwardRef((props: any, myRef) => {
     <div className={styles.baseBody}>
       <div className={styles.baseForm}>
         <div className={styles.formOperation}>
-          {ExcitationCardList?.map((index: number) => {
+          {ExcitationCardList?.map((value: number, index: number) => {
             return (
               <ExcitationCard
                 type={type}
@@ -155,29 +169,31 @@ const SetUp = React.forwardRef((props: any, myRef) => {
 })
 const Fuzzing = React.forwardRef((props: any, myRef) => {
   const { type, Data, isFixForm, idArray, changePre, excitationList } = props
+  const [flag, setFlag] = useState(false)
   const [data, setData] = useState<number[]>([])
   const [cardArray, setCardArray] = React.useState(1)
-
   const addCard = React.useCallback(() => {
     setCardArray(pre => pre + 1)
+    setFlag(true)
   }, [])
 
   const ExcitationCardList = React.useMemo(() => {
+    if (flag) {
+      const data = Array.from({ length: cardArray }, (v, i) => i)
+      return data
+    }
     if (idArray && idArray?.length !== 0) {
       const data = Array.from({ length: idArray.length }, (v, i) => i)
       return data
     }
-    if (cardArray) {
-      const data = Array.from({ length: cardArray }, (v, i) => i)
-      return data
-    }
-    return [1]
-  }, [cardArray, idArray])
+    return [0]
+  }, [cardArray, flag, idArray])
 
   const onChange = React.useCallback(
     (val: any, index: number) => {
       if (val === undefined) {
         changePre(index)
+        return
       }
       setData((pre: number[] | any) => {
         const preCopy = pre
@@ -190,6 +206,7 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
   )
 
   const viewDraw = () => {
+    if (data.length === 0) return []
     return data
   }
 
@@ -219,7 +236,7 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
     <div className={styles.baseBody}>
       <div className={styles.baseForm}>
         <div className={styles.formOperation}>
-          {ExcitationCardList?.map((index: number) => {
+          {ExcitationCardList?.map((value: number, index: number) => {
             return (
               <ExcitationCard
                 type={type}
@@ -252,23 +269,25 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
 const TearDown = React.forwardRef((props: any, myRef) => {
   const { type, Data, isFixForm, idArray, excitationList, changePre } = props
   const [cardArray, setCardArray] = React.useState(1)
-
+  const [flag, setFlag] = useState(false)
   const [data, setData] = useState<number[]>([])
   const addCard = React.useCallback(() => {
     setCardArray(pre => pre + 1)
+    setFlag(true)
   }, [])
 
   const ExcitationCardList = React.useMemo(() => {
+    if (flag) {
+      const data = Array.from({ length: cardArray }, (v, i) => i)
+      return data
+    }
     if (idArray && idArray?.length !== 0) {
       const data = Array.from({ length: idArray.length }, (v, i) => i)
       return data
     }
-    if (cardArray) {
-      const data = Array.from({ length: cardArray }, (v, i) => i)
-      return data
-    }
-    return [1]
-  }, [cardArray, idArray])
+
+    return [0]
+  }, [cardArray, flag, idArray])
 
   const onChange = React.useCallback(
     (val: any, index: number) => {
@@ -451,7 +470,7 @@ const GroupExcitationForm: React.FC = () => {
       )
     },
     {
-      title: '发送阶段',
+      title: <ChartComponents />,
       content: (
         <Fuzzing
           ref={childRef.step2Ref}
@@ -675,7 +694,7 @@ const GroupExcitationForm: React.FC = () => {
           >
             <Input.TextArea
               disabled={isFixForm}
-              placeholder='交互描述'
+              placeholder='请输入交互描述'
               autoSize={{ minRows: 4, maxRows: 5 }}
               showCount={{
                 formatter({ count }) {
@@ -689,7 +708,7 @@ const GroupExcitationForm: React.FC = () => {
           <div className={styles.stepHeader_concent}>
             <Steps current={current}>
               {steps.map(item => (
-                <Step key={item.title} title={item.title} />
+                <Step key={generateUUID()} title={item.title} />
               ))}
             </Steps>
           </div>
