@@ -90,13 +90,19 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     <div className={globalStyle.AnBan_main}>
       {taskDetailInfo && (
         <>
-          <TaskDetailHead taskDetailInfo={taskDetailInfo} jumpLookTaskInfo={jumpLookTaskInfo} setUpdateStatus={setUpdateStatus} />
+          <TaskDetailHead
+            taskDetailInfo={taskDetailInfo}
+            infoMap={props.location?.state}
+            jumpLookTaskInfo={jumpLookTaskInfo}
+            setUpdateStatus={setUpdateStatus}
+          />
           <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
           {updateStatus === 2 ? (
             <DetailTestingTable params={depData} logData={logData} />
           ) : (
             <DetailTestedTable
               task_id={+taskInfo.task_id}
+              infoMap={props.location?.state}
               testTimeSort={testTimeSort}
               caseSort={caseSort}
               changePage={changePage}

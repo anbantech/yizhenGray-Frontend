@@ -14,17 +14,25 @@ import { throwErrorMessage } from 'Src/util/message'
 import { bgTest, deleteExampleTask, rePlayTask, stopcontuine, stoppaused, stoptest } from 'Src/services/api/taskApi'
 import UseWebsocket from 'Src/webSocket/useWebSocket'
 import styles from '../taskDetail.less'
+import { taskDetailInfoType } from '../taskDetail'
+import { projectInfoType } from '../../task/taskList/task'
+
+interface taskDetailType<S, T> {
+  projectInfo: T
+  taskInfo: S
+}
 
 interface propsResTaskDetailType<T> {
   taskDetailInfo: T
   jumpLookTaskInfo: () => void
   setUpdateStatus: any
+  infoMap: taskDetailType<taskDetailInfoType, projectInfoType>
 }
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
 function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
+  const { taskInfo, projectInfo } = props.infoMap
   const { name, start_time, end_time, status, id, project_id, desc } = props.taskDetailInfo
-  console.log(props.taskDetailInfo)
   const [messageInfo] = UseWebsocket()
   const [spinStatus, setSpinStatus] = React.useState(false)
 
@@ -32,8 +40,8 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
   const history = useHistory()
   const inScale = () => {
     history.push({
-      pathname: '/projects/Tasks/Scale',
-      state: { test_Id: id, isTesting: true }
+      pathname: '/projects/Tasks/Detail/Scale',
+      state: { taskInfo, projectInfo, test_Id: id, isTesting: true }
     })
   }
 
