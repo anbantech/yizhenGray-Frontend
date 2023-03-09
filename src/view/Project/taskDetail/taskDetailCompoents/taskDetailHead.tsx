@@ -24,6 +24,7 @@ interface propsResTaskDetailType<T> {
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
 function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
   const { name, start_time, end_time, status, id, project_id, desc } = props.taskDetailInfo
+  console.log(props.taskDetailInfo)
   const [messageInfo] = UseWebsocket()
   const [spinStatus, setSpinStatus] = React.useState(false)
 
