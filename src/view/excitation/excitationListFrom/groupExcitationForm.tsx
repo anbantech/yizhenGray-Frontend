@@ -8,6 +8,7 @@ import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
 import { checkDataStructure, excitationListFn } from 'Src/services/api/excitationApi'
+import { generateUUID } from 'Src/util/common'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from '../excitation.less'
 import ExcitationCard from '../excitationComponent/excitationCard'
@@ -78,15 +79,16 @@ const SetUp = React.forwardRef((props: any, myRef) => {
   }, [])
 
   const ExcitationCardList = React.useMemo(() => {
-    if (idArray && idArray?.length !== 0 && !flag) {
-      const data = Array.from({ length: idArray.length }, (v, i) => i)
-      return data
-    }
-    if (cardArray && flag) {
+    if (flag) {
       const data = Array.from({ length: cardArray }, (v, i) => i)
       return data
     }
-    return [1]
+    if (idArray && idArray?.length !== 0) {
+      const data = Array.from({ length: idArray.length }, (v, i) => i)
+      return data
+    }
+
+    return [0]
   }, [cardArray, flag, idArray])
 
   const onChange = React.useCallback(
@@ -126,7 +128,7 @@ const SetUp = React.forwardRef((props: any, myRef) => {
     <div className={styles.baseBody}>
       <div className={styles.baseForm}>
         <div className={styles.formOperation}>
-          {ExcitationCardList?.map((index: number) => {
+          {ExcitationCardList?.map((value: number, index: number) => {
             return (
               <ExcitationCard
                 type={type}
@@ -136,7 +138,7 @@ const SetUp = React.forwardRef((props: any, myRef) => {
                 onChange={onChange}
                 formData={Data && Data?.group_data_list[0].group_data_list}
                 index={index}
-                key={index}
+                key={generateUUID()}
               />
             )
           })}
@@ -166,21 +168,22 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
   }, [])
 
   const ExcitationCardList = React.useMemo(() => {
-    if (idArray && idArray?.length !== 0 && !flag) {
-      const data = Array.from({ length: idArray.length }, (v, i) => i)
-      return data
-    }
-    if (cardArray && flag) {
+    if (flag) {
       const data = Array.from({ length: cardArray }, (v, i) => i)
       return data
     }
-    return [1]
+    if (idArray && idArray?.length !== 0) {
+      const data = Array.from({ length: idArray.length }, (v, i) => i)
+      return data
+    }
+    return [0]
   }, [cardArray, flag, idArray])
 
   const onChange = React.useCallback(
     (val: any, index: number) => {
       if (val === undefined) {
         changePre(index)
+        return
       }
       setData((pre: number[] | any) => {
         const preCopy = pre
@@ -193,6 +196,7 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
   )
 
   const viewDraw = () => {
+    if (data.length === 0) return []
     return data
   }
 
@@ -222,7 +226,7 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
     <div className={styles.baseBody}>
       <div className={styles.baseForm}>
         <div className={styles.formOperation}>
-          {ExcitationCardList?.map((index: number) => {
+          {ExcitationCardList?.map((value: number, index: number) => {
             return (
               <ExcitationCard
                 type={type}
@@ -232,7 +236,7 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
                 onChange={onChange}
                 formData={Data && Data?.group_data_list[1].group_data_list}
                 index={index}
-                key={index}
+                key={generateUUID()}
               />
             )
           })}
@@ -263,15 +267,16 @@ const TearDown = React.forwardRef((props: any, myRef) => {
   }, [])
 
   const ExcitationCardList = React.useMemo(() => {
-    if (idArray && idArray?.length !== 0 && !flag) {
-      const data = Array.from({ length: idArray.length }, (v, i) => i)
-      return data
-    }
-    if (cardArray && flag) {
+    if (flag) {
       const data = Array.from({ length: cardArray }, (v, i) => i)
       return data
     }
-    return [1]
+    if (idArray && idArray?.length !== 0) {
+      const data = Array.from({ length: idArray.length }, (v, i) => i)
+      return data
+    }
+
+    return [0]
   }, [cardArray, flag, idArray])
 
   const onChange = React.useCallback(
@@ -317,7 +322,7 @@ const TearDown = React.forwardRef((props: any, myRef) => {
                 onChange={onChange}
                 formData={Data && Data?.group_data_list[2]?.group_data_list}
                 index={index}
-                key={index}
+                key={generateUUID()}
               />
             )
           })}
@@ -679,7 +684,7 @@ const GroupExcitationForm: React.FC = () => {
           >
             <Input.TextArea
               disabled={isFixForm}
-              placeholder='交互描述'
+              placeholder='请输入交互描述'
               autoSize={{ minRows: 4, maxRows: 5 }}
               showCount={{
                 formatter({ count }) {
