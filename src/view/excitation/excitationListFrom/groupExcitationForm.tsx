@@ -79,10 +79,10 @@ const ChartComponents = () => {
 }
 
 const SetUp = React.forwardRef((props: any, myRef) => {
-  const { type, Data, isFixForm, idArray, changePre, excitationList } = props
+  const { type, isFixForm, idArray, changePre, excitationList } = props
   const [cardArray, setCardArray] = React.useState(1)
   const [flag, setFlag] = useState(false)
-  const [data, setData] = useState<number[]>([])
+
   const addCard = React.useCallback(() => {
     setCardArray(pre => pre + 1)
     setFlag(true)
@@ -103,33 +103,14 @@ const SetUp = React.forwardRef((props: any, myRef) => {
 
   const onChange = React.useCallback(
     (val: any, index: number) => {
-      if (val === undefined) {
-        changePre(index)
-        return
-      }
-      setData((pre: number[] | any) => {
-        const preCopy = pre
-        preCopy[index] = val
-        return [...preCopy]
-      })
+      changePre(val, index)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
-  const viewDraw = async () => {
-    if (data.length === 0) return []
-    return data
-  }
-  React.useEffect(() => {
-    if (Data) {
-      setCardArray(Data?.group_data_list[0]?.group_data_list?.length)
-    }
-  }, [Data])
   React.useImperativeHandle(myRef, () => ({
-    save: () => {
-      return viewDraw()
-    },
+    save: () => {},
     delete: () => {},
     validate: () => {},
     clearInteraction: () => {}
@@ -146,7 +127,6 @@ const SetUp = React.forwardRef((props: any, myRef) => {
                 excitationList={excitationList}
                 isFixForm={isFixForm}
                 onChange={onChange}
-                formData={Data && Data?.group_data_list[0].group_data_list}
                 index={index}
                 key={index}
               />
@@ -168,9 +148,8 @@ const SetUp = React.forwardRef((props: any, myRef) => {
   )
 })
 const Fuzzing = React.forwardRef((props: any, myRef) => {
-  const { type, Data, isFixForm, idArray, changePre, excitationList } = props
+  const { type, isFixForm, idArray, changePre, excitationList } = props
   const [flag, setFlag] = useState(false)
-  const [data, setData] = useState<number[]>([])
   const [cardArray, setCardArray] = React.useState(1)
   const addCard = React.useCallback(() => {
     setCardArray(pre => pre + 1)
@@ -191,45 +170,16 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
 
   const onChange = React.useCallback(
     (val: any, index: number) => {
-      if (val === undefined) {
-        changePre(index)
-        return
-      }
-      setData((pre: number[] | any) => {
-        const preCopy = pre
-        preCopy[index] = val
-        return [...preCopy]
-      })
+      changePre(val, index)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
-  const viewDraw = () => {
-    if (data.length === 0) return []
-    return data
-  }
-
-  const checkData = React.useCallback(() => {
-    if (data.length >= 1 || (Data && Data?.group_data_list[1].group_data_list.length >= 1)) {
-      return true
-    }
-    return false
-  }, [Data, data.length])
-  React.useEffect(() => {
-    if (Data) {
-      setCardArray(Data?.group_data_list[1].group_data_list.length)
-    }
-  }, [Data])
-
   React.useImperativeHandle(myRef, () => ({
-    save: () => {
-      return viewDraw()
-    },
+    save: () => {},
     delete: () => {},
-    validate: () => {
-      return checkData()
-    },
+    validate: () => {},
     clearInteraction: () => {}
   }))
   return (
@@ -244,7 +194,6 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
                 excitationList={excitationList}
                 isFixForm={isFixForm}
                 onChange={onChange}
-                formData={Data && Data?.group_data_list[1].group_data_list}
                 index={index}
                 key={index}
               />
@@ -267,10 +216,9 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
 })
 
 const TearDown = React.forwardRef((props: any, myRef) => {
-  const { type, Data, isFixForm, idArray, excitationList, changePre } = props
+  const { type, isFixForm, idArray, excitationList, changePre } = props
   const [cardArray, setCardArray] = React.useState(1)
   const [flag, setFlag] = useState(false)
-  const [data, setData] = useState<number[]>([])
   const addCard = React.useCallback(() => {
     setCardArray(pre => pre + 1)
     setFlag(true)
@@ -291,28 +239,14 @@ const TearDown = React.forwardRef((props: any, myRef) => {
 
   const onChange = React.useCallback(
     (val: any, index: number) => {
-      if (val === undefined) {
-        changePre(index)
-      }
-      setData((pre: number[] | any) => {
-        const preCopy = pre
-        preCopy[index] = val
-        return [...preCopy]
-      })
+      changePre(val, index)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
-  //  预览功能
-  const viewDraw = () => {
-    return data
-  }
-
   React.useImperativeHandle(myRef, () => ({
-    save: async () => {
-      return viewDraw()
-    },
+    save: async () => {},
     delete: () => {},
     validate: () => {},
     clearInteraction: () => {}
@@ -330,7 +264,6 @@ const TearDown = React.forwardRef((props: any, myRef) => {
                 excitationList={excitationList}
                 isFixForm={isFixForm}
                 onChange={onChange}
-                formData={Data && Data?.group_data_list[2]?.group_data_list}
                 index={index}
                 key={index}
               />
@@ -380,26 +313,39 @@ const GroupExcitationForm: React.FC = () => {
     step3Ref: React.useRef<StepRef | null>(null)
   }
 
-  const idMap = React.useCallback(propsDatas => {
-    if (propsDatas) {
-      stepCurrentRef.current.map((value: number[], index: number) => {
-        if (Object.keys(propsDatas.group_data_list[index]).length > 0) {
-          propsDatas.group_data_list[index]?.group_data_list.forEach((item: any) => {
-            if (stepCurrentRef.current[index].length === 0) {
-              stepCurrentRef.current[index] = [item.sender_id]
-            } else {
-              stepCurrentRef.current[index].forEach((val: number) => {
-                if (val !== item.sender_id) {
-                  stepCurrentRef.current[index].push(item.sender_id)
-                }
-              })
-            }
-          })
-        }
-        return value
+  //  选择某一参数之后,更新列表的disabled
+  const updateDisabled = React.useCallback(
+    (value: number, bol: boolean) => {
+      const excitationListCopy = excitationList
+      excitationListCopy.forEach((item: any) => {
+        item.children.forEach((element: any) => {
+          if (value === element.sender_id) {
+            const pre = element
+            pre.disabled = bol
+          }
+        })
       })
-    }
-  }, [])
+    },
+    [excitationList]
+  )
+
+  // 初始化数据 stepCurrent 数组
+  const idMap = React.useCallback(
+    propsDatas => {
+      if (propsDatas) {
+        stepCurrentRef.current.map((value: number[], index: number) => {
+          if (Object.keys(propsDatas.group_data_list[index]).length > 0) {
+            propsDatas.group_data_list[index]?.group_data_list.forEach((item: any) => {
+              stepCurrentRef.current[index].push(item.sender_id)
+              updateDisabled(item.sender_id, true)
+            })
+          }
+          return value
+        })
+      }
+    },
+    [updateDisabled]
+  )
   const getExcitationList = async (request1: Resparams, doubleRequest: Resparams) => {
     try {
       const result2 = await excitationListFn(doubleRequest)
@@ -435,22 +381,20 @@ const GroupExcitationForm: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // 更改数据参数
   const changePre = React.useCallback(
-    (index: number) => {
-      const idArray = stepCurrentRef.current[current][index]
-      excitationList.map((item: any) => {
-        return item.children.forEach((val: any) => {
-          if (idArray === val.sender_id) {
-            const valRest = val
-            valRest.disabled = false
-          }
-        })
-      })
-      const arrayId = stepCurrentRef.current[current]
-      arrayId.splice(index, 1)
-      stepCurrentRef.current[current] = arrayId
+    (val: number, index: number) => {
+      if (val === undefined) {
+        const arrayId = stepCurrentRef.current[current]
+        const delArray = arrayId.splice(index, 1)
+        stepCurrentRef.current[current] = arrayId
+        updateDisabled(delArray[0], false)
+      } else {
+        stepCurrentRef.current[current].push(val)
+        updateDisabled(val, true)
+      }
     },
-    [current, excitationList]
+    [current, updateDisabled]
   )
 
   const steps = [
@@ -500,105 +444,47 @@ const GroupExcitationForm: React.FC = () => {
       )
     }
   ]
-  const checkIdUseStatus = () => {
-    const idArray = stepCurrentRef.current[current]
-    excitationList.map((item: any) => {
-      return item.children.forEach((val: any) => {
-        idArray.map((_i: any) => {
-          if (_i === val.sender_id) {
-            const valRest = val
-            valRest.disabled = true
-          }
-          return _i
-        })
-      })
-    })
-  }
-  const next = async () => {
-    if (current === 1) {
-      if (stepCurrentRef.current[1].length >= 1 || childRef.step2Ref.current?.validate() || isFixForm) {
-        const res2 = await childRef.step2Ref.current?.save()
-        if (res2 && res2.length >= 1 && res2.length <= 3) {
-          stepCurrentRef.current[1] = res2
-        }
-        setCurrent(current + 1)
-        checkIdUseStatus()
-      } else {
-        message.error('请配置激励数据')
-      }
-    }
 
-    switch (current) {
-      case 0: {
-        const res1 = await childRef.step1Ref.current?.save()
-        if (res1 && res1.length >= 1 && res1.length <= 3) {
-          stepCurrentRef.current[0] = res1
-        }
-        checkIdUseStatus()
+  // 判断是不是查看详情
+  const isLookDetailAdd = React.useCallback(() => {
+    setCurrent(current + 1)
+  }, [current])
+
+  const isLookDetailDecrease = React.useCallback(() => {
+    setCurrent(current - 1)
+  }, [current])
+
+  const checkCurrent = React.useCallback(() => {
+    if (current === 1) {
+      if (stepCurrentRef.current[1].length >= 1) {
         setCurrent(current + 1)
-        break
+      } else {
+        message.error('请配置激励')
       }
-      case 2: {
-        const res3 = await childRef.step3Ref.current?.save()
-        if (res3 && res3.length >= 1 && res3.length <= 3) {
-          stepCurrentRef.current[2] = res3
-        }
-        checkIdUseStatus()
-        break
-      }
-      default:
-        return null
+    } else {
+      setCurrent(current + 1)
+    }
+  }, [current])
+
+  const next = async () => {
+    if (isFixForm) {
+      isLookDetailAdd()
+    } else {
+      checkCurrent()
     }
   }
 
   const prev = async () => {
-    if (current === 1) {
-      const res2 = await childRef.step2Ref.current?.save()
-      if (res2 && res2.length >= 1 && res2.length <= 3) {
-        stepCurrentRef.current[1] = res2
-      }
-      checkIdUseStatus()
-      setCurrent(current - 1)
-    }
-
-    switch (current) {
-      case 0: {
-        const res1 = await childRef.step1Ref.current?.save()
-        if (res1 && res1.length >= 1 && res1.length <= 3) {
-          stepCurrentRef.current[0] = res1
-        }
-        checkIdUseStatus()
-        setCurrent(current - 1)
-        break
-      }
-      case 2: {
-        const res3 = await childRef.step3Ref.current?.save()
-        if (res3 && res3.length >= 1 && res3.length <= 3) {
-          stepCurrentRef.current[2] = res3
-        }
-        checkIdUseStatus()
-        setCurrent(current - 1)
-        break
-      }
-      default:
-        return null
-    }
+    isLookDetailDecrease()
   }
 
   const viewDraw = async () => {
-    if (current === steps.length - 1) {
-      const res3 = await childRef.step3Ref.current?.save()
-      if (res3 && res3.length >= 1 && res3.length <= 3) {
-        stepCurrentRef.current[2] = res3
-      }
-    }
     let values
     try {
       values = await form.validateFields()
     } catch {
       message.error('请填写交互名称')
     }
-
     try {
       if (values) {
         const params2 = {
@@ -645,6 +531,9 @@ const GroupExcitationForm: React.FC = () => {
   React.useEffect(() => {
     if (detailData || propsDatas) {
       initData(detailData || propsDatas)
+    }
+    return () => {
+      stepCurrentRef.current = [[], [], []]
     }
   }, [detailData, initData, propsDatas])
   return (

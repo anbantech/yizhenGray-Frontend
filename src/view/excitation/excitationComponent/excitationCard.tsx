@@ -22,12 +22,13 @@ interface AllPropsType {
 
 interface propsType {
   type: string
-  formData: any
   isFixForm: boolean
   excitationList: any
   index: number
   // eslint-disable-next-line react/require-default-props
   idArray?: number
+  // eslint-disable-next-line react/require-default-props
+  formData?: any
   onChange: (value: any, index: number) => void
 }
 
@@ -139,23 +140,6 @@ const ThreeExcitationCard = (props: AllPropsType) => {
         description: excitarionListes.desc
       })
     }
-    // if (formData) {
-    //   if (isArray(formData)) {
-    //     const excitarionListes = formData[index]
-    //     if (Object.keys(excitarionListes)?.length > 0) {
-    //       form.setFieldsValue({
-    //         port: [excitarionListes.target_type === 0 ? '单激励Group' : '级联Group', excitarionListes.name],
-    //         description: excitarionListes.desc
-    //       })
-    //     }
-    //   } else {
-    //     const excitarionListes = formData
-    //     form.setFieldsValue({
-    //       port: [excitarionListes.target_type === 0 ? '单激励Group' : '级联Group', excitarionListes.name],
-    //       description: excitarionListes.desc
-    //     })
-    //   }
-    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [desc, formData, form, isFixForm, index])
 
@@ -181,36 +165,16 @@ const ThreeExcitationCard = (props: AllPropsType) => {
 ThreeExcitationCard.displayName = 'ThreeExcitationCard'
 const ThreeExcitationCardCompoent = React.memo(ThreeExcitationCard)
 
-// const FiveExcitationCard: React.FC<PropsTypeFn> = (props: PropsTypeFn) => {
-//   const { onClick, type } = props
-//   return (
-//     <div role='time' onClick={onClick} className={styles.card_middle}>
-//       <div className={styles.card_concent}>
-//         <PlusOutlined style={{ fontSize: '18px' }} />
-//         {type === 'two' ? <span>选择单激励Group </span> : <span>选择单激励Group/级联Group</span>}
-//       </div>
-//     </div>
-//   )
-// }
-// FiveExcitationCard.displayName = 'FiveExcitationCard'
-// const FiveExcitationCardCompoent = React.memo(FiveExcitationCard)
-
 const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
-  const { index, excitationList, idArray, onChange, formData, isFixForm, type } = props
+  const { index, excitationList, idArray, formData, onChange, isFixForm, type } = props
   const Data = GetDeatilFn(idArray)
   return (
     <div className={styles.card_main}>
       {type === 'five' ? (
-        <TwoExcitationCardCompoent
-          formData={isFixForm ? formData : Data}
-          excitationList={excitationList}
-          index={index}
-          isFixForm={isFixForm}
-          onChange={onChange}
-        />
+        <TwoExcitationCardCompoent formData={Data} excitationList={excitationList} index={index} isFixForm={isFixForm} onChange={onChange} />
       ) : (
         <ThreeExcitationCardCompoent
-          formData={isFixForm ? formData : Data}
+          formData={Data || formData}
           excitationList={excitationList}
           index={index}
           isFixForm={isFixForm}

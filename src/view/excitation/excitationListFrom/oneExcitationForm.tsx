@@ -132,6 +132,7 @@ const OneExcotationForm: React.FC = () => {
       return item !== undefined && item !== ''
     })
     if (disabledBoolean && errors) {
+      console.log(disabledBoolean, errors)
       setIsDisableStatus(false)
     } else {
       setIsDisableStatus(true)
@@ -256,8 +257,7 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入前置时延' />
-          <Tip />
+          <Input disabled={isFixForm} placeholder='请输入前置时延' suffix={<Tip />} />
         </Form.Item>
         <Form.Item
           label='发送次数'
@@ -305,8 +305,7 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入等待时间' />
-          <Tip />
+          <Input disabled={isFixForm} placeholder='请输入等待时间' suffix={<Tip />} />
         </Form.Item>
         <Form.Item
           label='循环间隔'
@@ -330,8 +329,7 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入循环间隔' />
-          <Tip />
+          <Input disabled={isFixForm} placeholder='请输入循环间隔' suffix={<Tip />} />
         </Form.Item>
         <Form.Item
           label='循环次数'
@@ -380,8 +378,7 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入中间时延' />
-          <Tip />
+          <Input disabled={isFixForm} placeholder='请输入中间时延' suffix={<Tip />} />
         </Form.Item>
         <Form.Item
           label='后置时延'
@@ -405,8 +402,7 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入后置时延' />
-          <Tip />
+          <Input disabled={isFixForm} placeholder='请输入后置时延' suffix={<Tip />} />
         </Form.Item>
         <Form.Item
           label='单激励Group描述'
