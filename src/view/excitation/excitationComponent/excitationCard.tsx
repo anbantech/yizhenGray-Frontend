@@ -107,7 +107,7 @@ const TwoExcitationCard = (props: AllPropsType) => {
           </Select>
         </Form.Item>
         <Form.Item label='描述' name='description' rules={[{ message: '请输入描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}>
-          <Input.TextArea disabled style={{ width: '222px' }} placeholder='描述' autoSize={{ minRows: 2, maxRows: 3 }} />
+          <Input.TextArea disabled style={{ width: '222px' }} placeholder={isFixForm ? '' : '描述'} autoSize={{ minRows: 2, maxRows: 3 }} />
         </Form.Item>
       </Form>
     </div>
@@ -155,7 +155,7 @@ const ThreeExcitationCard = (props: AllPropsType) => {
   }, [desc, formData, form, isFixForm, index])
 
   return (
-    <div className={styles.card_middle} key={index}>
+    <div className={styles.card_middle}>
       <div
         role='time'
         onClick={() => {
@@ -176,7 +176,7 @@ const ThreeExcitationCard = (props: AllPropsType) => {
           />
         </Form.Item>
         <Form.Item label='描述' name='description' rules={[{ message: '请输入描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}>
-          <Input.TextArea disabled style={{ width: '222px' }} placeholder='描述' autoSize={{ minRows: 2, maxRows: 3 }} />
+          <Input.TextArea disabled style={{ width: '222px' }} placeholder={isFixForm ? '' : '描述'} autoSize={{ minRows: 2, maxRows: 3 }} />
         </Form.Item>
       </Form>
     </div>
@@ -189,7 +189,7 @@ const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
   const { index, excitationList, deleteCard, idArray, formData, onChange, isFixForm, type } = props
   const Data = GetDeatilFn(idArray)
   return (
-    <div className={styles.card_main} key={index}>
+    <div className={styles.card_main}>
       {type === 'five' ? (
         <TwoExcitationCardCompoent
           deleteCard={deleteCard}
