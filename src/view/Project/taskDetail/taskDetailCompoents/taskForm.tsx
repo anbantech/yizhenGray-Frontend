@@ -33,6 +33,10 @@ interface propsFn {
   id: number
 }
 
+interface excitationListType {
+  group_name: string
+  sender_id: number
+}
 interface PropType {
   taskInfo: any
 }
@@ -40,15 +44,13 @@ const TaskForm = (props: PropType) => {
   const { taskInfo } = props
   const [form] = useForm()
   const { Option } = Select
-  const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
+  const [excitationList, setExcitationList] = useState<excitationListType[]>([])
   const [nodeList, setnodeList] = useState<number[] | unknown[]>([])
   useEffect(() => {
     if (taskInfo) {
       const { name, desc, work_time, crash_num, sender_id, group_name, beat_unit, simu_instance_id } = taskInfo
-      setExcitationList(() => {
-        const excitationInfo = { id: sender_id, name: group_name }
-        return [excitationInfo]
-      })
+      const excitationInfo = { sender_id, group_name }
+      setExcitationList([excitationInfo])
       setnodeList(() => {
         const nodeList = simu_instance_id
         return [nodeList]
@@ -58,9 +60,9 @@ const TaskForm = (props: PropType) => {
         description: desc,
         work_time,
         crash_num,
-        sender_id,
         beat_unit,
-        simu_instance_id
+        simu_instance_id,
+        sender_id
       }
       form.setFieldsValue(formData)
     }
@@ -148,25 +150,7 @@ const TaskForm = (props: PropType) => {
         >
           <Input disabled placeholder='请输入Crash数量' />
         </Form.Item>
-        <Form.Item
-          label='节拍单元'
-          name='beat_unit'
-          initialValue={200}
-          // validateFirst
-          // validateTrigger={['onBlur']}
-          // rules={[
-          //   { required: true, message: '请输入节拍单元' },
-          //   {
-          //     validator(_, value) {
-          //       const reg = /^\d+$/
-          //       if (reg.test(value) && value <= 4294967296000) {
-          //         return Promise.resolve()
-          //       }
-          //       return Promise.reject(new Error('请输入 0-4294967296000 之间的整数'))
-          //     }
-          //   }
-          // ]}
-        >
+        <Form.Item label='节拍单元' name='beat_unit' initialValue={200}>
           <Input disabled placeholder='请输入节拍单元' suffix='毫秒' />
         </Form.Item>
         <Form.Item
@@ -192,19 +176,14 @@ const TaskForm = (props: PropType) => {
           </Select>
         </Form.Item>
         <Form.Item label='交互' name='sender_id' validateFirst validateTrigger={['onBlur']} rules={[{ required: true, message: '请选择交互' }]}>
-          <Select disabled placeholder='请选择交互'>
-            {
-              /**
-               * 根据连接方式列表渲染下拉框可选择的设备比特率
-               */
-              excitationList?.map((rate: any) => {
-                return (
-                  <Option key={rate.sender_id} value={rate.sender_id}>
-                    {rate.name}
-                  </Option>
-                )
-              })
-            }
+          <Select placeholder='请选择交互' disabled>
+            {excitationList?.map((rate: any) => {
+              return (
+                <Option key={rate.sender_id} value={rate.sender_id}>
+                  {rate.group_name}
+                </Option>
+              )
+            })}
           </Select>
         </Form.Item>
         <Form.Item
