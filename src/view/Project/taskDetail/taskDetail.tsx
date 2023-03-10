@@ -98,7 +98,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
           />
           <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
           {updateStatus === 2 ? (
-            <DetailTestingTable params={depData} logData={logData} />
+            <DetailTestingTable params={depData} status={updateStatus} />
           ) : (
             <DetailTestedTable
               task_id={+taskInfo.task_id}
