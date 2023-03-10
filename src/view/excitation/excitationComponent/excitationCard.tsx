@@ -18,6 +18,7 @@ interface AllPropsType {
   formData: any
   onChange: (value: any, index: number) => void
   index: number
+  deleteCard: (index: number) => void
 }
 
 interface propsType {
@@ -30,6 +31,7 @@ interface propsType {
   // eslint-disable-next-line react/require-default-props
   formData?: any
   onChange: (value: any, index: number) => void
+  deleteCard: (index: number) => void
 }
 
 interface ChildRef {
@@ -47,7 +49,7 @@ interface Option {
 }
 const TwoExcitationCard = (props: AllPropsType) => {
   const [form] = useForm()
-  const { excitationList, onChange, index, isFixForm, formData } = props
+  const { excitationList, onChange, index, deleteCard, isFixForm, formData } = props
   const [desc, setDesc] = useState('')
   const onValuesChange = (changedValues: any) => {
     const formData = changedValues
@@ -77,7 +79,16 @@ const TwoExcitationCard = (props: AllPropsType) => {
   const { Option } = Select
 
   return (
-    <div className={styles.card_middle}>
+    <div className={styles.card_middle} key={index}>
+      <div
+        role='time'
+        onClick={() => {
+          deleteCard(index)
+        }}
+        style={{ display: 'none' }}
+      >
+        删除
+      </div>
       <Form name='middle' autoComplete='off' className={styles.card_middle_form} onValuesChange={onValuesChange} form={form}>
         <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择配置项' }]}>
           <Select placeholder='请选择配置项' allowClear onSelect={onSelect} disabled={isFixForm}>
@@ -107,7 +118,7 @@ const TwoExcitationCardCompoent = React.memo(TwoExcitationCard)
 
 const ThreeExcitationCard = (props: AllPropsType) => {
   const [form] = useForm()
-  const { excitationList, onChange, index, isFixForm, formData } = props
+  const { excitationList, deleteCard, onChange, index, isFixForm, formData } = props
   const [desc, setDesc] = useState('')
   const onValuesChange = async (changedValues: any) => {
     const formData = changedValues
@@ -144,7 +155,16 @@ const ThreeExcitationCard = (props: AllPropsType) => {
   }, [desc, formData, form, isFixForm, index])
 
   return (
-    <div className={styles.card_middle}>
+    <div className={styles.card_middle} key={index}>
+      <div
+        role='time'
+        onClick={() => {
+          deleteCard(index)
+        }}
+        style={{ display: 'none' }}
+      >
+        删除
+      </div>
       <Form name='middle' autoComplete='off' className={styles.card_middle_form} onValuesChange={onValuesChange} form={form}>
         <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择激励' }]}>
           <Cascader
@@ -166,14 +186,22 @@ ThreeExcitationCard.displayName = 'ThreeExcitationCard'
 const ThreeExcitationCardCompoent = React.memo(ThreeExcitationCard)
 
 const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
-  const { index, excitationList, idArray, formData, onChange, isFixForm, type } = props
+  const { index, excitationList, deleteCard, idArray, formData, onChange, isFixForm, type } = props
   const Data = GetDeatilFn(idArray)
   return (
-    <div className={styles.card_main}>
+    <div className={styles.card_main} key={index}>
       {type === 'five' ? (
-        <TwoExcitationCardCompoent formData={Data} excitationList={excitationList} index={index} isFixForm={isFixForm} onChange={onChange} />
+        <TwoExcitationCardCompoent
+          deleteCard={deleteCard}
+          formData={Data}
+          excitationList={excitationList}
+          index={index}
+          isFixForm={isFixForm}
+          onChange={onChange}
+        />
       ) : (
         <ThreeExcitationCardCompoent
+          deleteCard={deleteCard}
           formData={Data || formData}
           excitationList={excitationList}
           index={index}
