@@ -132,7 +132,6 @@ const OneExcotationForm: React.FC = () => {
       return item !== undefined && item !== ''
     })
     if (disabledBoolean && errors) {
-      console.log(disabledBoolean, errors)
       setIsDisableStatus(false)
     } else {
       setIsDisableStatus(true)
@@ -411,7 +410,7 @@ const OneExcotationForm: React.FC = () => {
         >
           <Input.TextArea
             disabled={isFixForm}
-            placeholder='请输入单激励Group描述'
+            placeholder={isFixForm ? '' : '请输入单激励Group描述'}
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
               formatter({ count }) {

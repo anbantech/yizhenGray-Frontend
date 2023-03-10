@@ -16,7 +16,7 @@ const Tip = () => {
 const StepTip = () => {
   return (
     <div className={StyleSheet.stepTip}>
-      <Tooltip title='交互规则：测试阶段、准备阶段+测试阶段、准备阶段+测试阶段+销毁阶段、测试阶段+销毁阶段' placement='bottom'>
+      <Tooltip title='交互规则：发送阶段、准备阶段+发送阶段、准备阶段+发送阶段+销毁阶段、发送阶段+销毁阶段' placement='bottom'>
         <QuestionCircleOutlined style={{ fontSize: '18px' }} />
       </Tooltip>
     </div>
