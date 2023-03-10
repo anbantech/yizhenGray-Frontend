@@ -80,26 +80,23 @@ const ChartComponents = () => {
 
 const SetUp = React.forwardRef((props: any, myRef) => {
   const { type, isFixForm, idArray, changePre, excitationList } = props
-  const [cardArray, setCardArray] = React.useState(1)
-  const [flag, setFlag] = useState(false)
+  const [cardArray, setCardArray] = React.useState(idArray.length === 0 ? [0] : Array.from({ length: idArray.length }, (v, i) => i))
 
   const addCard = React.useCallback(() => {
-    setCardArray(pre => pre + 1)
-    setFlag(true)
-  }, [])
+    const pre = cardArray
+    pre.push(cardArray.length)
+    setCardArray([...pre])
+  }, [cardArray])
 
-  const ExcitationCardList = React.useMemo(() => {
-    if (flag) {
-      const data = Array.from({ length: cardArray }, (v, i) => i)
-      return data
-    }
-    if (idArray && idArray?.length !== 0) {
-      const data = Array.from({ length: idArray.length }, (v, i) => i)
-      return data
-    }
-
-    return [0]
-  }, [cardArray, flag, idArray])
+  const deleteCard = React.useCallback(
+    (index: number) => {
+      const cradArrayCopy = cardArray
+      cradArrayCopy.splice(index, 1)
+      setCardArray([...cradArrayCopy])
+      changePre(undefined, index)
+    },
+    [cardArray, changePre]
+  )
 
   const onChange = React.useCallback(
     (val: any, index: number) => {
@@ -119,9 +116,10 @@ const SetUp = React.forwardRef((props: any, myRef) => {
     <div className={styles.baseBody}>
       <div className={styles.baseForm}>
         <div className={styles.formOperation}>
-          {ExcitationCardList?.map((value: number, index: number) => {
+          {cardArray?.map((value: number, index: number) => {
             return (
               <ExcitationCard
+                deleteCard={deleteCard}
                 type={type}
                 idArray={idArray && idArray[index]}
                 excitationList={excitationList}
@@ -133,7 +131,7 @@ const SetUp = React.forwardRef((props: any, myRef) => {
             )
           })}
 
-          {ExcitationCardList.length < 10 && !isFixForm && (
+          {cardArray.length < 10 && !isFixForm && (
             <div className={styles.nav_Btn} role='time' onClick={addCard}>
               <PlusOutlined style={{ fontSize: '20px', marginBottom: '3px' }} />
               <span>添</span>
@@ -147,26 +145,27 @@ const SetUp = React.forwardRef((props: any, myRef) => {
     </div>
   )
 })
+
+SetUp.displayName = 'SetUp'
 const Fuzzing = React.forwardRef((props: any, myRef) => {
   const { type, isFixForm, idArray, changePre, excitationList } = props
-  const [flag, setFlag] = useState(false)
-  const [cardArray, setCardArray] = React.useState(1)
-  const addCard = React.useCallback(() => {
-    setCardArray(pre => pre + 1)
-    setFlag(true)
-  }, [])
+  const [cardArray, setCardArray] = React.useState(idArray.length === 0 ? [0] : Array.from({ length: idArray.length }, (v, i) => i))
 
-  const ExcitationCardList = React.useMemo(() => {
-    if (flag) {
-      const data = Array.from({ length: cardArray }, (v, i) => i)
-      return data
-    }
-    if (idArray && idArray?.length !== 0) {
-      const data = Array.from({ length: idArray.length }, (v, i) => i)
-      return data
-    }
-    return [0]
-  }, [cardArray, flag, idArray])
+  const addCard = React.useCallback(() => {
+    const pre = cardArray
+    pre.push(cardArray.length)
+    setCardArray([...pre])
+  }, [cardArray])
+
+  const deleteCard = React.useCallback(
+    (index: number) => {
+      const cradArrayCopy = cardArray
+      cradArrayCopy.splice(index, 1)
+      setCardArray([...cradArrayCopy])
+      changePre(undefined, index)
+    },
+    [cardArray, changePre]
+  )
 
   const onChange = React.useCallback(
     (val: any, index: number) => {
@@ -186,9 +185,10 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
     <div className={styles.baseBody}>
       <div className={styles.baseForm}>
         <div className={styles.formOperation}>
-          {ExcitationCardList?.map((value: number, index: number) => {
+          {cardArray?.map((value: number, index: number) => {
             return (
               <ExcitationCard
+                deleteCard={deleteCard}
                 type={type}
                 idArray={idArray && idArray[index]}
                 excitationList={excitationList}
@@ -200,7 +200,7 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
             )
           })}
 
-          {ExcitationCardList.length < 10 && !isFixForm && (
+          {cardArray.length < 10 && !isFixForm && (
             <div className={styles.nav_Btn} role='time' onClick={addCard}>
               <PlusOutlined style={{ fontSize: '20px', marginBottom: '3px' }} />
               <span>添</span>
@@ -214,28 +214,26 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
     </div>
   )
 })
-
+Fuzzing.displayName = 'Fuzzing'
 const TearDown = React.forwardRef((props: any, myRef) => {
   const { type, isFixForm, idArray, excitationList, changePre } = props
-  const [cardArray, setCardArray] = React.useState(1)
-  const [flag, setFlag] = useState(false)
+  const [cardArray, setCardArray] = React.useState(idArray.length === 0 ? [0] : Array.from({ length: idArray.length }, (v, i) => i))
+
   const addCard = React.useCallback(() => {
-    setCardArray(pre => pre + 1)
-    setFlag(true)
-  }, [])
+    const pre = cardArray
+    pre.push(cardArray.length)
+    setCardArray([...pre])
+  }, [cardArray])
 
-  const ExcitationCardList = React.useMemo(() => {
-    if (flag) {
-      const data = Array.from({ length: cardArray }, (v, i) => i)
-      return data
-    }
-    if (idArray && idArray?.length !== 0) {
-      const data = Array.from({ length: idArray.length }, (v, i) => i)
-      return data
-    }
-
-    return [0]
-  }, [cardArray, flag, idArray])
+  const deleteCard = React.useCallback(
+    (index: number) => {
+      const cradArrayCopy = cardArray
+      cradArrayCopy.splice(index, 1)
+      setCardArray([...cradArrayCopy])
+      changePre(undefined, index)
+    },
+    [cardArray, changePre]
+  )
 
   const onChange = React.useCallback(
     (val: any, index: number) => {
@@ -256,9 +254,10 @@ const TearDown = React.forwardRef((props: any, myRef) => {
     <div className={styles.baseBody}>
       <div className={styles.baseForm}>
         <div className={styles.formOperation}>
-          {ExcitationCardList?.map((index: number) => {
+          {cardArray?.map((index: number) => {
             return (
               <ExcitationCard
+                deleteCard={deleteCard}
                 type={type}
                 idArray={idArray && idArray[index]}
                 excitationList={excitationList}
@@ -270,7 +269,7 @@ const TearDown = React.forwardRef((props: any, myRef) => {
             )
           })}
 
-          {ExcitationCardList.length < 10 && !isFixForm && (
+          {cardArray.length < 10 && !isFixForm && (
             <div className={styles.nav_Btn} role='time' onClick={addCard}>
               <PlusOutlined style={{ fontSize: '20px', marginBottom: '3px' }} />
               <span>添</span>
@@ -284,7 +283,7 @@ const TearDown = React.forwardRef((props: any, myRef) => {
     </div>
   )
 })
-
+TearDown.displayName = 'TearDown'
 const GroupExcitationForm: React.FC = () => {
   const { isFixForm, info, type, name, propsDatas } = useContext(GlobalContexted)
   const { Step } = Steps

@@ -275,9 +275,9 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       },
       {
         width: '15%',
-        title: '端口名称',
-        dataIndex: 'port',
-        key: 'port'
+        title: '单激励Group描述',
+        dataIndex: 'desc',
+        key: 'desc'
       },
 
       {
@@ -327,7 +327,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       },
       {
         width: '30%',
-        title: ' 描述    ',
+        title: '级联Group描述',
         dataIndex: 'desc',
         key: 'desc'
       },

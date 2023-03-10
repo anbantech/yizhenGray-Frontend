@@ -228,6 +228,8 @@ const DoubleExcitationForm: React.FC = () => {
     }
   }, [data, getLength, isDisableStatus])
 
+  const deleteCard = () => {}
+
   React.useEffect(() => {
     getExcitationList(request1, request)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -478,6 +480,7 @@ const DoubleExcitationForm: React.FC = () => {
         {ExcitationCardList?.map((index: number) => {
           return (
             <ExcitationCard
+              deleteCard={deleteCard}
               type={type}
               formData={Data?.group_data_list}
               isFixForm={isFixForm}
