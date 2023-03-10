@@ -9,7 +9,7 @@ import { createExcitationFn, excitationListFn } from 'Src/services/api/excitatio
 import { getTemplateList } from 'Src/services/api/templateApi'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from '../excitation.less'
-import Tip from '../excitationComponent/Tip'
+import { Tip } from '../excitationComponent/Tip'
 import { GetDeatilFn } from './getDataDetailFn/getDataDetailFn'
 
 // import { RouteComponentProps, StaticContext } from 'react-router'

@@ -5,11 +5,14 @@ import { useForm } from 'antd/lib/form/Form'
 import * as React from 'react'
 import { useContext, useState } from 'react'
 import { useHistory } from 'react-router'
+
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
 import { checkDataStructure, excitationListFn } from 'Src/services/api/excitationApi'
+
 import { generateUUID } from 'Src/util/common'
 import { throwErrorMessage } from 'Src/util/message'
+import { StepTip } from '../excitationComponent/Tip'
 import styles from '../excitation.less'
 import ExcitationCard from '../excitationComponent/excitationCard'
 import { GetDeatilFn } from './getDataDetailFn/getDataDetailFn'
@@ -136,8 +139,6 @@ const SetUp = React.forwardRef((props: any, myRef) => {
               <PlusOutlined style={{ fontSize: '20px', marginBottom: '3px' }} />
               <span>添</span>
               <span>加</span>
-              <span>激</span>
-              <span>励</span>
             </div>
           )}
         </div>
@@ -205,8 +206,6 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
               <PlusOutlined style={{ fontSize: '20px', marginBottom: '3px' }} />
               <span>添</span>
               <span>加</span>
-              <span>激</span>
-              <span>励</span>
             </div>
           )}
         </div>
@@ -274,8 +273,6 @@ const TearDown = React.forwardRef((props: any, myRef) => {
               <PlusOutlined style={{ fontSize: '20px', marginBottom: '3px' }} />
               <span>添</span>
               <span>加</span>
-              <span>激</span>
-              <span>励</span>
             </div>
           )}
         </div>
@@ -599,6 +596,7 @@ const GroupExcitationForm: React.FC = () => {
                 <Step key={generateUUID()} title={item.title} />
               ))}
             </Steps>
+            <StepTip />
           </div>
         </div>
         <div style={{ width: '100% ' }}>{steps[current].content}</div>

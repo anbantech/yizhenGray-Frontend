@@ -1,30 +1,46 @@
 /* eslint-disable indent */
 /* eslint-disable react/display-name */
 import { Table } from 'antd'
-import React from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
+import { getTestingLog } from 'Src/services/api/taskApi'
 import { getTime } from 'Src/util/baseFn'
+import { throwErrorMessage } from 'Src/util/message'
 
 import styles from '../taskDetailUtil/Detail.less'
 
 interface propsType {
   params: any
-  logData: any
+  status: any
 }
-const statusDesc = [
-  '未处理',
-  '熵过滤通过',
-  '熵过滤失败',
-  '发送完成',
-  '发送失败',
-  '异常重试中',
-  '处理中',
-  '处理完成',
-  '诊断错误',
-  '处理失败',
-  '异常停止'
-]
+
 const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
-  const { params, logData } = props
+  const { params, status } = props
+  const timer = useRef<any>()
+
+  const [logData, setLogData] = React.useState([])
+  const getlog = useCallback(async () => {
+    try {
+      const log = await getTestingLog(params)
+      if (log.data) {
+        setLogData(log.data.results as any)
+      }
+      return log
+    } catch (error) {
+      throwErrorMessage(error)
+    }
+  }, [params])
+  useEffect(() => {
+    if (status === 2) {
+      timer.current = setInterval(() => {
+        getlog()
+      }, 3000)
+    }
+    return () => {
+      clearInterval(timer.current)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status])
+
   const columns = [
     {
       title: '用例编号',
@@ -61,37 +77,25 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       title: () => {
         return (
           <div>
-            <span> {`异常用例${params.is_wrong === '' ? '(全部)' : params.is_wrong === '0' ? '(否)' : '(是)'}`} </span>
+            <span> {`异常用例${params.case_type === '' ? '(全部)' : params.is_wrong === '0' ? '(否)' : '(是)'}`} </span>
           </div>
         )
       },
-      dataIndex: 'is_wrong',
-      key: 'is_wrong',
+      dataIndex: 'case_type',
+      key: 'case_type',
       ellipsis: true,
       render: (text: any, record: any) => (
         <div className={styles.checkDetail} key={record.id}>
-          {record.is_wrong ? '是' : '否'}
+          {record.case_type ? '是' : '否'}
         </div>
       ),
       width: '10%'
     },
     {
-      title: '用例状态',
-      dataIndex: 'status',
-      key: 'status',
-      ellipsis: true,
-      render: (text: any, record: any) => (
-        <div className={styles.checkDetail} key={record.id}>
-          当前第{record.frame_index}帧{statusDesc[record.status]}
-        </div>
-      ),
-      width: '15%'
-    },
-    {
       title: () => {
         return (
           <div>
-            <span> {`发现时间${params.sort_order === 'descend' ? '(降序)' : '(升序)'}`} </span>
+            <span> {`发送时间${params.sort_order === 'descend' ? '(降序)' : '(升序)'}`} </span>
           </div>
         )
       },
@@ -104,6 +108,18 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
         </div>
       ),
       width: '15%'
+    },
+    {
+      title: '缺陷结果',
+      dataIndex: 'crash_info',
+      key: 'crash_info',
+      ellipsis: true,
+      width: '12.5%',
+      render: (text: any, record: any) => (
+        <p className={styles.checkDetail} key={record.id}>
+          {record.crash_info}
+        </p>
+      )
     }
   ]
   return (
@@ -115,7 +131,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
         rowKey={record => record.id}
         columns={columns}
         rowClassName={record => {
-          return record.is_wrong ? `${styles.tableStyleBackground}` : ''
+          return record.case_type ? `${styles.tableStyleBackground}` : ''
         }}
         dataSource={logData}
         pagination={false}
