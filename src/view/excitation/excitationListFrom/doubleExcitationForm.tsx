@@ -12,7 +12,7 @@ import { throwErrorMessage } from 'Src/util/message'
 
 import styles from '../excitation.less'
 import ExcitationCard from '../excitationComponent/excitationCard'
-import Tip from '../excitationComponent/Tip'
+import { Tip } from '../excitationComponent/Tip'
 import { GetDeatilFn } from './getDataDetailFn/getDataDetailFn'
 // import { RouteComponentProps, StaticContext } from 'react-router'
 
@@ -496,8 +496,6 @@ const DoubleExcitationForm: React.FC = () => {
             <PlusOutlined style={{ fontSize: '20px', marginBottom: '3px' }} />
             <span>添</span>
             <span>加</span>
-            <span>激</span>
-            <span>励</span>
           </div>
         )}
       </div>
