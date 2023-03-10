@@ -265,7 +265,7 @@ const DoubleExcitationForm: React.FC = () => {
               validateTrigger: 'onBlur',
               validator(_, value) {
                 if (typeof value === 'undefined' || value === '') {
-                  return Promise.reject(new Error('请输入级联名称'))
+                  return Promise.reject(new Error('请输入级联Group名称'))
                 }
                 return Promise.resolve()
               }
@@ -459,13 +459,13 @@ const DoubleExcitationForm: React.FC = () => {
           <Input disabled={isFixForm} placeholder='请输入后置时延' suffix={<Tip />} />
         </Form.Item>
         <Form.Item
-          label='级联描述'
+          label='级联Group描述'
           name='description'
-          rules={[{ message: '请输入级联激励描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
+          rules={[{ message: '请输入级联Group描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
           <Input.TextArea
             disabled={isFixForm}
-            placeholder='请输入级联激励描述'
+            placeholder={isFixForm ? '' : '请输入级联Group描述'}
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
               formatter({ count }) {
