@@ -75,7 +75,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   // 控制弹出框消失隐藏
   const cancel = (e: boolean) => {
     setModalData({ ...modalData, fixTitle: false, isModalVisible: e })
-    setParams({ ...params, key_word: '', page: 1 })
+    setParams({ ...params, page: 1 })
   }
 
   // 删除弹出框
