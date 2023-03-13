@@ -29,6 +29,10 @@ interface propsResTaskDetailType<T> {
   infoMap: taskDetailType<taskDetailInfoType, projectInfoType>
 }
 
+interface InfoType {
+  task_status: number
+}
+
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
 function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
   const { taskInfo, projectInfo } = props.infoMap
@@ -48,7 +52,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
   React.useEffect(() => {
     if (messageInfo) {
       setSpinStatus(false)
-      props.setUpdateStatus(`${Math.random()}${new Date()}`)
+      props.setUpdateStatus(messageInfo.task_status)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -3,8 +3,13 @@ import { sleep } from 'Src/util/baseFn'
 import { useBindEventListener } from 'Src/util/Hooks/useBindEventListener'
 
 export const getCurretTimeString = () => `${+new Date()}`.slice(0, 10)
+
+interface InfoType {
+  task_status: number
+}
+
 const UseWebsocket = () => {
-  const [messageInfo, setMessage] = useState()
+  const [messageInfo, setMessage] = useState<InfoType>()
   const [wsInstance, setWsInstance] = useState<WebSocket | null | undefined>()
 
   const createWsInstance = useCallback(async (cb?: (ws: WebSocket | null | undefined) => void) => {
