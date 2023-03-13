@@ -133,7 +133,8 @@ module.exports = {
       2,
       2,
       {
-        SwitchCase: 1
+        SwitchCase: 1,
+        ignoredNodes: ['ConditionalExpression']
       }
     ],
     // 'jsx-quotes': [2, 'prefer-single'],

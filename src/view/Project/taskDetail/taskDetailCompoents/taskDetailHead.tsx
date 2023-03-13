@@ -153,9 +153,11 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
           <span> {`任务描述:${desc}`}</span>
           <span>
             {' '}
-            {[0, 1, 4, 5].includes(status)
-              ? `  开始时间 : ${getTime(start_time)} | 结束时间 : ${getTime(end_time)}`
-              : `  开始时间 : ${getTime(start_time)}`}{' '}
+            {[0, 1].includes(status)
+              ? `开始时间 : ${getTime(start_time)} | 结束时间 : ${getTime(end_time)}`
+              : [3, 4].includes(status)
+              ? `开始时间 : ${getTime(start_time)}`
+              : null}{' '}
           </span>
         </div>
       </div>
@@ -168,7 +170,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             </div>
           </Link>
         )}
-        {[2, 3].includes(status) && (
+        {[2, 3, 4].includes(status) && (
           <div
             className={styles.ImageContioner}
             role='button'
@@ -189,7 +191,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             beginOrOver()
           }}
         >
-          {status === 2 || status === 3 ? (
+          {[2, 3, 4, 8].includes(status) ? (
             <>
               <Spin spinning={spinStatus && index === 1} indicator={antIcon}>
                 <img className={styles.ImageSize} src={over} alt='stopCourse' />
@@ -207,7 +209,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             </>
           ) : null}
         </div>
-        {[0, 1, 4, 5, 6].includes(status) && (
+        {[0, 1, 5, 6].includes(status) && (
           <div
             role='button'
             className={styles.ImageContioner}
@@ -216,7 +218,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
               beginTests()
             }}
           >
-            {[0, 1, 4, 5, 6].includes(status) && (
+            {[0, 1, 5, 6].includes(status) && (
               <>
                 <Tooltip placement='bottom' title='开始测试当前实例'>
                   <Spin spinning={spinStatus && index === 3} indicator={antIcon}>
@@ -228,7 +230,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             )}
           </div>
         )}
-        {[2, 3].includes(status) && (
+        {[2, 3, 4].includes(status) && (
           <div
             className={styles.ImageContioner}
             role='button'
@@ -237,11 +239,11 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
               continueOrStop()
             }}
           >
-            {[2].includes(status) ? (
+            {[2, 8].includes(status) ? (
               <Spin spinning={spinStatus && index === 4} indicator={antIcon}>
                 <img className={styles.ImageSize} src={stopCourse} alt='stopCourse' />
               </Spin>
-            ) : [3].includes(status) ? (
+            ) : [3, 4].includes(status) ? (
               <Spin spinning={spinStatus && index === 5} indicator={antIcon}>
                 <img src={Begin} className={styles.ImageSize} alt='stopCourse' />
               </Spin>
@@ -249,7 +251,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             <span>{status === 2 ? '暂停实例' : '继续实例'}</span>
           </div>
         )}
-        {[0, 1, 4, 5].includes(status) ? (
+        {[0, 1].includes(status) ? (
           <div
             className={styles.ImageContioner}
             role='button'
