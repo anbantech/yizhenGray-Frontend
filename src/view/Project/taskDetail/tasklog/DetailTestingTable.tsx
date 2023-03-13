@@ -1,7 +1,8 @@
 /* eslint-disable indent */
 /* eslint-disable react/display-name */
-import { Table } from 'antd'
+import { ConfigProvider, Table } from 'antd'
 import React, { useCallback, useEffect, useRef } from 'react'
+import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import { getTestingLog } from 'Src/services/api/taskApi'
 import { getTime } from 'Src/util/baseFn'
 import { throwErrorMessage } from 'Src/util/message'
@@ -13,6 +14,7 @@ interface propsType {
   status: any
 }
 
+const customizeRender = () => <DefaultValueTips content='暂无用例' />
 const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
   const { params, status } = props
   const timer = useRef<any>()
@@ -127,15 +129,17 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       <div className={styles.tableListleftq}>
         <span className={styles.log}>测试详情</span>
       </div>
-      <Table
-        rowKey={record => record.id}
-        columns={columns}
-        rowClassName={record => {
-          return record.case_type ? `${styles.tableStyleBackground}` : ''
-        }}
-        dataSource={logData}
-        pagination={false}
-      />
+      <ConfigProvider renderEmpty={customizeRender}>
+        <Table
+          rowKey={record => record.id}
+          columns={columns}
+          rowClassName={record => {
+            return record.case_type ? `${styles.tableStyleBackground}` : ''
+          }}
+          dataSource={logData}
+          pagination={false}
+        />
+      </ConfigProvider>
     </div>
   )
 }
