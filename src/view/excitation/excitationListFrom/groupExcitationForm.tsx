@@ -242,7 +242,6 @@ const TearDown = React.forwardRef((props: any, myRef) => {
       changePre3(val, index)
       setStatus(!STATUS)
     },
-
     [STATUS, changePre3]
   )
 
