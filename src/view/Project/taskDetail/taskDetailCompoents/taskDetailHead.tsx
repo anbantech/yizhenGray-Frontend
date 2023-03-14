@@ -87,7 +87,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
 
   const beginOrOver = React.useCallback(async () => {
     if (spinStatus) return
-    if ([2, 3, 8].includes(status)) {
+    if ([2, 3, 8, 9].includes(status)) {
       setIndex(1)
       // 停止任务  通过任务ID
       setSpinStatus(true)
@@ -170,7 +170,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             </div>
           </Link>
         )}
-        {[2, 3, 4, 8].includes(status) && (
+        {[2, 3, 4, 8, 9].includes(status) && (
           <div
             className={styles.ImageContioner}
             role='button'
@@ -191,7 +191,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             beginOrOver()
           }}
         >
-          {[2, 3, 4, 8].includes(status) ? (
+          {[2, 3, 4, 8, 9].includes(status) ? (
             <>
               <Spin spinning={spinStatus && index === 1} indicator={antIcon}>
                 <img className={styles.ImageSize} src={over} alt='stopCourse' />
@@ -230,7 +230,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             )}
           </div>
         )}
-        {[2, 3, 4, 8].includes(status) && (
+        {[2, 3, 4, 8, 9].includes(status) && (
           <div
             className={styles.ImageContioner}
             role='button'
@@ -243,7 +243,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
               <Spin spinning={spinStatus && index === 4} indicator={antIcon}>
                 <img className={styles.ImageSize} src={stopCourse} alt='stopCourse' />
               </Spin>
-            ) : [3, 4].includes(status) ? (
+            ) : [3, 4, 9].includes(status) ? (
               <Spin spinning={spinStatus && index === 5} indicator={antIcon}>
                 <img src={Begin} className={styles.ImageSize} alt='stopCourse' />
               </Spin>
