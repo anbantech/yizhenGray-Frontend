@@ -443,7 +443,7 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input placeholder='请输入循环间隔' suffix={<Tip />} />
+          <Input placeholder='请输入循环间隔' disabled suffix={<Tip />} />
         </Form.Item>
         <Form.Item
           label='中间时延'
