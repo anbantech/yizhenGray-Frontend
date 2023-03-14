@@ -93,6 +93,7 @@ const CardComponents = (props: cardProps) => {
     </div>
   )
 }
+
 type stringKey = Record<string, string>
 const showTitleMap = {
   test_num: '测试总条数(条)',
@@ -105,16 +106,34 @@ const showTitleMap = {
 function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
   const taskMapInfo = props.taskDetailInfo
   const { lookLog } = props
+  const CoverageCard = () => {
+    return (
+      <div className={styles.coverage_main}>
+        <div className={styles.card_coverage}>
+          <span className={styles.cardConcent}>覆盖率分支</span>
+          <span className={styles.cardTaskDetail}>{taskMapInfo.branch_coverage}</span>
+        </div>
+        <div className={styles.card_coverage}>
+          <span className={styles.cardConcent}>语句覆盖率</span>
+          <span className={styles.cardTaskDetail}>{taskMapInfo.branch_coverage}</span>
+        </div>
+      </div>
+    )
+  }
   return (
     <div className={styles.taskDetailCard}>
       {Object.keys(showTitleMap).map((item: string) => {
         return (
-          <div key={Math.random()}>
-            <CardComponents
-              lookLog={lookLog}
-              concent={showTitleMap[item as keyof typeof showTitleMap]}
-              value={taskMapInfo[item as keyof typeof taskMapInfo]}
-            />
+          <div key={Math.random()} className={item !== 'coverage' ? styles.cardBody : styles.cardBodys}>
+            {item !== 'coverage' ? (
+              <CardComponents
+                lookLog={lookLog}
+                concent={showTitleMap[item as keyof typeof showTitleMap]}
+                value={taskMapInfo[item as keyof typeof taskMapInfo]}
+              />
+            ) : (
+              <CoverageCard />
+            )}
           </div>
         )
       })}

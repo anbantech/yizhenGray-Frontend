@@ -408,7 +408,7 @@ const DoubleExcitationForm: React.FC = () => {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value > 0 && value <= 20) {
+                  if (value >= 0 && value <= 20) {
                     return Promise.resolve()
                   }
                   return Promise.reject(new Error('请输入 1-20 之间的整数'))
@@ -425,6 +425,7 @@ const DoubleExcitationForm: React.FC = () => {
           name='gu_w1'
           validateFirst
           validateTrigger={['onBlur']}
+          initialValue={0}
           rules={[
             {
               required: true,
@@ -442,7 +443,7 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input placeholder='请输入循环间隔' disabled={isFixForm} suffix={<Tip />} />
+          <Input placeholder='请输入循环间隔' suffix={<Tip />} />
         </Form.Item>
         <Form.Item
           label='中间时延'

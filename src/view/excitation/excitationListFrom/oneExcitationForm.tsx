@@ -315,6 +315,7 @@ const OneExcotationForm: React.FC = () => {
           label='循环间隔'
           name='gu_w1'
           validateFirst
+          initialValue={0}
           validateTrigger={['onBlur']}
           rules={[
             {
@@ -333,7 +334,7 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入循环间隔' suffix={<Tip />} />
+          <Input disabled placeholder='请输入循环间隔' suffix={<Tip />} />
         </Form.Item>
         <Form.Item
           label='循环次数'
@@ -348,7 +349,7 @@ const OneExcotationForm: React.FC = () => {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value > 0 && value <= 20) {
+                  if (value >= 0 && value <= 20) {
                     return Promise.resolve()
                   }
                   return Promise.reject(new Error('请输入 1-20 之间的整数'))

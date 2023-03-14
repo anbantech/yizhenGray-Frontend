@@ -292,6 +292,8 @@ export interface ResTaskDetail {
   test_num: number
   test_speed: number
   test_time: number
+  statement_coverage: string
+  branch_coverage: string
 }
 
 // 22. 任务删除  返回为null
