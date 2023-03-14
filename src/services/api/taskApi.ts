@@ -135,5 +135,5 @@ export function getAllTestingLog(params: testAlllogs) {
 // 重放
 
 export function rePlayTask(params: ReplayIDArrayParams) {
-  return request.post<any>('/api/v1.0/tasks/replay', { params })
+  return request.post<any>('/api/v1.0/tasks/replay', params)
 }
