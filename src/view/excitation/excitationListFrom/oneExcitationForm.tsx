@@ -5,6 +5,7 @@ import { useContext } from 'react'
 import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
+// import { GlobalContext } from 'Src/globalContext/globalContext'
 import { createExcitationFn, excitationListFn } from 'Src/services/api/excitationApi'
 import { getTemplateList } from 'Src/services/api/templateApi'
 import { throwErrorMessage } from 'Src/util/message'
@@ -43,6 +44,9 @@ interface listArray {
 
 const OneExcotationForm: React.FC = () => {
   const history = useHistory()
+  // const { config: globalConfig } = useContext(GlobalContext)
+  // const { userInfo } = globalConfig
+  // const { username, roles } = userInfo
   const { isFixForm, info, type } = useContext(GlobalContexted)
   const { Option } = Select
   const [form] = useForm()
@@ -263,6 +267,7 @@ const OneExcotationForm: React.FC = () => {
           name='gu_cnt0'
           validateFirst
           validateTrigger={['onBlur']}
+          initialValue={1}
           rules={[
             {
               required: true,
@@ -280,7 +285,7 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入发送次数' />
+          <Input disabled placeholder='请输入发送次数' />
         </Form.Item>
         <Form.Item
           label='等待时间'
@@ -335,6 +340,7 @@ const OneExcotationForm: React.FC = () => {
           name='gu_cnt1'
           validateFirst
           validateTrigger={['onBlur']}
+          initialValue={0}
           rules={[
             {
               required: true,
@@ -352,7 +358,7 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入循环次数' />
+          <Input disabled placeholder='请输入循环次数' />
         </Form.Item>
 
         <Form.Item
