@@ -29,6 +29,7 @@ interface propsType {
   testTimeSort: (value: string) => void
   caseSort: (value: string) => void
   infoMap: taskDetailType<taskDetailInfoType, projectInfoType>
+  status: number
 }
 
 interface DataType {
@@ -47,7 +48,7 @@ interface DataType {
 }
 
 const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
-  const { task_id, params, total, logData, changePage, testTimeSort, caseSort } = props
+  const { task_id, params, total, status, logData, changePage, testTimeSort, caseSort } = props
   const { taskInfo, projectInfo } = props.infoMap
   const history = useHistory()
   // const statusDesc = [
@@ -64,6 +65,8 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   //   '异常停止'
   // ]
   const [currentOpenId, setCurrentOpenId] = useState<number>(-1)
+
+  const [replayId, setReplayId] = useState<number>(-2)
 
   const [currentType, setCurrentType] = useState('all')
 
@@ -152,6 +155,12 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
       error_id: caseID
     }
     const res = await rePlayTask(idArray)
+    if (res.code === 0) {
+      setReplayId(caseID)
+    }
+    if (res.code === 2080) {
+      message.error(res.message)
+    }
     // todo  还没处理重放过程中的逻辑
   }
 
@@ -196,7 +205,12 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
             <>
               {logData.map((item: DataType) => {
                 return (
-                  <div key={item.id} className={styles.Table_concent}>
+                  <div
+                    key={item.id}
+                    className={`${styles.Table_concent} ${
+                      status === 8 && replayId === item.id ? styles.footerError : item.case_type ? styles.footerDouble : null
+                    }`}
+                  >
                     <Tooltip title={item.id}>
                       <div>{item.id}</div>
                     </Tooltip>
@@ -253,7 +267,11 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     <div>{item.case_type ? '是' : '否'}</div>
                     <div>{getTime(item.update_time)}</div>
 
-                    <div>{item.crash_info}</div>
+                    <div>
+                      <Tooltip title={item.crash_info} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                        <span className={styles.dataLongInfo}>{item.crash_info}</span>
+                      </Tooltip>
+                    </div>
 
                     <div className={globalStyle.Opera_detaile}>
                       {item.case_type ? (
@@ -272,15 +290,17 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                           {currentOpenId === item.id ? '收起' : '展开'}
                         </span>
                       )}
-                      <span
-                        role='button'
-                        tabIndex={0}
-                        onClick={() => {
-                          oneCaseReplay(task_id, item.id)
-                        }}
-                      >
-                        重放
-                      </span>
+                      {[0, 1].includes(status) && (
+                        <span
+                          role='button'
+                          tabIndex={0}
+                          onClick={() => {
+                            oneCaseReplay(task_id, item.id)
+                          }}
+                        >
+                          重放
+                        </span>
+                      )}
                     </div>
                   </div>
                 )

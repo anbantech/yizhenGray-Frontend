@@ -979,3 +979,34 @@
   opacity: 1;
 }
 
+.footerDouble {
+  background: #ffc4c1;
+}
+
+.footerError {
+  background-color: rgba(0, 119, 255, 0.2);
+  animation: yellow-twinkle 2s ease-in-out infinite;
+  animation-iteration-count: 1;
+}
+
+@keyframes yellow-twinkle {
+  0% {
+    background: rgba(0, 119, 255, 1);
+  }
+
+  25% {
+    background: rgba(0, 119, 255, 0.8);
+  }
+
+  50% {
+    background: rgba(0, 119, 255, 0.6);
+  }
+
+  75% {
+    background: rgba(0, 119, 255, 0.4);
+  }
+
+  100% {
+    background: rgba(0, 119, 255, 0.2);
+  }
+}
