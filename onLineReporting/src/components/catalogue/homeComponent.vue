@@ -47,7 +47,7 @@ export default {
             : this.cloumnType === 'homeDataTestPlanType'
                 ? this.homeData = [{ 'task_name': '任务名称' }, { 'work_time': '工作时长设定' }, { 'crash_num': 'crash数量设定' }]
                 : this.cloumnType === 'homeDataTestSummaryType'
-                    ? this.homeData = [{ 'coverage': '覆盖率' }, { 'error_cases': '异常用例' }]
+                    ? this.homeData = [{ 'statement_coverage': '语句覆盖率' },{ 'branch_coverage': '分支覆盖率' }, { 'error_cases': '异常用例' }]
                     : []
     },
     data() {
