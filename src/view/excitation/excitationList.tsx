@@ -187,10 +187,10 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   const onChange = React.useCallback(
     (value: number) => {
       childRef.inputRef.current?.save()
-      depCollect(true, { ...request, target_type: `${value}` })
+      depCollect(true, { ...depData, target_type: `${value}` })
       setTabs(value)
     },
-    [childRef.inputRef, depCollect]
+    [childRef.inputRef, depCollect, depData]
   )
   const setOperation = (value1?: any, type?: string, value2?: any) => {
     setLoading(true)

@@ -351,6 +351,7 @@ const DoubleExcitationForm: React.FC = () => {
           name='gu_cnt0'
           validateFirst
           validateTrigger={['onBlur']}
+          initialValue={1}
           rules={[
             {
               required: true,
@@ -368,7 +369,7 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input placeholder='请输入发送次数' disabled={isFixForm} />
+          <Input placeholder='请输入发送次数' disabled />
         </Form.Item>
         <Form.Item
           label='等待时间'
@@ -399,6 +400,7 @@ const DoubleExcitationForm: React.FC = () => {
           name='gu_cnt1'
           validateFirst
           validateTrigger={['onBlur']}
+          initialValue={0}
           rules={[
             {
               required: true,
@@ -416,7 +418,7 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input placeholder='请输入循环次数' disabled={isFixForm} />
+          <Input placeholder='请输入循环次数' disabled />
         </Form.Item>
         <Form.Item
           label='循环间隔'
