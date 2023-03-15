@@ -154,10 +154,12 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       state: { projectInfo, taskInfo: { editTask: false, task_id } }
     })
   }
+
   const deleteTask = (value: boolean, id: any) => {
     setModalData({ ...modalData, taskId: id })
     setCommonModleStatus(value)
   }
+
   const deleteProjectRight = async () => {
     try {
       const res = await deleteTasks(projectInfo.projectId, modalData.taskId)
@@ -187,6 +189,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       message.error('任务正在运行中,请结束任务')
     }
   }
+
   // 表格title
   const columns = [
     {
