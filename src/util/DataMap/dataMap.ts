@@ -2,13 +2,17 @@ import styles from 'Src/view/Project/task/taskList/task.less'
 
 export const statusList = [
   { lable: '全部', value: '' },
-  { lable: '结束', value: 0 },
-  { lable: '异常', value: 1 },
+  { lable: '正常结束', value: 0 },
+  { lable: '异常结束', value: 1 },
   { lable: '测试中', value: 2 },
   { lable: '暂停', value: 3 },
-  { lable: '待测试', value: 4 },
+  { lable: '异常暂停', value: 4 },
+  { lable: '准备中', value: 5 },
+  { lable: '待测试', value: 6 },
+  { lable: '停止中', value: 7 },
+  { lable: '重放中', value: 8 },
+  { lable: '重放暂停', value: 9 }
   // { lable: '离线', value: 5 },
-  { lable: '重放中', value: 6 }
 ]
 
 export const statusMap = {
