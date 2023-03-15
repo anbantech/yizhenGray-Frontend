@@ -28,27 +28,32 @@ interface taskDetailType<S, T> {
   projectInfo: T
   taskInfo: S
 }
+
 const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskDetailType<taskDetailInfoType, projectInfoType>>> = props => {
   const [currentType, setCurrentType] = useState('all')
   const { taskInfo } = props.location.state
-  const changeCurrentType = (e: any) => {
-    setCurrentType(e.key)
-  }
   const RequsetParams = {
     task_id: +taskInfo.task_id,
     page: 1,
     page_size: 10,
     sort_field: 'create_time',
-    sort_order: 'descend'
+    sort_order: 'descend',
+    case_type: ''
+  }
+  const [params, setParams] = useState(RequsetParams)
+
+  const changeCurrentType = (e: any) => {
+    setCurrentType(e.key)
+    setParams({ ...RequsetParams, case_type: e.key })
   }
 
-  const [params, setParams] = useState(RequsetParams)
   const [total, setTotal] = React.useState(-1)
   const [logData, setLogData] = React.useState([])
 
-  const getParams = (value: number) => {
-    setParams({ ...params, page: value })
+  const changePage = (page: number, type: string, pageSize: number) => {
+    setParams({ ...params, page, page_size: pageSize })
   }
+
   const getlog = async (value: testAlllogs) => {
     try {
       const log = await getAllTestingLog(value)
@@ -61,21 +66,23 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       throwErrorMessage(error)
     }
   }
+
   useEffect(() => {
     if (params) {
       getlog(params)
     }
   }, [params])
+
   const menu = (
     <Menu selectable onClick={changeCurrentType} selectedKeys={[currentType]}>
-      <Menu.Item key='all' style={{ textAlign: 'center' }}>
+      <Menu.Item key='' style={{ textAlign: 'center' }}>
         全部
       </Menu.Item>
-      <Menu.Item key='yes' style={{ textAlign: 'center' }}>
-        是
-      </Menu.Item>
-      <Menu.Item key='no' style={{ textAlign: 'center' }}>
+      <Menu.Item key={0} style={{ textAlign: 'center' }}>
         否
+      </Menu.Item>
+      <Menu.Item key={1} style={{ textAlign: 'center' }}>
+        是
       </Menu.Item>
     </Menu>
   )
@@ -105,18 +112,21 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       key: 'send_data',
       ellipsis: true,
       width: '12.5%',
-      render: (text: any, record: any) => (
-        <div className={styles.funNameing} key={record.id}>
-          <Tooltip
-            overlayClassName={tableStyle.overlay}
-            color='#ffffff'
-            title={typeof record.send_data === 'string' ? record.send_data : record.send_data[0] || ''}
-            placement='bottomLeft'
-          >
-            <span className={styles.casetitles}>{typeof record.send_data === 'string' ? record.send_data : record.send_data[0] || ''}</span>
-          </Tooltip>
-        </div>
-      )
+      render: (text: any, record: any) => {
+        return (
+          <div className={styles.recv_data} key={record.id}>
+            {record.send_data.map((item: string) => {
+              return (
+                <div key={`${Math.random()}`} className={styles.show_data}>
+                  <Tooltip overlayClassName={tableStyle.overlay} color='#ffffff' title={item} placement='bottomLeft'>
+                    <span className={styles.casetitles}>{item}</span>
+                  </Tooltip>
+                </div>
+              )
+            })}
+          </div>
+        )
+      }
     },
     {
       title: '接收数据',
@@ -125,15 +135,17 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       ellipsis: true,
       width: '12.5%',
       render: (text: any, record: any) => (
-        <div className={styles.funNameing} key={record.id}>
-          <Tooltip
-            overlayClassName={tableStyle.overlay}
-            color='#ffffff'
-            title={typeof record.recv_data === 'string' ? record.recv_data : record.recv_data[0] || ''}
-            placement='bottomLeft'
-          >
-            <span className={styles.casetitles}>{typeof record.recv_data === 'string' ? record.recv_data : record.recv_data[0] || ''} </span>
-          </Tooltip>
+        <div className={styles.recv_data} key={record.id}>
+          {record.recv_data &&
+            record.recv_data?.map((item: string) => {
+              return (
+                <div key={`${Math.random()}`}>
+                  <Tooltip overlayClassName={tableStyle.overlay} color='#ffffff' title={item} placement='bottomLeft'>
+                    <span className={styles.casetitles}>{item}</span>
+                  </Tooltip>
+                </div>
+              )
+            })}
         </div>
       )
     },
@@ -141,12 +153,12 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       title: () => {
         return <IsWrongDownMenu />
       },
-      dataIndex: 'is_wrong',
-      key: 'is_wrong',
+      dataIndex: 'case_type',
+      key: 'case_type',
       ellipsis: true,
       render: (text: any, record: any) => (
         <div className={styles.checkDetail} key={record.id}>
-          {record.is_wrong ? '是' : '否'}
+          {record.case_type ? '是' : '否'}
         </div>
       ),
       width: '10%'
@@ -167,18 +179,12 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
   ]
   return (
     <div className={styles.Detail}>
-      <span className={styles.useCaseTitle}>用例生成详情</span>
-      {/* {[0, 1, 3, 4, 5, 6].includes((status as any) as number) && (
-        <div role='time' style={{ marginTop: '16px' }}>
-          <span style={{ marginRight: '16px' }}>筛选进制</span>
-          <Check Checked={setBase} positionErrorFrameData={base} getPopupContainer={(triggerNode: any) => triggerNode.parentNode} />
-        </div>
-      )} */}
+      <span className={styles.useCaseTitle}>日志</span>
       <div style={{ marginTop: '24px' }} className={styles.tableBoby}>
         <Table rowKey={(record: any) => `${record.id}_${new Date()}`} pagination={false} dataSource={logData} columns={columns as any} bordered />
       </div>
       <div className={style.AnBan_PaginationsAge}>
-        <PaginationsAge length={total} num={10} getParams={getParams} pagenums={params.page} />
+        <PaginationsAge length={total} num={10} getParams={changePage} pagenums={params.page} />
       </div>
     </div>
   )
