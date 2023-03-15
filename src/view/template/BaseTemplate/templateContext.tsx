@@ -52,6 +52,8 @@ const defaultTemplateContext = {
     ptList: [] as Primitive[],
     status: 0,
     templateId: 0,
+    protocolId: 0,
+    projectId: 0,
     baseInfo: {} as any,
     templateElements: [] as any,
     responseTemplate: {} as any,

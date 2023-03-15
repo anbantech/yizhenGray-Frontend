@@ -6,7 +6,7 @@ import { message, Select } from 'antd'
 import AddIcon from 'Image/Template/add.svg'
 import DeleteIcon from 'Image/Template/delete.svg'
 import TitleInput from 'Src/components/Input/titleInput/TitleInput'
-import { useHistory, withRouter, RouteComponentProps } from 'react-router-dom'
+import { RouteComponentProps, useHistory, withRouter } from 'react-router-dom'
 import { sleep, throwErrorMessage, warn } from 'Src/util/common'
 import { GlobalContext } from 'Src/globalContext/globalContext'
 import API from 'Src/services/api'
@@ -395,7 +395,10 @@ const CreateResponseTemplateComponent: React.FC<RouteComponentProps<any, any, an
           message.success('修改成功')
           routerPush()
         } catch (error) {
-          throwErrorMessage(error, { 1005: '校验错误 => 模板名称重复，请修改', 4003: '校验错误 => 该模板无效，请检查模板' })
+          throwErrorMessage(error, {
+            1005: '校验错误 => 模板名称重复，请修改',
+            4003: '校验错误 => 该模板无效，请检查模板'
+          })
         }
       } else {
         try {
@@ -404,7 +407,10 @@ const CreateResponseTemplateComponent: React.FC<RouteComponentProps<any, any, an
           message.success('创建成功')
           routerPush()
         } catch (error) {
-          throwErrorMessage(error, { 1005: '校验错误 => 模板名称重复，请修改', 4003: '校验错误 => 该模板无效，请检查模板' })
+          throwErrorMessage(error, {
+            1005: '校验错误 => 模板名称重复，请修改',
+            4003: '校验错误 => 该模板无效，请检查模板'
+          })
         }
       }
     },

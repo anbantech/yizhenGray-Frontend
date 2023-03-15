@@ -4,8 +4,8 @@ import CreateButton from 'Src/components/Button/createButton'
 import ModalpPop from 'Src/components/Modal/projectMoadl/BaseModle'
 import Table from 'antd/lib/table'
 import ConfigProvider from 'antd/lib/config-provider'
-import { useState } from 'react'
 import * as React from 'react'
+import { useState } from 'react'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
 import { message } from 'antd'
 import { ProList, removeProject } from 'Src/services/api/projectApi'
@@ -47,6 +47,7 @@ interface projectInfoType {
   update_time: string
   update_user: string | null
 }
+
 const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () => {
   const history = useHistory()
   // 目标列表参数
