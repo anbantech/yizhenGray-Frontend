@@ -51,19 +51,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   const { task_id, params, total, status, logData, changePage, testTimeSort, caseSort } = props
   const { taskInfo, projectInfo } = props.infoMap
   const history = useHistory()
-  // const statusDesc = [
-  //   '未处理',
-  //   '熵过滤通过',
-  //   '熵过滤失败',
-  //   '发送完成',
-  //   '发送失败',
-  //   '异常重试中',
-  //   '处理中',
-  //   '处理完成',
-  //   '诊断错误',
-  //   '处理失败',
-  //   '异常停止'
-  // ]
+
   const [currentOpenId, setCurrentOpenId] = useState<number>(-1)
 
   const [replayId, setReplayId] = useState<number>(-2)
@@ -102,10 +90,10 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
       <Menu.Item key='' style={{ textAlign: 'center' }}>
         全部
       </Menu.Item>
-      <Menu.Item key='1' style={{ textAlign: 'center' }}>
+      <Menu.Item key={1} style={{ textAlign: 'center' }}>
         是
       </Menu.Item>
-      <Menu.Item key='0' style={{ textAlign: 'center' }}>
+      <Menu.Item key={0} style={{ textAlign: 'center' }}>
         否
       </Menu.Item>
     </Menu>
@@ -161,7 +149,6 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     if (res.code === 2080) {
       message.error(res.message)
     }
-    // todo  还没处理重放过程中的逻辑
   }
 
   // 跳转仿真
