@@ -1,6 +1,6 @@
 import { Button } from 'antd'
-import { memo } from 'react'
 import * as React from 'react'
+import { memo } from 'react'
 import styles from './createResponseTemplate.less'
 
 interface StepSection {
@@ -12,7 +12,7 @@ interface StepSection {
 const StepSection: React.FC<StepSection> = ({ onClickCallback, readonly, label }) => {
   return (
     <div className={styles.footer}>
-      <div />
+      <div/>
       <div>
         <Button className={styles.footerBtn} style={{ marginLeft: '8px' }} onClick={onClickCallback}>
           {readonly ? '返回' : label}
