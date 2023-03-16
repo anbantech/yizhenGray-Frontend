@@ -17,7 +17,7 @@ const UseWebsocket = () => {
     while (ws.readyState !== 1) {
       if (ws.readyState === 2 || ws.readyState === 3) {
         await sleep(5000)
-        createWsInstance(cb)
+        await createWsInstance(cb)
         return
       }
       await sleep(100)
