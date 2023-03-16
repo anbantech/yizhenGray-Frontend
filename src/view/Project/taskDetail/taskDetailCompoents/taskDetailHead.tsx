@@ -54,9 +54,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setSpinStatus(false)
       props.setUpdateStatus(messageInfo.task_status)
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messageInfo])
+  }, [messageInfo, props])
 
   const continueOrStop = React.useCallback(async () => {
     if (spinStatus) return
@@ -65,8 +63,8 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setSpinStatus(true)
       setIndex(4)
       try {
-        const res = await stoppaused({ task_id: id })
-        return res
+        await stoppaused({ task_id: id })
+        return
       } catch (error) {
         setSpinStatus(false)
         throwErrorMessage(error)
@@ -76,8 +74,8 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setIndex(5)
       setSpinStatus(true)
       try {
-        const res = await stopcontuine({ task_id: id })
-        return res
+        await stopcontuine({ task_id: id })
+        return
       } catch (error) {
         setSpinStatus(false)
         throwErrorMessage(error)
@@ -92,8 +90,8 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       // 停止任务  通过任务ID
       setSpinStatus(true)
       try {
-        const res = await stoptest({ task_id: id })
-        return res
+        await stoptest({ task_id: id })
+        return
       } catch (error) {
         throwErrorMessage(error)
         setSpinStatus(false)
@@ -103,8 +101,8 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setSpinStatus(true)
       setIndex(2)
       try {
-        const res = await rePlayTask({ task_id: id })
-        return res
+        await rePlayTask({ task_id: id })
+        return
       } catch (error) {
         setSpinStatus(false)
         throwErrorMessage(error)
@@ -117,8 +115,8 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
     setSpinStatus(true)
     setIndex(3)
     try {
-      const res = await bgTest({ task_id: id as number })
-      return res
+      await bgTest({ task_id: id as number })
+      return
     } catch (error) {
       setSpinStatus(false)
       message.error(error)
@@ -130,8 +128,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
 
   const deleteTests = React.useCallback(async (project_id, id) => {
     try {
-      const res = await deleteExampleTask(project_id, id)
-      return res
+      return await deleteExampleTask(project_id, id)
     } catch (error) {
       throwErrorMessage(error)
     }
