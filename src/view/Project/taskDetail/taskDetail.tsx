@@ -80,6 +80,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   const changePage = (page: number, pageSize: number) => {
     depCollect(true, { page, page_size: pageSize })
   }
+
   useEffect(() => {
     if (taskInfo.task_id) {
       getTaskDetail(taskInfo.task_id)
@@ -97,7 +98,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
             setUpdateStatus={setUpdateStatus}
           />
           <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
-          {updateStatus === 2 ? (
+          {taskDetailInfo?.status === 2 ? (
             <DetailTestingTable params={depData} status={updateStatus} />
           ) : (
             <DetailTestedTable
