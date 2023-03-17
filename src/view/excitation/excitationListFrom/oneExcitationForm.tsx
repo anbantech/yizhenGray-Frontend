@@ -29,7 +29,7 @@ const templateListRequest = {
 }
 
 const oneRequest = {
-  target_type: '3',
+  target_type: '0',
   key_word: '',
   status: null,
   page: 1,
@@ -210,11 +210,11 @@ const OneExcotationForm: React.FC = () => {
           <Select placeholder='激励' disabled={isFixForm}>
             {
               /**
-               * 根据连接方式列表渲染下拉框可选择的设备比特率
+               * 下拉选择端口
                */
               portList?.map(rate => {
                 return (
-                  <Option key={rate.stimulus} disabled={rate.disabled} value={rate.stimulus_id}>
+                  <Option key={rate.stimulus} disabled={rate.disable} value={rate.stimulus_id}>
                     {rate.stimulus_name}
                   </Option>
                 )
@@ -230,7 +230,7 @@ const OneExcotationForm: React.FC = () => {
                */
               templateList?.map(rate => {
                 return (
-                  <Option key={rate.id} value={rate.id}>
+                  <Option key={rate.id} value={rate.id} disabled={rate.disable as boolean}>
                     {rate.name}
                   </Option>
                 )

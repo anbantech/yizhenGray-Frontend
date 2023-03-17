@@ -9,10 +9,10 @@ import ExcitationComponents from './excitationListFrom/excitation'
 const ExcitationBase: React.FC = (props: any) => {
   const { type, isFixForm, name, info, Data } = props.location.state
   const item = {
-    one: <OneExcotationForm />,
-    two: <DoubleExcitationForm />,
-    three: <GroupExcitationForm />,
-    four: <ExcitationComponents />
+    one: <ExcitationComponents />,
+    two: <OneExcotationForm />,
+    three: <DoubleExcitationForm />,
+    four: <GroupExcitationForm />
     // five: <GroupExcitationFormGroup />
   }
   return (

@@ -473,7 +473,7 @@ interface errorFramsPostioning {
 }
 
 export interface simulateParams {
-  action: start | stop | paused | continue | reset | read_memory | read_register
+  action: string
   task_id: string | number
   addr?: string
   length?: string
@@ -546,7 +546,7 @@ export interface groupParams {
   name?: string
   desc: string
   child_id_list?: number[]
-  group_data_list: any
+  group_data_list?: any
 }
 
 export interface excitation_1Params {

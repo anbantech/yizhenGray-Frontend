@@ -29,7 +29,7 @@ interface StepRef {
 }
 
 const request = {
-  target_type: '0',
+  target_type: '1',
   key_word: '',
   status: null,
   page: 1,
@@ -38,7 +38,7 @@ const request = {
   sort_order: 'descend'
 }
 const request1 = {
-  target_type: 1,
+  target_type: 2,
   key_word: '',
   status: null,
   page: 1,
@@ -516,7 +516,7 @@ const GroupExcitationForm: React.FC = () => {
           }
           history.push({
             pathname: '/excitationList/createGroupExcitation/ExcitationDraw',
-            state: { Data: params1, type, isFixForm, name }
+            state: { Data: params1, child_id_list: params2, type, isFixForm, name }
           })
         }
       }

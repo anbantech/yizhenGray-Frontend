@@ -62,6 +62,7 @@ export const statusMap = {
     color: styles.roundStatusBlue
   }
 }
+
 const CardComponents = (props: cardProps) => {
   const { value, concent, lookLog } = props
   return (

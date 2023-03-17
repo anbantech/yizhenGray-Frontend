@@ -147,7 +147,7 @@ const ThreeExcitationCard = (props: AllPropsType) => {
     if (formData) {
       const excitarionListes = formData[index] || formData
       form.setFieldsValue({
-        port: [excitarionListes.target_type === 0 ? '单激励Group' : '级联Group', excitarionListes.name],
+        port: [excitarionListes.target_type === 1 ? '单激励Group' : '级联Group', excitarionListes.name],
         description: excitarionListes.desc
       })
     }

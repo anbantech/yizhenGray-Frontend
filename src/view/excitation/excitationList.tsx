@@ -44,45 +44,30 @@ interface Resparams {
   sort_order?: string
 }
 
-interface projectInfoType {
-  id: number
-  name: string
-  port: string
-  status: number | null
-  create_time: string
-  update_time: string
-  create_user: string
-  update_user: string
-}
-
 const An_ButtonNameMap = {
-  0: '新建单激励Group',
-  1: '新建级联Group',
-  2: '新建交互',
-  3: '新建激励'
-  // 4: '新建级联Group'
+  0: '新建激励',
+  1: '新建单激励Group',
+  2: '新建级联Group',
+  3: '新建交互'
 }
 const An_ButtonDetailMap = {
-  0: '查看单激励Group',
-  1: '查看级联Group',
-  2: '查看交互',
-  3: '查看激励'
-  // 4: '查看级联激励Group'
+  0: '查看激励',
+  1: '查看单激励Group',
+  2: '查看级联Group',
+  3: '查看交互'
 }
 const An_tabsMap = {
   0: 'one',
   1: 'two',
   2: 'three',
   3: 'four'
-  // 4: 'five'
 }
 
 const callBackAn_tabs = {
   one: 0,
   two: 1,
   three: 2,
-  four: 3,
-  five: 4
+  four: 3
 }
 interface ChildRef {
   inputRef: React.MutableRefObject<StepRef | null>
@@ -90,12 +75,13 @@ interface ChildRef {
 
 type stateType = { [key: string]: string }
 const inputPlaceholder = {
-  0: '根据名称搜索单激励Group',
-  1: '根据名称搜索级联Group',
-  2: '根据名称搜索交互',
-  3: '根据名称搜索激励'
-  // 4: '根据名称搜索级联激励Group'
+  0: '根据名称搜索激励',
+  1: '根据名称搜索单激励Group',
+  2: '根据名称搜索级联Group',
+  3: '根据名称搜索交互'
 }
+
+type ResparamsType = Record<string, any>
 const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () => {
   const childRef: ChildRef = {
     inputRef: React.useRef<StepRef | null>(null)
@@ -106,7 +92,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   const history = useHistory()
 
   // 项目管理
-  const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
+  const [excitationList, setExcitationList] = useState<ResparamsType[]>([])
 
   // 页码
   const [total, setTotal] = useState<number>()
@@ -135,13 +121,9 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       const createOneExcitation = '/excitationList/createOneExcitation'
       const createGroupExcitation = '/excitationList/createGroupExcitation'
       const createExcitation = '/excitationList/createExcitation'
-      // const createExcitationGroup = '/excitationList/createDoubleExcitationGroup'
       history.push({
         pathname: `${
-          +value === 0 ? createOneExcitation : +value === 1 ? createDoubleExcitation : +value === 2 ? createGroupExcitation : createExcitation
-          // : +value === 4
-          // createExcitationGroup
-          // createExcitation
+          +value === 0 ? createExcitation : +value === 1 ? createOneExcitation : +value === 2 ? createDoubleExcitation : createGroupExcitation
         }`,
         state: {
           type: `${An_tabsMap[tabs as keyof typeof An_tabsMap]}`,
@@ -149,7 +131,6 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
           name: `${An_ButtonNameMap[tabs as keyof typeof An_ButtonNameMap]}`
         }
       })
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
     [history, tabs]
   )
@@ -169,7 +150,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     history.push({
       pathname: '/excitationList/Deatail',
       state: {
-        info: { id: type !== 3 ? item.sender_id : item.stimulus_id },
+        info: { id: type !== 0 ? item.sender_id : item.stimulus_id },
         type: `${An_tabsMap[tabs as keyof typeof An_tabsMap]}`,
         isFixForm: true,
         name: `${An_ButtonDetailMap[tabs as keyof typeof An_ButtonDetailMap]}`
@@ -232,8 +213,8 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
 
   React.useEffect(() => {
     if (state === undefined) {
-      setTabs(3)
-      depCollect(true, { target_type: '3' })
+      setTabs(0)
+      depCollect(true, { target_type: '0' })
     } else {
       setTabs(callBackAn_tabs[state?.type as keyof typeof callBackAn_tabs])
       depCollect(true, {
@@ -255,160 +236,6 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     0: [
       {
         width: '15%',
-        title: '单激励Group名称',
-        dataIndex: 'name',
-        key: 'name',
-        // eslint-disable-next-line react/display-name
-        render: (_: any, row: any) => {
-          return (
-            <span
-              className={styles.tableProjectName}
-              role='time'
-              onClick={() => {
-                lookDetail(row, 0)
-              }}
-            >
-              {row.name}
-            </span>
-          )
-        }
-      },
-      {
-        width: '15%',
-        title: '单激励Group描述',
-        dataIndex: 'desc',
-        key: 'desc'
-      },
-
-      {
-        width: '10%',
-        title: '操作',
-        dataIndex: 'operations',
-        key: 'operations',
-        // eslint-disable-next-line react/display-name
-        render: (_: any, row: any) => {
-          return (
-            <div className={style.excitaion_operation}>
-              <span
-                style={{ marginLeft: '10px', marginRight: '10px' }}
-                role='button'
-                tabIndex={0}
-                onClick={() => {
-                  lookDetail(row, 0)
-                }}
-              >
-                查看详情
-              </span>
-            </div>
-          )
-        }
-      }
-    ],
-    1: [
-      {
-        width: '20%',
-        title: '级联Group名称',
-        dataIndex: 'name',
-        key: 'name',
-        // eslint-disable-next-line react/display-name
-        render: (_: any, row: any) => {
-          return (
-            <span
-              className={styles.tableProjectName}
-              role='time'
-              onClick={() => {
-                lookDetail(row, 1)
-              }}
-            >
-              {row.name}
-            </span>
-          )
-        }
-      },
-      {
-        width: '30%',
-        title: '级联Group描述',
-        dataIndex: 'desc',
-        key: 'desc'
-      },
-      {
-        width: '8%',
-        title: '操作',
-        dataIndex: 'operations',
-        key: 'operations',
-        // eslint-disable-next-line react/display-name
-        render: (_: any, row: any) => {
-          return (
-            <div className={style.excitaion_operation}>
-              <span
-                style={{ marginLeft: '10px', marginRight: '10px' }}
-                role='button'
-                tabIndex={0}
-                onClick={() => {
-                  lookDetail(row, 1)
-                }}
-              >
-                查看详情
-              </span>
-            </div>
-          )
-        }
-      }
-    ],
-    2: [
-      {
-        width: '20%',
-        title: '交互名称',
-        dataIndex: 'name',
-        key: 'name',
-        // eslint-disable-next-line react/display-name
-        render: (_: any, row: any) => {
-          return (
-            <span
-              className={styles.tableProjectName}
-              role='time'
-              onClick={() => {
-                lookDetail(row, 2)
-              }}
-            >
-              {row.name}
-            </span>
-          )
-        }
-      },
-      {
-        width: '30%',
-        title: '交互描述',
-        dataIndex: 'desc',
-        key: 'desc'
-      },
-      {
-        width: '8%',
-        title: '操作',
-        dataIndex: 'operations',
-        key: 'operations',
-        // eslint-disable-next-line react/display-name
-        render: (_: any, row: any) => {
-          return (
-            <div className={style.excitaion_operation}>
-              <span
-                style={{ marginLeft: '10px', marginRight: '10px' }}
-                role='button'
-                tabIndex={0}
-                onClick={() => {
-                  lookDetail(row, 2)
-                }}
-              >
-                查看详情
-              </span>
-            </div>
-          )
-        }
-      }
-    ],
-    3: [
-      {
-        width: '15%',
         title: '激励名称',
         dataIndex: 'stimulus_name',
         key: 'stimulus_name',
@@ -418,8 +245,9 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
             <span
               className={styles.tableProjectName}
               role='time'
+              key={row.stimulus_id}
               onClick={() => {
-                lookDetail(row, 3)
+                lookDetail(row, 0)
               }}
             >
               {row.stimulus_name}
@@ -458,6 +286,163 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
                 role='button'
                 tabIndex={0}
                 onClick={() => {
+                  lookDetail(row, 0)
+                }}
+              >
+                查看详情
+              </span>
+            </div>
+          )
+        }
+      }
+    ],
+    1: [
+      {
+        width: '15%',
+        title: '单激励Group名称',
+        dataIndex: 'name',
+        key: 'name',
+        // eslint-disable-next-line react/display-name
+        render: (_: any, row: any) => {
+          return (
+            <span
+              key={row.sender_id}
+              className={styles.tableProjectName}
+              role='time'
+              onClick={() => {
+                lookDetail(row, 1)
+              }}
+            >
+              {row.name}
+            </span>
+          )
+        }
+      },
+      {
+        width: '15%',
+        title: '单激励Group描述',
+        dataIndex: 'desc',
+        key: 'desc'
+      },
+
+      {
+        width: '10%',
+        title: '操作',
+        dataIndex: 'operations',
+        key: 'operations',
+        // eslint-disable-next-line react/display-name
+        render: (_: any, row: any) => {
+          return (
+            <div className={style.excitaion_operation}>
+              <span
+                style={{ marginLeft: '10px', marginRight: '10px' }}
+                role='button'
+                tabIndex={0}
+                onClick={() => {
+                  lookDetail(row, 1)
+                }}
+              >
+                查看详情
+              </span>
+            </div>
+          )
+        }
+      }
+    ],
+    2: [
+      {
+        width: '20%',
+        title: '级联Group名称',
+        dataIndex: 'name',
+        key: 'name',
+        // eslint-disable-next-line react/display-name
+        render: (_: any, row: any) => {
+          return (
+            <span
+              key={row.sender_id}
+              className={styles.tableProjectName}
+              role='time'
+              onClick={() => {
+                lookDetail(row, 2)
+              }}
+            >
+              {row.name}
+            </span>
+          )
+        }
+      },
+      {
+        width: '30%',
+        title: '级联Group描述',
+        dataIndex: 'desc',
+        key: 'desc'
+      },
+      {
+        width: '8%',
+        title: '操作',
+        dataIndex: 'operations',
+        key: 'operations',
+        // eslint-disable-next-line react/display-name
+        render: (_: any, row: any) => {
+          return (
+            <div className={style.excitaion_operation}>
+              <span
+                style={{ marginLeft: '10px', marginRight: '10px' }}
+                role='button'
+                tabIndex={0}
+                onClick={() => {
+                  lookDetail(row, 2)
+                }}
+              >
+                查看详情
+              </span>
+            </div>
+          )
+        }
+      }
+    ],
+    3: [
+      {
+        width: '20%',
+        title: '交互名称',
+        dataIndex: 'name',
+        key: 'name',
+        // eslint-disable-next-line react/display-name
+        render: (_: any, row: any) => {
+          return (
+            <span
+              key={row.sender_id}
+              className={styles.tableProjectName}
+              role='time'
+              onClick={() => {
+                lookDetail(row, 3)
+              }}
+            >
+              {row.name}
+            </span>
+          )
+        }
+      },
+      {
+        width: '30%',
+        title: '交互描述',
+        dataIndex: 'desc',
+        key: 'desc'
+      },
+      {
+        width: '8%',
+        title: '操作',
+        dataIndex: 'operations',
+        key: 'operations',
+        // eslint-disable-next-line react/display-name
+        render: (_: any, row: any) => {
+          return (
+            <div className={style.excitaion_operation}>
+              <span
+                style={{ marginLeft: '10px', marginRight: '10px' }}
+                role='button'
+                tabIndex={0}
+                onClick={() => {
                   lookDetail(row, 3)
                 }}
               >
@@ -481,11 +466,10 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
           optionType='button'
           value={`${tabs}`}
         >
-          <Radio.Button value='3'>激励列表</Radio.Button>
-          <Radio.Button value='0'>单激励Group列表</Radio.Button>
-          <Radio.Button value='1'>级联Group列表</Radio.Button>
-          {/* <Radio.Button value='4'>级联Group列表</Radio.Button> */}
-          <Radio.Button value='2'>交互列表</Radio.Button>
+          <Radio.Button value='0'>激励列表</Radio.Button>
+          <Radio.Button value='1'>单激励Group列表</Radio.Button>
+          <Radio.Button value='2'>级联Group列表</Radio.Button>
+          <Radio.Button value='3'>交互列表</Radio.Button>
         </Radio.Group>
         <div className={styles.AnBan_header_bottom}>
           <SearchInput
@@ -505,7 +489,13 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       </div>
       <div className={styles.tableConcent}>
         <ConfigProvider locale={zhCN} renderEmpty={customizeRender}>
-          <Table rowKey='id' dataSource={excitationList} loading={loading} columns={cloumnMap[tabs as keyof typeof cloumnMap]} pagination={false} />
+          <Table
+            rowKey={record => (record.sender_id ? record.sender_id : record.stimulus_id)}
+            dataSource={excitationList}
+            loading={loading}
+            columns={cloumnMap[tabs as keyof typeof cloumnMap]}
+            pagination={false}
+          />
         </ConfigProvider>
       </div>
       <div className={styles.AnBan_PaginationsAge}>

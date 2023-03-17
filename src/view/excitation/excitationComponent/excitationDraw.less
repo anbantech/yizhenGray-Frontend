@@ -1,131 +1,133 @@
 .drawBody {
-    min-width:200px ;
-    min-height: 400px;
-    display: flex; 
-    overflow-x: scroll;
+  min-width: 200px;
+  display: flex;
 }
 
 .drawBody_concentBody_Header_title {
-    width: 100px;
-    height: 32px;
-    text-align: center;
-    position: relative;
-    vertical-align: middle;
-    font-size: 12px;
-    background-color: white;
-    border: 1px solid #4880FF;
- }
+  width: 100px;
+  height: 32px;
+  text-align: center;
+  position: relative;
+  vertical-align: middle;
+  font-size: 12px;
+  background-color: white;
+  border: 1px solid #4880ff;
+}
 
 .drawBody_concentBody_line {
-    flex:1;
-    margin-top: 16px;
-    height: 2px;
-    background-color:rgb(219, 173, 173);
+  flex: 1;
+  margin-top: 16px;
+  height: 2px;
+  background-color: rgb(219, 173, 173);
 }
 
 .drawBody_concentBody_cloumn {
-    margin-left: 48px;
-    height: 30px;
-    width: 2px;
-    background-color: rgb(219, 173, 173);
+  margin-left: 48px;
+  height: 30px;
+  width: 2px;
+  background-color: rgb(219, 173, 173);
 }
 
-.drawBody_concentBody{
-    display: flex;
-    
+.drawBody_concentBody {
+  display: flex;
 }
 
-.drawBody_concentBody:last-child{
-    margin-right: 10px;
+.drawBody_concentBody:last-child {
+  margin-right: 10px;
 }
 
-.drawBody_concentBody_Header_position{
-    height: 33px;
-    display: flex;
+.drawBody_concentBody_Header_position {
+  height: 33px;
+  display: flex;
 }
 
-.drawBody_concentBody_Header{
-   display: flex;
-   flex-direction: column;
+.drawBody_concentBody_Header {
+  display: flex;
+  flex-direction: column;
 }
 
 .drawBody_concentBody_Headers {
-    width: 200px;
-    display: flex;
-    flex-direction: column;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
 }
 
-.footer{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    width: calc(100% - 240px);
-    height: 64px;
-    margin: auto;
-    background-color: white;
-    position: fixed;
-    bottom: 0;
+.footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 64px;
+  margin: auto;
+  background-color: white;
 }
 
-.drawbodys{
-  padding-top: 24px;
-  margin-left: 24px;
-  height:calc(100vh - 146px);
+.drawbodys {
+  width: 100%;
+  height: 100%;
   overflow-y: scroll;
-  position: relative;
+  overflow-x: scroll;
 }
 
 .name {
-    width: 100px;
-    display: inline-block;
-    line-height: 22px;
-    white-space: nowrap;
-    text-align: center;
-    text-overflow: ellipsis;
-    overflow: hidden;
+  width: 100px;
+  display: inline-block;
+  line-height: 22px;
+  white-space: nowrap;
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
-.icon{
-    position: absolute;
-    bottom: -10px;
-    left: 42px;
-    z-index: 10000;
-    cursor: pointer;
+.icon {
+  position: absolute;
+  bottom: -10px;
+  left: 42px;
+  z-index: 10000;
+  cursor: pointer;
 }
 
-.DrawBody_headers{
-    width: 100%;
-    height: 88px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    border-top: 1px solid #E9E9E9;
-    padding: 24px;
-    background-color: white;
+.DrawBody_headers {
+  width: 100%;
+  height: 88px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  border-top: 1px solid #e9e9e9;
+  padding: 24px;
+  background-color: white;
 }
 
-.DrawBody_Main{
-    overflow-y: scroll;
+.DrawBody_Main {
+  flex: 1;
+  padding: 24px 0 0 24px;
 }
 
-.footerConcent{
-   width:250px;
-   display: flex;
-   justify-content: space-between;
+.footerConcent {
+  width: 250px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .stepHeader_concent {
-    width: 50%;
+  width: 50%;
 }
 
-.Tip { 
-    position: absolute;
-    right: -30px;
-    top:10px
+.Tip {
+  position: absolute;
+  right: -30px;
+  top: 10px;
 }
 
-.stepTip{
-    margin-left: 10px;
-    // margin-top: 8px;
+.stepTip {
+  margin-left: 10px;
+  // margin-top: 8px;
+}
+
+.DrawBody {
+  width: 100%;
+  height: calc(100vh - 58px);
+  display: flex;
+  flex-direction: column;
 }
