@@ -150,7 +150,7 @@ const ExcitationComponents: React.FC = () => {
           <Select placeholder='请选择端口' disabled={isFixForm}>
             {
               /**
-               * 根据连接方式列表渲染下拉框可选择的设备比特率
+               *  下拉选择端口
                */
               portList?.map(rate => {
                 return (

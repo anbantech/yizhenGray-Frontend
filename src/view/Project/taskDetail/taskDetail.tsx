@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { RouteComponentProps, StaticContext, useHistory } from 'react-router'
 import { ResTaskDetail } from 'Src/globalType/Response'
 import useDepCollect from 'Src/util/Hooks/useDepCollect'
@@ -41,7 +41,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
 
   const [taskDetailInfo, setTaskDetailInfo] = React.useState<ResTaskDetail>()
   const [updateStatus, setUpdateStatus] = React.useState(0)
-
+  const timer = useRef<any>()
   const [status, depCollect, depData] = useDepCollect(RequsetParams)
   const [total, logData] = UseGetTestLog(depData, updateStatus)
   const getTaskDetail = async (value: string) => {
@@ -82,11 +82,22 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   }
 
   useEffect(() => {
-    if (taskInfo.task_id) {
+    console.log('1')
+    if (taskInfo.task_id && updateStatus !== 2) {
       getTaskDetail(taskInfo.task_id)
     }
   }, [taskInfo.task_id, updateStatus])
 
+  useEffect(() => {
+    if (taskInfo.task_id && taskDetailInfo?.status === 2) {
+      timer.current = setInterval(() => {
+        getTaskDetail(taskInfo.task_id)
+      }, 3000)
+    }
+    return () => {
+      clearInterval(timer.current)
+    }
+  }, [taskDetailInfo?.status])
   return (
     <div className={globalStyle.AnBan_main}>
       {taskDetailInfo && (
@@ -99,7 +110,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
           />
           <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
           {taskDetailInfo?.status === 2 ? (
-            <DetailTestingTable params={depData} status={updateStatus} />
+            <DetailTestingTable params={depData} status={taskDetailInfo?.status} />
           ) : (
             <DetailTestedTable
               status={updateStatus}
