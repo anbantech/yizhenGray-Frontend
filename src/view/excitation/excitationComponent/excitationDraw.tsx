@@ -354,12 +354,17 @@ const ExcitationDraw: React.FC = () => {
 
   const [current, setCurrent] = useState(0)
   const stepData = (value: number, state: any) => {
-    const obj = { name: state.Data.name, desc: state.Data.desc, group_data_list: state.Data.group_data_list[value].group_data_list }
-    return obj
+    return { name: state.Data.name, desc: state.Data.desc, group_data_list: state.Data.group_data_list[value].group_data_list }
   }
 
   const createOneExcitationFn = async () => {
-    const result = await createGroupFn(state.Data)
+    const { child_id_list } = state.child_id_list
+    const params = {
+      name: state.Data.name,
+      desc: state.Data.desc,
+      child_id_list
+    }
+    const result = await createGroupFn(params)
     if (result.data) {
       history.push({
         pathname: '/excitationList',

@@ -11,7 +11,7 @@ const layout = {
   wrapperCol: { span: 18 }
 }
 const request = {
-  target_type: 2,
+  target_type: 3,
   key_word: '',
   status: null,
   page: 1,

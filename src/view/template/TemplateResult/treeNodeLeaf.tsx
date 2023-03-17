@@ -61,7 +61,7 @@ const TreeNodeLeaf: React.FC<TreeNodeLeafProps> = ({ id, ptName, ptType, ptDesc,
                   onChange={e => tdListDiapatch({ type: 'configNode', index: id, config: { attr: 'ptValue', value: e.target.value } })}
                 />
               )}
-              <span className={styles.tree_inputted_value}>{ptValue}</span>
+              {/* <span className={styles.tree_inputted_value}>{ptValue}</span> */}
             </div>
           </div>
         </DropBoxWrapper>

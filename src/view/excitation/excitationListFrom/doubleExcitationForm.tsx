@@ -22,7 +22,7 @@ const layout = {
 }
 
 const request = {
-  target_type: '0',
+  target_type: '1',
   key_word: '',
   status: null,
   page: 1,
@@ -31,7 +31,7 @@ const request = {
   sort_order: 'descend'
 }
 const request1 = {
-  target_type: 1,
+  target_type: 2,
   key_word: '',
   status: null,
   page: 1,

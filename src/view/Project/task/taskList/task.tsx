@@ -342,7 +342,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
           <CreateButton width='146px' name='新建任务' size='large' type='primary' onClick={jumpNewCreateTask} />
         </div>
       </div>
-      <div className={styles.tableConcent}>
+      <div className={globalStyle.tableConcent}>
         <ConfigProvider locale={zhCN} renderEmpty={customizeRender}>
           <Table rowKey='id' dataSource={taskLists} columns={columns} pagination={false} />
         </ConfigProvider>

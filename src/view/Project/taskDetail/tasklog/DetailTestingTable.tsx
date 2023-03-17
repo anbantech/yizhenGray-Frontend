@@ -32,6 +32,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
     }
   }, [params])
   useEffect(() => {
+    console.log(status)
     if (status === 2) {
       timer.current = setInterval(() => {
         getlog()
@@ -40,7 +41,6 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
     return () => {
       clearInterval(timer.current)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status])
 
   const columns = [
