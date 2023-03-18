@@ -260,7 +260,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                       </Tooltip>
                     </div>
 
-                    <div className={globalStyle.Opera_detaile}>
+                    <div className={styles.Opera_detaile}>
                       {item.case_type ? (
                         <span
                           role='button'
@@ -268,17 +268,19 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                           onClick={() => {
                             inScale(item.id, false)
                           }}
+                          style={{ alignSelf: 'flex-start' }}
                         >
                           仿真信息
                         </span>
                       ) : null}
                       {item.send_data.length > 1 && (
-                        <span role='button' tabIndex={0} onClick={() => changeToggleStatus(item.id)}>
+                        <span style={{ alignSelf: 'center' }} role='button' tabIndex={0} onClick={() => changeToggleStatus(item.id)}>
                           {currentOpenId === item.id ? '收起' : '展开'}
                         </span>
                       )}
                       {[0, 1].includes(status) && (
                         <span
+                          style={{ alignSelf: 'flex-end' }}
                           role='button'
                           tabIndex={0}
                           onClick={() => {
