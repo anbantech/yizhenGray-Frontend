@@ -44,7 +44,6 @@ export const statusMap = {
     label: '待测试',
     color: styles.roundStatusWaitTesting
   },
-
   7: {
     label: '停止中',
     color: styles.roundStatusStoping
@@ -57,4 +56,36 @@ export const statusMap = {
     label: '未知',
     color: styles.roundStatusBlue
   }
+}
+type CrashInfoType = Record<number, string>
+export const CrashInfoMap: CrashInfoType = {
+  0xe101: '堆栈溢出',
+  0xe102: 'RAM区向下溢出',
+  0xe103: 'RAM区向上溢出',
+  0xe104: 'FLASH区向下溢出',
+  0xe105: 'FLASH区向上溢出',
+  0xe106: 'ROM区向下溢出',
+  0xe107: 'ROM区向上溢出',
+  0xe108: '读取保护区域 ',
+  0xe109: '写入保护区域 ',
+  0xe10a: '代码区破坏错误 ',
+  0xe201: 'malloc分配失败 ',
+  0xe202: 'Calloc分配失败',
+  0xe203: 'Realloc分配失败',
+  0xe301: '除零错误',
+  0xe302: '无符号整形溢出',
+  0xe303: '非法数据',
+  0xe402: '非法指令',
+  0xe304: '浮点数溢出',
+  0xe305: '定点数溢出',
+  0xe401: '中断嵌套',
+  0xe403: '死循环，支持对于死循环缺陷类型的自动识别',
+  0xe404: '看门狗超时',
+  0xe405: '系统复位错误',
+  0xef01: '隐式整形符号转换 ',
+  0xef02: '隐式整形截取',
+  0xef03: '隐式无符号整形截取',
+  0xe204: 'Free 双重释放',
+  0xe205: '未释放重分配',
+  0xe206: '内存泄露'
 }
