@@ -228,12 +228,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       dataIndex: 'error_num',
       key: 'error_num'
     },
-    {
-      width: '8%',
-      title: '覆盖率',
-      dataIndex: 'coverage',
-      key: 'coverage'
-    },
+
     {
       width: '15%',
       // eslint-disable-next-line react/display-name

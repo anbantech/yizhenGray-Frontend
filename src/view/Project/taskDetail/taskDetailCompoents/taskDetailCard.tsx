@@ -111,12 +111,12 @@ function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
     return (
       <div className={styles.coverage_main}>
         <div className={styles.card_coverage}>
-          <span className={styles.cardConcent}>覆盖率分支</span>
+          <span className={styles.cardConcent}>分支覆盖率</span>
           <span className={styles.cardTaskDetail}>{taskMapInfo.branch_coverage}</span>
         </div>
         <div className={styles.card_coverage}>
           <span className={styles.cardConcent}>语句覆盖率</span>
-          <span className={styles.cardTaskDetail}>{taskMapInfo.branch_coverage}</span>
+          <span className={styles.cardTaskDetail}>{taskMapInfo.statement_coverage}</span>
         </div>
       </div>
     )

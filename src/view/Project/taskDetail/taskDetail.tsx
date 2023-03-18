@@ -82,22 +82,21 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   }
 
   useEffect(() => {
-    console.log('1')
     if (taskInfo.task_id && updateStatus !== 2) {
       getTaskDetail(taskInfo.task_id)
     }
   }, [taskInfo.task_id, updateStatus])
 
   useEffect(() => {
-    if (taskInfo.task_id && taskDetailInfo?.status === 2) {
+    if (taskInfo.task_id && (taskDetailInfo?.status === 2 || updateStatus === 2)) {
       timer.current = setInterval(() => {
         getTaskDetail(taskInfo.task_id)
-      }, 3000)
+      }, 1000)
     }
     return () => {
       clearInterval(timer.current)
     }
-  }, [taskDetailInfo?.status])
+  }, [taskDetailInfo?.status, updateStatus])
   return (
     <div className={globalStyle.AnBan_main}>
       {taskDetailInfo && (
