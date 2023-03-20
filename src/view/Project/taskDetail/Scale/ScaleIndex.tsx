@@ -153,14 +153,14 @@ function Scale(props: any) {
   const history = useHistory()
   const goBack = () => {
     history.push({
-      pathname: '/projects/TaskList/ReExamle/Detail',
+      pathname: '/projects/Tasks/Detail',
       state: Data
     })
   }
   const NoScaleData = () => {
     return (
       <div className={styles.NoScaleData}>
-        <span>任务已结束,请返回实例详情页</span>
+        <span>任务已结束,请返回任务详情页</span>
         <Button
           className={styles.NoScaleButton}
           type='primary'

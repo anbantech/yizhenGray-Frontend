@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import FirstConfig from './taskConfigCompents/firstConfig'
@@ -32,8 +32,9 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
 
   const { taskInfo, projectInfo } = props.location?.state
-
+  const [btnLoading, setBtnLoading] = useState(false)
   const createForm = async () => {
+    setBtnLoading(true)
     const result = await childRef.firstForm?.current?.save()
     if (result) {
       history.push({
@@ -67,6 +68,7 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
       setIsDisableStatus(true)
     }
   }
+
   return (
     <div className={styles.taskMain}>
       <div className={styles.taskMain_header}>
@@ -89,6 +91,7 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
             buttonStyle={styles.stepButton}
             type='primary'
             disabled={isDisableStatus}
+            loading={btnLoading}
             name={taskInfo?.editTask ? '修改' : '创建'}
             onClick={() => {
               createForm()

@@ -79,6 +79,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
       }
     } catch (error) {
       throwErrorMessage(error, { 1009: '任务删除失败' })
+      return error
     }
   }, [form, id, taskInfo.data?.id, taskInfo?.editTask])
   useImperativeHandle(myRef, () => ({
@@ -249,7 +250,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
                */
               nodeList?.map((rate: any) => {
                 return (
-                  <Option key={rate} value={rate}>
+                  <Option key={rate} disabled={rate.disabled} value={rate}>
                     {rate}
                   </Option>
                 )
@@ -265,7 +266,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
                */
               excitationList?.map((rate: any) => {
                 return (
-                  <Option key={rate.sender_id} value={rate.sender_id}>
+                  <Option key={rate.sender_id} disabled={rate.disabled} value={rate.sender_id}>
                     {rate.name}
                   </Option>
                 )

@@ -67,7 +67,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
         return
       } catch (error) {
         setSpinStatus(false)
-        throwErrorMessage(error)
+        message.error(error.message)
       }
     } else {
       // 继续任务
@@ -78,14 +78,14 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
         return
       } catch (error) {
         setSpinStatus(false)
-        throwErrorMessage(error)
+        message.error(error.message)
       }
     }
   }, [id, spinStatus, status])
 
   const beginOrOver = React.useCallback(async () => {
     if (spinStatus) return
-    if ([2, 3, 8, 9].includes(status)) {
+    if ([2, 3, 4, 8, 9].includes(status)) {
       setIndex(1)
       // 停止任务  通过任务ID
       setSpinStatus(true)
@@ -93,7 +93,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
         await stoptest({ task_id: id })
         return
       } catch (error) {
-        throwErrorMessage(error)
+        message.error(error.message)
         setSpinStatus(false)
       }
     }
@@ -105,7 +105,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
         return
       } catch (error) {
         setSpinStatus(false)
-        throwErrorMessage(error)
+        message.error(error.message)
       }
     }
   }, [id, spinStatus, status])
@@ -119,7 +119,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       return
     } catch (error) {
       setSpinStatus(false)
-      message.error(error)
+      message.error(error.message)
     }
   }, [id, spinStatus])
   const lookTaskInfo = React.useCallback(() => {
