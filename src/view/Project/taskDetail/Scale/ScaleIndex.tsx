@@ -178,7 +178,9 @@ function Scale(props: any) {
     <>
       <Context.Provider value={{ test_id, isTesting, logId, currentType }}>
         <div className={styles.Detail}>
-          {loopStatus === 2 || loopStatus === 3 ? (
+          {[0, 1, 4].includes(loopStatus) ? (
+            <NoScaleData />
+          ) : (
             <div className={styles.DetailHead}>
               <Tabs defaultActiveKey={isTesting ? 'Memory' : 'Register'} style={{ width: '100%' }} onChange={changeCurrentType}>
                 {isTesting && (
@@ -250,8 +252,6 @@ function Scale(props: any) {
                 />
               ) : null}
             </div>
-          ) : (
-            <NoScaleData />
           )}
         </div>
       </Context.Provider>
