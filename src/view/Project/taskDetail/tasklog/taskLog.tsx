@@ -2,7 +2,7 @@ import { DownOutlined } from '@ant-design/icons'
 import { Dropdown, Menu, message, Space, Tooltip } from 'antd'
 import { useHistory } from 'react-router'
 import globalStyle from 'Src/view/Project/project/project.less'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { getTime } from 'Src/util/baseFn'
 import { copyText } from 'Src/util/common'
 import NoData from 'Src/view/404/NoData/NoData'
@@ -168,6 +168,12 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
       }
     }
   }, [])
+
+  useEffect(() => {
+    if (status !== 8) {
+      setReplayId(-2)
+    }
+  }, [status])
 
   const HearConcentArray = ['用例编号', '发送数据 ', '接收数据', '异常用例', '发送时间', '缺陷结果', '操作']
 
