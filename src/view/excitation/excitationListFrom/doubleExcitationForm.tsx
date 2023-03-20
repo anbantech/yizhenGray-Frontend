@@ -39,16 +39,6 @@ const request1 = {
   sort_field: 'create_time',
   sort_order: 'descend'
 }
-interface projectInfoType {
-  id: number
-  name: string
-  port: string
-  status: number | null
-  create_time: string
-  update_time: string
-  create_user: string
-  update_user: string
-}
 
 interface Resparams {
   target_type: number | string
@@ -96,6 +86,7 @@ const DoubleExcitationForm: React.FC = () => {
     pre.push(cardArray.length)
     setCardArray([...pre])
   }, [cardArray])
+
   // const getExcitationList = async (value: Resparams) => {
   //   try {
   //     const result = await excitationListFn(value)
@@ -120,8 +111,7 @@ const DoubleExcitationForm: React.FC = () => {
   //  选择某一参数之后,更新列表的disabled
   const updateDisabled = React.useCallback(
     (value: number, bol: boolean) => {
-      const excitationListCopy = excitationList
-      excitationListCopy?.forEach((item: any) => {
+      excitationList?.forEach((item: any) => {
         item.children.forEach((element: any) => {
           if (value === element.sender_id) {
             const pre = element
