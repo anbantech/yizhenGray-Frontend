@@ -129,7 +129,9 @@ const ThreeExcitationCard = (props: AllPropsType) => {
   const onSelect = (value: any) => {
     if (value === undefined) {
       onChange(undefined, index)
-      return form.setFieldsValue({ description: '' })
+      form.setFieldsValue({ description: '' })
+      setDesc('')
+      return
     }
     excitationList.forEach((item: any) => {
       item.children.find((pre: any) => {
@@ -152,7 +154,7 @@ const ThreeExcitationCard = (props: AllPropsType) => {
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [desc, formData, form, isFixForm, index])
+  }, [desc, formData, form, isFixForm, index, excitationList])
 
   return (
     <div className={styles.card_middle}>
