@@ -1,5 +1,3 @@
-/* eslint-disable indent */
-/* eslint-disable react/display-name */
 import { DownOutlined } from '@ant-design/icons'
 import { Dropdown, Menu, message, Space, Tooltip } from 'antd'
 import { useHistory } from 'react-router'
@@ -11,6 +9,7 @@ import NoData from 'Src/view/404/NoData/NoData'
 import { rePlayTask } from 'Src/services/api/taskApi'
 import errorFrameCopy from 'Src/assets/image/errorFrameCopy.svg'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
+import { CrashInfoMap } from 'Utils/DataMap/dataMap'
 import styles from '../taskDetailUtil/Detail.less'
 import { taskDetailInfoType } from '../taskDetail'
 import { projectInfoType } from '../../task/taskList/task'
@@ -255,32 +254,37 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     <div>{getTime(item.update_time)}</div>
 
                     <div>
-                      <Tooltip title={item.crash_info} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
-                        <span className={styles.dataLongInfo}>{item.crash_info}</span>
+                      <Tooltip
+                        title={CrashInfoMap[+Object.keys(item.crash_info)[0]]}
+                        placement='bottom'
+                        color='#ffffff'
+                        overlayClassName={styles.overlay}
+                      >
+                        <span className={styles.dataLongInfo}>{CrashInfoMap[+Object.keys(item.crash_info)[0]]}</span>
                       </Tooltip>
                     </div>
 
                     <div className={styles.Opera_detaile}>
+                      {item.send_data.length > 1 && (
+                        <span role='button' tabIndex={0} className={styles.operate_container} onClick={() => changeToggleStatus(item.id)}>
+                          {currentOpenId === item.id ? '收起' : '展开'}
+                        </span>
+                      )}
                       {item.case_type ? (
                         <span
+                          className={styles.operate_containers}
                           role='button'
                           tabIndex={0}
                           onClick={() => {
                             inScale(item.id, false)
                           }}
-                          style={{ alignSelf: 'flex-start' }}
                         >
                           仿真信息
                         </span>
                       ) : null}
-                      {item.send_data.length > 1 && (
-                        <span style={{ alignSelf: 'center' }} role='button' tabIndex={0} onClick={() => changeToggleStatus(item.id)}>
-                          {currentOpenId === item.id ? '收起' : '展开'}
-                        </span>
-                      )}
-                      {[0, 1].includes(status) && (
+                      {[0, 1].includes(status) ? (
                         <span
-                          style={{ alignSelf: 'flex-end' }}
+                          className={styles.operate_container}
                           role='button'
                           tabIndex={0}
                           onClick={() => {
@@ -289,7 +293,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                         >
                           重放
                         </span>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                 )
@@ -305,5 +309,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     </div>
   )
 }
+
+DetailTestedTable.displayName = 'DetailTestedTable'
 
 export default DetailTestedTable

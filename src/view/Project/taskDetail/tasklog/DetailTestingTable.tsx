@@ -4,6 +4,7 @@ import { ConfigProvider, Table } from 'antd'
 import React, { useCallback, useEffect, useRef } from 'react'
 import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import { getTestingLog } from 'Src/services/api/taskApi'
+import { CrashInfoMap } from 'Utils/DataMap/dataMap'
 import { getTime } from 'Src/util/baseFn'
 import { throwErrorMessage } from 'Src/util/message'
 
@@ -18,7 +19,7 @@ const customizeRender = () => <DefaultValueTips content='暂无用例' />
 const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
   const { params, status } = props
   const timer = useRef<any>()
-
+  const [spinning, setSpinning] = React.useState(true)
   const [logData, setLogData] = React.useState([])
   const getlog = useCallback(async () => {
     try {
@@ -35,8 +36,10 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
     console.log(status)
     if (status === 2) {
       timer.current = setInterval(() => {
-        getlog()
-      }, 3000)
+        getlog().then(res => {
+          setSpinning(false)
+        })
+      }, 1000)
     }
     return () => {
       clearInterval(timer.current)
@@ -119,7 +122,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       width: '12.5%',
       render: (text: any, record: any) => (
         <p className={styles.checkDetail} key={record.id}>
-          {record.crash_info}
+          {CrashInfoMap[+Object.keys(record.crash_info)[0]]}
         </p>
       )
     }
@@ -136,6 +139,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
           rowClassName={record => {
             return record.case_type ? `${styles.tableStyleBackground}` : ''
           }}
+          loading={spinning}
           dataSource={logData}
           pagination={false}
         />
