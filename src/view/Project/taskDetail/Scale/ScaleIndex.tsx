@@ -37,6 +37,9 @@ const RegisterSvg = (props: propsType) => {
     </>
   )
 }
+type propsNo = {
+  loopStatus: number
+}
 
 const MemorySvg = (props: propsType) => {
   const key = props.type || 0
@@ -157,10 +160,11 @@ function Scale(props: any) {
       state: Data
     })
   }
-  const NoScaleData = () => {
+  const NoScaleData = (props: propsNo) => {
+    const { loopStatus } = props
     return (
       <div className={styles.NoScaleData}>
-        <span>任务已结束,请返回任务详情页</span>
+        {[0, 1].includes(loopStatus) ? <span>任务已结束,请返回任务详情页</span> : <span>任务处于异常暂停状态，无法查看数据，请返回任务详情页</span>}
         <Button
           className={styles.NoScaleButton}
           type='primary'
@@ -179,7 +183,7 @@ function Scale(props: any) {
       <Context.Provider value={{ test_id, isTesting, logId, currentType }}>
         <div className={styles.Detail}>
           {[0, 1, 4].includes(loopStatus) ? (
-            <NoScaleData />
+            <NoScaleData loopStatus={loopStatus} />
           ) : (
             <div className={styles.DetailHead}>
               <Tabs defaultActiveKey={isTesting ? 'Memory' : 'Register'} style={{ width: '100%' }} onChange={changeCurrentType}>
