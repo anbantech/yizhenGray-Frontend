@@ -336,14 +336,14 @@ const GroupExcitationForm: React.FC = () => {
                 { ...pre[0], children: result1Data }
               ]
               setExcitationList(data)
-            }
-            if (res1) {
+            } else if (res1) {
               const data = [{ ...pre[0], children: result1Data }]
               setExcitationList(data)
-            }
-            if (res2) {
+            } else if (res2) {
               const data = [{ ...pre[0], children: result2Data }]
               setExcitationList(data)
+            } else {
+              return []
             }
           }
 
