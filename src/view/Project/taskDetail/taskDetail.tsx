@@ -96,7 +96,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     return () => {
       clearInterval(timer.current)
     }
-  }, [taskDetailInfo?.status, updateStatus])
+  }, [taskDetailInfo?.status, taskInfo.task_id, updateStatus])
   return (
     <div className={globalStyle.AnBan_main}>
       {taskDetailInfo && (

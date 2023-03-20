@@ -254,7 +254,8 @@ const DoubleExcitationForm: React.FC = () => {
 
   React.useEffect(() => {
     getExcitationList(request1, request)
-  }, [getExcitationList])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   React.useEffect(() => {
     if (Data && isFixForm) {
       setCardArray(Array.from({ length: Data?.group_data_list.length }, (v, i) => i))
