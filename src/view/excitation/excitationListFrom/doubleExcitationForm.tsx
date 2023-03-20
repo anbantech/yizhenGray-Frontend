@@ -171,15 +171,15 @@ const DoubleExcitationForm: React.FC = () => {
                 { ...pre[1], children: result2Data },
                 { ...pre[0], children: result1Data }
               ]
-              return data
-            }
-            if (res1) {
+              setExcitationList(data)
+            } else if (res1) {
               const data = [{ ...pre[0], children: result1Data }]
-              return data
-            }
-            if (res2) {
-              const data = [{ ...pre[0], children: result2Data }]
-              return data
+              setExcitationList(data)
+            } else if (res2) {
+              const data = [{ ...pre[1], children: result2Data }]
+              setExcitationList(data)
+            } else {
+              return []
             }
             return []
           })
