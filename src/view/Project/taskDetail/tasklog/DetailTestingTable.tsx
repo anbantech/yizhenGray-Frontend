@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 /* eslint-disable react/display-name */
-import { ConfigProvider, Table } from 'antd'
+import { ConfigProvider, message, Table } from 'antd'
 import React, { useCallback, useEffect, useRef } from 'react'
 import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import { getTestingLog } from 'Src/services/api/taskApi'
@@ -33,17 +33,22 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
     }
   }, [params])
   useEffect(() => {
-    console.log(status)
     if (status === 2) {
       timer.current = setInterval(() => {
-        getlog().then(res => {
-          setSpinning(false)
-        })
+        getlog()
+          .then(res => {
+            setSpinning(false)
+            return res
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
       }, 1000)
     }
     return () => {
       clearInterval(timer.current)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status])
 
   const columns = [

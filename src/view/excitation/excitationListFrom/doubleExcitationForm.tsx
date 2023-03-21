@@ -155,6 +155,7 @@ const DoubleExcitationForm: React.FC = () => {
         .then(value => {
           const result1Data = value[0].data?.results
           const result2Data = value[1].data?.results
+
           setExcitationList(pre => {
             const preCopy = pre
             if (isFixForm) {
@@ -163,10 +164,24 @@ const DoubleExcitationForm: React.FC = () => {
                 { ...preCopy[0], disabled: isFixForm, children: result1Data }
               ]
             }
-            return [
-              { ...preCopy[1], children: result2Data },
-              { ...preCopy[0], children: result1Data }
-            ]
+            const res1 = result1Data?.length ? result1Data : null
+            const res2 = result2Data?.length ? result2Data : null
+            if (res1 && res2) {
+              const data = [
+                { ...pre[1], children: result2Data },
+                { ...pre[0], children: result1Data }
+              ]
+              setExcitationList(data)
+            } else if (res1) {
+              const data = [{ ...pre[0], children: result1Data }]
+              setExcitationList(data)
+            } else if (res2) {
+              const data = [{ ...pre[1], children: result2Data }]
+              setExcitationList(data)
+            } else {
+              return []
+            }
+            return []
           })
           return value
         })
@@ -190,7 +205,7 @@ const DoubleExcitationForm: React.FC = () => {
       if (values) {
         const params = {
           name: values.name,
-          desc: values.name,
+          desc: values.description,
           gu_cnt0: +values.gu_cnt0,
           gu_w0: +values.gu_w0,
           gu_cnt1: +values.gu_cnt1,
@@ -254,7 +269,8 @@ const DoubleExcitationForm: React.FC = () => {
 
   React.useEffect(() => {
     getExcitationList(request1, request)
-  }, [getExcitationList])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   React.useEffect(() => {
     if (Data && isFixForm) {
       setCardArray(Array.from({ length: Data?.group_data_list.length }, (v, i) => i))

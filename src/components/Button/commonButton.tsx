@@ -10,11 +10,12 @@ interface buttonStyleType {
   onClick?: () => void
   disabled?: boolean
   buttonStyle: any
+  loading?: boolean
 }
 const CommonButton: React.FC<buttonStyleType> = props => {
-  const { name, size, type, onClick, buttonStyle, disabled } = props
+  const { name, size, type, onClick, buttonStyle, disabled, loading } = props
   return (
-    <Button disabled={disabled} className={buttonStyle} type={type} size={size} block onClick={onClick}>
+    <Button disabled={disabled} className={buttonStyle} loading={loading} type={type} size={size} block onClick={onClick}>
       {name}
     </Button>
   )

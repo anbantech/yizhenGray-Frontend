@@ -308,13 +308,13 @@ const GroupExcitationForm: React.FC = () => {
           sender_id: '0',
           name: '单激励Group',
           disabled: false,
-          children: []
+          children: [{}]
         },
         {
           sender_id: '1',
           name: '级联Group',
           disabled: false,
-          children: []
+          children: [{}]
         }
       ]
       Promise.all([result1, result2])
@@ -328,11 +328,23 @@ const GroupExcitationForm: React.FC = () => {
             ]
             setExcitationList(data)
           } else {
-            const data = [
-              { ...pre[1], children: result2Data },
-              { ...pre[0], children: result1Data }
-            ]
-            setExcitationList(data)
+            const res1 = result1Data?.length ? result1Data : null
+            const res2 = result2Data?.length ? result2Data : null
+            if (res1 && res2) {
+              const data = [
+                { ...pre[1], children: result2Data },
+                { ...pre[0], children: result1Data }
+              ]
+              setExcitationList(data)
+            } else if (res1) {
+              const data = [{ ...pre[0], children: result1Data }]
+              setExcitationList(data)
+            } else if (res2) {
+              const data = [{ ...pre[0], children: result2Data }]
+              setExcitationList(data)
+            } else {
+              return []
+            }
           }
 
           return value

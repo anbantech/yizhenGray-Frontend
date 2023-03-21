@@ -168,7 +168,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   const onChange = React.useCallback(
     (value: number) => {
       childRef.inputRef.current?.save()
-      depCollect(true, { ...depData, target_type: `${value}` })
+      depCollect(true, { ...depData, target_type: `${value}`, page: 1, page_size: 10 })
       setTabs(value)
     },
     [childRef.inputRef, depCollect, depData]
