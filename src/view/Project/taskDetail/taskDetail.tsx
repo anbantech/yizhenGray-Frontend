@@ -50,6 +50,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
       setTaskDetailInfo(getTaskDetails.data)
     }
   }
+
   // 跳转任务详情
   const jumpLookTaskInfo = React.useCallback(() => {
     history.push({
@@ -109,7 +110,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
           />
           <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
           {taskDetailInfo?.status === 2 ? (
-            <DetailTestingTable params={depData} status={taskDetailInfo?.status} />
+            <DetailTestingTable params={depData} status={updateStatus} />
           ) : (
             <DetailTestedTable
               status={updateStatus}

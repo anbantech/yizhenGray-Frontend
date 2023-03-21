@@ -168,7 +168,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   const onChange = React.useCallback(
     (value: number) => {
       childRef.inputRef.current?.save()
-      depCollect(true, { ...depData, target_type: `${value}`, page: 1, page_size: 10 })
+      depCollect(true, { ...depData, target_type: `${value}`, page: 1 })
       setTabs(value)
     },
     [childRef.inputRef, depCollect, depData]
@@ -499,7 +499,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         </ConfigProvider>
       </div>
       <div className={styles.AnBan_PaginationsAge}>
-        <PaginationsAge length={total} num={10} getParams={setOperation} pagenums={depData.page} />
+        <PaginationsAge length={total} num={depData.page_size} getParams={setOperation} pagenums={depData.page} />
       </div>
       {/* <ExcitationModal
         visible={modalData.isModalVisible}

@@ -10,7 +10,7 @@
     <div class='reportHome'>
         <div class="nav">
             <div class="reportHomeTitle">
-                <span> YIZHEN analysis REPORT </span>
+                <span> YIFU analysis REPORT </span>
                 <span>易复测试报告</span>
             </div>
         </div>

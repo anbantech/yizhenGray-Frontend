@@ -37,7 +37,7 @@ const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
 function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
   const { taskInfo, projectInfo } = props.infoMap
   const { name, start_time, end_time, status, id, project_id, desc } = props.taskDetailInfo
-  const [messageInfo] = UseWebsocket()
+  const [messageInfo] = UseWebsocket(+taskInfo.task_id)
   const [spinStatus, setSpinStatus] = React.useState(false)
 
   const [index, setIndex] = React.useState(0)
@@ -167,7 +167,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             </div>
           </Link>
         )}
-        {[2, 3, 4, 8, 9].includes(status) && (
+        {[2, 3, 8, 9].includes(status) && (
           <div
             className={styles.ImageContioner}
             role='button'
