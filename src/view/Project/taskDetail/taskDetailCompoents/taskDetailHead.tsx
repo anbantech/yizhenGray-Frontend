@@ -152,7 +152,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             {' '}
             {[0, 1].includes(status)
               ? `开始时间 : ${getTime(start_time)} | 结束时间 : ${getTime(end_time)}`
-              : [3, 4].includes(status)
+              : [2, 3, 4].includes(status)
               ? `开始时间 : ${getTime(start_time)}`
               : null}{' '}
           </span>
