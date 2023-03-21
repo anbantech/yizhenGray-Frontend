@@ -167,7 +167,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             </div>
           </Link>
         )}
-        {[2, 3, 4, 8, 9].includes(status) && (
+        {[2, 3, 8, 9].includes(status) && (
           <div
             className={styles.ImageContioner}
             role='button'

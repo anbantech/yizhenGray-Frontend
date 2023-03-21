@@ -6,6 +6,7 @@ import styles from './page.less'
 
 function PaginationsAge(props: any) {
   const { length, getParams, num, pagenums, tag } = props
+  console.log(num)
   const onPage = (page: number, pageSize: number) => {
     if (tag === 'detail') {
       getParams(page, 'page')
