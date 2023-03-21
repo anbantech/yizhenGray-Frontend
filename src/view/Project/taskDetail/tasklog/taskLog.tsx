@@ -50,7 +50,6 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   const { task_id, params, total, status, logData, changePage, testTimeSort, caseSort } = props
   const { taskInfo, projectInfo } = props.infoMap
   const history = useHistory()
-
   const [currentOpenId, setCurrentOpenId] = useState<number>(-1)
 
   const [replayId, setReplayId] = useState<number>(-2)
@@ -271,7 +270,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     </div>
 
                     <div className={styles.Opera_detaile}>
-                      {item.send_data.length > 1 && (
+                      {item.send_data.length >= 1 && (
                         <span role='button' tabIndex={0} className={styles.operate_container} onClick={() => changeToggleStatus(item.id)}>
                           {currentOpenId === item.id ? '收起' : '展开'}
                         </span>
