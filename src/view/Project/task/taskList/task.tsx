@@ -87,9 +87,6 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   //  删除弹出框
   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
 
-  //  注册 webSocket
-  const [messageInfo] = UseWebsocket()
-
   // 新建任务
   const jumpNewCreateTask = () => {
     history.push({
@@ -319,7 +316,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   }
 
   useEffect(() => {
-    if (messageInfo || params) {
+    if (params) {
       timer.current = setInterval(() => {
         getTaskList(params)
       }, 1000)
@@ -327,7 +324,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     return () => {
       clearInterval(timer.current)
     }
-  }, [params, messageInfo])
+  }, [params])
   return (
     <div className={globalStyle.AnBan_main}>
       <div className={globalStyle.AnBan_header}>
