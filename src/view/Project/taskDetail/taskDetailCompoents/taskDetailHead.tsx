@@ -51,7 +51,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
 
   React.useEffect(() => {
     if (messageInfo) {
-      console.log(messageInfo)
+      console.log('_____________')
       setSpinStatus(false)
       props.setUpdateStatus(messageInfo.task_status)
     }
