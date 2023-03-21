@@ -3,7 +3,7 @@ import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import CreateButton from 'Src/components/Button/createButton'
 import Table from 'antd/lib/table'
 import ConfigProvider from 'antd/lib/config-provider'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as React from 'react'
 import { message } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
@@ -189,7 +189,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       message.error('任务正在运行中,请结束任务')
     }
   }
-
+  const timer = useRef<any>()
   // 表格title
   const columns = [
     {
@@ -317,12 +317,16 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       throwErrorMessage(error)
     }
   }
-  React.useEffect(() => {
-    if (messageInfo || params) {
-      getTaskList(params)
-    }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (messageInfo || params) {
+      timer.current = setInterval(() => {
+        getTaskList(params)
+      }, 1000)
+    }
+    return () => {
+      clearInterval(timer.current)
+    }
   }, [params, messageInfo])
   return (
     <div className={globalStyle.AnBan_main}>
