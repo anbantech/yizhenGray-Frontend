@@ -34,7 +34,6 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
   const { taskInfo, projectInfo } = props.location?.state
   const [btnLoading, setBtnLoading] = useState(false)
   const createForm = async () => {
-    setBtnLoading(true)
     const result = await childRef.firstForm?.current?.save()
     if (result) {
       history.push({
@@ -94,6 +93,7 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
             loading={btnLoading}
             name={taskInfo?.editTask ? '修改' : '创建'}
             onClick={() => {
+              setBtnLoading(true)
               createForm()
             }}
           />
