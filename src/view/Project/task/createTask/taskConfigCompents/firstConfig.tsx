@@ -165,7 +165,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
             }
           ]}
         >
-          <Input placeholder='请输入2到20个字符' />
+          <Input placeholder='请输入任务名称' />
         </Form.Item>
 
         <Form.Item
@@ -190,7 +190,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
             }
           ]}
         >
-          <Input placeholder='请输入整数,最大48' suffix='小时' />
+          <Input placeholder='请输入运行时长' suffix='小时' />
         </Form.Item>
         <Form.Item
           label='Crash数量'
