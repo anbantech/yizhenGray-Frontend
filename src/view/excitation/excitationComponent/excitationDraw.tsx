@@ -1,5 +1,5 @@
 import { MinusSquareTwoTone, PlusSquareTwoTone } from '@ant-design/icons'
-import { Steps, Tooltip } from 'antd'
+import { message, Steps, Tooltip } from 'antd'
 import React, { useCallback, useLayoutEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
@@ -109,16 +109,6 @@ const SetUp: React.FC<al> = (props: al) => {
       </div>
     )
   }
-
-  // const createOneExcitationFn = async () => {
-  //   const result = await createGroupFn(state.Data)
-  //   if (result.data) {
-  //     history.push({
-  //       pathname: '/excitationList',
-  //       state: { type: state.type }
-  //     })
-  //   }
-  // }
 
   return (
     <div className={StyleSheet.drawbodys}>
@@ -364,12 +354,16 @@ const ExcitationDraw: React.FC = () => {
       desc: state.Data.desc,
       child_id_list
     }
-    const result = await createGroupFn(params)
-    if (result.data) {
-      history.push({
-        pathname: '/excitationList',
-        state: { type: state.type }
-      })
+    try {
+      const result = await createGroupFn(params)
+      if (result.data) {
+        history.push({
+          pathname: '/excitationList',
+          state: { type: state.type }
+        })
+      }
+    } catch (error) {
+      message.error(error.message)
     }
   }
 
