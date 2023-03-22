@@ -62,12 +62,12 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
 
   // 测试降序
   const testTimeSort = (value: string) => {
-    depCollect(true, { sort_order: value })
+    depCollect(true, { sort_order: value, page: 1 })
   }
 
   // 筛选异常用例
   const caseSort = (value: string) => {
-    depCollect(true, { case_type: value })
+    depCollect(true, { case_type: value, page: 1 })
   }
   // 跳转日志
   const lookLog = React.useCallback(() => {

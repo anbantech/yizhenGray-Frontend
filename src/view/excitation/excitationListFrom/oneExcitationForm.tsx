@@ -206,7 +206,7 @@ const OneExcotationForm: React.FC = () => {
           <Input disabled={isFixForm} placeholder='请输入单激励Group名称' />
         </Form.Item>
 
-        <Form.Item name='target_id' label='激励' rules={[{ required: true, message: '请选择端口类别' }]}>
+        <Form.Item name='target_id' label='请选择激励' rules={[{ required: true, message: '请选择激励' }]}>
           <Select placeholder='激励' disabled={isFixForm}>
             {
               /**
