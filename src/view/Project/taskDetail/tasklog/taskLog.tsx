@@ -270,7 +270,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     </div>
 
                     <div className={styles.Opera_detaile}>
-                      {item.send_data.length >= 1 && (
+                      {item.send_data.length > 1 && [0, 1].includes(status) && (
                         <span role='button' tabIndex={0} className={styles.operate_container} onClick={() => changeToggleStatus(item.id)}>
                           {currentOpenId === item.id ? '收起' : '展开'}
                         </span>

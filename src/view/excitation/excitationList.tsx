@@ -158,7 +158,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     })
   }
   const updateParams = (value: string) => {
-    depCollect(true, { key_word: value })
+    depCollect(true, { key_word: value, page: 1 })
   }
 
   const changePage = (page: number, pageSize: number) => {
