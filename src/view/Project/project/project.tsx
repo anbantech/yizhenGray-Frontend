@@ -92,7 +92,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
 
   // 更新参数获取列表
   const updateParams = (value: string) => {
-    setParams({ ...params, key_word: value })
+    setParams({ ...params, key_word: value, page: 1 })
   }
 
   // 查看详情 跳转任务列表 携带项目Id

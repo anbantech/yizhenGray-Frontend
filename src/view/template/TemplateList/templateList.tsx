@@ -49,7 +49,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
 
   // 更新参数获取列表
   const changeKeywords = useCallback((value: string) => {
-    setParams(params => ({ ...params, key_word: value }))
+    setParams(params => ({ ...params, key_word: value, page: 1 }))
   }, [])
 
   // 查看/修改/创建末班

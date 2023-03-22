@@ -180,7 +180,7 @@ const OneExcotationForm: React.FC = () => {
               validateTrigger: 'onBlur',
               validator(_, value) {
                 if (typeof value === 'undefined' || value === '') {
-                  return Promise.reject(new Error('单激励Group名称'))
+                  return Promise.reject(new Error('请输入单激励Group名称'))
                 }
                 return Promise.resolve()
               }
