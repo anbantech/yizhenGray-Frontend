@@ -240,7 +240,7 @@ export default class App extends Vue {
 }
 .concentBody{
   padding-bottom:48px;
-  max-width: 1000px;
+  width: 1000px;
   margin: 0 auto;
   background-color:#fff;
 }

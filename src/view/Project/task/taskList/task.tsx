@@ -16,7 +16,7 @@ import { taskList, deleteTasks } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import globalStyle from 'Src/view/Project/project/project.less'
-import UseWebsocket from 'Src/webSocket/useWebSocket'
+
 import styles from './task.less'
 
 const customizeRender = () => <DefaultValueTips content='暂无任务' />
@@ -102,7 +102,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
 
   // 更新参数获取列表
   const updateParams = (value: string) => {
-    setParams({ ...params, key_word: value })
+    setParams({ ...params, key_word: value, page: 1 })
   }
 
   //  更改页码
@@ -114,9 +114,9 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   const checkStatus = (value: string | number | null) => {
     setShow(value as number)
     if (value === '') {
-      setParams({ ...params, status: null })
+      setParams({ ...params, status: null, page: 1 })
     } else {
-      setParams({ ...params, status: `${value}` })
+      setParams({ ...params, status: `${value}`, page: 1 })
     }
     setStatusOperationStatus(false)
   }
@@ -197,7 +197,13 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
         return (
-          <span className={styles.tableProjectName} role='time' onClick={() => {}}>
+          <span
+            className={styles.tableProjectName}
+            role='time'
+            onClick={() => {
+              jumpTasksDetail(row)
+            }}
+          >
             {row.name}
           </span>
         )
@@ -314,13 +320,14 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       throwErrorMessage(error)
     }
   }
-
   useEffect(() => {
-    if (params) {
-      timer.current = setInterval(() => {
-        getTaskList(params)
-      }, 1000)
-    }
+    getTaskList({ ...params })
+  }, [params])
+  useEffect(() => {
+    timer.current = setInterval(() => {
+      getTaskList({ ...params })
+    }, 60000)
+
     return () => {
       clearInterval(timer.current)
     }
