@@ -50,11 +50,13 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
   }
 
   React.useEffect(() => {
-    if (messageInfo) {
-      setSpinStatus(false)
-      props.setUpdateStatus(messageInfo.task_status)
+    if (messageInfo && messageInfo.task_id) {
+      if (+messageInfo.task_id === +taskInfo.task_id) {
+        setSpinStatus(false)
+        props.setUpdateStatus(messageInfo.task_status)
+      }
     }
-  }, [messageInfo, props])
+  }, [messageInfo, props, taskInfo.task_id])
 
   const continueOrStop = React.useCallback(async () => {
     if (spinStatus) return
