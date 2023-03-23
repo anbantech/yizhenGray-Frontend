@@ -86,7 +86,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     if (taskInfo.task_id && updateStatus !== 2) {
       getTaskDetail(taskInfo.task_id)
     }
-  }, [taskInfo.task_id, updateStatus])
+  }, [taskInfo.task_id, updateStatus, status])
 
   useEffect(() => {
     if (taskInfo.task_id && updateStatus === 2) {
