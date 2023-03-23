@@ -131,7 +131,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     return (
       <Dropdown overlay={menuTime}>
         <Space>
-          发现时间
+          发送时间
           <DownOutlined />
         </Space>
       </Dropdown>
@@ -217,7 +217,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
           <div className={styles.Header_Main}>
             <TimeDownMenu />
           </div>
-          <div className={styles.Header_Main}>
+          <div style={{ textAlign: 'left' }} className={styles.Header_Main}>
             <span>缺陷结果</span>
           </div>
           {(statusMemo === 1 || statusMemo === 0) && (
