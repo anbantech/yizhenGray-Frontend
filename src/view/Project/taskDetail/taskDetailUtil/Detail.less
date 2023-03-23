@@ -852,6 +852,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
   padding: 0 24px;
   background: #fff;
@@ -859,7 +860,7 @@
 }
 
 .Table_concent>div:nth-child(1) {
-flex: 0.08;
+  flex: 0.08;
   overflow: hidden;
   /* 超出要隐藏 */
   white-space: nowrap;
@@ -869,14 +870,14 @@ flex: 0.08;
 }
 
 .Table_concent>div:nth-child(2) {
-  overflow: hidden;
+   flex: 0.2;
+    
+   overflow: hidden;
   /* 超出要隐藏 */
-  white-space: nowrap;
+   white-space: nowrap;
   /* 让文字不换行 */
-  text-overflow: ellipsis;
+   text-overflow: ellipsis;
   /* 让截断的文字显示为点点。还有一个值是clip意截断不显示点点 */
-  flex: 0.2;
-  padding-right: 10px;
 }
 
 .Table_concent>div:nth-child(3) {
@@ -897,7 +898,6 @@ flex: 0.08;
   text-overflow: ellipsis;
   /* 让截断的文字显示为点点。还有一个值是clip意截断不显示点点 */
   flex: 0.1;
-  padding-right: 10px;
 }
 
 .Table_concent>div:nth-child(5) {
@@ -908,7 +908,6 @@ flex: 0.08;
   text-overflow: ellipsis;
   /* 让截断的文字显示为点点。还有一个值是clip意截断不显示点点 */
   flex: 0.14;
-  padding-right: 10px;
 }
 
 .Table_concent>div:nth-child(6) {
