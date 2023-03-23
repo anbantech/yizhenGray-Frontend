@@ -148,12 +148,13 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
       task_id: taskID,
       error_id: caseID
     }
-    const res = await rePlayTask(idArray)
-    if (res.code === 0) {
-      setReplayId(caseID)
-    }
-    if (res.code === 2080) {
-      message.error(res.message)
+    try {
+      const res = await rePlayTask(idArray)
+      if (res.code === 0) {
+        setReplayId(caseID)
+      }
+    } catch (error) {
+      message.error(error)
     }
   }
 
@@ -184,7 +185,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   // 查看仿真详情弹出框
 
   const lookDetailModal = (item: Detail_Type) => {
-    detailInfoRef.current = item.crash_info[Object.keys(item.crash_info)[0]].payload
+    detailInfoRef.current = item.crash_info
     setIsModalVisible(true)
   }
 
