@@ -182,32 +182,36 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             <span>动态监控</span>
           </div>
         )}
-        <div
-          role='button'
-          className={styles.ImageContioner}
-          tabIndex={0}
-          onClick={() => {
-            beginOrOver()
-          }}
-        >
-          {[2, 3, 4, 8, 9].includes(status) ? (
-            <>
-              <Spin spinning={spinStatus && index === 1} indicator={antIcon}>
-                <img className={styles.ImageSize} src={over} alt='stopCourse' />
-              </Spin>
-              <span>结束任务</span>
-            </>
-          ) : [0, 1].includes(status) ? (
-            <>
-              <Tooltip placement='bottom' title='重新测试当前任务（重新发送已经测试过的用例）'>
-                <Spin spinning={spinStatus && index === 2} indicator={antIcon}>
-                  <img className={styles.ImageSize} src={Begin} alt='beginCourse' />
-                </Spin>
-              </Tooltip>
-              <span>重测任务</span>
-            </>
-          ) : null}
-        </div>
+        {![0, 1].includes(status) && (
+          <div
+            role='button'
+            className={styles.ImageContioner}
+            tabIndex={0}
+            onClick={() => {
+              beginOrOver()
+            }}
+          >
+            {
+              [2, 3, 4, 8, 9].includes(status) && (
+                <>
+                  <Spin spinning={spinStatus && index === 1} indicator={antIcon}>
+                    <img className={styles.ImageSize} src={over} alt='stopCourse' />
+                  </Spin>
+                  <span>结束任务</span>
+                </>
+              )
+              // ) : [0, 1].includes(status) ? (
+              //   <>
+              //     <Tooltip placement='bottom' title='重新测试当前任务（重新发送已经测试过的用例）'>
+              //       <Spin spinning={spinStatus && index === 2} indicator={antIcon}>
+              //         <img className={styles.ImageSize} src={Begin} alt='beginCourse' />
+              //       </Spin>
+              //     </Tooltip>
+              //     <span>重测任务</span>
+              //   </>
+            }
+          </div>
+        )}
         {[0, 1, 5, 6].includes(status) && (
           <div
             role='button'
