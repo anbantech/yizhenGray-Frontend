@@ -54,7 +54,7 @@ function Login() {
         <div className={styles.loginRightDes}>
           <span>登录</span>
           {/* <span> 欢迎使用网络协议模糊测试工具 </span> */}
-          <span>欢迎使用易复协议模糊测试系统 </span>
+          <span>欢迎使用 易复嵌入式模糊测试系统 </span>
         </div>
         <div className={styles.loginRightForm}>
           <Form name='basic' onValuesChange={onValuesChange} layout='vertical' initialValues={{ remember: true }} form={form} autoComplete='off'>
