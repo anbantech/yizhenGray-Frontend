@@ -6,6 +6,7 @@ export const getCurretTimeString = () => `${+new Date()}`.slice(0, 10)
 
 interface InfoType {
   task_status: number
+  task_id: number
 }
 
 const UseWebsocket = (id?: number) => {
