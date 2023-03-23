@@ -89,7 +89,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   }, [taskInfo.task_id, updateStatus])
 
   useEffect(() => {
-    if (taskInfo.task_id && (taskDetailInfo?.status === 2 || updateStatus === 2)) {
+    if (taskInfo.task_id && updateStatus === 2) {
       timer.current = setInterval(() => {
         getTaskDetail(taskInfo.task_id)
       }, 1000)

@@ -87,7 +87,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       title: () => {
         return (
           <div>
-            <span> {`异常用例${params.case_type === '' ? '(全部)' : params.is_wrong === '0' ? '(否)' : '(是)'}`} </span>
+            <span> {`异常用例${params.case_type === '' ? '(全部)' : params.case_type === '0' ? '(否)' : '(是)'}`} </span>
           </div>
         )
       },
