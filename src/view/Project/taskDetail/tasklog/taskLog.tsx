@@ -241,7 +241,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     <Tooltip title={item.id}>
                       <div>{item.id}</div>
                     </Tooltip>
-                    <div className={styles.footerresve}>
+                    <div>
                       <div className={styles.dataInfoContainer}>
                         <Tooltip title={item.send_data[0]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
                           <span className={styles.dataLongInfo}>{item.send_data[0] || '无'}</span>
@@ -266,7 +266,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                           })}
                       </div>
                     </div>
-                    <div className={styles.footerresve}>
+                    <div>
                       <div className={styles.dataInfoContainer}>
                         <Tooltip title={item.recv_data[0]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
                           <span className={styles.dataLongInfo}>{item.recv_data[0] || '无'}</span>
