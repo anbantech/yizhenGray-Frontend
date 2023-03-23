@@ -114,7 +114,8 @@ function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
           <span className={styles.cardConcent}>分支覆盖率</span>
           <span className={styles.cardTaskDetail}>{taskMapInfo.branch_coverage}</span>
         </div>
-        <div className={styles.card_coverage}>
+        <div className={styles.card_line} />
+        <div style={{ paddingLeft: '10px' }} className={styles.card_coverage}>
           <span className={styles.cardConcent}>语句覆盖率</span>
           <span className={styles.cardTaskDetail}>{taskMapInfo.statement_coverage}</span>
         </div>
