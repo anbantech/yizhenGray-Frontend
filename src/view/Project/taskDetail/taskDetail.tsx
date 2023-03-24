@@ -28,7 +28,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   const RequsetParams = {
     task_id: +taskInfo.task_id,
     page: 1,
-    page_size: 6,
+    page_size: 10,
     start_time: '',
     end_time: '',
     case_type: '',
