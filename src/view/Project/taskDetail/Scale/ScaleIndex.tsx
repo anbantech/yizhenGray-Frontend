@@ -182,7 +182,7 @@ function Scale(props: any) {
   return (
     <>
       <Context.Provider value={{ test_id, isTesting, logId, currentType }}>
-        <TaskDetailModal name='缺陷详情' value={data} />
+        {!isTesting ? <TaskDetailModal name='缺陷详情' value={data} /> : null}
         <div className={styles.Detail}>
           {[0, 1, 4].includes(loopStatus) ? (
             <NoScaleData loopStatus={loopStatus} />
