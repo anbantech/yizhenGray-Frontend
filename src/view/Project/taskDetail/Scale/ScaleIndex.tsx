@@ -8,7 +8,7 @@ import memoryBlue from 'Src/assets/Contents/memoryBlue.svg'
 import registereBlue from 'Src/assets/Contents/registerBlue.svg'
 import RectangleButton from 'Src/components/Button/rectangle'
 import yz_coverage_select from 'Src/assets/scale/yz_coverage_select.svg'
-
+import TaskDetailModal from 'Src/components/Modal/taskModal/TaskDetailModal'
 import yz_performance_unselect from 'Src/assets/scale/yz_performance_unselect.svg'
 import yz_performance_select from 'Src/assets/scale/yz_performance_select.svg'
 import yz_coverage_unselect from 'Src/assets/scale/yz_coverage_unselect.svg'
@@ -107,6 +107,7 @@ function Scale(props: any) {
   const test_id = props.location?.state?.test_Id
   const logId = props.location?.state?.logId
   const isTesting = props.location?.state?.isTesting
+  const data = props.location?.state?.data
   const [currentType, setCurrentType] = useState<string>(isTesting ? ' Memory' : 'Register')
   const [loopStatus, setLoopStatus] = useState<number>(2)
   const changeCurrentType = (e: any) => {
@@ -181,6 +182,7 @@ function Scale(props: any) {
   return (
     <>
       <Context.Provider value={{ test_id, isTesting, logId, currentType }}>
+        <TaskDetailModal name='缺陷详情' value={data} />
         <div className={styles.Detail}>
           {[0, 1, 4].includes(loopStatus) ? (
             <NoScaleData loopStatus={loopStatus} />
