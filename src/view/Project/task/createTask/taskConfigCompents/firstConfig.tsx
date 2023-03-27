@@ -150,7 +150,6 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   }, [form, taskInfo.data])
   return (
     <div className={styles.stepBaseMain}>
-      <p>{JSON.stringify(scroll)}</p>
       <Form name='basic' className={styles.stepBaseMain_Form} {...layout} onFieldsChange={onChange} autoComplete='off' form={form} size='large'>
         <Form.Item
           label='任务名称'
