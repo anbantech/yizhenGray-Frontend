@@ -2,7 +2,7 @@ import { DownOutlined } from '@ant-design/icons'
 import { Dropdown, Menu, message, Space, Tooltip } from 'antd'
 import { useHistory } from 'react-router'
 import globalStyle from 'Src/view/Project/project/project.less'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { getTime } from 'Src/util/baseFn'
 import { copyText } from 'Src/util/common'
 import NoData from 'Src/view/404/NoData/NoData'
@@ -10,7 +10,6 @@ import { rePlayTask } from 'Src/services/api/taskApi'
 import errorFrameCopy from 'Src/assets/image/errorFrameCopy.svg'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import { CrashInfoMap } from 'Utils/DataMap/dataMap'
-import TaskDetailModal from 'Src/components/Modal/taskModal/TaskDetailModal'
 import styles from '../taskDetailUtil/Detail.less'
 import { taskDetailInfoType } from '../taskDetail'
 import { projectInfoType } from '../../task/taskList/task'
@@ -60,10 +59,6 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
 
   const [currentTypeTime, setCurrentTypeTime] = useState('ascend')
 
-  const [IsModalVisible, setIsModalVisible] = useState(false)
-
-  // 记录每条仿真的信息
-  const detailInfoRef = useRef({})
   const setOperation = (value1?: any, type?: string, value2?: any) => {
     switch (type) {
       case 'page':
@@ -131,7 +126,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     return (
       <Dropdown overlay={menuTime}>
         <Space>
-          发现时间
+          发送时间
           <DownOutlined />
         </Space>
       </Dropdown>
@@ -159,10 +154,10 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   }
 
   // 跳转仿真
-  const inScale = (id: number, value: boolean) => {
+  const inScale = (value: boolean, data: Detail_Type) => {
     history.push({
       pathname: '/projects/Tasks/Detail/Scale',
-      state: { taskInfo, projectInfo, isTesting: value, logId: id }
+      state: { taskInfo, projectInfo, isTesting: value, logId: data.id, data }
     })
   }
 
@@ -176,18 +171,6 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
       }
     }
   }, [])
-
-  // 查看仿真详情
-  const modalClose = () => {
-    setIsModalVisible(!IsModalVisible)
-  }
-
-  // 查看仿真详情弹出框
-
-  const lookDetailModal = (item: Detail_Type) => {
-    detailInfoRef.current = item.crash_info
-    setIsModalVisible(true)
-  }
 
   useEffect(() => {
     if (status !== 8) {
@@ -217,7 +200,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
           <div className={styles.Header_Main}>
             <TimeDownMenu />
           </div>
-          <div className={styles.Header_Main}>
+          <div style={{ textAlign: 'left' }} className={styles.Header_Main}>
             <span>缺陷结果</span>
           </div>
           {(statusMemo === 1 || statusMemo === 0) && (
@@ -305,36 +288,24 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     </div>
                     {[0, 1].includes(status) && (
                       <div className={styles.Opera_detaile}>
-                        {item.send_data.length > 1 && [0, 1].includes(status) && (
-                          <span role='button' tabIndex={0} className={styles.operate_container} onClick={() => changeToggleStatus(item.id)}>
-                            {currentOpenId === item.id ? '收起' : '展开'}
-                          </span>
-                        )}
-
-                        {item.case_type ? (
-                          <span
-                            className={styles.operate_container}
-                            role='button'
-                            tabIndex={0}
-                            onClick={() => {
-                              lookDetailModal(item)
-                            }}
-                          >
-                            详情
-                          </span>
-                        ) : null}
                         {item.case_type ? (
                           <span
                             className={styles.operate_containers}
                             role='button'
                             tabIndex={0}
                             onClick={() => {
-                              inScale(item.id, false)
+                              inScale(false, item)
                             }}
                           >
-                            仿真信息
+                            详情
                           </span>
                         ) : null}
+                        {item.send_data.length > 1 && [0, 1].includes(status) && (
+                          <span role='button' tabIndex={0} className={styles.operate_container} onClick={() => changeToggleStatus(item.id)}>
+                            {currentOpenId === item.id ? '收起' : '展开'}
+                          </span>
+                        )}
+
                         {[0, 1].includes(status) ? (
                           <span
                             className={styles.operate_container}
@@ -360,7 +331,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
       <div className={globalStyle.AnBan_PaginationsAge}>
         <PaginationsAge length={total} num={10} getParams={setOperation} pagenums={params.page} />
       </div>
-      <TaskDetailModal IsModalVisible={IsModalVisible} modalClose={modalClose} concent={detailInfoRef.current} name='缺陷详情' />
+      {/* <TaskDetailModal IsModalVisible={IsModalVisible} modalClose={modalClose} concent={detailInfoRef.current} name='缺陷详情' /> */}
     </div>
   )
 }

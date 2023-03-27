@@ -1,11 +1,11 @@
 import React from 'react'
-import 'antd/dist/antd.css'
 import { CrashInfoMap } from 'Src/util/DataMap/dataMap'
-import { Modal, Button } from 'antd'
+
+import TaskStyles from 'Src/view/Project/task/createTask/newCreateTask.less'
 import styles from '../BaseModle.less'
 
 function TaskDetailModal(props: any) {
-  const { IsModalVisible, modalClose, name, concent } = props
+  const { name, value } = props
 
   const getFileName = (value: string) => {
     if (!value) return ''
@@ -13,69 +13,72 @@ function TaskDetailModal(props: any) {
     return splitArray[splitArray.length - 1]
   }
   return (
-    <Modal
-      className={styles.modleDeatilStyle}
-      visible={IsModalVisible}
-      width='460px'
-      title={name}
-      onCancel={() => {
-        modalClose(false)
-      }}
-      footer={[
-        <Button
-          className={styles.btn_cancel}
-          key='back'
-          onClick={() => {
-            modalClose(false)
-          }}
-        >
-          关闭
-        </Button>
-      ]}
-    >
-      {Object.keys(concent).length >= 1 && (
-        <div>
-          <div className={styles.pc}>
-            <span className={styles.detailLeft} style={{ paddingRight: '10px' }}>
-              缺陷结果 :{' '}
-            </span>{' '}
-            <span> {CrashInfoMap[+Object.keys(concent)[0]]}</span>
-          </div>
-          <div className={styles.pc}>
-            <span className={styles.detailLeft} style={{ paddingRight: '20px' }}>
-              PC指针 :{' '}
-            </span>
-            <div className={styles.pcRight}>
-              {concent[Object.keys(concent)[0]]?.payload?.PC.map((item: string) => {
-                return (
-                  <div key={item} className={styles.pcRightConcent}>
-                    <span className={styles.pcRightConcentChart}> {item}</span>
-                  </div>
-                )
-              })}
+    <div className={TaskStyles.taskMain}>
+      <div className={TaskStyles.taskMain_header}>
+        <span className={TaskStyles.taskMain_title}>{name}</span>
+      </div>
+      <div className={styles.background}>
+        {Object.keys(value.crash_info).length >= 1 && (
+          <div className={styles.concent_layout}>
+            <div className={styles.concent_layoutLeft}>
+              <div className={styles.pc}>
+                <span className={styles.detailLeft} style={{ paddingRight: '10px' }}>
+                  缺陷结果 :{' '}
+                </span>{' '}
+                <span> {CrashInfoMap[+Object.keys(value.crash_info)[0]]}</span>
+              </div>
+              <div className={styles.pc}>
+                <span className={styles.detailLeft} style={{ paddingRight: '10px' }}>
+                  用例编号 :{' '}
+                </span>{' '}
+                <span> {value.crash_info[Object.keys(value.crash_info)[0]]?.payload.funcName} </span>
+              </div>
+              <div className={styles.pc}>
+                <span className={styles.detailLeft} style={{ paddingRight: '24px' }}>
+                  文件名 :{' '}
+                </span>{' '}
+                <span> {getFileName(value.crash_info[Object.keys(value.crash_info)[0]]?.payload.fileName)}</span>
+              </div>
+
+              <div className={styles.pc}>
+                <span style={{ paddingRight: '37px' }} className={styles.detailLeft}>
+                  行号 :{' '}
+                </span>{' '}
+                <span> {value.crash_info[Object.keys(value.crash_info)[0]]?.payload.lines} </span>
+              </div>
+            </div>
+            <div className={styles.concent_layoutRight}>
+              <div className={styles.pc}>
+                <span className={styles.detailLeft} style={{ paddingRight: '18px' }}>
+                  PC指针 :{' '}
+                </span>
+                <div className={styles.pcRight}>
+                  {value.crash_info[Object.keys(value.crash_info)[0]]?.payload?.PC.map((item: string) => {
+                    return (
+                      <div key={item} className={styles.pcRightConcent}>
+                        <span className={styles.pcRightConcentChart}> {item}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+              <div className={styles.pc}>
+                <span className={styles.detailLeft} style={{ paddingRight: '24px' }}>
+                  函数名 :{' '}
+                </span>{' '}
+                <span> {value.crash_info[Object.keys(value.crash_info)[0]]?.payload.funcName} </span>
+              </div>
+              <div className={styles.pc}>
+                <span style={{ paddingRight: '10px' }} className={styles.detailLeft}>
+                  发现时间 :{' '}
+                </span>{' '}
+                <span> {value.create_time} </span>
+              </div>
             </div>
           </div>
-          <div className={styles.pc}>
-            <span className={styles.detailLeft} style={{ paddingRight: '24px' }}>
-              文件名 :{' '}
-            </span>{' '}
-            <span> {getFileName(concent[Object.keys(concent)[0]]?.payload.fileName)}</span>
-          </div>
-          <div className={styles.pc}>
-            <span className={styles.detailLeft} style={{ paddingRight: '25px' }}>
-              函数名 :{' '}
-            </span>{' '}
-            <span> {concent[Object.keys(concent)[0]]?.payload.funcName} </span>
-          </div>
-          <div className={styles.pc}>
-            <span style={{ paddingRight: '37px' }} className={styles.detailLeft}>
-              行号 :{' '}
-            </span>{' '}
-            <span> {concent[Object.keys(concent)[0]]?.payload.lines} </span>
-          </div>
-        </div>
-      )}
-    </Modal>
+        )}
+      </div>
+    </div>
   )
 }
 
