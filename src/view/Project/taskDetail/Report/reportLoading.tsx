@@ -1,11 +1,16 @@
 import React from 'react'
 import styles from './Report.less'
 
-const ReportLoading: React.FC = () => {
+interface ReportValue {
+  value: string
+}
+
+const ReportLoading: React.FC<ReportValue> = (props: ReportValue) => {
+  const { value } = props
   return (
     <div className={styles.reportLoadingBody}>
       <div className={styles.loading}>
-        <h2>报告正在生成中</h2>
+        <h2>{value}</h2>
         <span />
         <span />
         <span />

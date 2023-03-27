@@ -104,6 +104,7 @@ const showTitleMap = {
   test_time: '运行时长',
   status: '状态'
 }
+
 function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
   const taskMapInfo = props.taskDetailInfo
   const { lookLog } = props
