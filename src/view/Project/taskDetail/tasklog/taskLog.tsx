@@ -276,15 +276,18 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     </div>
                     <div>{item.case_type ? '是' : '否'}</div>
                     <div>{getTime(item.update_time)}</div>
-                    <div>
-                      <Tooltip
-                        title={CrashInfoMap[+Object.keys(item.crash_info)[0]]}
-                        placement='bottom'
-                        color='#ffffff'
-                        overlayClassName={styles.overlay}
-                      >
-                        <span className={styles.dataLongInfo}>{CrashInfoMap[+Object.keys(item.crash_info)[0]]}</span>
-                      </Tooltip>
+                    <div style={{ textAlign: 'left' }}>
+                      <div className={styles.dataLongInfoResult}>
+                        {Object.keys(item.crash_info).map(item => {
+                          return (
+                            <>
+                              <Tooltip title={CrashInfoMap[+item]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                                <span>{CrashInfoMap[+item]}</span>
+                              </Tooltip>
+                            </>
+                          )
+                        })}
+                      </div>
                     </div>
                     {[0, 1].includes(status) && (
                       <div className={styles.Opera_detaile}>

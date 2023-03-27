@@ -52,8 +52,7 @@ const TaskForm = (props: PropType) => {
       const excitationInfo = { sender_id, group_name }
       setExcitationList([excitationInfo])
       setnodeList(() => {
-        const nodeList = simu_instance_id
-        return [nodeList]
+        return [...simu_instance_id]
       })
       const formData = {
         name,
