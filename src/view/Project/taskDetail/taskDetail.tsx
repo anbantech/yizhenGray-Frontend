@@ -91,13 +91,15 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   }
   const getMessageStatus = React.useCallback(() => {
     if (messageInfo && messageInfo.task_id) {
-      if (+messageInfo.task_id !== +taskInfo.task_id) return
-      if (updateStatus === messageInfo.task_status) return
-      setUpdateStatus(messageInfo.task_status)
-      if ([1, 4].includes(messageInfo.task_status)) {
-        setSpinning(true)
+      if (+messageInfo.task_id === +taskInfo.task_id) {
+        if (updateStatus !== messageInfo.task_status) {
+          setUpdateStatus(messageInfo.task_status)
+          if ([1, 4].includes(messageInfo.task_status)) {
+            setSpinning(true)
+          }
+        }
+        getTaskDetail(taskInfo.task_id)
       }
-      getTaskDetail(taskInfo.task_id)
     }
   }, [messageInfo, taskInfo.task_id, updateStatus])
 
