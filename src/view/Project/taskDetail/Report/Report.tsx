@@ -101,7 +101,7 @@ function Report(props: any) {
           </div>
         )
       ) : (
-        <ReportLoading />
+        <ReportLoading value='报告正在加载中' />
       )}
     </>
   )

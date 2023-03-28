@@ -1,6 +1,6 @@
 import { Form, Input, Select } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
-import React, { useEffect, useImperativeHandle, useState } from 'react'
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { excitationListFn } from 'Src/services/api/excitationApi'
 import { createTaskFn, getSimulateNode, updateTask } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
@@ -48,9 +48,11 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   const { onChange, id, taskInfo } = props
   const [form] = useForm()
   const { Option } = Select
+  const [params, setParams] = useState<Resparams>(request)
   const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
   const [nodeList, setNodeList] = useState<number[]>([])
-
+  const scrollRef = useRef(-1)
+  const pageRef = useRef(0)
   const createOneExcitationFn = React.useCallback(async () => {
     const values = await form.validateFields()
     try {
@@ -101,18 +103,35 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     }
   }
   const getExcitationList = async (value: Resparams) => {
+    if (scrollRef.current === pageRef.current) return
     try {
       const result = await excitationListFn(value)
-      if (result.data) {
-        setExcitationList(result.data.results)
+      if (result.data !== null && result.data !== undefined) {
+        scrollRef.current = result.data.total
+        const res = result.data.results
+        const list = [...excitationList, ...res]
+        pageRef.current = list.length
+        setExcitationList([...list])
       }
     } catch (error) {
       throwErrorMessage(error, { 1004: '请求资源未找到' })
     }
   }
 
+  const onScrollData = (e: React.UIEvent) => {
+    const target = e.target as HTMLLIElement
+    if (target.scrollTop + target.offsetHeight >= target.scrollHeight) {
+      setParams((pre: Resparams) => {
+        return { ...pre, page: pre.page + 1 }
+      })
+    }
+  }
+
   useEffect(() => {
-    getExcitationList(request)
+    getExcitationList(params)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params])
+  useEffect(() => {
     getNode()
     if (taskInfo.data) {
       const { name, desc, project_id, work_time, crash_num, sender_id, simu_instance_id, beat_unit } = taskInfo.data as any
@@ -259,7 +278,12 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           </Select>
         </Form.Item>
         <Form.Item label='交互' name='sender_id' validateFirst validateTrigger={['onBlur']} rules={[{ required: true, message: '请选择交互' }]}>
-          <Select placeholder='请选择交互'>
+          <Select
+            placeholder='请选择交互'
+            onPopupScroll={e => {
+              onScrollData(e)
+            }}
+          >
             {
               /**
                * 根据连接方式列表渲染下拉框可选择的设备比特率

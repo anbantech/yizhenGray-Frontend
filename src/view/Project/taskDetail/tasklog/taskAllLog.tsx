@@ -177,6 +177,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       width: '15%'
     }
   ]
+
   return (
     <div className={styles.Detail}>
       <span className={styles.useCaseTitle}>日志</span>

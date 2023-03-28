@@ -12,7 +12,7 @@ import report from 'Image/report.svg'
 import over from 'Image/overTask.svg'
 import { throwErrorMessage } from 'Src/util/message'
 import { bgTest, deleteExampleTask, rePlayTask, stopcontuine, stoppaused, stoptest } from 'Src/services/api/taskApi'
-import UseWebsocket from 'Src/webSocket/useWebSocket'
+
 import styles from '../taskDetail.less'
 import { taskDetailInfoType } from '../taskDetail'
 import { projectInfoType } from '../../task/taskList/task'
@@ -25,7 +25,6 @@ interface taskDetailType<S, T> {
 interface propsResTaskDetailType<T> {
   taskDetailInfo: T
   jumpLookTaskInfo: () => void
-  setUpdateStatus: any
   infoMap: taskDetailType<taskDetailInfoType, projectInfoType>
 }
 
@@ -37,7 +36,6 @@ const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
 function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
   const { taskInfo, projectInfo } = props.infoMap
   const { name, start_time, end_time, status, id, project_id, desc } = props.taskDetailInfo
-  const [messageInfo] = UseWebsocket(+taskInfo.task_id)
   const [spinStatus, setSpinStatus] = React.useState(false)
 
   const [index, setIndex] = React.useState(0)
@@ -48,16 +46,11 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       state: { taskInfo, projectInfo, test_Id: id, isTesting: true }
     })
   }
-
   React.useEffect(() => {
-    if (messageInfo && messageInfo.task_id) {
-      if (+messageInfo.task_id === +taskInfo.task_id) {
-        setSpinStatus(false)
-        props.setUpdateStatus(messageInfo.task_status)
-      }
+    if (status) {
+      setSpinStatus(false)
     }
-  }, [messageInfo, props, taskInfo.task_id])
-
+  }, [status])
   const continueOrStop = React.useCallback(async () => {
     if (spinStatus) return
     if ([2, 8].includes(status)) {
@@ -149,7 +142,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
           </div>
         </div>
         <div className={styles.taskDetailHead_Main_left_footer}>
-          <span> {`任务描述:${desc}`}</span>
+          <span> {`任务描述 : ${desc}`}</span>
           <span>
             {' '}
             {[0, 1].includes(status)
