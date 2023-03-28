@@ -69,7 +69,7 @@ function Report(props: any) {
   // 下载报告
 
   const exportReportZip = async () => {
-    const name = search.split('?')[2].split('=')
+    const name = decodeURIComponent(search).split('?')[2].split('=')
     const datajsFileString = `const reportData=${JSON.stringify(reportData)};window.reportData=reportData;`
     const datajsFileBlob = new Blob([datajsFileString], { type: 'application/javascript' })
     const htmlFileBlob = (await axios.get('/report/index.html', { responseType: 'blob' })).data

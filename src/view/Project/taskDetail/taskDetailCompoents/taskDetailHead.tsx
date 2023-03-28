@@ -51,6 +51,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setSpinStatus(false)
     }
   }, [status])
+
   const continueOrStop = React.useCallback(async () => {
     if (spinStatus) return
     if ([2, 8].includes(status)) {
@@ -117,6 +118,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       message.error(error.message)
     }
   }, [id, spinStatus])
+
   const lookTaskInfo = React.useCallback(() => {
     props.jumpLookTaskInfo()
   }, [props])

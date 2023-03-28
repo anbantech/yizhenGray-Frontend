@@ -14,13 +14,12 @@ function UseGetTestLog(params: testlogs, updateStatus: number) {
         setLogData(log.data.results as any)
         setTotal(log.data.total)
       }
-      return log
     } catch (error) {
       throwErrorMessage(error)
     }
   }
   useEffect(() => {
-    if (params) {
+    if (params && updateStatus !== 2) {
       getlog(params)
     }
   }, [params, updateStatus])

@@ -149,7 +149,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
         setReplayId(caseID)
       }
     } catch (error) {
-      message.error(error)
+      message.error(error.message)
     }
   }
 
@@ -280,11 +280,11 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                       <div className={styles.dataLongInfoResult}>
                         {Object.keys(item.crash_info).map(item => {
                           return (
-                            <>
+                            <div key={item} className={styles.crash_infoTitle}>
                               <Tooltip title={CrashInfoMap[+item]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
                                 <span>{CrashInfoMap[+item]}</span>
                               </Tooltip>
-                            </>
+                            </div>
                           )
                         })}
                       </div>
