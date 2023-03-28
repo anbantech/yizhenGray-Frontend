@@ -17,6 +17,7 @@ function TaskDetailModal(props: any) {
       <div className={TaskStyles.taskMain_header}>
         <span className={TaskStyles.taskMain_title}>{name}</span>
       </div>
+
       <div className={styles.bottomBody}>
         {Object.keys(value.crash_info).map(item => {
           return (
@@ -34,7 +35,7 @@ function TaskDetailModal(props: any) {
                       <span className={styles.detailLeft} style={{ paddingRight: '10px' }}>
                         用例编号 :{' '}
                       </span>{' '}
-                      <span> {value.crash_info[+item]?.payload.funcName} </span>
+                      <span> {value.id} </span>
                     </div>
                     <div className={styles.pc}>
                       <span className={styles.detailLeft} style={{ paddingRight: '24px' }}>

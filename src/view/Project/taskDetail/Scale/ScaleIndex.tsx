@@ -213,39 +213,45 @@ function Scale(props: any) {
                 >
                   <Register ref={childRef.Register} />
                 </TabPane>
-                <TabPane
-                  tab={
-                    <span>
-                      <CoverRateSvg type={currentType} />
-                      覆盖率
-                    </span>
-                  }
-                  key='CoverRateSvg'
-                >
-                  <CoveRate ref={childRef.CoverRateSvg} />
-                </TabPane>
-                <TabPane
-                  tab={
-                    <span>
-                      <PerformanceSvg type={currentType} />
-                      性能
-                    </span>
-                  }
-                  key='PerformanceSvg'
-                >
-                  <Performance ref={childRef.PerformanceSvg} />
-                </TabPane>
-                <TabPane
-                  tab={
-                    <span>
-                      <TrackSvg type={currentType} />
-                      跟踪
-                    </span>
-                  }
-                  key='TrackSvg'
-                >
-                  <Track ref={childRef.TrackSvg} />
-                </TabPane>
+                {isTesting && (
+                  <TabPane
+                    tab={
+                      <span>
+                        <CoverRateSvg type={currentType} />
+                        覆盖率
+                      </span>
+                    }
+                    key='CoverRateSvg'
+                  >
+                    <CoveRate ref={childRef.CoverRateSvg} />
+                  </TabPane>
+                )}
+                {isTesting && (
+                  <TabPane
+                    tab={
+                      <span>
+                        <PerformanceSvg type={currentType} />
+                        性能
+                      </span>
+                    }
+                    key='PerformanceSvg'
+                  >
+                    <Performance ref={childRef.PerformanceSvg} />
+                  </TabPane>
+                )}
+                {isTesting && (
+                  <TabPane
+                    tab={
+                      <span>
+                        <TrackSvg type={currentType} />
+                        跟踪
+                      </span>
+                    }
+                    key='TrackSvg'
+                  >
+                    <Track ref={childRef.TrackSvg} />
+                  </TabPane>
+                )}
               </Tabs>
               {['Register', 'CoverRateSvg', 'PerformanceSvg', 'TrackSvg'].includes(currentType) && isTesting ? (
                 <RectangleButton
