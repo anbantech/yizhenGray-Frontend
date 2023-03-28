@@ -3,12 +3,12 @@ import { useEffect, useRef } from 'react'
 import { Spin } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory } from 'react-router'
 import { ResTaskDetail } from 'Src/globalType/Response'
+import UseWebsocket from 'Src/webSocket/useWebSocket'
 import useDepCollect from 'Src/util/Hooks/useDepCollect'
 import { TaskDetail } from 'Src/services/api/taskApi'
 import globalStyle from 'Src/view/Project/project/project.less'
 import { projectInfoType } from '../task/taskList/task'
 import DetailTestingTable from './tasklog/DetailTestingTable'
-
 import TaskDetailCard from './taskDetailCompoents/taskDetailCard'
 import TaskDetailHead from './taskDetailCompoents/taskDetailHead'
 import DetailTestedTable from './tasklog/taskLog'
@@ -27,6 +27,7 @@ interface taskDetailType<S, T> {
 
 const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetailType<taskDetailInfoType, projectInfoType>>> = props => {
   const { taskInfo, projectInfo } = props.location.state
+
   const RequsetParams = {
     task_id: +taskInfo.task_id,
     page: 1,
@@ -44,10 +45,11 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   const [taskDetailInfo, setTaskDetailInfo] = React.useState<ResTaskDetail>()
   const [updateStatus, setUpdateStatus] = React.useState(0)
   const timer = useRef<any>()
+  const [messageInfo] = UseWebsocket(+taskInfo.task_id)
   const [status, depCollect, depData] = useDepCollect(RequsetParams)
   const [total, logData] = UseGetTestLog(depData, updateStatus)
   const [spinning, setSpinning] = React.useState(false)
-  const updateRef = useRef<any>()
+  // const updateRef = useRef<any>()
   const getTaskDetail = async (value: string) => {
     const getTaskDetails = await TaskDetail(value)
     if (getTaskDetails.data) {
@@ -86,23 +88,33 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   const changePage = (page: number, pageSize: number) => {
     depCollect(true, { page, page_size: pageSize })
   }
-
-  useEffect(() => {
-    if (taskInfo.task_id && ![1, 2, 4].includes(updateStatus)) {
-      getTaskDetail(taskInfo.task_id)
-    }
-  }, [taskInfo.task_id, updateStatus])
-
-  useEffect(() => {
-    if ([1, 4].includes(updateStatus) && [1, 4].includes(+taskInfo.status)) {
-      setSpinning(true)
-      if (spinning) {
-        updateRef.current = setTimeout(() => {
-          setSpinning(false)
-        }, 2000)
+  const getMessageStatus = React.useCallback(() => {
+    if (messageInfo && messageInfo.task_id) {
+      if (+messageInfo.task_id === +taskInfo.task_id) {
+        if (updateStatus !== messageInfo.task_status) {
+          setUpdateStatus(messageInfo.task_status)
+        }
+        if (taskInfo.task_id && ![1, 2, 4].includes(messageInfo.task_status)) {
+          getTaskDetail(taskInfo.task_id)
+        }
       }
     }
-  }, [updateStatus, taskInfo.status, spinning])
+  }, [messageInfo, taskInfo.task_id, updateStatus])
+
+  useEffect(() => {
+    getMessageStatus()
+  }, [getMessageStatus, taskInfo.task_id, updateStatus])
+
+  // useEffect(() => {
+  //   if ([1, 4].includes(updateStatus) && [1, 4].includes(+taskInfo.status)) {
+  //     setSpinning(true)
+  //     if (spinning) {
+  //       updateRef.current = setTimeout(() => {
+  //         setSpinning(false)
+  //       }, 2000)
+  //     }
+  //   }
+  // }, [updateStatus, taskInfo.status, spinning])
 
   useEffect(() => {
     if (taskInfo.task_id && updateStatus === 2) {
@@ -114,19 +126,14 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
       clearInterval(timer.current)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskDetailInfo?.status, taskInfo.task_id, updateStatus, spinning])
+  }, [taskDetailInfo?.status, taskInfo.task_id, updateStatus])
 
   return (
     <Spin tip='数据重载ing' size='large' spinning={spinning}>
       <div className={globalStyle.AnBan_main}>
         {taskDetailInfo && (
           <>
-            <TaskDetailHead
-              taskDetailInfo={taskDetailInfo}
-              infoMap={props.location?.state}
-              jumpLookTaskInfo={jumpLookTaskInfo}
-              setUpdateStatus={setUpdateStatus}
-            />
+            <TaskDetailHead taskDetailInfo={taskDetailInfo} infoMap={props.location?.state} jumpLookTaskInfo={jumpLookTaskInfo} />
             <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
             {taskDetailInfo?.status === 2 ? (
               <DetailTestingTable params={depData} status={updateStatus} />
