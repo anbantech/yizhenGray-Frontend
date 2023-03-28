@@ -9,15 +9,17 @@ import { getTime } from 'Src/util/baseFn'
 import { throwErrorMessage } from 'Src/util/message'
 
 import styles from '../taskDetailUtil/Detail.less'
+import { ResTaskDetail } from 'Src/globalType/Response'
 
 interface propsType {
   params: any
   status: any
+  taskDetailInfo: ResTaskDetail
 }
 
 const customizeRender = () => <DefaultValueTips content='暂无用例' />
 const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
-  const { params, status } = props
+  const { params, status, taskDetailInfo } = props
   const timer = useRef<any>()
   const [spinning, setSpinning] = React.useState(true)
   const [logData, setLogData] = React.useState([])
@@ -32,24 +34,20 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       throwErrorMessage(error)
     }
   }, [params])
+
   useEffect(() => {
-    if (status === 2) {
-      timer.current = setInterval(() => {
-        getlog()
-          .then(res => {
-            setSpinning(false)
-            return res
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
-      }, 1000)
-    }
-    return () => {
-      clearInterval(timer.current)
+    if (status === 2 && taskDetailInfo.test_num) {
+      getlog()
+        .then(res => {
+          setSpinning(false)
+          return res
+        })
+        .catch(error => {
+          message.error(error.message)
+        })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status])
+  }, [status, taskDetailInfo.test_num])
 
   const columns = [
     {
