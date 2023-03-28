@@ -13,6 +13,7 @@ import TaskDetailCard from './taskDetailCompoents/taskDetailCard'
 import TaskDetailHead from './taskDetailCompoents/taskDetailHead'
 import DetailTestedTable from './tasklog/taskLog'
 import { UseGetTestLog } from './taskDetailUtil/getTestLog'
+import ReportLoading from './Report/reportLoading'
 
 export interface taskDetailInfoType {
   status: boolean
@@ -48,8 +49,8 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   const [messageInfo] = UseWebsocket(+taskInfo.task_id)
   const [status, depCollect, depData] = useDepCollect(RequsetParams)
   const [total, logData] = UseGetTestLog(depData, updateStatus)
-  const [spinning, setSpinning] = React.useState(false)
-  // const updateRef = useRef<any>()
+  const [spinning, setSpinning] = React.useState(true)
+  const updateRef = useRef<any>()
   const getTaskDetail = async (value: string) => {
     const getTaskDetails = await TaskDetail(value)
     if (getTaskDetails.data) {
@@ -90,14 +91,13 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   }
   const getMessageStatus = React.useCallback(() => {
     if (messageInfo && messageInfo.task_id) {
-      if (+messageInfo.task_id === +taskInfo.task_id) {
-        if (updateStatus !== messageInfo.task_status) {
-          setUpdateStatus(messageInfo.task_status)
-        }
-        if (taskInfo.task_id && ![1, 2, 4].includes(messageInfo.task_status)) {
-          getTaskDetail(taskInfo.task_id)
-        }
+      if (+messageInfo.task_id !== +taskInfo.task_id) return
+      if (updateStatus === messageInfo.task_status) return
+      setUpdateStatus(messageInfo.task_status)
+      if ([1, 4].includes(messageInfo.task_status)) {
+        setSpinning(true)
       }
+      getTaskDetail(taskInfo.task_id)
     }
   }, [messageInfo, taskInfo.task_id, updateStatus])
 
@@ -105,16 +105,16 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     getMessageStatus()
   }, [getMessageStatus, taskInfo.task_id, updateStatus])
 
-  // useEffect(() => {
-  //   if ([1, 4].includes(updateStatus) && [1, 4].includes(+taskInfo.status)) {
-  //     setSpinning(true)
-  //     if (spinning) {
-  //       updateRef.current = setTimeout(() => {
-  //         setSpinning(false)
-  //       }, 2000)
-  //     }
-  //   }
-  // }, [updateStatus, taskInfo.status, spinning])
+  useEffect(() => {
+    if ([1, 4].includes(updateStatus)) {
+      updateRef.current = setTimeout(() => {
+        setSpinning(false)
+      }, 5000)
+      return () => {
+        clearTimeout(updateRef.current)
+      }
+    }
+  }, [updateStatus, spinning])
 
   useEffect(() => {
     if (taskInfo.task_id && updateStatus === 2) {
@@ -129,31 +129,37 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   }, [taskDetailInfo?.status, taskInfo.task_id, updateStatus])
 
   return (
-    <Spin tip='数据重载ing' size='large' spinning={spinning}>
-      <div className={globalStyle.AnBan_main}>
-        {taskDetailInfo && (
-          <>
-            <TaskDetailHead taskDetailInfo={taskDetailInfo} infoMap={props.location?.state} jumpLookTaskInfo={jumpLookTaskInfo} />
-            <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
-            {taskDetailInfo?.status === 2 ? (
-              <DetailTestingTable params={depData} status={updateStatus} />
-            ) : (
-              <DetailTestedTable
-                status={updateStatus}
-                task_id={+taskInfo.task_id}
-                infoMap={props.location?.state}
-                testTimeSort={testTimeSort}
-                caseSort={caseSort}
-                changePage={changePage}
-                total={total as number}
-                params={depData}
-                logData={logData}
-              />
+    <>
+      {taskDetailInfo ? (
+        <Spin tip='数据重载ing' size='large' spinning={[1, 4].includes(updateStatus) && spinning}>
+          <div className={globalStyle.AnBan_main}>
+            {taskDetailInfo && (
+              <>
+                <TaskDetailHead taskDetailInfo={taskDetailInfo} infoMap={props.location?.state} jumpLookTaskInfo={jumpLookTaskInfo} />
+                <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
+                {taskDetailInfo?.status === 2 ? (
+                  <DetailTestingTable params={depData} status={updateStatus} />
+                ) : (
+                  <DetailTestedTable
+                    status={updateStatus}
+                    task_id={+taskInfo.task_id}
+                    infoMap={props.location?.state}
+                    testTimeSort={testTimeSort}
+                    caseSort={caseSort}
+                    changePage={changePage}
+                    total={total as number}
+                    params={depData}
+                    logData={logData}
+                  />
+                )}
+              </>
             )}
-          </>
-        )}
-      </div>
-    </Spin>
+          </div>
+        </Spin>
+      ) : (
+        <ReportLoading value='数据正在加载ing' />
+      )}
+    </>
   )
 }
 
