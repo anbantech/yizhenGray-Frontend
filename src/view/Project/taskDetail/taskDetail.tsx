@@ -140,7 +140,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
                 <TaskDetailHead taskDetailInfo={taskDetailInfo} infoMap={props.location?.state} jumpLookTaskInfo={jumpLookTaskInfo} />
                 <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
                 {taskDetailInfo?.status === 2 ? (
-                  <DetailTestingTable params={depData} status={updateStatus} />
+                  <DetailTestingTable params={depData} taskDetailInfo={taskDetailInfo} status={updateStatus} />
                 ) : (
                   <DetailTestedTable
                     status={updateStatus}
