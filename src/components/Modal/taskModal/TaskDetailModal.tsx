@@ -35,7 +35,7 @@ function TaskDetailModal(props: any) {
                       <span className={styles.detailLeft} style={{ paddingRight: '10px' }}>
                         用例编号 :{' '}
                       </span>{' '}
-                      <span> {value.id} </span>
+                      <span> {value.msg_index} </span>
                     </div>
                     <div className={styles.pc}>
                       <span className={styles.detailLeft} style={{ paddingRight: '24px' }}>
