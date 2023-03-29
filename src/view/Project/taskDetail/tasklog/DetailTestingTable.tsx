@@ -1,15 +1,14 @@
 /* eslint-disable indent */
 /* eslint-disable react/display-name */
 import { ConfigProvider, message, Table } from 'antd'
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import { getTestingLog } from 'Src/services/api/taskApi'
 import { CrashInfoMap } from 'Utils/DataMap/dataMap'
 import { getTime } from 'Src/util/baseFn'
 import { throwErrorMessage } from 'Src/util/message'
-
-import styles from '../taskDetailUtil/Detail.less'
 import { ResTaskDetail } from 'Src/globalType/Response'
+import styles from '../taskDetailUtil/Detail.less'
 
 interface propsType {
   params: any
@@ -20,7 +19,6 @@ interface propsType {
 const customizeRender = () => <DefaultValueTips content='暂无用例' />
 const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
   const { params, status, taskDetailInfo } = props
-  const timer = useRef<any>()
   const [spinning, setSpinning] = React.useState(true)
   const [logData, setLogData] = React.useState([])
   const getlog = useCallback(async () => {
