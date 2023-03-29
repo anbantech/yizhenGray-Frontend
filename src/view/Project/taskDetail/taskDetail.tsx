@@ -124,7 +124,6 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
         getTaskDetail(taskInfo.task_id)
       }, 1000)
     }
-    console.log(updateStatus, new Date())
     return () => {
       clearInterval(timer.current)
     }
