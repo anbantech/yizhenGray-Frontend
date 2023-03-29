@@ -102,9 +102,16 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
     {
       title: '用例编号',
       dataIndex: ' msg_index',
-      key: ' msg_index',
+      key: 'msg_index',
       ellipsis: true,
-      width: '10%'
+      width: '10%',
+      render: (text: any, record: any) => {
+        return (
+          <div className={styles.recv_data} key={record.id}>
+            <span className={styles.casetitles}>{record.msg_index}</span>
+          </div>
+        )
+      }
     },
     {
       title: '发送数据',
