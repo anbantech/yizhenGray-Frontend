@@ -44,6 +44,7 @@ interface DataType {
   send_data: string[]
   update_time: string
   update_user: string
+  msg_index: number
 }
 type Detail_Type = Record<string, any>
 const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
@@ -222,7 +223,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     }`}
                   >
                     <Tooltip title={item.id}>
-                      <div>{item.id}</div>
+                      <div>{item.msg_index}</div>
                     </Tooltip>
                     <div>
                       <div className={styles.dataInfoContainer}>

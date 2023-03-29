@@ -50,8 +50,8 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
   const columns = [
     {
       title: '用例编号',
-      dataIndex: 'id',
-      key: 'id',
+      dataIndex: 'msg_index',
+      key: 'msg_index',
       ellipsis: true,
       width: '10%'
     },

@@ -101,8 +101,8 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
   const columns = [
     {
       title: '用例编号',
-      dataIndex: 'id',
-      key: 'id',
+      dataIndex: ' msg_index',
+      key: ' msg_index',
       ellipsis: true,
       width: '10%'
     },
