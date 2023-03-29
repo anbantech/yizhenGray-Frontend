@@ -157,7 +157,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   // 跳转仿真
   const inScale = (value: boolean, data: Detail_Type) => {
     history.push({
-      pathname: '/projects/Tasks/Detail/Scale',
+      pathname: '/projects/Tasks/Detail/ScaleDetail',
       state: { taskInfo, projectInfo, isTesting: value, logId: data.id, data }
     })
   }
