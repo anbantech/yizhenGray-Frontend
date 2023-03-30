@@ -18,6 +18,7 @@ import DetailTestAlLTable from 'Src/view/Project/taskDetail/tasklog/taskAllLog'
 import ExcitationBase from 'Src/view/excitation/ExcitationBase'
 import TemplateList from 'Src/view/template/TemplateList/templateList'
 import Scale from 'Src/view/Project/taskDetail/Scale/ScaleIndex'
+
 // import CreateResponseTemplateComponent from 'Src/view/template/ResponseTemplate/createResponseTemplate'
 import CreateTemplateWrapper from 'Src/view/template/BaseTemplate/createTemplateWrapper'
 import ExcitationDraw from 'Src/view/excitation/excitationComponent/excitationDraw'
@@ -40,6 +41,7 @@ function content() {
         <Route path='/projects/Tasks/Detail/lookTaskDetailInfo' exact component={TaskInfo} />
         <Route path='/projects/Tasks/Detail/TaskLog' exact component={DetailTestAlLTable} />
         <Route path='/projects/Tasks/Detail/Scale' exact component={Scale} />
+        <Route path='/projects/Tasks/Detail/ScaleDetail' exact component={Scale} />
         <Route path='/excitationList' exact component={ExcitationList} />
         <Route path='/excitationList/Deatail' exact component={ExcitationBase} />
         <Route path='/excitationList/createOneExcitation' exact component={ExcitationBase} />
