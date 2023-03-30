@@ -1217,10 +1217,11 @@
 }
 
 .test::after {
-  -webkit-animation: dotanimate 1s infinite;
+  @animation: dotanimate 1s infinite;
   content: '';
-}
-@-webkit-keyframes dotAnimate {
+} 
+
+@keyframes dotAnimate {
   0%,
   100% {
     content: '';
