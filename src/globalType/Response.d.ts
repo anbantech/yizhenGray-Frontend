@@ -274,7 +274,7 @@ export interface ResTaskList {
 // 21. 任务详情
 
 export interface ResTaskDetail {
-  error_num(error_num: any)
+  error_num: number
   id: number
   name: string
   create_time: string
@@ -376,7 +376,7 @@ export interface Restestlogs {
     create_user: string
     update_user: string
     diagnosis: string
-    error_num?: number
+    error_num: number
   }
   total: number
   page_no: number
