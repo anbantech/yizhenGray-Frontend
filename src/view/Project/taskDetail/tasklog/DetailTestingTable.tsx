@@ -34,7 +34,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
   }, [params])
 
   useEffect(() => {
-    if (status === 2 && taskDetailInfo.test_num) {
+    if (status === 2 && (taskDetailInfo.test_num || taskDetailInfo.crash_num)) {
       getlog()
         .then(res => {
           setSpinning(false)

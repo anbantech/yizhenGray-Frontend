@@ -105,7 +105,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
 
   useEffect(() => {
     getMessageStatus()
-  }, [getMessageStatus, taskInfo.task_id, updateStatus])
+  }, [getMessageStatus, status, taskInfo.task_id, updateStatus])
 
   useEffect(() => {
     if ([1, 4].includes(updateStatus)) {
