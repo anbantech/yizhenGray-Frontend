@@ -45,7 +45,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, taskDetailInfo.test_num])
+  }, [status, taskDetailInfo.test_num, taskDetailInfo.crash_num])
 
   const columns = [
     {
