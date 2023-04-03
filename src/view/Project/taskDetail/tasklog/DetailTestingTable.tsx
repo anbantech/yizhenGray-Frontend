@@ -34,7 +34,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
   }, [params])
 
   useEffect(() => {
-    if (status === 2 && (taskDetailInfo.test_num || taskDetailInfo.crash_num)) {
+    if (status === 2 && (taskDetailInfo.test_num || taskDetailInfo.error_num)) {
       getlog()
         .then(res => {
           setSpinning(false)
@@ -45,7 +45,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, taskDetailInfo.test_num, taskDetailInfo.crash_num])
+  }, [status, taskDetailInfo.test_num, taskDetailInfo.error_num])
 
   const columns = [
     {
