@@ -22,4 +22,14 @@ const StepTip = () => {
     </div>
   )
 }
-export { Tip, StepTip }
+
+const WarnTip = () => {
+  return (
+    <div className={StyleSheet.stepTip}>
+      <Tooltip title='缺陷结果包含错误信息,警告信息(警告信息不是异常用例)' placement='bottom'>
+        <QuestionCircleOutlined style={{ fontSize: '15px' }} />
+      </Tooltip>
+    </div>
+  )
+}
+export { Tip, StepTip, WarnTip }
