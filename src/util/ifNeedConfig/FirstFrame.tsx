@@ -20,7 +20,7 @@ const FirstFrameChart = () => {
             left: 'center',
             top: 'center',
             style: {
-              text: '易复-协议模糊测试系统',
+              text: '易复-嵌入式模糊测试系统',
               fontSize: 80,
               fontWeight: 'bold',
               lineDash: [0, 200],

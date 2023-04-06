@@ -219,7 +219,13 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                   <div
                     key={item.id}
                     className={`${styles.Table_concent} ${
-                      status === 8 && replayId === item.id ? styles.footerError : item.case_type ? styles.footerDouble : null
+                      status === 8 && replayId === item.id
+                        ? Object.keys(item.crash_info)[0] && !item.case_type
+                          ? styles.warnLess
+                          : styles.footerError
+                        : item.case_type
+                        ? styles.footerDouble
+                        : null
                     }`}
                   >
                     <Tooltip title={item.id}>
@@ -292,7 +298,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     </div>
                     {[0, 1].includes(status) && (
                       <div className={styles.Opera_detaile}>
-                        {item.case_type ? (
+                        {Object.keys(item.crash_info)[0] ? (
                           <span
                             className={styles.operate_containers}
                             role='button'
