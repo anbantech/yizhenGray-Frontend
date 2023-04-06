@@ -202,17 +202,19 @@ function Scale(props: any) {
                     <MemoryMonitor />
                   </TabPane>
                 )}
-                <TabPane
-                  tab={
-                    <span>
-                      <RegisterSvg type={currentType} />
-                      寄存器
-                    </span>
-                  }
-                  key='Register'
-                >
-                  <Register ref={childRef.Register} />
-                </TabPane>
+                {(data?.case_type || isTesting) && (
+                  <TabPane
+                    tab={
+                      <span>
+                        <RegisterSvg type={currentType} />
+                        寄存器
+                      </span>
+                    }
+                    key='Register'
+                  >
+                    <Register ref={childRef.Register} />
+                  </TabPane>
+                )}
                 {isTesting && (
                   <TabPane
                     tab={
