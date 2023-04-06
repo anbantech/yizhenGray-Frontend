@@ -220,11 +220,11 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     key={item.id}
                     className={`${styles.Table_concent} ${
                       status === 8 && replayId === item.id
-                        ? Object.keys(item.crash_info)[0] && !item.case_type
-                          ? styles.warnLess
-                          : styles.footerError
+                        ? styles.footerError
                         : item.case_type
                         ? styles.footerDouble
+                        : Object.keys(item.crash_info)[0] && !item.case_type
+                        ? styles.warninfo
                         : null
                     }`}
                   >
