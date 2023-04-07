@@ -113,12 +113,12 @@ function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
       <div className={styles.coverage_main}>
         <div className={styles.card_coverage}>
           <span className={styles.cardConcent}>Crash数量</span>
-          <span className={styles.cardTaskDetail}>{taskMapInfo.branch_coverage}</span>
+          <span className={styles.cardTaskDetail}>{taskMapInfo.error_num}</span>
         </div>
         <div className={styles.card_line} />
         <div style={{ paddingLeft: '10px' }} className={styles.card_coverage}>
           <span className={styles.cardConcent}>Warn数量</span>
-          <span className={styles.cardTaskDetail}>{taskMapInfo.statement_coverage}</span>
+          <span className={styles.cardTaskDetail}>{taskMapInfo.warning_count}</span>
         </div>
       </div>
     )
@@ -129,12 +129,12 @@ function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
       <div className={styles.coverage_main}>
         <div className={styles.card_coverage}>
           <span className={styles.cardConcent}>分支覆盖率</span>
-          <span className={styles.cardTaskDetail}>{taskMapInfo.error_num}</span>
+          <span className={styles.cardTaskDetail}>{taskMapInfo.branch_coverage}</span>
         </div>
         <div className={styles.card_line} />
         <div style={{ paddingLeft: '10px' }} className={styles.card_coverage}>
           <span className={styles.cardConcent}>语句覆盖率</span>
-          <span className={styles.cardTaskDetail}>{taskMapInfo.warning_count}</span>
+          <span className={styles.cardTaskDetail}>{taskMapInfo.statement_coverage}</span>
         </div>
       </div>
     )
