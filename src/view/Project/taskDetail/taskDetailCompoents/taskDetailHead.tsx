@@ -54,7 +54,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
 
   const continueOrStop = React.useCallback(async () => {
     if (spinStatus) return
-    if ([2, 8].includes(status)) {
+    if ([2].includes(status)) {
       // 停止任务  通过任务ID
       setSpinStatus(true)
       setIndex(4)
@@ -81,7 +81,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
 
   const beginOrOver = React.useCallback(async () => {
     if (spinStatus) return
-    if ([2, 3, 4, 8, 9].includes(status)) {
+    if ([2, 3, 4, 9].includes(status)) {
       setIndex(1)
       // 停止任务  通过任务ID
       setSpinStatus(true)
@@ -164,7 +164,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             </div>
           </Link>
         )}
-        {[2, 3, 8, 9].includes(status) && (
+        {[2, 3, 9].includes(status) && (
           <div
             className={styles.ImageContioner}
             role='button'
@@ -187,7 +187,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             }}
           >
             {
-              [2, 3, 4, 8, 9].includes(status) && (
+              [2, 3, 4, 9].includes(status) && (
                 <>
                   <Spin spinning={spinStatus && index === 1} indicator={antIcon}>
                     <img className={styles.ImageSize} src={over} alt='stopCourse' />
@@ -228,7 +228,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             )}
           </div>
         )}
-        {[2, 3, 4, 8, 9].includes(status) && (
+        {[2, 3, 4, 9].includes(status) && (
           <div
             className={styles.ImageContioner}
             role='button'
@@ -237,7 +237,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
               continueOrStop()
             }}
           >
-            {[2, 8].includes(status) ? (
+            {[2].includes(status) ? (
               <Spin spinning={spinStatus && index === 4} indicator={antIcon}>
                 <img className={styles.ImageSize} src={stopCourse} alt='stopCourse' />
               </Spin>
@@ -246,7 +246,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
                 <img src={Begin} className={styles.ImageSize} alt='stopCourse' />
               </Spin>
             ) : null}
-            <span>{[2, 8].includes(status) ? '暂停任务' : '继续任务'}</span>
+            <span>{[2].includes(status) ? '暂停任务' : '继续任务'}</span>
           </div>
         )}
         {[-1].includes(status) ? (

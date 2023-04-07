@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 /* eslint-disable react/display-name */
-import { ConfigProvider, message, Table } from 'antd'
+import { ConfigProvider, message, Table, Tooltip } from 'antd'
 import React, { useCallback, useEffect } from 'react'
 import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import { getTestingLog } from 'Src/services/api/taskApi'
@@ -34,7 +34,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
   }, [params])
 
   useEffect(() => {
-    if (status === 2 && taskDetailInfo.test_num) {
+    if (status === 2 && (taskDetailInfo.test_num || taskDetailInfo.error_num || taskDetailInfo.warning_count)) {
       getlog()
         .then(res => {
           setSpinning(false)
@@ -45,7 +45,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, taskDetailInfo.test_num])
+  }, [status, taskDetailInfo.test_num, taskDetailInfo.error_num, taskDetailInfo.warning_count])
 
   const columns = [
     {
@@ -122,9 +122,17 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       ellipsis: true,
       width: '12.5%',
       render: (text: any, record: any) => (
-        <p className={styles.checkDetail} key={record.id}>
-          {CrashInfoMap[+Object.keys(record.crash_info)[0]]}
-        </p>
+        <div className={styles.dataLongInfoResult}>
+          {Object.keys(record.crash_info).map(item => {
+            return (
+              <div key={item} className={styles.crash_infoTitle}>
+                <Tooltip title={CrashInfoMap[+item]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                  <span>{CrashInfoMap[+item]}</span>
+                </Tooltip>
+              </div>
+            )
+          })}
+        </div>
       )
     }
   ]
@@ -138,7 +146,11 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
           rowKey={record => record.id}
           columns={columns}
           rowClassName={record => {
-            return record.case_type ? `${styles.tableStyleBackground}` : ''
+            return record.case_type && Object.keys(record.crash_info)[0]
+              ? `${styles.tableStyleBackground}`
+              : Object.keys(record.crash_info)[0] && !record.case_type
+              ? `${styles.warninfo}`
+              : ''
           }}
           loading={spinning}
           dataSource={logData}

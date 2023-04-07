@@ -108,6 +108,22 @@ const showTitleMap = {
 function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
   const taskMapInfo = props.taskDetailInfo
   const { lookLog } = props
+  const NumCard = () => {
+    return (
+      <div className={styles.coverage_main}>
+        <div className={styles.card_coverage}>
+          <span className={styles.cardConcent}>Crash数量</span>
+          <span className={styles.cardTaskDetail}>{taskMapInfo.error_num}</span>
+        </div>
+        <div className={styles.card_line} />
+        <div style={{ paddingLeft: '10px' }} className={styles.card_coverage}>
+          <span className={styles.cardConcent}>Warn数量</span>
+          <span className={styles.cardTaskDetail}>{taskMapInfo.warning_count}</span>
+        </div>
+      </div>
+    )
+  }
+
   const CoverageCard = () => {
     return (
       <div className={styles.coverage_main}>
@@ -127,15 +143,17 @@ function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
     <div className={styles.taskDetailCard}>
       {Object.keys(showTitleMap).map((item: string) => {
         return (
-          <div key={Math.random()} className={item !== 'coverage' ? styles.cardBody : styles.cardBodys}>
-            {item !== 'coverage' ? (
+          <div key={Math.random()} className={item === 'coverage' || item === 'error_num' ? styles.cardBodys : styles.cardBody}>
+            {item === 'coverage' ? (
+              <CoverageCard />
+            ) : item === 'error_num' ? (
+              <NumCard />
+            ) : (
               <CardComponents
                 lookLog={lookLog}
                 concent={showTitleMap[item as keyof typeof showTitleMap]}
                 value={taskMapInfo[item as keyof typeof taskMapInfo]}
               />
-            ) : (
-              <CoverageCard />
             )}
           </div>
         )

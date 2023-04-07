@@ -1,4 +1,5 @@
 import React from 'react'
+import { getTime } from 'Src/util/baseFn'
 import { CrashInfoMap } from 'Src/util/DataMap/dataMap'
 
 import TaskStyles from 'Src/view/Project/task/createTask/newCreateTask.less'
@@ -76,7 +77,7 @@ function TaskDetailModal(props: any) {
                       <span style={{ paddingRight: '10px' }} className={styles.detailLeft}>
                         发现时间 :{' '}
                       </span>{' '}
-                      <span> {value.create_time} </span>
+                      <span> {`${getTime(value.create_time)}`} </span>
                     </div>
                   </div>
                 </div>

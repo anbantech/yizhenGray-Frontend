@@ -4,6 +4,7 @@ import { useHistory } from 'react-router'
 import globalStyle from 'Src/view/Project/project/project.less'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { getTime } from 'Src/util/baseFn'
+import { WarnTip } from 'Src/view/excitation/excitationComponent/Tip'
 import { copyText } from 'Src/util/common'
 import NoData from 'Src/view/404/NoData/NoData'
 import { rePlayTask } from 'Src/services/api/taskApi'
@@ -11,6 +12,7 @@ import errorFrameCopy from 'Src/assets/image/errorFrameCopy.svg'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import { CrashInfoMap } from 'Utils/DataMap/dataMap'
 import styles from '../taskDetailUtil/Detail.less'
+
 import { taskDetailInfoType } from '../taskDetail'
 import { projectInfoType } from '../../task/taskList/task'
 
@@ -203,10 +205,11 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
           </div>
           <div style={{ textAlign: 'left' }} className={styles.Header_Main}>
             <span>缺陷结果</span>
+            <WarnTip />
           </div>
           {(statusMemo === 1 || statusMemo === 0) && (
             <div className={styles.Header_Main}>
-              <span>操作</span>
+              <span style={{ width: '100%' }}>操作</span>
             </div>
           )}
         </div>
@@ -219,7 +222,13 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                   <div
                     key={item.id}
                     className={`${styles.Table_concent} ${
-                      status === 8 && replayId === item.id ? styles.footerError : item.case_type ? styles.footerDouble : null
+                      status === 8 && replayId === item.id
+                        ? styles.footerError
+                        : item.case_type
+                        ? styles.footerDouble
+                        : Object.keys(item.crash_info)[0] && !item.case_type
+                        ? styles.warninfo
+                        : null
                     }`}
                   >
                     <Tooltip title={item.id}>
@@ -292,7 +301,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     </div>
                     {[0, 1].includes(status) && (
                       <div className={styles.Opera_detaile}>
-                        {item.case_type ? (
+                        {Object.keys(item.crash_info)[0] ? (
                           <span
                             className={styles.operate_containers}
                             role='button'

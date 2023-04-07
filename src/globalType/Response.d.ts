@@ -274,6 +274,7 @@ export interface ResTaskList {
 // 21. 任务详情
 
 export interface ResTaskDetail {
+  error_num: number
   id: number
   name: string
   create_time: string
@@ -294,6 +295,7 @@ export interface ResTaskDetail {
   test_time: number
   statement_coverage: string
   branch_coverage: string
+  warning_count: number
 }
 
 // 22. 任务删除  返回为null
@@ -375,6 +377,7 @@ export interface Restestlogs {
     create_user: string
     update_user: string
     diagnosis: string
+    error_num: number
   }
   total: number
   page_no: number
