@@ -89,7 +89,7 @@ export const CrashInfoMap: CrashInfoType = {
   0xef01: '隐式整形符号转换 ',
   0xef02: '隐式整形截取',
   0xef03: '隐式无符号整形截取',
-  0xe204: 'Free 双重释放',
+  0xe204: '双重释放',
   0xe205: '未释放重分配',
   0xe206: '内存泄露',
   0xe40f: '程序跑飞'
