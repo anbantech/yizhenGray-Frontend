@@ -209,7 +209,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
           </div>
           {(statusMemo === 1 || statusMemo === 0) && (
             <div className={styles.Header_Main}>
-              <span>操作</span>
+              <span style={{ width: '100%' }}>操作</span>
             </div>
           )}
         </div>

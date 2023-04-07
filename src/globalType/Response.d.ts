@@ -295,6 +295,7 @@ export interface ResTaskDetail {
   test_time: number
   statement_coverage: string
   branch_coverage: string
+  warning_num: number
 }
 
 // 22. 任务删除  返回为null
