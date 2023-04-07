@@ -7,7 +7,6 @@
             header-cell-class-name="statisticsTableCell">
             <el-table-column prop="this_cases" label="用例数量"> </el-table-column>
             <el-table-column prop="this_error_case_num" label="异常用例"> </el-table-column>
-            <el-table-column prop="wraning_num" label="警告用例"> </el-table-column>
             <el-table-column prop="elapsed_time" label="耗时">
                 <template slot-scope="scope">
                     <span> {{ scope.row.elapsed_time ? `${scope.row.elapsed_time}` : '0' }}</span>
