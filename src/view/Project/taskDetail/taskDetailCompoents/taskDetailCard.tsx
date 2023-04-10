@@ -118,7 +118,7 @@ function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
         <div className={styles.card_line} />
         <div style={{ paddingLeft: '10px' }} className={styles.card_coverage}>
           <span className={styles.cardConcent}>Warn数量</span>
-          <span className={styles.cardTaskDetail}>{taskMapInfo.warning_count}</span>
+          <span className={styles.cardTaskDetail}>{taskMapInfo.warning_count || 0}</span>
         </div>
       </div>
     )
