@@ -2,7 +2,7 @@ import { DownOutlined } from '@ant-design/icons'
 import { Dropdown, Menu, message, Space, Tooltip } from 'antd'
 import { useHistory } from 'react-router'
 import globalStyle from 'Src/view/Project/project/project.less'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { getTime } from 'Src/util/baseFn'
 import { WarnTip } from 'Src/view/excitation/excitationComponent/Tip'
 import { copyText } from 'Src/util/common'
@@ -56,7 +56,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   const history = useHistory()
   const [currentOpenId, setCurrentOpenId] = useState<number>(-1)
 
-  const [replayId, setReplayId] = useState<number>(-2)
+  const [replayId, setReplayId] = useState<number>(-1)
 
   const [currentType, setCurrentType] = useState('all')
 
@@ -140,6 +140,9 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     setCurrentOpenId(id === currentOpenId ? -1 : id)
   }
 
+  const changeReplayStatus = (id: number) => {
+    setReplayId(id)
+  }
   // 单个用例的重放
   const oneCaseReplay = async (taskID: number, caseID: number) => {
     const idArray = {
@@ -148,9 +151,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     }
     try {
       const res = await rePlayTask(idArray)
-      if (res.code === 0) {
-        setReplayId(caseID)
-      }
+      return res
     } catch (error) {
       message.error(error.message)
     }
@@ -175,11 +176,28 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     }
   }, [])
 
-  useEffect(() => {
-    if (status !== 8) {
-      setReplayId(-2)
-    }
-  }, [status])
+  const styleFn = React.useCallback(
+    (item: any) => {
+      switch (item.case_type) {
+        case 0:
+          if (status === 8 && replayId === item.id) {
+            return styles.footerError
+          }
+          if (Object.keys(item.crash_info)[0] && !item.case_type) {
+            return styles.warninfo
+          }
+          return null
+        case 1:
+          if (status === 8 && replayId === item.id) {
+            return styles.footerError
+          }
+          return styles.footerDouble
+        default:
+          return null
+      }
+    },
+    [status, replayId]
+  )
 
   return (
     <div className={styles.tableList}>
@@ -219,18 +237,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
             <>
               {logData.map((item: DataType) => {
                 return (
-                  <div
-                    key={item.id}
-                    className={`${styles.Table_concent} ${
-                      status === 8 && replayId === item.id
-                        ? styles.footerError
-                        : item.case_type
-                        ? styles.footerDouble
-                        : Object.keys(item.crash_info)[0] && !item.case_type
-                        ? styles.warninfo
-                        : null
-                    }`}
-                  >
+                  <div key={`${item.id}${item.msg_index}${item.create_time}`} className={`${styles.Table_concent} ${styleFn(item)}`}>
                     <Tooltip title={item.id}>
                       <div>{item.msg_index}</div>
                     </Tooltip>
@@ -325,6 +332,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                             role='button'
                             tabIndex={0}
                             onClick={() => {
+                              changeReplayStatus(item.id)
                               oneCaseReplay(task_id, item.id)
                             }}
                           >
