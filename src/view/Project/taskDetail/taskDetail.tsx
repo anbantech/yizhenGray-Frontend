@@ -105,6 +105,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
 
   useEffect(() => {
     getMessageStatus()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getMessageStatus, status, taskInfo.task_id, updateStatus])
 
   useEffect(() => {
