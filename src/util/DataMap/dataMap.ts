@@ -73,7 +73,7 @@ export const CrashInfoMap: CrashInfoType = {
   0xe108: '读取保护区域 ',
   0xe109: '写入保护区域 ',
   0xe10a: '代码区破坏错误 ',
-  0xe201: 'malloc分配失败 ',
+  0xe201: 'Malloc分配失败 ',
   0xe202: 'Calloc分配失败',
   0xe203: 'Realloc分配失败',
   0xe301: '除零错误',
