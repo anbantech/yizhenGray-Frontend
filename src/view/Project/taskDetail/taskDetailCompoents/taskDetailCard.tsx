@@ -1,6 +1,6 @@
 // import { RightOutlined } from '@ant-design/icons'
 import { RightOutlined } from '@ant-design/icons'
-import { Badge } from 'antd'
+// import { Badge } from 'antd'
 import * as React from 'react'
 import { ResTaskDetail } from 'Src/globalType/Response'
 import styles from '../taskDetail.less'
@@ -86,14 +86,14 @@ const CardComponents = (props: cardProps) => {
       {concent !== '状态' ? (
         <span className={styles.cardTaskDetail}>{value}</span>
       ) : value === 4 ? (
-        <Badge.Ribbon text='异常暂停' color='red' style={{ top: '-25px' }}>
-          <div>
-            <span className={statusMap[(value as 0 | 1 | 2 | 3 | 4 | 5 | 6) || 0]?.color}>
-              {statusMap[(value as 0 | 1 | 2 | 3 | 4 | 5 | 6) || 0].label}
-            </span>
-          </div>
-        </Badge.Ribbon>
+        // <Badge.Ribbon text='异常暂停' color='red' style={{ top: '-25px' }}>
+        <div>
+          <span className={statusMap[(value as 0 | 1 | 2 | 3 | 4 | 5 | 6) || 0]?.color}>
+            {statusMap[(value as 0 | 1 | 2 | 3 | 4 | 5 | 6) || 0].label}
+          </span>
+        </div>
       ) : (
+        // </Badge.Ribbon>
         <div>
           <span className={statusMap[(value as 0 | 1 | 2 | 3 | 4 | 5 | 6) || 0]?.color}>
             {statusMap[(value as 0 | 1 | 2 | 3 | 4 | 5 | 6) || 0].label}

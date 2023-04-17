@@ -120,7 +120,12 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
       if (res.data) {
         setParams({ ...params, key_word: '', page: 1 })
         setCommonModleStatus(false)
-        message.success('删除成功')
+        if (res.data.success_list.length > 0) {
+          message.success('删除成功')
+        }
+        if (res.data.fail_list.length > 0) {
+          message.error(`${res.data.fail_list[0]}`)
+        }
       }
     } catch (error) {
       throwErrorMessage(error, { 1009: '项目删除失败' })
