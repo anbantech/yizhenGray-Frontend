@@ -469,7 +469,7 @@ const GroupExcitationForm: React.FC = () => {
                   if (reg.test(value)) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('交互任务名称由汉字、数字、字母和下划线组成'))
+                  return Promise.reject(new Error('交互名称由汉字、数字、字母和下划线组成'))
                 }
               }
             ]}
