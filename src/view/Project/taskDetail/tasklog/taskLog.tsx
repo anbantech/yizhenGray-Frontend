@@ -58,7 +58,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
 
   const [replayId, setReplayId] = useState<number>(-1)
 
-  const [currentType, setCurrentType] = useState('all')
+  const [currentType, setCurrentType] = useState('')
 
   const [currentTypeTime, setCurrentTypeTime] = useState('ascend')
 
