@@ -110,7 +110,6 @@ const DoubleExcitationForm: React.FC = () => {
 
   const filterUnfinedItem = (val: number[]) => {
     const mapArray = val.filter(value => value !== undefined)
-
     return mapArray
   }
 
@@ -154,6 +153,7 @@ const DoubleExcitationForm: React.FC = () => {
         return item
       }
       if (oldStepArray[index] !== val) {
+        updateDisabled(oldStepArray[index], false)
         oldStepArray[index] = val
         setData([...oldStepArray])
         updateDisabled(val, true)
