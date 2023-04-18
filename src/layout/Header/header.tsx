@@ -159,7 +159,7 @@ function Header(props: any) {
     '/excitationList/Deatail': `${
       data && data?.name === '查看单激励Group'
         ? '查看单激励Group'
-        : data?.name === '查看级联激励Group'
+        : data?.name === '查看级联Group'
         ? '查看级联Group'
         : data?.name === '查看交互'
         ? '查看交互'
