@@ -18,7 +18,7 @@ import { TemplateListResponse } from 'Src/globalType/Response'
 import { useDialog } from 'Src/util/Hooks/useDialog'
 import styles from './templateList.less'
 
-const customizeRender = () => <DefaultValueTips content='暂无模版' />
+const customizeRender = () => <DefaultValueTips content='暂无模板' />
 
 const request: TemplateListParams = {
   key_word: '',

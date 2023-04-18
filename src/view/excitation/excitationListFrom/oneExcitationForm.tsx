@@ -54,7 +54,7 @@ const OneExcotationForm: React.FC = () => {
   const [templateList, setTemplateList] = React.useState<any[]>()
   const [portList, setPortList] = React.useState<listArray[]>([])
   const Data = GetDeatilFn(info?.id)
-  // 获取模版列表
+  // 获取模板列表
   const fetchTemplateList = React.useCallback(async () => {
     //  Todo code码
     try {
@@ -222,11 +222,11 @@ const OneExcotationForm: React.FC = () => {
             }
           </Select>
         </Form.Item>
-        <Form.Item name='template_id' label='模版名称' rules={[{ required: true, message: '请选择模版' }]}>
-          <Select placeholder='请选择模版' disabled={isFixForm}>
+        <Form.Item name='template_id' label='模板名称' rules={[{ required: true, message: '请选择模板' }]}>
+          <Select placeholder='请选择模板' disabled={isFixForm}>
             {
               /**
-               *  选择不同模版
+               *  选择不同模板
                */
               templateList?.map(rate => {
                 return (

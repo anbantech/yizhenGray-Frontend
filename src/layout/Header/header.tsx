@@ -172,8 +172,8 @@ function Header(props: any) {
     '/excitationList/createExcitation': '新建激励',
     '/excitationList/Deatail/ExcitationDraw': '预览',
     '/excitationList/createGroupExcitation/ExcitationDraw': '预览',
-    '/templateList': '模版列表',
-    '/templateList/template': `${data && data?.readonlyBaseTemplate ? '查看模版' : data && data?.editOriginalTemplate ? '修改模版' : '创建模版'}`
+    '/templateList': '模板列表',
+    '/templateList/template': `${data && data?.readonlyBaseTemplate ? '查看模板' : data && data?.editOriginalTemplate ? '修改模板' : '创建模板'}`
   }
   const history = useHistory()
   const jumpTest = (value: any) => {
