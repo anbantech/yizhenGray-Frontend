@@ -270,6 +270,7 @@ const GroupExcitationForm: React.FC = () => {
         return res
       }
       if (oldStepArray[current][index] !== val) {
+        updateDisabled(oldStepArray[current][index], false)
         oldStepArray[current][index] = val
         setStepArray([...oldStepArray])
         updateDisabled(val, true)
