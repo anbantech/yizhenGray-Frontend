@@ -106,7 +106,7 @@ const CardComponents = (props: cardProps) => {
 
 type stringKey = Record<string, string>
 const showTitleMap = {
-  test_num: '测试总条数(条)',
+  test_num: '用例总条数(条)',
   error_num: 'Crash数量',
   coverage: '覆盖率',
   test_speed: '测试速率(帧/秒)',
