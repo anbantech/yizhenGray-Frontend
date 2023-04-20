@@ -47,7 +47,7 @@ function ExcitationModal(props: any) {
       }
     } catch (error) {
       setDisabledStatus(true)
-      throwErrorMessage(error, { 1005: '激励名称重复，请修改' })
+      throwErrorMessage(error, { 1005: '端口名称重复，请修改' })
       return error
     }
   }
@@ -91,7 +91,7 @@ function ExcitationModal(props: any) {
       className={styles}
       width={width}
       visible={visible}
-      title={fixTitle ? '修改激励' : '新建激励'}
+      title={fixTitle ? '修改端口' : '新建端口'}
       onCancel={() => {
         hideModal(false)
         form.resetFields()

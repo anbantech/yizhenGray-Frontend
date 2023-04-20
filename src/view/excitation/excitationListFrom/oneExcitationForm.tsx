@@ -171,7 +171,7 @@ const OneExcotationForm: React.FC = () => {
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.oneForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
         <Form.Item
-          label='单激励Group名称'
+          label='激励单元管理名称'
           name='name'
           validateFirst
           validateTrigger={['onBlur']}
@@ -180,7 +180,7 @@ const OneExcotationForm: React.FC = () => {
               validateTrigger: 'onBlur',
               validator(_, value) {
                 if (typeof value === 'undefined' || value === '') {
-                  return Promise.reject(new Error('请输入单激励Group名称'))
+                  return Promise.reject(new Error('请输入激励单元管理名称'))
                 }
                 return Promise.resolve()
               }
@@ -189,7 +189,7 @@ const OneExcotationForm: React.FC = () => {
               required: true,
               max: 20,
               min: 2,
-              message: '单激励Group名称为2到20个字符'
+              message: '激励单元管理名称为2到20个字符'
             },
             {
               validateTrigger: 'onBlur',
@@ -198,16 +198,16 @@ const OneExcotationForm: React.FC = () => {
                 if (reg.test(value)) {
                   return Promise.resolve()
                 }
-                return Promise.reject(new Error('单激励Group名称由汉字、数字、字母和下划线组成'))
+                return Promise.reject(new Error('激励单元管理名称由汉字、数字、字母和下划线组成'))
               }
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入单激励Group名称' />
+          <Input disabled={isFixForm} placeholder='请输入激励单元管理名称' />
         </Form.Item>
 
-        <Form.Item name='target_id' label='请选择激励' rules={[{ required: true, message: '请选择激励' }]}>
-          <Select placeholder='请选择激励' disabled={isFixForm}>
+        <Form.Item name='target_id' label='端口名称' rules={[{ required: true, message: '请选择端口' }]}>
+          <Select placeholder='请选择端口' disabled={isFixForm}>
             {
               /**
                * 下拉选择端口
@@ -411,13 +411,13 @@ const OneExcotationForm: React.FC = () => {
           <Input disabled={isFixForm} placeholder='请输入后置时延' suffix={<Tip />} />
         </Form.Item>
         <Form.Item
-          label='单激励Group描述'
+          label='激励单元管理描述'
           name='description'
-          rules={[{ message: '请输入单激励Group描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
+          rules={[{ message: '请输入激励单元管理描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
           <Input.TextArea
             disabled={isFixForm}
-            placeholder={isFixForm ? '' : '请输入单激励Group描述'}
+            placeholder={isFixForm ? '' : '请输入激励单元管理描述'}
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
               formatter({ count }) {

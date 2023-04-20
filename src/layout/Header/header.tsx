@@ -157,19 +157,19 @@ function Header(props: any) {
     '/projects/Tasks/Detail/ScaleDetail': '缺陷详情',
     '/excitationList': '激励列表',
     '/excitationList/Deatail': `${
-      data && data?.name === '查看单激励Group'
-        ? '查看单激励Group'
-        : data?.name === '查看级联Group'
-        ? '查看级联Group'
+      data && data?.name === '查看激励单元管理'
+        ? '查看激励单元管理'
+        : data?.name === '查看激励嵌套管理'
+        ? '查看激励嵌套管理'
         : data?.name === '查看交互'
         ? '查看交互'
-        : '查看激励'
+        : '查看端口'
     }`,
-    '/excitationList/createOneExcitation': '新建单激励Group',
-    '/excitationList/createDoubleExcitation': '新建级联Group',
-    '/excitationList/createDoubleExcitationGroup': '新建级联Group',
+    '/excitationList/createOneExcitation': '新建端口单元管理',
+    '/excitationList/createDoubleExcitation': '新建端口嵌套管理',
+    '/excitationList/createDoubleExcitationGroup': '新建端口嵌套管理',
     '/excitationList/createGroupExcitation': '新建交互',
-    '/excitationList/createExcitation': '新建激励',
+    '/excitationList/createExcitation': '新建端口',
     '/excitationList/Deatail/ExcitationDraw': '预览',
     '/excitationList/createGroupExcitation/ExcitationDraw': '预览',
     '/templateList': '模板列表',

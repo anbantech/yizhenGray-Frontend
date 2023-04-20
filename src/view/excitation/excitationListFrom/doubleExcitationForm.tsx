@@ -65,13 +65,13 @@ const DoubleExcitationForm: React.FC = () => {
   const [excitationList, setExcitationList] = useState<Option[]>([
     {
       sender_id: '1',
-      name: '级联Group',
+      name: '激励嵌套管理',
       disabled: false,
       children: []
     },
     {
       sender_id: '0',
-      name: '单激励Group',
+      name: '激励单元管理',
       disabled: false,
       children: []
     }
@@ -323,7 +323,7 @@ const DoubleExcitationForm: React.FC = () => {
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.twoForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
         <Form.Item
-          label='级联Group名称'
+          label='激励嵌套管理名称'
           name='name'
           validateFirst
           validateTrigger={['onBlur']}
@@ -332,7 +332,7 @@ const DoubleExcitationForm: React.FC = () => {
               validateTrigger: 'onBlur',
               validator(_, value) {
                 if (typeof value === 'undefined' || value === '') {
-                  return Promise.reject(new Error('请输入级联Group名称'))
+                  return Promise.reject(new Error('请输入激励嵌套管理名称'))
                 }
                 return Promise.resolve()
               }
@@ -341,7 +341,7 @@ const DoubleExcitationForm: React.FC = () => {
               required: true,
               max: 20,
               min: 2,
-              message: '级联Group名称长度为2到20个字符'
+              message: '激励嵌套管理名称长度为2到20个字符'
             },
             {
               validateTrigger: 'onBlur',
@@ -350,12 +350,12 @@ const DoubleExcitationForm: React.FC = () => {
                 if (reg.test(value)) {
                   return Promise.resolve()
                 }
-                return Promise.reject(new Error('级联Group名称由汉字、数字、字母和下划线组成'))
+                return Promise.reject(new Error('激励嵌套管理名称由汉字、数字、字母和下划线组成'))
               }
             }
           ]}
         >
-          <Input placeholder='请输入级联Group名称' disabled={isFixForm} />
+          <Input placeholder='请输入激励嵌套管理名称' disabled={isFixForm} />
         </Form.Item>
         <Form.Item
           label='前置时延'
@@ -529,13 +529,13 @@ const DoubleExcitationForm: React.FC = () => {
           <Input disabled={isFixForm} placeholder='请输入后置时延' suffix={<Tip />} />
         </Form.Item>
         <Form.Item
-          label='级联Group描述'
+          label='激励嵌套管理描述'
           name='description'
-          rules={[{ message: '请输入级联Group描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
+          rules={[{ message: '请输入激励嵌套管理描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
           <Input.TextArea
             disabled={isFixForm}
-            placeholder={isFixForm ? '' : '请输入级联Group描述'}
+            placeholder={isFixForm ? '' : '请输入激励嵌套管理描述'}
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
               formatter({ count }) {
