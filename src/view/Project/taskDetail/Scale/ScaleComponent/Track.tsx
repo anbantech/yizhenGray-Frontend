@@ -99,7 +99,7 @@ const Track: React.FC<any> = forwardRef((props, ref) => {
       key: 'code'
     },
     {
-      title: '运行时间(us)',
+      title: '运行时间(ms)',
       dataIndex: 'time',
       key: 'time'
     }
