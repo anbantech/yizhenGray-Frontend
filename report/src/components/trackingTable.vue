@@ -16,7 +16,7 @@
       <el-table-column prop="flieName" label="文件名"> </el-table-column>
       <el-table-column width="160%" prop="functionName" label="函数名称"> </el-table-column>
       <el-table-column prop="codeCount" label="代码行"> </el-table-column>
-      <el-table-column prop="timeUs" label="运行时间(us)"> </el-table-column>
+      <el-table-column prop="timeUs" label="运行时间(ms)"> </el-table-column>
     </el-table>
   </div>
 </template>
