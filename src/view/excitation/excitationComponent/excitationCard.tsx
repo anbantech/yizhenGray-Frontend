@@ -152,7 +152,7 @@ const ThreeExcitationCard = (props: AllPropsType) => {
     if (formData) {
       const excitarionListes = formData[index] || formData
       form.setFieldsValue({
-        port: [excitarionListes.target_type === 1 ? '单激励Group' : '级联Group', excitarionListes.name],
+        port: [excitarionListes.target_type === 1 ? '激励单元管理' : '激励嵌套管理', excitarionListes.name],
         description: excitarionListes.desc
       })
     } else {
@@ -175,7 +175,7 @@ const ThreeExcitationCard = (props: AllPropsType) => {
         删除
       </div>
       <Form name='middle' autoComplete='off' className={styles.card_middle_form} form={form}>
-        <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择激励' }]}>
+        <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择端口' }]}>
           <Cascader
             disabled={isFixForm}
             placeholder='选择配置'

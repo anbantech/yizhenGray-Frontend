@@ -178,13 +178,13 @@ const GroupExcitationForm: React.FC = () => {
       const pre = [
         {
           sender_id: '0',
-          name: '单激励Group',
+          name: '激励单元管理',
           disabled: false,
           children: [{}]
         },
         {
           sender_id: '1',
-          name: '级联Group',
+          name: '激励嵌套管理',
           disabled: false,
           children: [{}]
         }

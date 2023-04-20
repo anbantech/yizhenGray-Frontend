@@ -45,15 +45,15 @@ interface Resparams {
 }
 
 const An_ButtonNameMap = {
-  0: '新建激励',
-  1: '新建单激励Group',
-  2: '新建级联Group',
+  0: '新建端口',
+  1: '新建激励单元管理',
+  2: '新建激励嵌套管理',
   3: '新建交互'
 }
 const An_ButtonDetailMap = {
-  0: '查看激励',
-  1: '查看单激励Group',
-  2: '查看级联Group',
+  0: '查看端口',
+  1: '查看激励单元管理',
+  2: '查看激励嵌套管理',
   3: '查看交互'
 }
 const An_tabsMap = {
@@ -75,9 +75,9 @@ interface ChildRef {
 
 type stateType = { [key: string]: string }
 const inputPlaceholder = {
-  0: '根据名称搜索激励',
-  1: '根据名称搜索单激励Group',
-  2: '根据名称搜索级联Group',
+  0: '根据名称搜索端口',
+  1: '根据名称搜索激励单元管理',
+  2: '根据名称搜索激励嵌套管理',
   3: '根据名称搜索交互'
 }
 
@@ -236,7 +236,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     0: [
       {
         width: '15%',
-        title: '激励名称',
+        title: '端口名称',
         dataIndex: 'stimulus_name',
         key: 'stimulus_name',
         // eslint-disable-next-line react/display-name
@@ -299,7 +299,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     1: [
       {
         width: '15%',
-        title: '单激励Group名称',
+        title: '激励单元管理名称',
         dataIndex: 'name',
         key: 'name',
         // eslint-disable-next-line react/display-name
@@ -320,7 +320,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       },
       {
         width: '15%',
-        title: '单激励Group描述',
+        title: '激励单元管理描述',
         dataIndex: 'desc',
         key: 'desc'
       },
@@ -352,7 +352,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     2: [
       {
         width: '20%',
-        title: '级联Group名称',
+        title: '激励嵌套管理名称',
         dataIndex: 'name',
         key: 'name',
         // eslint-disable-next-line react/display-name
@@ -373,7 +373,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       },
       {
         width: '30%',
-        title: '级联Group描述',
+        title: '激励嵌套管理描述',
         dataIndex: 'desc',
         key: 'desc'
       },
@@ -466,10 +466,10 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
           optionType='button'
           value={`${tabs}`}
         >
-          <Radio.Button value='0'>激励列表</Radio.Button>
-          <Radio.Button value='1'>单激励Group列表</Radio.Button>
-          <Radio.Button value='2'>级联Group列表</Radio.Button>
-          <Radio.Button value='3'>交互列表</Radio.Button>
+          <Radio.Button value='0'>端口管理</Radio.Button>
+          <Radio.Button value='1'>激励单元管理</Radio.Button>
+          <Radio.Button value='2'>激励嵌套管理</Radio.Button>
+          <Radio.Button value='3'>交互</Radio.Button>
         </Radio.Group>
         <div className={styles.AnBan_header_bottom}>
           <SearchInput
