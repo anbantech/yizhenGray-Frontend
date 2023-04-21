@@ -162,6 +162,23 @@ const DoubleExcitationForm: React.FC = () => {
     [data, deleteID, updateDisabled]
   )
 
+  const deleteCard = React.useCallback(
+    (val: number) => {
+      const oldItemArray = data as any
+      const clearItem = oldItemArray.splice(val, 0)
+      updateDisabled(clearItem[0], false)
+      setData([...oldItemArray])
+      return Promise.resolve()
+    },
+    [data, updateDisabled]
+  )
+
+  const sortCardArray = async (val: number) => {
+    await deleteCard(val)
+    const oldItemArray = [...cardArray]
+    oldItemArray.splice(val, 1)
+    setCardArray([...oldItemArray])
+  }
   // 获取配置列表
   const getExcitationList = async (request1: Resparams, doubleRequest: Resparams) => {
     try {
@@ -279,15 +296,10 @@ const DoubleExcitationForm: React.FC = () => {
         setCardCheckStatus(true)
       }
     }
-    if (data.length >= 1) {
+    if (data.length > 1) {
       setCardArray(Array.from({ length: data.length }, (v, i) => i))
     }
-    return () => {
-      setCardArray([0])
-    }
   }, [data, isDisableStatus])
-
-  const deleteCard = () => {}
 
   React.useEffect(() => {
     getExcitationList(request1, request)
@@ -550,10 +562,11 @@ const DoubleExcitationForm: React.FC = () => {
         {cardArray?.map((index: number) => {
           return (
             <ExcitationCard
-              deleteCard={deleteCard}
+              deleteCard={sortCardArray}
               type={type}
               idArray={data[index]}
               isFixForm={isFixForm}
+              stepArray={cardArray}
               excitationList={excitationList}
               onChange={onChange}
               index={index}

@@ -14,6 +14,7 @@ interface PropsTypeFn {
 
 interface AllPropsType {
   excitationList: any
+  stepArray: number[]
   isFixForm: boolean
   formData: any
   onChange: (value: any, index: number) => void
@@ -24,6 +25,7 @@ interface AllPropsType {
 interface propsType {
   // eslint-disable-next-line react/require-default-props, react/no-unused-prop-types
   type?: string
+  stepArray: number[]
   isFixForm: boolean
   excitationList: any
   index: number
@@ -119,7 +121,7 @@ interface Option {
 
 const ThreeExcitationCard = (props: AllPropsType) => {
   const [form] = useForm()
-  const { excitationList, deleteCard, onChange, index, isFixForm, formData } = props
+  const { excitationList, deleteCard, onChange, stepArray, index, isFixForm, formData } = props
   const [desc, setDesc] = useState('')
 
   const clearValue = (val: undefined, index: number) => {
@@ -162,7 +164,7 @@ const ThreeExcitationCard = (props: AllPropsType) => {
       })
     }
   }, [desc, form, formData, index])
-
+  console.log(stepArray.length)
   return (
     <div className={styles.card_middle}>
       <div
@@ -170,15 +172,14 @@ const ThreeExcitationCard = (props: AllPropsType) => {
         onClick={() => {
           deleteCard(index)
         }}
-        style={{ display: 'none' }}
-      >
-        删除
-      </div>
+        className={!isFixForm && stepArray.length > 1 ? styles.deleteCardTopRight : null}
+      />
       <Form name='middle' autoComplete='off' className={styles.card_middle_form} form={form}>
         <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择端口' }]}>
           <Cascader
             disabled={isFixForm}
             placeholder='选择配置'
+            allowClear={false}
             fieldNames={{ label: 'name', value: 'sender_id' }}
             options={excitationList}
             onChange={onSelect}
@@ -195,13 +196,14 @@ ThreeExcitationCard.displayName = 'ThreeExcitationCard'
 const ThreeExcitationCardCompoent = React.memo(ThreeExcitationCard)
 
 const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
-  const { index, excitationList, deleteCard, idArray, formData, onChange, isFixForm } = props
+  const { index, excitationList, stepArray, deleteCard, idArray, formData, onChange, isFixForm } = props
   const Data = GetDeatilFn(idArray)
   return (
     <div className={styles.card_main}>
       <ThreeExcitationCardCompoent
         key={index}
         index={index}
+        stepArray={stepArray}
         deleteCard={deleteCard}
         formData={formData || Data}
         excitationList={excitationList}
