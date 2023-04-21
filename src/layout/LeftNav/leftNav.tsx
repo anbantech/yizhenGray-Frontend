@@ -49,7 +49,7 @@ const routerList: SideBarRoute[] = [
     activeImageURL: ac_Arge,
     name: '配置项',
     children: [
-      { name: '模版列表', path: 'templateList' },
+      { name: '模板列表', path: 'templateList' },
       { name: '激励列表', path: 'excitationList' }
     ]
   },

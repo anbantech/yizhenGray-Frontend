@@ -16,11 +16,11 @@
       <el-table-column width="160%" prop="functionName" label="函数名称"> </el-table-column>
       <el-table-column prop="flieName" label="文件名"> </el-table-column>
       <el-table-column prop="count" label="调用次数"> </el-table-column>
-      <el-table-column prop="currentUs" label="当前值(us)"> </el-table-column>
-      <el-table-column prop="minUs" label="最小值(us)"> </el-table-column>
-      <el-table-column prop="maxUs" label="最大值(us)"> </el-table-column>
-      <el-table-column prop="avgUs" label="平均值(us)"> </el-table-column>
-      <el-table-column prop="totalUs" label="累计值(us)"> </el-table-column>
+      <el-table-column prop="currentUs" label="当前值(ms)"> </el-table-column>
+      <el-table-column prop="minUs" label="最小值(ms)"> </el-table-column>
+      <el-table-column prop="maxUs" label="最大值(ms)"> </el-table-column>
+      <el-table-column prop="avgUs" label="平均值(ms)"> </el-table-column>
+      <el-table-column prop="totalUs" label="累计值(ms)"> </el-table-column>
       <el-table-column prop="totalPercent" label="总百分比(%)"> </el-table-column>
     </el-table>
   </div>

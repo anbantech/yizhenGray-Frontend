@@ -78,27 +78,27 @@ const Performance: React.FC<any> = forwardRef((props, ref) => {
       key: 'execute_times'
     },
     {
-      title: '当前值(us)',
+      title: '当前值(ms)',
       dataIndex: 'now',
       key: 'now'
     },
     {
-      title: '最小值(us)',
+      title: '最小值(ms)',
       dataIndex: 'min',
       key: 'min'
     },
     {
-      title: '最大值(us)',
+      title: '最大值(ms)',
       dataIndex: 'max',
       key: 'max'
     },
     {
-      title: '平均值(us)',
+      title: '平均值(ms)',
       dataIndex: 'average',
       key: 'average'
     },
     {
-      title: '累计值(us)',
+      title: '累计值(ms)',
       dataIndex: 'total',
       key: 'total'
     }

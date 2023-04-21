@@ -70,7 +70,7 @@ const CardComponents = (props: cardProps) => {
     <div className={styles.taskDetailCard_Main}>
       <div className={styles.card_Header}>
         <span className={styles.cardConcent}>{concent}</span>
-        {concent === '测试总条数(条)' ? (
+        {concent === '用例总条数(条)' ? (
           <div
             className={styles.taskDetailCard_Main_left_footer_detail}
             role='log'
@@ -106,7 +106,7 @@ const CardComponents = (props: cardProps) => {
 
 type stringKey = Record<string, string>
 const showTitleMap = {
-  test_num: '测试总条数(条)',
+  test_num: '用例总条数(条)',
   error_num: 'Crash数量',
   coverage: '覆盖率',
   test_speed: '测试速率(帧/秒)',

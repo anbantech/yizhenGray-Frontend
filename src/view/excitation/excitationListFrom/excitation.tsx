@@ -109,7 +109,7 @@ const ExcitationComponents: React.FC = () => {
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.oneForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
         <Form.Item
-          label='激励名称'
+          label='端口名称'
           name='stimulus_name'
           validateFirst
           validateTrigger={['onBlur']}
@@ -118,7 +118,7 @@ const ExcitationComponents: React.FC = () => {
               validateTrigger: 'onBlur',
               validator(_, value) {
                 if (typeof value === 'undefined' || value === '') {
-                  return Promise.reject(new Error('请输入激励名称'))
+                  return Promise.reject(new Error('请输入端口名称'))
                 }
                 return Promise.resolve()
               }
@@ -127,7 +127,7 @@ const ExcitationComponents: React.FC = () => {
               required: true,
               max: 20,
               min: 2,
-              message: '激励名称为2到20个字符'
+              message: '端口名称为2到20个字符'
             },
             {
               validateTrigger: 'onBlur',
@@ -136,12 +136,12 @@ const ExcitationComponents: React.FC = () => {
                 if (reg.test(value)) {
                   return Promise.resolve()
                 }
-                return Promise.reject(new Error('激励名称由汉字、数字、字母和下划线组成'))
+                return Promise.reject(new Error('端口名称由汉字、数字、字母和下划线组成'))
               }
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入激励名称' />
+          <Input disabled={isFixForm} placeholder='请输入端口名称' />
         </Form.Item>
         <Form.Item label='是否生效' name='is_enable' valuePropName='checked' initialValue>
           <Switch disabled={isFixForm} />

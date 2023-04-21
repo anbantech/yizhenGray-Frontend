@@ -135,7 +135,7 @@ const TemplateForm: React.FC = () => {
         </Form.Item>
         <Form.Item label='模板描述' name='description' validateFirst rules={[{ max: 50, type: 'string', message: '模板描述长度不能超过50个字符' }]}>
           <Input.TextArea
-            placeholder='请输入文本'
+            placeholder='请输入模板描述'
             autoSize={{ minRows: 3, maxRows: 3 }}
             showCount={{
               formatter({ count }) {

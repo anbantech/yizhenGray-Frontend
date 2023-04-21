@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { PlusOutlined } from '@ant-design/icons'
 import { Form, Input, message, Steps } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
@@ -66,6 +67,9 @@ interface formPorps {
   [key: number]: any
 }
 type UncertaintyType = number[]
+
+type FilterType = Record<string, any>[]
+
 interface ChildRef {
   step1Ref: React.MutableRefObject<StepRef | null>
   step2Ref: React.MutableRefObject<StepRef | null>
@@ -81,109 +85,35 @@ const ChartComponents = () => {
   )
 }
 
-const SetUp = React.forwardRef((props: any, myRef) => {
-  const { type, isFixForm, idArray, changePre1, excitationList } = props
-  const [cardArray, setCardArray] = React.useState(idArray.length === 0 ? [0] : Array.from({ length: idArray.length }, (v, i) => i))
-  const [STATUS, setStatus] = useState(false)
+const Fuzzing = (props: any) => {
+  const { type, isFixForm, stepArray, changePre2, excitationList, current, deleteCard } = props
+  const [cardArray, setCardArray] = React.useState([0])
   const addCard = React.useCallback(() => {
     const pre = cardArray
     pre.push(cardArray.length)
     setCardArray([...pre])
   }, [cardArray])
 
-  const deleteCard = React.useCallback(
-    (index: number) => {
-      const cradArrayCopy = cardArray
-      cradArrayCopy.splice(index, 1)
-      setCardArray([...cradArrayCopy])
-      changePre1(undefined, index)
-      setStatus(!STATUS)
-    },
-    [STATUS, cardArray, changePre1]
-  )
-
-  const onChange = React.useCallback(
-    (val: any, index: number) => {
-      changePre1(val, index)
-      setStatus(!STATUS)
-    },
-    [STATUS, changePre1]
-  )
-
-  React.useImperativeHandle(myRef, () => ({
-    save: () => {},
-    delete: () => {},
-    validate: () => {},
-    clearInteraction: () => {}
-  }))
-  return (
-    <div className={styles.baseBody}>
-      <div className={styles.baseForm}>
-        <div className={styles.formOperation}>
-          {cardArray?.map((value: number, index: number) => {
-            return (
-              <ExcitationCard
-                deleteCard={deleteCard}
-                type={type}
-                idArray={idArray && idArray[index]}
-                excitationList={excitationList}
-                isFixForm={isFixForm}
-                onChange={onChange}
-                index={index}
-                key={index}
-              />
-            )
-          })}
-
-          {cardArray.length < 10 && !isFixForm && (
-            <div className={styles.nav_Btn} role='time' onClick={addCard}>
-              <PlusOutlined style={{ fontSize: '20px', marginBottom: '3px' }} />
-              <span>添</span>
-              <span>加</span>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-})
-
-SetUp.displayName = 'SetUp'
-const Fuzzing = React.forwardRef((props: any, myRef) => {
-  const { type, isFixForm, idArray, changePre2, excitationList } = props
-  const [cardArray, setCardArray] = React.useState(idArray.length === 0 ? [0] : Array.from({ length: idArray.length }, (v, i) => i))
-  const [STATUS, setStatus] = useState(false)
-  const addCard = React.useCallback(() => {
-    const pre = cardArray
-    pre.push(cardArray.length)
-    setCardArray([...pre])
-  }, [cardArray])
-
-  const deleteCard = React.useCallback(
-    (index: number) => {
-      const cradArrayCopy = cardArray
-      cradArrayCopy.splice(index, 1)
-      setCardArray([...cradArrayCopy])
-      changePre2(undefined, index)
-      setStatus(!STATUS)
-    },
-    [STATUS, cardArray, changePre2]
-  )
-
+  const sortCardArray = async (val: number) => {
+    await deleteCard(val)
+    const oldItemArray = [...cardArray]
+    oldItemArray.splice(val, 1)
+    setCardArray([...oldItemArray])
+  }
   const onChange = React.useCallback(
     (val: any, index: number) => {
       changePre2(val, index)
-      setStatus(!STATUS)
     },
-    [STATUS, changePre2]
+    [changePre2]
   )
-
-  React.useImperativeHandle(myRef, () => ({
-    save: () => {},
-    delete: () => {},
-    validate: () => {},
-    clearInteraction: () => {}
-  }))
+  React.useEffect(() => {
+    if (stepArray.length > 1) {
+      setCardArray(Array.from({ length: stepArray.length }, (v, i) => i))
+    }
+    return () => {
+      setCardArray([0])
+    }
+  }, [current, stepArray, stepArray.length])
   return (
     <div className={styles.baseBody}>
       <div className={styles.baseForm}>
@@ -191,14 +121,15 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
           {cardArray?.map((value: number, index: number) => {
             return (
               <ExcitationCard
-                deleteCard={deleteCard}
                 type={type}
-                idArray={idArray && idArray[index]}
+                stepArray={cardArray}
+                deleteCard={sortCardArray}
+                idArray={stepArray[index]}
                 excitationList={excitationList}
                 isFixForm={isFixForm}
                 onChange={onChange}
-                index={index}
                 key={index}
+                index={index}
               />
             )
           })}
@@ -214,76 +145,7 @@ const Fuzzing = React.forwardRef((props: any, myRef) => {
       </div>
     </div>
   )
-})
-Fuzzing.displayName = 'Fuzzing'
-const TearDown = React.forwardRef((props: any, myRef) => {
-  const { type, isFixForm, idArray, excitationList, changePre3 } = props
-  const [cardArray, setCardArray] = React.useState(idArray.length === 0 ? [0] : Array.from({ length: idArray.length }, (v, i) => i))
-  const [STATUS, setStatus] = useState(false)
-  const addCard = React.useCallback(() => {
-    const pre = cardArray
-    pre.push(cardArray.length)
-    setCardArray([...pre])
-  }, [cardArray])
-
-  const deleteCard = React.useCallback(
-    (index: number) => {
-      const cradArrayCopy = cardArray
-      cradArrayCopy.splice(index, 1)
-      setCardArray([...cradArrayCopy])
-      changePre3(undefined, index)
-      setStatus(!STATUS)
-    },
-    [STATUS, cardArray, changePre3]
-  )
-
-  const onChange = React.useCallback(
-    (val: any, index: number) => {
-      changePre3(val, index)
-      setStatus(!STATUS)
-    },
-    [STATUS, changePre3]
-  )
-
-  React.useImperativeHandle(myRef, () => ({
-    save: async () => {},
-    delete: () => {},
-    validate: () => {},
-    clearInteraction: () => {}
-  }))
-
-  return (
-    <div className={styles.baseBody}>
-      <div className={styles.baseForm}>
-        <div className={styles.formOperation}>
-          {cardArray?.map((index: number) => {
-            return (
-              <ExcitationCard
-                deleteCard={deleteCard}
-                type={type}
-                idArray={idArray && idArray[index]}
-                excitationList={excitationList}
-                isFixForm={isFixForm}
-                onChange={onChange}
-                index={index}
-                key={index}
-              />
-            )
-          })}
-
-          {cardArray.length < 10 && !isFixForm && (
-            <div className={styles.nav_Btn} role='time' onClick={addCard}>
-              <PlusOutlined style={{ fontSize: '20px', marginBottom: '3px' }} />
-              <span>添</span>
-              <span>加</span>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-})
-TearDown.displayName = 'TearDown'
+}
 
 const GroupExcitationForm: React.FC = () => {
   const { isFixForm, info, type, name, propsDatas } = useContext(GlobalContexted)
@@ -293,12 +155,25 @@ const GroupExcitationForm: React.FC = () => {
   const [current, setCurrent] = useState(0)
   const detailData = GetDeatilFn(info?.id ?? propsDatas?.sender_id)
   const [excitationList, setExcitationList] = useState<Option[]>()
-  const stepCurrentRef = React.useRef<number[][]>([[], [], []])
-  const childRef: ChildRef = {
-    step1Ref: React.useRef<StepRef | null>(null),
-    step2Ref: React.useRef<StepRef | null>(null),
-    step3Ref: React.useRef<StepRef | null>(null)
+  const [stepArray, setStepArray] = useState<number[][]>([[], [], []])
+
+  // 过滤已经被使用的数据
+  const filterUseData = (val: FilterType) => {
+    const res = val.filter(item => {
+      return item.disabled === false
+    })
+    return res
   }
+
+  // 过滤数组元素中的unfinend
+
+  const filterUnfinedItem = (val: number[][]) => {
+    const mapArray = val.map(item => {
+      return item.filter(value => value !== undefined)
+    })
+    return mapArray
+  }
+
   const getExcitationList = async (request1: Resparams, doubleRequest: Resparams) => {
     try {
       const result2 = await excitationListFn(doubleRequest)
@@ -306,21 +181,21 @@ const GroupExcitationForm: React.FC = () => {
       const pre = [
         {
           sender_id: '0',
-          name: '单激励Group',
+          name: '激励单元管理',
           disabled: false,
           children: [{}]
         },
         {
           sender_id: '1',
-          name: '级联Group',
+          name: '激励嵌套管理',
           disabled: false,
           children: [{}]
         }
       ]
       Promise.all([result1, result2])
         .then(value => {
-          const result1Data = value[0].data?.results
-          const result2Data = value[1].data?.results
+          const result1Data = filterUseData(value[0].data?.results as FilterType)
+          const result2Data = filterUseData(value[1].data?.results as FilterType)
           if (isFixForm) {
             const data = [
               { ...pre[1], disabled: isFixForm, children: result2Data },
@@ -356,6 +231,7 @@ const GroupExcitationForm: React.FC = () => {
       throwErrorMessage(error, { 1004: '请求资源未找到' })
     }
   }
+
   React.useEffect(() => {
     getExcitationList(request, request1)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -364,8 +240,8 @@ const GroupExcitationForm: React.FC = () => {
   //  选择某一参数之后,更新列表的disabled
   const updateDisabled = React.useCallback(
     (value: number, bol: boolean) => {
-      const excitationListCopy = excitationList
-      excitationListCopy?.forEach((item: any) => {
+      const excitationListOld = excitationList as Option[]
+      excitationListOld?.forEach((item: any) => {
         item.children.forEach((element: any) => {
           if (value === element.sender_id) {
             const pre = element
@@ -373,72 +249,66 @@ const GroupExcitationForm: React.FC = () => {
           }
         })
       })
+      setExcitationList([...excitationListOld])
     },
     [excitationList]
   )
 
-  // 初始化数据 stepCurrent 数组
-  const idMap = React.useCallback(
-    propsDatas => {
-      if (propsDatas) {
-        stepCurrentRef.current.map((value: number[], index: number) => {
-          if (Object.keys(propsDatas.group_data_list[index]).length > 0) {
-            propsDatas.group_data_list[index]?.group_data_list.forEach((item: any) => {
-              stepCurrentRef.current[index].push(item.sender_id)
-              updateDisabled(item.sender_id, true)
-            })
-          }
-          return value
-        })
-      }
-    },
-    [updateDisabled]
-  )
-
   // 删除数据
+  const clearArrayItem = React.useCallback((val: number[][] | undefined[][], current, index: number) => {
+    const oldItemArray = [...val]
+    const clearItemArray = oldItemArray[current]
+    const clearItem = clearItemArray[index]
+    clearItemArray[index] = undefined
+    return clearItem as number
+  }, [])
 
-  const deleteData = React.useCallback(
-    (index: number) => {
-      const arrayId = stepCurrentRef.current[current]
-      const delArray = arrayId.splice(index, 1)
-      stepCurrentRef.current[current] = arrayId
-      return delArray
-    },
-    [current]
-  )
-  // 更改数据参数
+  // 在各个阶段选择数据时,更新stepArray
   const changePre = React.useCallback(
     (val: number, index: number) => {
+      const oldStepArray = stepArray
       if (val === undefined) {
-        const delArray = deleteData(index)
-        updateDisabled(delArray[0], false)
-      } else {
-        if (stepCurrentRef.current[current][index]) {
-          const delArray = deleteData(index)
-          updateDisabled(delArray[0], false)
-          stepCurrentRef.current[current].push(val)
-        } else {
-          stepCurrentRef.current[current].push(val)
-        }
+        const res = clearArrayItem(oldStepArray, current, index)
+        updateDisabled(res, false)
+        return res
+      }
+      if (oldStepArray[current][index] !== val) {
+        updateDisabled(oldStepArray[current][index], false)
+        oldStepArray[current][index] = val
+        setStepArray([...oldStepArray])
         updateDisabled(val, true)
+        return oldStepArray
       }
     },
-    [current, deleteData, updateDisabled]
+    [clearArrayItem, current, stepArray, updateDisabled]
+  )
+
+  // 删除元素
+  const deleteCard = React.useCallback(
+    (index: number) => {
+      const oldItemArray = [...stepArray]
+      const res = oldItemArray[current].splice(index, 1)
+      updateDisabled(res[0], false)
+      setStepArray([...oldItemArray])
+      return Promise.resolve()
+    },
+    [current, stepArray, updateDisabled]
   )
 
   const steps = [
     {
       title: '准备阶段',
       content: (
-        <SetUp
-          ref={childRef.step1Ref}
+        <Fuzzing
+          stepArray={stepArray[0]}
           excitationList={excitationList}
           type={type}
           info={info}
+          current={current}
           isFixForm={isFixForm}
-          idArray={stepCurrentRef.current[0]}
           Data={detailData}
-          changePre1={changePre}
+          changePre2={changePre}
+          deleteCard={deleteCard}
         />
       )
     },
@@ -446,29 +316,31 @@ const GroupExcitationForm: React.FC = () => {
       title: <ChartComponents />,
       content: (
         <Fuzzing
-          ref={childRef.step2Ref}
-          idArray={stepCurrentRef.current[1]}
+          stepArray={stepArray[1]}
           excitationList={excitationList}
           type={type}
           info={info}
+          current={current}
           isFixForm={isFixForm}
           Data={detailData}
           changePre2={changePre}
+          deleteCard={deleteCard}
         />
       )
     },
     {
       title: '销毁阶段',
       content: (
-        <TearDown
-          ref={childRef.step3Ref}
-          idArray={stepCurrentRef.current[2]}
+        <Fuzzing
+          stepArray={stepArray[2]}
           excitationList={excitationList}
           type={type}
           info={info}
+          current={current}
           isFixForm={isFixForm}
           Data={detailData}
-          changePre3={changePre}
+          deleteCard={deleteCard}
+          changePre2={changePre}
         />
       )
     }
@@ -485,7 +357,7 @@ const GroupExcitationForm: React.FC = () => {
 
   const checkCurrent = React.useCallback(() => {
     if (current === 1) {
-      if (stepCurrentRef.current[1].length >= 1) {
+      if (stepArray[current].filter(value => value !== undefined).length >= 1) {
         setCurrent(current + 1)
       } else {
         message.error('请配置激励')
@@ -493,7 +365,7 @@ const GroupExcitationForm: React.FC = () => {
     } else {
       setCurrent(current + 1)
     }
-  }, [current])
+  }, [stepArray, current])
 
   const next = async () => {
     if (isFixForm) {
@@ -517,7 +389,7 @@ const GroupExcitationForm: React.FC = () => {
     try {
       if (values) {
         const params2 = {
-          child_id_list: stepCurrentRef.current
+          child_id_list: filterUnfinedItem(stepArray)
         }
         const result = await checkDataStructure(params2)
         if (result.data) {
@@ -544,27 +416,45 @@ const GroupExcitationForm: React.FC = () => {
     })
   }
 
+  const isBack = (propsDatas: any) => {
+    const resultArray = [[], [], []]
+    propsDatas.group_data_list.forEach((element: any, index: number) => {
+      const res = element.group_data_list
+        ? element.group_data_list.map((item: any) => {
+            return item.sender_id
+          })
+        : []
+      resultArray[index] = res
+      setStepArray([...resultArray])
+      return res
+    })
+  }
+
+  // 初始化数据 stepCurrent 数组
+  const idMap = React.useCallback((propsDatas, isFixForm) => {
+    if (propsDatas) {
+      return isFixForm ? setStepArray([...propsDatas.group_id_list]) : isBack(propsDatas)
+    }
+  }, [])
+
   const initData = React.useCallback(
-    (value: any) => {
+    (value: any, isFixForm: boolean) => {
       const { name, desc } = value as any
       const formData = {
         name,
         description: desc
       }
       form.setFieldsValue(formData)
-      idMap(value)
+      idMap(value, isFixForm)
     },
     [form, idMap]
   )
-
   React.useEffect(() => {
     if (detailData || propsDatas) {
-      initData(detailData || propsDatas)
+      initData(detailData || propsDatas, isFixForm)
     }
-    return () => {
-      stepCurrentRef.current = [[], [], []]
-    }
-  }, [detailData, initData, propsDatas])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detailData, propsDatas, isFixForm])
   return (
     <div className={styles.baseBody}>
       <div className={styles.baseForm}>
@@ -597,12 +487,12 @@ const GroupExcitationForm: React.FC = () => {
                   if (reg.test(value)) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('任务名称由汉字、数字、字母和下划线组成'))
+                  return Promise.reject(new Error('交互名称由汉字、数字、字母和下划线组成'))
                 }
               }
             ]}
           >
-            <Input disabled={isFixForm} placeholder='请输入2到20个字符' />
+            <Input disabled={isFixForm} placeholder='请输入交互名称' />
           </Form.Item>
 
           <Form.Item

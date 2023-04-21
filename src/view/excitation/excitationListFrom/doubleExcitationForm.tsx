@@ -15,7 +15,7 @@ import ExcitationCard from '../excitationComponent/excitationCard'
 import { Tip } from '../excitationComponent/Tip'
 import { GetDeatilFn } from './getDataDetailFn/getDataDetailFn'
 // import { RouteComponentProps, StaticContext } from 'react-router'
-
+type FilterType = Record<string, any>[]
 const layout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 18 }
@@ -65,19 +65,19 @@ const DoubleExcitationForm: React.FC = () => {
   const [excitationList, setExcitationList] = useState<Option[]>([
     {
       sender_id: '1',
-      name: '级联Group',
+      name: '激励嵌套管理',
       disabled: false,
       children: []
     },
     {
       sender_id: '0',
-      name: '单激励Group',
+      name: '激励单元管理',
       disabled: false,
       children: []
     }
   ])
   const [data, setData] = useState<number[]>([])
-  const [cardArray, setCardArray] = React.useState(data.length === 0 ? [0] : Array.from({ length: data.length }, (v, i) => i))
+  const [cardArray, setCardArray] = React.useState([0])
   const [cardCheckStatus, setCardCheckStatus] = useState(true)
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
   const Data = GetDeatilFn(info?.id) as getAllRes
@@ -98,20 +98,28 @@ const DoubleExcitationForm: React.FC = () => {
   //   }
   // }
 
+  // 过滤已经被使用的数据
+  const filterUseData = (val: FilterType) => {
+    const res = val.filter(item => {
+      return item.disabled === false
+    })
+    return res
+  }
+
+  // 过滤数组元素中的unfinend
+
+  const filterUnfinedItem = (val: number[]) => {
+    const mapArray = val.filter(value => value !== undefined)
+    return mapArray
+  }
+
   // 添加元素
-  const appendID = React.useCallback(
-    (val: number) => {
-      const IDArray = data
-      IDArray.push(val)
-      setData([...IDArray])
-    },
-    [data]
-  )
 
   //  选择某一参数之后,更新列表的disabled
   const updateDisabled = React.useCallback(
     (value: number, bol: boolean) => {
-      excitationList?.forEach((item: any) => {
+      const excitationListOld = excitationList as Option[]
+      excitationListOld?.forEach((item: any) => {
         item.children.forEach((element: any) => {
           if (value === element.sender_id) {
             const pre = element
@@ -119,6 +127,7 @@ const DoubleExcitationForm: React.FC = () => {
           }
         })
       })
+      setExcitationList([...excitationListOld])
     },
     [excitationList]
   )
@@ -126,26 +135,50 @@ const DoubleExcitationForm: React.FC = () => {
   // 删除某个id
   const deleteID = React.useCallback(
     (index: number) => {
-      const arrayId = data
-      const deleteId = arrayId.splice(index, 1)
-      setData([...arrayId])
-      updateDisabled(deleteId[0], false)
+      const oldItemArray = data as any
+      const clearItem = oldItemArray[index]
+      oldItemArray[index] = undefined
+      setData([...oldItemArray])
+      return clearItem as number
     },
-    [data, updateDisabled]
+    [data]
   )
 
   const onChange = React.useCallback(
     (val: number, index: number) => {
+      const oldStepArray = data
       if (val === undefined) {
-        deleteID(index)
-      } else {
-        appendID(val)
+        const item = deleteID(index)
+        updateDisabled(item, false)
+        return item
+      }
+      if (oldStepArray[index] !== val) {
+        updateDisabled(oldStepArray[index], false)
+        oldStepArray[index] = val
+        setData([...oldStepArray])
         updateDisabled(val, true)
       }
     },
-    [appendID, deleteID, updateDisabled]
+    [data, deleteID, updateDisabled]
   )
 
+  const deleteCard = React.useCallback(
+    (val: number) => {
+      const oldItemArray = data as any
+      const clearItem = oldItemArray.splice(val, 0)
+      updateDisabled(clearItem[0], false)
+      setData([...oldItemArray])
+      return Promise.resolve()
+    },
+    [data, updateDisabled]
+  )
+
+  const sortCardArray = async (val: number) => {
+    await deleteCard(val)
+    const oldItemArray = [...cardArray]
+    oldItemArray.splice(val, 1)
+    setCardArray([...oldItemArray])
+  }
   // 获取配置列表
   const getExcitationList = async (request1: Resparams, doubleRequest: Resparams) => {
     try {
@@ -153,8 +186,8 @@ const DoubleExcitationForm: React.FC = () => {
       const result1 = await excitationListFn(request1)
       Promise.all([result1, result2])
         .then(value => {
-          const result1Data = value[0].data?.results
-          const result2Data = value[1].data?.results
+          const result1Data = filterUseData(value[0].data?.results as FilterType)
+          const result2Data = filterUseData(value[1].data?.results as FilterType)
 
           setExcitationList(pre => {
             const preCopy = pre
@@ -213,7 +246,7 @@ const DoubleExcitationForm: React.FC = () => {
           align_delay_0: +values.align_delay_0,
           align_delay_1: +values.align_delay_1,
           align_delay_2: +values.align_delay_2,
-          child_id_list: data
+          child_id_list: filterUnfinedItem(data)
         }
         const result = await createGroup_unitFn(params)
         if (result.data) {
@@ -257,23 +290,31 @@ const DoubleExcitationForm: React.FC = () => {
 
   React.useEffect(() => {
     if (!isDisableStatus) {
-      if (data && data?.length) {
+      if (filterUnfinedItem(data).length >= 1) {
         setCardCheckStatus(false)
       } else {
         setCardCheckStatus(true)
       }
     }
-  }, [data, data.length, isDisableStatus])
-
-  const deleteCard = () => {}
+    if (data.length > 1) {
+      setCardArray(Array.from({ length: data.length }, (v, i) => i))
+    }
+  }, [data, isDisableStatus])
 
   React.useEffect(() => {
     getExcitationList(request1, request)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const isBack = (propsDatas: any) => {
+    const res = propsDatas.map((item: any) => {
+      return item.sender_id
+    })
+    setData([...res])
+    return res
+  }
   React.useEffect(() => {
     if (Data && isFixForm) {
-      setCardArray(Array.from({ length: Data?.group_data_list.length }, (v, i) => i))
       const { name, desc, gu_cnt0, gu_w0, gu_w1, gu_cnt1, align_delay_0, align_delay_2, align_delay_1 } = Data as any
       const formData = {
         name,
@@ -286,6 +327,7 @@ const DoubleExcitationForm: React.FC = () => {
         align_delay_1,
         align_delay_2
       }
+      isBack(Data.group_data_list)
       form.setFieldsValue(formData)
     }
   }, [form, info, Data, isFixForm])
@@ -293,7 +335,7 @@ const DoubleExcitationForm: React.FC = () => {
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.twoForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
         <Form.Item
-          label='级联Group名称'
+          label='激励嵌套管理名称'
           name='name'
           validateFirst
           validateTrigger={['onBlur']}
@@ -302,7 +344,7 @@ const DoubleExcitationForm: React.FC = () => {
               validateTrigger: 'onBlur',
               validator(_, value) {
                 if (typeof value === 'undefined' || value === '') {
-                  return Promise.reject(new Error('请输入级联Group名称'))
+                  return Promise.reject(new Error('请输入激励嵌套管理名称'))
                 }
                 return Promise.resolve()
               }
@@ -311,7 +353,7 @@ const DoubleExcitationForm: React.FC = () => {
               required: true,
               max: 20,
               min: 2,
-              message: '级联Group名称长度为2到20个字符'
+              message: '激励嵌套管理名称长度为2到20个字符'
             },
             {
               validateTrigger: 'onBlur',
@@ -320,12 +362,12 @@ const DoubleExcitationForm: React.FC = () => {
                 if (reg.test(value)) {
                   return Promise.resolve()
                 }
-                return Promise.reject(new Error('级联Group名称由汉字、数字、字母和下划线组成'))
+                return Promise.reject(new Error('激励嵌套管理名称由汉字、数字、字母和下划线组成'))
               }
             }
           ]}
         >
-          <Input placeholder='请输入级联Group名称' disabled={isFixForm} />
+          <Input placeholder='请输入激励嵌套管理名称' disabled={isFixForm} />
         </Form.Item>
         <Form.Item
           label='前置时延'
@@ -499,13 +541,13 @@ const DoubleExcitationForm: React.FC = () => {
           <Input disabled={isFixForm} placeholder='请输入后置时延' suffix={<Tip />} />
         </Form.Item>
         <Form.Item
-          label='级联Group描述'
+          label='激励嵌套管理描述'
           name='description'
-          rules={[{ message: '请输入级联Group描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
+          rules={[{ message: '请输入激励嵌套管理描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
           <Input.TextArea
             disabled={isFixForm}
-            placeholder={isFixForm ? '' : '请输入级联Group描述'}
+            placeholder={isFixForm ? '' : '请输入激励嵌套管理描述'}
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
               formatter({ count }) {
@@ -520,10 +562,11 @@ const DoubleExcitationForm: React.FC = () => {
         {cardArray?.map((index: number) => {
           return (
             <ExcitationCard
-              deleteCard={deleteCard}
+              deleteCard={sortCardArray}
               type={type}
-              formData={Data?.group_data_list}
+              idArray={data[index]}
               isFixForm={isFixForm}
+              stepArray={cardArray}
               excitationList={excitationList}
               onChange={onChange}
               index={index}
