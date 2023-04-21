@@ -77,10 +77,6 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     depCollect(true, { case_type: value, page: 1 })
   }
 
-  // 进制筛选
-
-  const systemChose = () => {}
-
   // 跳转日志
   const lookLog = React.useCallback(() => {
     history.push({
@@ -92,6 +88,10 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
 
   const changePage = (page: number, pageSize: number) => {
     depCollect(true, { page, page_size: pageSize })
+  }
+
+  const checked = (value: string) => {
+    depCollect(true, { system: value, page: 1 })
   }
   const getMessageStatus = React.useCallback(() => {
     if (messageInfo && messageInfo.task_id) {
@@ -148,7 +148,9 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
                   <DetailTestingTable params={depData} taskDetailInfo={taskDetailInfo} status={updateStatus} />
                 ) : (
                   <DetailTestedTable
+                    system={depData.system}
                     status={updateStatus}
+                    Checked={checked}
                     task_id={+taskInfo.task_id}
                     infoMap={props.location?.state}
                     testTimeSort={testTimeSort}

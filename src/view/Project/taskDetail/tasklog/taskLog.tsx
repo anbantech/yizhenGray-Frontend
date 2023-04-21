@@ -15,6 +15,7 @@ import styles from '../taskDetailUtil/Detail.less'
 
 import { taskDetailInfoType } from '../taskDetail'
 import { projectInfoType } from '../../task/taskList/task'
+import CheckCompoents from '../taskDetailCompoents/CheckCompoents'
 
 interface taskDetailType<S, T> {
   projectInfo: T
@@ -31,6 +32,9 @@ interface propsType {
   caseSort: (value: string) => void
   infoMap: taskDetailType<taskDetailInfoType, projectInfoType>
   status: number
+  // cancelMenu: (e: React.MouseEvent<HTMLDivElement>) => void
+  system: string
+  Checked: (value: string) => void
 }
 
 interface DataType {
@@ -50,7 +54,7 @@ interface DataType {
 }
 type Detail_Type = Record<string, any>
 const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
-  const { task_id, params, total, status, logData, changePage, testTimeSort, caseSort } = props
+  const { task_id, params, total, system, Checked, status, logData, changePage, testTimeSort, caseSort } = props
 
   const { taskInfo, projectInfo } = props.infoMap
   const history = useHistory()
@@ -203,6 +207,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     <div className={styles.tableList}>
       <div className={styles.tableListleftq}>
         <span className={styles.log}>测试详情</span>
+        <CheckCompoents system={system} Checked={Checked} />
       </div>
       <div className={styles.container}>
         <div className={styles.Header}>

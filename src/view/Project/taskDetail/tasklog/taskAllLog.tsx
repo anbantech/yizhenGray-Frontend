@@ -13,6 +13,7 @@ import style from 'Src/view/Project/project/project.less'
 import styles from '../taskDetailUtil/Detail.less'
 import tableStyle from '../taskDetail.less'
 import { projectInfoType } from '../../task/taskList/task'
+import CheckCompoents from '../taskDetailCompoents/CheckCompoents'
 
 interface propsType {
   params: any
@@ -38,7 +39,8 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
     page_size: 10,
     sort_field: 'create_time',
     sort_order: 'descend',
-    case_type: ''
+    case_type: '',
+    system: 'hex'
   }
   const [params, setParams] = useState(RequsetParams)
 
@@ -53,7 +55,9 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
   const changePage = (page: number, type: string, pageSize: number) => {
     setParams({ ...params, page, page_size: pageSize })
   }
-
+  const checked = (value: string) => {
+    setParams({ ...params, system: value, page: 1 })
+  }
   const getlog = async (value: testAlllogs) => {
     try {
       const log = await getAllTestingLog(value)
@@ -170,7 +174,6 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       ),
       width: '10%'
     },
-
     {
       title: '发现时间',
       dataIndex: 'update_time',
@@ -187,7 +190,10 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
 
   return (
     <div className={styles.Detail}>
-      <span className={styles.useCaseTitle}>日志</span>
+      <div className={styles.DetailHeader_allLog}>
+        <span className={styles.useCaseTitle}>日志</span>
+        <CheckCompoents system={params.system} Checked={checked} />
+      </div>
       <div style={{ marginTop: '24px' }} className={styles.tableBoby}>
         <Table rowKey={(record: any) => `${record.id}_${new Date()}`} pagination={false} dataSource={logData} columns={columns as any} bordered />
       </div>
