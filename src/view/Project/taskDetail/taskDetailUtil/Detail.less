@@ -334,7 +334,7 @@
   }
 
   :global(.ant-cascader-menu) {
-    height: 140px;
+    height: 110px !important;
   }
 }
 
@@ -375,7 +375,6 @@
   position: relative;
   display: flex;
   align-items: flex-start;
-  margin-top: 24px;
 }
 
 .checkedPosition {
@@ -690,8 +689,9 @@
 .tableListleftq {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .tableListleftq > span:nth-child(2) {
@@ -1085,4 +1085,10 @@
 .crash_infoTitle {
   height: 30px;
   line-height: 30px;
+}
+
+.DetailHeader_allLog{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
