@@ -86,7 +86,7 @@ const ChartComponents = () => {
 }
 
 const Fuzzing = (props: any) => {
-  const { type, isFixForm, stepArray, changePre2, excitationList, current } = props
+  const { type, isFixForm, stepArray, changePre2, excitationList, current, deleteCard } = props
   const [cardArray, setCardArray] = React.useState([0])
   const addCard = React.useCallback(() => {
     const pre = cardArray
@@ -94,10 +94,12 @@ const Fuzzing = (props: any) => {
     setCardArray([...pre])
   }, [cardArray])
 
-  const deleteCard = React.useCallback((index: number) => {
-    console.log(index)
-  }, [])
-
+  const sortCardArray = async (val: number) => {
+    await deleteCard(val)
+    const oldItemArray = [...cardArray]
+    oldItemArray.splice(val, 1)
+    setCardArray([...oldItemArray])
+  }
   const onChange = React.useCallback(
     (val: any, index: number) => {
       changePre2(val, index)
@@ -111,7 +113,7 @@ const Fuzzing = (props: any) => {
     return () => {
       setCardArray([0])
     }
-  }, [current, stepArray])
+  }, [current, stepArray, stepArray.length])
   return (
     <div className={styles.baseBody}>
       <div className={styles.baseForm}>
@@ -120,7 +122,8 @@ const Fuzzing = (props: any) => {
             return (
               <ExcitationCard
                 type={type}
-                deleteCard={deleteCard}
+                stepArray={cardArray}
+                deleteCard={sortCardArray}
                 idArray={stepArray[index]}
                 excitationList={excitationList}
                 isFixForm={isFixForm}
@@ -280,6 +283,18 @@ const GroupExcitationForm: React.FC = () => {
     [clearArrayItem, current, stepArray, updateDisabled]
   )
 
+  // 删除元素
+  const deleteCard = React.useCallback(
+    (index: number) => {
+      const oldItemArray = [...stepArray]
+      const res = oldItemArray[current].splice(index, 1)
+      updateDisabled(res[0], false)
+      setStepArray([...oldItemArray])
+      return Promise.resolve()
+    },
+    [current, stepArray, updateDisabled]
+  )
+
   const steps = [
     {
       title: '准备阶段',
@@ -293,6 +308,7 @@ const GroupExcitationForm: React.FC = () => {
           isFixForm={isFixForm}
           Data={detailData}
           changePre2={changePre}
+          deleteCard={deleteCard}
         />
       )
     },
@@ -308,6 +324,7 @@ const GroupExcitationForm: React.FC = () => {
           isFixForm={isFixForm}
           Data={detailData}
           changePre2={changePre}
+          deleteCard={deleteCard}
         />
       )
     },
@@ -322,6 +339,7 @@ const GroupExcitationForm: React.FC = () => {
           current={current}
           isFixForm={isFixForm}
           Data={detailData}
+          deleteCard={deleteCard}
           changePre2={changePre}
         />
       )
