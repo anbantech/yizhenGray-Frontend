@@ -77,6 +77,10 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     depCollect(true, { case_type: value, page: 1 })
   }
 
+  // 进制筛选
+
+  const systemChose = () => {}
+
   // 跳转日志
   const lookLog = React.useCallback(() => {
     history.push({
