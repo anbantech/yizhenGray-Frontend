@@ -16,6 +16,7 @@ import { TemplateListParams } from 'Src/globalType/Param'
 import { TemplateListResponse } from 'Src/globalType/Response'
 // import deleteImage from 'Image/Deletes.svg'
 import { useDialog } from 'Src/util/Hooks/useDialog'
+import inputStyle from 'Src/components/Input/searchInput/searchInput.less'
 import styles from './templateList.less'
 
 const customizeRender = () => <DefaultValueTips content='暂无模板' />
@@ -184,7 +185,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
       <div className={styles.AnBan_header}>
         <span className={styles.AnBan_header_title}>模板列表</span>
         <div className={styles.AnBan_header_bottom}>
-          <SearchInput placeholder='根据名称搜索模板' onChangeValue={changeKeywords} />
+          <SearchInput className={inputStyle.searchInput} placeholder='根据名称搜索模板' onChangeValue={changeKeywords} />
           <CreateButton width='146px' name='新建模板' size='large' type='primary' onClick={() => jumpTemplate(undefined, false, false)} />
         </div>
       </div>

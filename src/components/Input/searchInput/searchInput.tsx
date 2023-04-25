@@ -7,6 +7,7 @@ import styles from './searchInput.less'
 
 interface searchTypes {
   placeholder: string
+  className: string
   onChangeValue: (value: string, tyepe?: string) => void
 }
 
@@ -44,7 +45,7 @@ const ClearSuffix = React.memo(function ClearSuffix(isShowProp: isShowProps<isSh
 })
 
 const SearchInput = React.forwardRef((props: searchTypes, myRef) => {
-  const { placeholder, onChangeValue } = props
+  const { placeholder, className, onChangeValue } = props
   const changeValueFn = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
     onChangeValue(value, 'key_word')
@@ -59,6 +60,7 @@ const SearchInput = React.forwardRef((props: searchTypes, myRef) => {
     validate: () => {},
     clearInteraction: () => {}
   }))
+
   useEffect(() => {
     if (isCancel) {
       onChangeValue(nowValue, 'key_word')
@@ -66,7 +68,7 @@ const SearchInput = React.forwardRef((props: searchTypes, myRef) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nowValue, isCancel])
   return (
-    <div className={styles.searchInput}>
+    <div className={className}>
       <Input
         value={nowValue}
         prefix={<Search />}

@@ -1,31 +1,24 @@
 import SearchInput from 'Src/components/Input/searchInput/searchInput'
-import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import CreateButton from 'Src/components/Button/createButton'
-import Table from 'antd/lib/table'
-import ConfigProvider from 'antd/lib/config-provider'
+
 import { useEffect, useRef, useState } from 'react'
 import * as React from 'react'
 import { message } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
-import zhCN from 'antd/lib/locale/zh_CN'
-import deleteImage from 'Image/Deletes.svg'
-import PaginationsAge from 'Src/components/Pagination/Pagina'
-import { statusList, statusMap } from 'Src/util/DataMap/dataMap'
-import { DownOutlined } from '@ant-design/icons/lib/icons'
+import detail_icon from 'Src/assets/image/icon_detail.svg'
+import delete_icon from 'Src/assets/image/icon_delete.svg'
 import { taskList, deleteTasks } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import globalStyle from 'Src/view/Project/project/project.less'
-
+import InfiniteScroll from 'react-infinite-scroll-component'
 import styles from './task.less'
-
-const customizeRender = () => <DefaultValueTips content='暂无任务' />
 
 const request = {
   project_id: -1,
   key_word: '',
   page: 1,
-  page_size: 10,
+  page_size: 20,
   status: null,
   sort_field: 'create_time',
   sort_order: 'descend'
@@ -65,21 +58,19 @@ export interface projectInfoType {
 const disPlayNone = false
 const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<projectInfoType>>> = props => {
   const { projectInfo } = props.location?.state
+  //
+  const layoutRef = useRef<any>()
   const history = useHistory()
   // 任务列表参数
   const [params, setParams] = useState<Resparams>({ ...request, project_id: projectInfo.projectId })
-
+  // 动态设置虚拟列表高度
+  const [height, setHeight] = useState(700)
   // 项目管理
   const [taskLists, setTaskList] = useState<any>([])
 
-  // 页码
-  const [total, setTotal] = useState<number>()
+  // 数据是否还有更多
 
-  // 筛选任务状态
-  const [statusOperationStatus, setStatusOperationStatus] = useState<boolean>(false)
-
-  // 状态显示控制
-  const [isShows, setShow] = useState<statusValue>(-2)
+  const [hasMoreData, setHasMore] = useState(true)
 
   // 弹窗
   const [modalData, setModalData] = useState({ taskId: '', fixTitle: false, isModalVisible: false })
@@ -95,66 +86,21 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     })
   }
 
-  // 筛选状态菜单控制
-  const operattion = (operation: boolean) => {
-    setStatusOperationStatus(!operation)
-  }
-
   // 更新参数获取列表
   const updateParams = (value: string) => {
     setParams({ ...params, key_word: value, page: 1 })
   }
 
   //  更改页码
-  const changePage = (page: number, type: string, pageSize: number) => {
-    setParams({ ...params, page, page_size: pageSize })
+  const loadMoreData = () => {
+    const newPage = params.page + 1
+    setParams({ ...params, page: newPage })
   }
 
-  // 选择任务状态
-  const checkStatus = (value: string | number | null) => {
-    setShow(value as number)
-    if (value === '') {
-      setParams({ ...params, status: null, page: 1 })
-    } else {
-      setParams({ ...params, status: `${value}`, page: 1 })
-    }
-    setStatusOperationStatus(false)
-  }
-  // 状态菜单
-  const StatusMenuComponents = () => {
-    return (
-      <div className={styles.statusMenu}>
-        {statusList.map((item: statusItemType) => {
-          return (
-            <div key={item.value} className={styles.size}>
-              <div
-                className={[styles.checkblue, `${isShows === item.value ? styles.checkBlue : styles.checkblack}`].join(' ')}
-                onClick={() => {
-                  checkStatus(item.value)
-                }}
-                role='time'
-              >
-                {' '}
-                {item.lable}
-              </div>
-            </div>
-          )
-        })}
-      </div>
-    )
-  }
+  // 更新右侧列表
 
-  const jumpTasksDetail = (value: any) => {
-    const task_id = value.id
-    history.push({
-      pathname: '/projects/Tasks/Detail',
-      state: { projectInfo, taskInfo: { editTask: false, task_id } }
-    })
-  }
-
-  const deleteTask = (value: boolean, id: any) => {
+  const updateInstanceList = (id: string) => {
     setModalData({ ...modalData, taskId: id })
-    setCommonModleStatus(value)
   }
 
   const deleteProjectRight = async () => {
@@ -175,183 +121,76 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     setCommonModleStatus(value)
   }
 
-  // 修改任务
-  const fixTask = (value: any) => {
-    if ([0, 1, 4].includes(value.status)) {
-      history.push({
-        pathname: '/projects/Tasks/fixTask',
-        state: { projectInfo, taskInfo: { editTask: true, data: value } }
-      })
-    } else {
-      message.error('任务正在运行中,请结束任务')
-    }
-  }
-  const timer = useRef<any>()
-  // 表格title
-  const columns = [
-    {
-      width: '8%',
-      title: '任务名称',
-      dataIndex: 'name',
-      key: 'name',
-      // eslint-disable-next-line react/display-name
-      render: (_: any, row: any) => {
-        return (
-          <span
-            className={styles.tableProjectName}
-            role='time'
-            onClick={() => {
-              jumpTasksDetail(row)
-            }}
-          >
-            {row.name}
-          </span>
-        )
-      }
-    },
-    {
-      width: '20%',
-      title: '描述',
-      dataIndex: 'desc',
-      key: 'desc'
-    },
-    {
-      width: '10%',
-      title: '运行时长',
-      dataIndex: 'test_time',
-      key: 'test_time',
-      // eslint-disable-next-line react/display-name
-      render: (_: any, row: any) => {
-        return <span>{`${row.test_time}`}</span>
-      }
-    },
-    {
-      width: '10%',
-      title: 'Crash数量',
-      dataIndex: 'error_num',
-      key: 'error_num'
-    },
-
-    {
-      width: '15%',
-      // eslint-disable-next-line react/display-name
-      title: () => (
-        <div className={styles.statusList_boby}>
-          <div
-            role='button'
-            tabIndex={0}
-            onClick={() => {
-              operattion(statusOperationStatus)
-            }}
-          >
-            <span>任务状态</span>
-            <DownOutlined rotate={statusOperationStatus ? -180 : 0} />
-          </div>
-          {statusOperationStatus ? <StatusMenuComponents /> : null}
-        </div>
-      ),
-      dataIndex: 'status',
-      // eslint-disable-next-line react/display-name
-      render: (text: any, row: results) => {
-        return (
-          <div className={styles.status}>
-            <span className={statusMap[row.status].color} />
-            <span>{statusMap[row.status].label}</span>
-          </div>
-        )
-      }
-    },
-    {
-      width: '15%',
-      title: '更多操作',
-      dataIndex: 'operations',
-      key: 'operations',
-      // eslint-disable-next-line react/display-name
-      render: (_: any, row: any) => {
-        return (
-          <div className={globalStyle.Opera_detaile}>
-            <span
-              role='button'
-              tabIndex={0}
-              onClick={() => {
-                jumpTasksDetail(row)
-              }}
-            >
-              查看详情
-            </span>
-            {disPlayNone && (
-              <>
-                {' '}
-                <span
-                  style={{ marginLeft: '10px', marginRight: '10px' }}
-                  role='button'
-                  tabIndex={0}
-                  onClick={() => {
-                    fixTask(row)
-                  }}
-                >
-                  修改
-                </span>
-                <img
-                  src={deleteImage}
-                  alt=''
-                  onClick={() => {
-                    deleteTask(true, row.id)
-                  }}
-                />
-              </>
-            )}
-          </div>
-        )
-      }
-    }
-  ]
-
   // 获取任务列表
   const getTaskList = async (value: Resparams) => {
     try {
       const result = await taskList(value)
       if (result.data) {
-        setTotal(result.data.total)
-        setTaskList(result.data.results)
+        const newList = taskLists.concat(result.data.results)
+        if (newList.length === result.data.total) {
+          setHasMore(false)
+        }
+        setTaskList([...newList])
       }
       return result
     } catch (error) {
       throwErrorMessage(error)
     }
   }
+
+  const getLayout = () => {
+    setHeight(layoutRef.current.clientHeight)
+  }
   useEffect(() => {
+    getLayout()
     getTaskList({ ...params })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params])
-  useEffect(() => {
-    timer.current = setInterval(() => {
-      getTaskList({ ...params })
-    }, 60000)
 
-    return () => {
-      clearInterval(timer.current)
-    }
-  }, [params])
   return (
-    <div className={globalStyle.AnBan_main}>
+    <div className={styles.taskLeft_list} ref={layoutRef}>
       <div className={globalStyle.AnBan_header}>
-        <div>
-          <span className={globalStyle.AnBan_header_title}>{projectInfo?.projectName || ''}</span>
-          <span className={styles.projectDescStyle}>{`项目描述 : ${projectInfo?.projectDesc || ''}`}</span>
+        <div className={styles.taskHeadr}>
+          <span className={styles.taskLeft_header_title}>{projectInfo?.projectName || ''}</span>
+          <CreateButton width='100%' height='36px' borderRadius='4px' name='新建任务' size='small' type='primary' onClick={jumpNewCreateTask} />
         </div>
-
-        <div className={globalStyle.AnBan_header_bottom}>
-          <SearchInput placeholder='根据名称搜索任务' onChangeValue={updateParams} />
-          <CreateButton width='146px' name='新建任务' size='large' type='primary' onClick={jumpNewCreateTask} />
-        </div>
+        <SearchInput className={styles.taskInput} placeholder='根据名称搜索任务' onChangeValue={updateParams} />
       </div>
-      <div className={globalStyle.tableConcent}>
-        <ConfigProvider locale={zhCN} renderEmpty={customizeRender}>
-          <Table rowKey='id' dataSource={taskLists} columns={columns} pagination={false} />
-        </ConfigProvider>
-      </div>
-      <div className={globalStyle.AnBan_PaginationsAge}>
-        <PaginationsAge length={total} num={10} getParams={changePage} pagenums={params.page} />
+      <div className={styles.concentBody}>
+        <InfiniteScroll
+          dataLength={taskLists.length}
+          next={loadMoreData}
+          hasMore={hasMoreData}
+          height={height - 214}
+          loader={<h4>正在加载中ing</h4>}
+          endMessage={
+            <p style={{ textAlign: 'center' }}>
+              <b>已经全部加载完成,No_hasMoreData!!!</b>
+            </p>
+          }
+        >
+          {/* <div className={styles.concentBody}> */}
+          {taskLists.map((item: any) => {
+            return (
+              <div
+                tabIndex={item.id}
+                role='button'
+                className={modalData.taskId === item.id ? styles.itemActive : styles.item}
+                onClick={() => {
+                  updateInstanceList(item.id)
+                }}
+                key={item.id}
+              >
+                <span>{item.name}</span>
+                <div className={styles.icon_layout}>
+                  <img src={detail_icon} alt='' />
+                  <img src={delete_icon} alt='' />
+                </div>
+              </div>
+            )
+          })}
+          {/* </div> */}
+        </InfiniteScroll>
       </div>
       <CommonModle
         IsModalVisible={CommonModleStatus}

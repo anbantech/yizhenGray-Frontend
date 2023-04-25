@@ -163,13 +163,13 @@ function Header(props: any) {
         ? '查看激励嵌套管理'
         : data?.name === '查看交互'
         ? '查看交互'
-        : '查看端口'
+        : '查看外设'
     }`,
     '/excitationList/createOneExcitation': '新建端口单元管理',
     '/excitationList/createDoubleExcitation': '新建端口嵌套管理',
     '/excitationList/createDoubleExcitationGroup': '新建端口嵌套管理',
     '/excitationList/createGroupExcitation': '新建交互',
-    '/excitationList/createExcitation': '新建端口',
+    '/excitationList/createExcitation': '新建外设',
     '/excitationList/Deatail/ExcitationDraw': '预览',
     '/excitationList/createGroupExcitation/ExcitationDraw': '预览',
     '/templateList': '模板列表',

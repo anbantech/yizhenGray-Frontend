@@ -91,7 +91,7 @@ function ExcitationModal(props: any) {
       className={styles}
       width={width}
       visible={visible}
-      title={fixTitle ? '修改端口' : '新建端口'}
+      title={fixTitle ? '修改端口' : '新建外设'}
       onCancel={() => {
         hideModal(false)
         form.resetFields()

@@ -5,18 +5,16 @@ import { useContext } from 'react'
 import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
-// import { GlobalContext } from 'Src/globalContext/globalContext'
-import { createExcitationFn, excitationListFn } from 'Src/services/api/excitationApi'
+import { getPortList, createExcitationFn } from 'Src/services/api/excitationApi'
 import { getTemplateList } from 'Src/services/api/templateApi'
 import { throwErrorMessage } from 'Src/util/message'
-import styles from '../excitation.less'
-import { Tip } from '../excitationComponent/Tip'
 import { GetDeatilFn } from './getDataDetailFn/getDataDetailFn'
+import styles from '../excitation.less'
 
 // import { RouteComponentProps, StaticContext } from 'react-router'
 
 const layout = {
-  labelCol: { span: 6 },
+  labelCol: { span: 4 },
   wrapperCol: { span: 18 }
 }
 
@@ -28,33 +26,16 @@ const templateListRequest = {
   sort_order: 'descend'
 }
 
-const oneRequest = {
-  target_type: '0',
-  key_word: '',
-  status: null,
-  page: 1,
-  page_size: 999,
-  sort_field: 'create_time',
-  sort_order: 'descend'
-}
-
-interface listArray {
-  [propName: string]: string | number
-}
-
 const OneExcotationForm: React.FC = () => {
   const history = useHistory()
-  // const { config: globalConfig } = useContext(GlobalContext)
-  // const { userInfo } = globalConfig
-  // const { username, roles } = userInfo
-  const { isFixForm, info, type } = useContext(GlobalContexted)
+  const { isFixForm, info } = useContext(GlobalContexted)
   const { Option } = Select
   const [form] = useForm()
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
   const [templateList, setTemplateList] = React.useState<any[]>()
-  const [portList, setPortList] = React.useState<listArray[]>([])
+  const [portList, setPortList] = React.useState<string[]>([])
   const Data = GetDeatilFn(info?.id)
-  // 获取模板列表
+  // 获取模版列表
   const fetchTemplateList = React.useCallback(async () => {
     //  Todo code码
     try {
@@ -72,10 +53,10 @@ const OneExcotationForm: React.FC = () => {
   const fetchPortList = React.useCallback(async () => {
     //  Todo code码
     try {
-      const result = await excitationListFn(oneRequest)
+      const result = await getPortList()
       if (result.data) {
         const results = result.data
-        setPortList(results.results)
+        setPortList(results)
       }
       return result
     } catch (error) {
@@ -93,15 +74,15 @@ const OneExcotationForm: React.FC = () => {
     try {
       if (values) {
         const params = {
+          group_type: 0,
           name: values.name,
-          target_id: values.target_id,
+          port: values.port,
           template_id: +values.template_id,
-          gu_cnt1: +values.gu_cnt1,
-          gu_cnt0: +values.gu_cnt0,
-          gu_w1: +values.gu_w1,
+          recycle_count: +values.recycle_count,
+          recycle_count_0: +values.recycle_count_0,
+          recycle_time: +values.recycle_time,
           desc: values.description,
-          gu_w0: +values.gu_w0,
-          align_delay_1: +values.align_delay_1,
+          wait_time_0: +values.wait_time_0,
           align_delay_0: +values.align_delay_0,
           align_delay_2: +values.align_delay_2
         }
@@ -109,7 +90,7 @@ const OneExcotationForm: React.FC = () => {
         if (result.data) {
           history.push({
             pathname: '/excitationList',
-            state: { type }
+            state: {}
           })
         }
       }
@@ -117,12 +98,7 @@ const OneExcotationForm: React.FC = () => {
       throwErrorMessage(error, { 1009: '激励创建失败' })
     }
   }
-  const cancelForm = () => {
-    history.push({
-      pathname: '/excitationList',
-      state: { type }
-    })
-  }
+
   const onFieldsChange = (changedFields: any, allFields: any) => {
     const disabledData: any = []
     const errors = allFields.every((item: any) => {
@@ -149,29 +125,27 @@ const OneExcotationForm: React.FC = () => {
   }, [])
   React.useEffect(() => {
     if (Data) {
-      const { name, desc, target_id, template_id, align_delay_1, gu_cnt0, gu_cnt1, gu_w1, gu_w0, align_delay_0, align_delay_2 } = Data as any
+      const { name, desc, port, template_id, recycle_count_0, recycle_time, recycle_count, wait_time_0, align_delay_0, align_delay_2 } = Data as any
       const formData = {
         name,
         description: desc,
-        target_id,
+        port,
         template_id,
-        gu_cnt0,
-        gu_cnt1,
-        gu_w1,
-        gu_w0,
+        recycle_count_0,
+        recycle_count,
+        recycle_time,
+        wait_time_0,
         align_delay_0,
-        align_delay_1,
         align_delay_2
       }
       form.setFieldsValue(formData)
     }
   }, [form, info, Data])
-
   return (
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.oneForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
         <Form.Item
-          label='激励单元管理名称'
+          label='激励名称'
           name='name'
           validateFirst
           validateTrigger={['onBlur']}
@@ -180,16 +154,16 @@ const OneExcotationForm: React.FC = () => {
               validateTrigger: 'onBlur',
               validator(_, value) {
                 if (typeof value === 'undefined' || value === '') {
-                  return Promise.reject(new Error('请输入激励单元管理名称'))
+                  return Promise.reject(new Error('请输入旁路名称'))
                 }
                 return Promise.resolve()
               }
             },
             {
               required: true,
-              max: 20,
+              max: 6,
               min: 2,
-              message: '激励单元管理名称为2到20个字符'
+              message: '任务名称长度为2到6个字符'
             },
             {
               validateTrigger: 'onBlur',
@@ -198,39 +172,39 @@ const OneExcotationForm: React.FC = () => {
                 if (reg.test(value)) {
                   return Promise.resolve()
                 }
-                return Promise.reject(new Error('激励单元管理名称由汉字、数字、字母和下划线组成'))
+                return Promise.reject(new Error('任务名称由汉字、数字、字母和下划线组成'))
               }
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入激励单元管理名称' />
+          <Input disabled={isFixForm} placeholder='请输入2到6个字符' />
         </Form.Item>
 
-        <Form.Item name='target_id' label='端口名称' rules={[{ required: true, message: '请选择端口' }]}>
-          <Select placeholder='请选择端口' disabled={isFixForm}>
+        <Form.Item name='port' label='外设类别' rules={[{ required: true, message: '请选择选择外设类别' }]}>
+          <Select placeholder='请选择外设类别' disabled={isFixForm}>
             {
               /**
-               * 下拉选择端口
+               * 根据连接方式列表渲染下拉框可选择的设备比特率
                */
               portList?.map(rate => {
                 return (
-                  <Option key={rate.stimulus} disabled={rate.disable} value={rate.stimulus_id}>
-                    {rate.stimulus_name}
+                  <Option key={rate} value={rate}>
+                    {rate}
                   </Option>
                 )
               })
             }
           </Select>
         </Form.Item>
-        <Form.Item name='template_id' label='模板名称' rules={[{ required: true, message: '请选择模板' }]}>
-          <Select placeholder='请选择模板' disabled={isFixForm}>
+        <Form.Item name='template_id' label='模版名称' rules={[{ required: true, message: '请选择选择模版' }]}>
+          <Select placeholder='请选择选择模版' disabled={isFixForm}>
             {
               /**
-               *  选择不同模板
+               * 根据连接方式列表渲染下拉框可选择的设备比特率
                */
               templateList?.map(rate => {
                 return (
-                  <Option key={rate.id} value={rate.id} disabled={rate.disable as boolean}>
+                  <Option key={rate.id} value={rate.id}>
                     {rate.name}
                   </Option>
                 )
@@ -239,35 +213,10 @@ const OneExcotationForm: React.FC = () => {
           </Select>
         </Form.Item>
         <Form.Item
-          label='前置时延'
-          name='align_delay_0'
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[
-            {
-              required: true,
-              validateTrigger: 'onBlur',
-              validator(_, value) {
-                const reg = /^\d+$/
-                if (reg.test(value)) {
-                  if (value <= 100) {
-                    return Promise.resolve()
-                  }
-                  return Promise.reject(new Error('请输入 0-100 之间的整数'))
-                }
-                return Promise.reject(new Error('请输入 0-100 之间的整数'))
-              }
-            }
-          ]}
-        >
-          <Input disabled={isFixForm} placeholder='请输入前置时延' suffix={<Tip />} />
-        </Form.Item>
-        <Form.Item
           label='发送次数'
-          name='gu_cnt0'
+          name='recycle_count_0'
           validateFirst
           validateTrigger={['onBlur']}
-          initialValue={1}
           rules={[
             {
               required: true,
@@ -275,47 +224,22 @@ const OneExcotationForm: React.FC = () => {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value > 0 && value <= 20) {
+                  if (value <= 20) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('请输入 1-20 之间的整数'))
+                  return Promise.reject(new Error('请输入 0-20 之间的整数'))
                 }
-                return Promise.reject(new Error('请输入 1-20 之间的整数'))
+                return Promise.reject(new Error('请输入 0-20 之间的整数'))
               }
             }
           ]}
         >
-          <Input disabled placeholder='请输入发送次数' />
+          <Input disabled={isFixForm} placeholder='请输入发送次数' />
         </Form.Item>
         <Form.Item
           label='等待时间'
-          name='gu_w0'
+          name='wait_time_0'
           validateFirst
-          validateTrigger={['onBlur']}
-          rules={[
-            {
-              required: true,
-              validateTrigger: 'onBlur',
-              validator(_, value) {
-                const reg = /^\d+$/
-                if (reg.test(value)) {
-                  if (value <= 100) {
-                    return Promise.resolve()
-                  }
-                  return Promise.reject(new Error('请输入 0-100 之间的整数'))
-                }
-                return Promise.reject(new Error('请输入 0-100 之间的整数'))
-              }
-            }
-          ]}
-        >
-          <Input disabled={isFixForm} placeholder='请输入等待时间' suffix={<Tip />} />
-        </Form.Item>
-        <Form.Item
-          label='循环间隔'
-          name='gu_w1'
-          validateFirst
-          initialValue={0}
           validateTrigger={['onBlur']}
           rules={[
             {
@@ -334,37 +258,12 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled placeholder='请输入循环间隔' suffix={<Tip />} />
-        </Form.Item>
-        <Form.Item
-          label='循环次数'
-          name='gu_cnt1'
-          validateFirst
-          validateTrigger={['onBlur']}
-          initialValue={0}
-          rules={[
-            {
-              required: true,
-              validateTrigger: 'onBlur',
-              validator(_, value) {
-                const reg = /^\d+$/
-                if (reg.test(value)) {
-                  if (value >= 0 && value <= 20) {
-                    return Promise.resolve()
-                  }
-                  return Promise.reject(new Error('请输入 1-20 之间的整数'))
-                }
-                return Promise.reject(new Error('请输入 1-20 之间的整数'))
-              }
-            }
-          ]}
-        >
-          <Input disabled placeholder='请输入循环次数' />
+          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
         </Form.Item>
 
         <Form.Item
-          label='中间时延'
-          name='align_delay_1'
+          label='循环次数'
+          name='recycle_count'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -374,17 +273,65 @@ const OneExcotationForm: React.FC = () => {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value <= 100) {
+                  if (value <= 20) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('请输入 0-100 之间的整数'))
+                  return Promise.reject(new Error('请输入 0-20 之间的整数'))
                 }
-                return Promise.reject(new Error('请输入 0-100 之间的整数'))
+                return Promise.reject(new Error('请输入 0-20 之间的整数'))
               }
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入中间时延' suffix={<Tip />} />
+          <Input disabled={isFixForm} placeholder='请输入发送次数' />
+        </Form.Item>
+        <Form.Item
+          label='循环间隔'
+          name='recycle_time'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[
+            {
+              required: true,
+              validateTrigger: 'onBlur',
+              validator(_, value) {
+                const reg = /^\d+$/
+                if (reg.test(value)) {
+                  if (value <= 10) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                }
+                return Promise.reject(new Error('请输入 0-10 之间的整数'))
+              }
+            }
+          ]}
+        >
+          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
+        </Form.Item>
+        <Form.Item
+          label='前置时延'
+          name='align_delay_0'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[
+            {
+              required: true,
+              validateTrigger: 'onBlur',
+              validator(_, value) {
+                const reg = /^\d+$/
+                if (reg.test(value)) {
+                  if (value <= 10) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
+                }
+                return Promise.reject(new Error('请输入 0-10 之间的整数'))
+              }
+            }
+          ]}
+        >
+          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
         </Form.Item>
         <Form.Item
           label='后置时延'
@@ -398,26 +345,26 @@ const OneExcotationForm: React.FC = () => {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value <= 100) {
+                  if (value <= 10) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('请输入 0-100 之间的整数'))
+                  return Promise.reject(new Error('请输入 0-10 之间的整数'))
                 }
-                return Promise.reject(new Error('请输入 0-100 之间的整数'))
+                return Promise.reject(new Error('请输入 0-10 之间的整数'))
               }
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入后置时延' suffix={<Tip />} />
+          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
         </Form.Item>
         <Form.Item
-          label='激励单元管理描述'
+          label='任务描述'
           name='description'
-          rules={[{ message: '请输入激励单元管理描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
+          rules={[{ message: '请输入激励描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
           <Input.TextArea
             disabled={isFixForm}
-            placeholder={isFixForm ? '' : '请输入激励单元管理描述'}
+            placeholder='激励描述'
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
               formatter({ count }) {
@@ -429,27 +376,23 @@ const OneExcotationForm: React.FC = () => {
       </Form>
       <div className={styles.excitaion_footer}>
         <div className={styles.excitaion_footer_footerConcent}>
-          {!isFixForm ? (
-            <CommonButton
-              buttonStyle={styles.stepButton}
-              name='取消'
-              type='default'
-              onClick={() => {
-                cancelForm()
-              }}
-            />
-          ) : null}
-          {!isFixForm ? (
-            <CommonButton
-              buttonStyle={styles.stepButton}
-              type='primary'
-              name='确认'
-              disabled={isDisableStatus}
-              onClick={() => {
-                createOneExcitationFn()
-              }}
-            />
-          ) : null}
+          <CommonButton
+            buttonStyle={styles.stepButton}
+            name='取消'
+            type='default'
+            onClick={() => {
+              //   cancenlForm()
+            }}
+          />
+          <CommonButton
+            buttonStyle={styles.stepButton}
+            type='primary'
+            name='确认'
+            disabled={isDisableStatus}
+            onClick={() => {
+              createOneExcitationFn()
+            }}
+          />
         </div>
       </div>
     </div>

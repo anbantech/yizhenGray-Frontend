@@ -17,8 +17,10 @@ import zhCN from 'antd/lib/locale/zh_CN'
 import { Radio, RadioChangeEvent } from 'antd'
 import useDepCollect from 'Src/util/Hooks/useDepCollect'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
+import inputStyle from 'Src/components/Input/searchInput/searchInput.less'
 import styles from 'Src/view/Project/project/project.less'
 import style from './excitation.less'
+
 import { StepRef } from '../Project/task/createTask/newCreateTask'
 // import { changeParams } from '../Project/taskDetail/taskDetailUtil/getTestLog'
 
@@ -45,7 +47,7 @@ interface Resparams {
 }
 
 const An_ButtonNameMap = {
-  0: '新建端口',
+  0: '新建外设',
   1: '新建激励单元管理',
   2: '新建激励嵌套管理',
   3: '新建交互'
@@ -75,7 +77,7 @@ interface ChildRef {
 
 type stateType = { [key: string]: string }
 const inputPlaceholder = {
-  0: '根据名称搜索端口',
+  0: '根据名称搜索外设',
   1: '根据名称搜索激励单元管理',
   2: '根据名称搜索激励嵌套管理',
   3: '根据名称搜索交互'
@@ -236,7 +238,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     0: [
       {
         width: '15%',
-        title: '端口名称',
+        title: '外设名称',
         dataIndex: 'stimulus_name',
         key: 'stimulus_name',
         // eslint-disable-next-line react/display-name
@@ -466,7 +468,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
           optionType='button'
           value={`${tabs}`}
         >
-          <Radio.Button value='0'>端口管理</Radio.Button>
+          <Radio.Button value='0'>外设管理</Radio.Button>
           <Radio.Button value='1'>激励单元管理</Radio.Button>
           <Radio.Button value='2'>激励嵌套管理</Radio.Button>
           <Radio.Button value='3'>交互</Radio.Button>
@@ -474,6 +476,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         <div className={styles.AnBan_header_bottom}>
           <SearchInput
             ref={childRef.inputRef}
+            className={inputStyle.searchInput}
             placeholder={`${inputPlaceholder[tabs as keyof typeof inputPlaceholder]}`}
             onChangeValue={setOperation}
           />
