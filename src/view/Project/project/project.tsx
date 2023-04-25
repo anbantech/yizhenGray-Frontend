@@ -14,6 +14,7 @@ import zhCN from 'antd/lib/locale/zh_CN'
 import deleteImage from 'Image/Deletes.svg'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
+import inputStyle from 'Src/components/Input/searchInput/searchInput.less'
 import styles from './project.less'
 
 const customizeRender = () => <DefaultValueTips content='暂无项目' />
@@ -220,7 +221,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
       <div className={styles.AnBan_header}>
         <span className={styles.AnBan_header_title}>项目管理</span>
         <div className={styles.AnBan_header_bottom}>
-          <SearchInput placeholder='根据名称搜索项目' onChangeValue={updateParams} />
+          <SearchInput className={inputStyle.searchInput} placeholder='根据名称搜索项目' onChangeValue={updateParams} />
           <CreateButton width='146px' name='新建项目' size='large' type='primary' onClick={createProjectModal} />
         </div>
       </div>

@@ -164,7 +164,6 @@ const ThreeExcitationCard = (props: AllPropsType) => {
       })
     }
   }, [desc, form, formData, index])
-  console.log(stepArray.length)
   return (
     <div className={styles.card_middle}>
       <div
