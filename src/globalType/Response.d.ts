@@ -296,6 +296,8 @@ export interface ResTaskDetail {
   statement_coverage: string
   branch_coverage: string
   warning_count: number
+  group_name: string
+  simu_instance_id: number
 }
 
 // 22. 任务删除  返回为null

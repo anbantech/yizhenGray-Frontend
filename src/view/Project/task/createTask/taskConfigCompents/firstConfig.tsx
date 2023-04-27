@@ -134,13 +134,11 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   useEffect(() => {
     getNode()
     if (taskInfo.data) {
-      const { name, desc, project_id, work_time, crash_num, sender_id, simu_instance_id, beat_unit } = taskInfo.data as any
+      const { name, desc, project_id, sender_id, simu_instance_id, beat_unit } = taskInfo.data as any
       const formData = {
         name,
         description: desc,
         project_id,
-        work_time,
-        crash_num,
         sender_id,
         beat_unit,
         simu_instance_id
@@ -187,53 +185,6 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           <Input placeholder='请输入任务名称' />
         </Form.Item>
 
-        <Form.Item
-          label='运行时长'
-          name='work_time'
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[
-            {
-              required: true,
-              validateTrigger: 'onBlur',
-              validator(_, value) {
-                const reg = /^\d+$/
-                if (reg.test(value)) {
-                  if (value >= 1 && value <= 48) {
-                    return Promise.resolve()
-                  }
-                  return Promise.reject(new Error('请输入 1-48 之间的整数'))
-                }
-                return Promise.reject(new Error('请输入 1-48 之间的整数'))
-              }
-            }
-          ]}
-        >
-          <Input placeholder='请输入运行时长' suffix='小时' />
-        </Form.Item>
-        <Form.Item
-          label='Crash数量'
-          name='crash_num'
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[
-            { required: true, message: '请输入Crash数量' },
-            {
-              validator(_, value) {
-                const reg = /^\d+$/
-                if (reg.test(value)) {
-                  if (value >= 0 && value <= 100) {
-                    return Promise.resolve()
-                  }
-                  return Promise.reject(new Error('请输入 0-100 之间的整数'))
-                }
-                return Promise.reject(new Error('请输入 0-100 之间的整数'))
-              }
-            }
-          ]}
-        >
-          <Input placeholder='请输入Crash数量' />
-        </Form.Item>
         <Form.Item
           label='节拍单元'
           name='beat_unit'

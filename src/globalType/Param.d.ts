@@ -235,11 +235,12 @@ export interface TaskDetail {
 
 export interface TestList {
   task_id: number
+  key_word?: string
   page: number
+  status: number | null | string
   page_size: number
-  status: string
-  sort_order: string
-  sort_field: string
+  sort_field?: string
+  sort_order?: string
 }
 
 // 24. 测试实例详情 直接请求接口

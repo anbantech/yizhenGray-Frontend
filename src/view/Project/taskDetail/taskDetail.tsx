@@ -41,8 +41,8 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     system: 'hex',
     diagnosis: ''
   }
-  const history = useHistory()
 
+  const history = useHistory()
   const [taskDetailInfo, setTaskDetailInfo] = React.useState<ResTaskDetail>()
   const [updateStatus, setUpdateStatus] = React.useState(0)
   const timer = useRef<any>()

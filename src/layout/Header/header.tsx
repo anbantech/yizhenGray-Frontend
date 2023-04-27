@@ -155,21 +155,21 @@ function Header(props: any) {
     '/projects/Tasks/Detail/TaskLog': '日志',
     '/projects/Tasks/Detail/Scale': '动态监控',
     '/projects/Tasks/Detail/ScaleDetail': '缺陷详情',
-    '/excitationList': '激励列表',
-    '/excitationList/Deatail': `${
-      data && data?.name === '查看激励单元管理'
-        ? '查看激励单元管理'
-        : data?.name === '查看激励嵌套管理'
-        ? '查看激励嵌套管理'
-        : data?.name === '查看交互'
-        ? '查看交互'
-        : '查看外设'
-    }`,
-    '/excitationList/createOneExcitation': '新建端口单元管理',
-    '/excitationList/createDoubleExcitation': '新建端口嵌套管理',
-    '/excitationList/createDoubleExcitationGroup': '新建端口嵌套管理',
-    '/excitationList/createGroupExcitation': '新建交互',
-    '/excitationList/createExcitation': '新建外设',
+    '/OneExcitationList': '外设列表',
+    '/TwoExcitationList': '激励单元管理',
+    '/ThreeExcitationList': '激励嵌套管理',
+    '/FourExcitationList': '交互管理',
+    '/OneExcitationList/Detail': '外设详情',
+    '/TwoExcitationList/Detail': '激励单元详情',
+    '/ThreeExcitationList/Detail': '激励嵌套详情',
+    '/FourExcitationList/Deatail': '交互详情',
+    '/TwoExcitationList/createDoubleExcitationGroup': '新建端口单元管理',
+    '/ThreeExcitationList/createDoubleExcitation': '新建端口嵌套管理',
+
+    '/FourExcitationList/createGroupExcitation': '新建交互',
+
+    '/OneExcitationList/createExcitation': '新建外设',
+
     '/excitationList/Deatail/ExcitationDraw': '预览',
     '/excitationList/createGroupExcitation/ExcitationDraw': '预览',
     '/templateList': '模板列表',

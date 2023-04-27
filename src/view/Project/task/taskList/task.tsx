@@ -44,6 +44,7 @@ interface projectListType {
 }
 interface projectPropsType<T> {
   projectInfo: T
+  taskListOne_id: string
 }
 interface results {
   status: 0 | 2 | 1 | 3 | 4 | 5
@@ -54,11 +55,13 @@ export interface projectInfoType {
   projectDesc: string
   projectName: string
 }
+interface PropsData {
+  checkInstances: (taskId: string) => void
+}
 // Todo 隐藏删除修改功能
-const disPlayNone = false
-const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<projectInfoType>>> = props => {
-  const { projectInfo } = props.location?.state
-  //
+const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<projectInfoType>> & PropsData> = props => {
+  const { projectInfo, taskListOne_id } = props.location?.state
+  const { checkInstances } = props
   const layoutRef = useRef<any>()
   const history = useHistory()
   // 任务列表参数
@@ -73,7 +76,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   const [hasMoreData, setHasMore] = useState(true)
 
   // 弹窗
-  const [modalData, setModalData] = useState({ taskId: '', fixTitle: false, isModalVisible: false })
+  const [modalData, setModalData] = useState({ taskId: '', spinning: false, fixTitle: false, isModalVisible: false })
 
   //  删除弹出框
   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
@@ -88,6 +91,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
 
   // 更新参数获取列表
   const updateParams = (value: string) => {
+    setTaskList([])
     setParams({ ...params, key_word: value, page: 1 })
   }
 
@@ -98,16 +102,38 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   }
 
   // 更新右侧列表
-
   const updateInstanceList = (id: string) => {
     setModalData({ ...modalData, taskId: id })
+    checkInstances(id)
   }
 
+  // 实列详情返回任务列表,左侧任务列表,与实列列表保持一致
+  // 通过维护task_id,且通过路由,或者任务列表第一个数据拿值,并且判断taskList长度是否为空
+
+  const keepCheckTask = (id: string) => {
+    checkInstances(id)
+    setModalData({ ...modalData, taskId: id })
+  }
+  // 页面加载时 调用
+  const backWebTask = (taskListOne_id: string) => {
+    if (taskListOne_id) {
+      setModalData({ ...modalData, taskId: taskListOne_id })
+      checkInstances(taskListOne_id)
+    }
+  }
+  useEffect(() => {
+    backWebTask(taskListOne_id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const deleteProjectRight = async () => {
+    setModalData({ ...modalData, spinning: true })
     try {
       const res = await deleteTasks(projectInfo.projectId, modalData.taskId)
       if (res.data) {
+        setTaskList([])
         setParams({ ...params, key_word: '', page: 1 })
+        setModalData({ ...modalData, spinning: false })
         setCommonModleStatus(false)
         message.success('删除成功')
       }
@@ -127,6 +153,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       const result = await taskList(value)
       if (result.data) {
         const newList = taskLists.concat(result.data.results)
+        keepCheckTask(newList[0].id)
         if (newList.length === result.data.total) {
           setHasMore(false)
         }
@@ -141,6 +168,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   const getLayout = () => {
     setHeight(layoutRef.current.clientHeight)
   }
+
   useEffect(() => {
     getLayout()
     getTaskList({ ...params })
@@ -165,7 +193,8 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
           loader={<h4>正在加载中ing</h4>}
           endMessage={
             <p style={{ textAlign: 'center' }}>
-              <b>已经全部加载完成,No_hasMoreData!!!</b>
+              <div className={styles.listLine} />
+              <div className={styles.concentList}>内容已经加载完毕</div>
             </p>
           }
         >
@@ -183,21 +212,27 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
               >
                 <span>{item.name}</span>
                 <div className={styles.icon_layout}>
-                  <img src={detail_icon} alt='' />
-                  <img src={delete_icon} alt='' />
+                  <img src={detail_icon} alt='' onClick={() => {}} />
+                  <img
+                    src={delete_icon}
+                    alt=''
+                    onClick={() => {
+                      CommonModleClose(true)
+                    }}
+                  />
                 </div>
               </div>
             )
           })}
-          {/* </div> */}
         </InfiniteScroll>
       </div>
       <CommonModle
         IsModalVisible={CommonModleStatus}
+        spinning={modalData.spinning}
         deleteProjectRight={deleteProjectRight}
         CommonModleClose={CommonModleClose}
         name='删除任务'
-        concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
+        concent='是否确认删除？'
       />
     </div>
   )

@@ -61,10 +61,13 @@ const App: React.FC<RouteComponentProps<any, any, any>> = props => {
   }, [props.location])
   const RouterMap = new Set([
     '/projects',
-    '/excitationList',
     '/Exception',
     '/excitationList/createExcitation/ExcitationDraw',
     '/UserLog',
+    '/OneExcitationList',
+    '/TwoExcitationList',
+    '/ThreeExcitationList',
+    '/FourExcitationList',
     '/UserList',
     '/templateList'
   ])

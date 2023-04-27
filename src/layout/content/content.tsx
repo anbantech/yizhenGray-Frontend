@@ -1,11 +1,3 @@
-/*
- * @Author: youjiaqi 2430284055@qq.com
- * @Date: 2022-08-25 10:06:25
- * @LastEditors: youjiaqi 2430284055@qq.com
- * @LastEditTime: 2022-09-22 16:15:02
- * @FilePath: /yizhen-frontend/src/layout/content/content.tsx
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import Project from 'Src/view/Project/project/project'
@@ -13,7 +5,10 @@ import Tasks from 'Src/view/Project/task/TaskIndex'
 import TasksDetail from 'Src/view/Project/taskDetail/taskDetail'
 import OperationTask from 'Src/view/Project/task/createTask/newCreateTask'
 import TaskInfo from 'Src/view/Project/taskDetail/taskDetailCompoents/showTaskDetail'
-import ExcitationList from 'Src/view/excitation/excitationList'
+import OneExcitationList from 'Src/view/excitation/Excitation/OneExcitationList'
+import TwoExcitationList from 'Src/view/excitation/Excitation/twoExcitationList'
+import ThreeExcitationList from 'Src/view/excitation/Excitation/ThreeExcitationList'
+import FourExcitationList from 'Src/view/excitation/Excitation/FourExcitaionList'
 import DetailTestAlLTable from 'Src/view/Project/taskDetail/tasklog/taskAllLog'
 import ExcitationBase from 'Src/view/excitation/ExcitationBase'
 import TemplateList from 'Src/view/template/TemplateList/templateList'
@@ -42,17 +37,33 @@ function content() {
         <Route path='/projects/Tasks/Detail/TaskLog' exact component={DetailTestAlLTable} />
         <Route path='/projects/Tasks/Detail/Scale' exact component={Scale} />
         <Route path='/projects/Tasks/Detail/ScaleDetail' exact component={Scale} />
-        <Route path='/excitationList' exact component={ExcitationList} />
-        <Route path='/excitationList/Deatail' exact component={ExcitationBase} />
-        <Route path='/excitationList/createOneExcitation' exact component={ExcitationBase} />
-        <Route path='/excitationList/createDoubleExcitation' exact component={ExcitationBase} />
-        <Route path='/excitationList/createGroupExcitation' exact component={ExcitationBase} />
-        <Route path='/excitationList/createDoubleExcitationGroup' exact component={ExcitationBase} />
-        <Route path='/excitationList/createExcitation' exact component={ExcitationBase} />
-        <Route path='/excitationList/createGroupExcitation/ExcitationDraw' exact component={ExcitationDraw} />
-        <Route path='/excitationList/Deatail/ExcitationDraw' exact component={ExcitationDraw} />
+        <Route path='/OneExcitationList' exact component={OneExcitationList} />
+        <Route path='/TwoExcitationList' exact component={TwoExcitationList} />
+        <Route path='/ThreeExcitationList' exact component={ThreeExcitationList} />
+        <Route path='/FourExcitationList' exact component={FourExcitationList} />
+
+        <Route path='/OneExcitationList/Detail' exact component={ExcitationBase} />
+
+        <Route path='/TwoExcitationList/Detail' exact component={ExcitationBase} />
+
+        <Route path='/ThreeExcitationList/Detail' exact component={ExcitationBase} />
+
+        <Route path='/FourExcitationList/Deatail' exact component={ExcitationBase} />
+
+        <Route path='/ThreeExcitationList/createDoubleExcitation' exact component={ExcitationBase} />
+
+        <Route path='/FourExcitationList/createGroupExcitation' exact component={ExcitationBase} />
+
+        <Route path='/TwoExcitationList/createDoubleExcitationGroup' exact component={ExcitationBase} />
+
+        <Route path='/OneExcitationList/createExcitation' exact component={ExcitationBase} />
+
+        <Route path='/FourExcitationList/createGroupExcitation/ExcitationDraw' exact component={ExcitationDraw} />
+        <Route path='/FourExcitationList/Deatail/ExcitationDraw' exact component={ExcitationDraw} />
+
         <Route path='/templateList' exact component={TemplateList} />
         <Route path='/templateList/template' exact component={CreateTemplateWrapper} />
+
         {/* <Route path='/excitationList/createGroupExcitation' exact component={ExcitationBase} /> */}
         {/* <Route path='/Arrgemnt/StepSecond' exact component={StepSecond} /> */}
         {/* <Route path='/Arrgemnt/ChangeArrgement' exact component={ChangeArrgement} /> */}
