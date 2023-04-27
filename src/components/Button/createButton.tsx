@@ -17,7 +17,7 @@ interface buttonStyleType {
 const CreateButton: React.FC<buttonStyleType> = props => {
   const { width, name, size, type, onClick, height, borderRadius } = props
   return (
-    <div style={{ width }}>
+    <div style={{ width, height }}>
       <Button className={styles.buttonStyle} style={{ height, borderRadius }} type={type} size={size} block onClick={onClick}>
         <img src={add} alt='' />
         <span className={styles.ButtonChart}>{name}</span>

@@ -1,24 +1,41 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import 'antd/dist/antd.css'
 import { Modal, Button } from 'antd'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 import styles from '../BaseModle.less'
 
 function ModalpPop(props: any) {
-  const { IsModalVisible, CommonModleClose, concent, name, deleteProjectRight, sureDelete } = props
+  const { IsModalVisible, CommonModleClose, spinning, concent, name, deleteProjectRight } = props
+  const Title = () => {
+    return (
+      <div>
+        <ExclamationCircleOutlined />
+        <span style={{ marginLeft: '10px' }}>{name}</span>
+      </div>
+    )
+  }
+  const noop = () => {
+    return false
+  }
 
+  const isClose = useCallback(() => {
+    if (!spinning) {
+      CommonModleClose(false)
+    }
+    return !spinning
+  }, [CommonModleClose, spinning])
   return (
     <Modal
       className={styles.modleStyle}
       visible={IsModalVisible}
       width='400px'
-      title={name}
-      onCancel={() => {
-        CommonModleClose(false)
-      }}
+      title={<Title />}
+      onCancel={isClose}
       footer={[
         <Button
-          className={styles.btn_cancel}
+          className={styles.btn_cancelCrashTable}
           key='back'
+          disabled={spinning}
           onClick={() => {
             CommonModleClose(false)
           }}
@@ -29,11 +46,13 @@ function ModalpPop(props: any) {
           className={styles.btn_create}
           key='submit'
           type='primary'
+          style={{ width: '96px' }}
+          loading={spinning}
           onClick={() => {
             deleteProjectRight()
           }}
         >
-          {sureDelete ? '修改' : '删除'}
+          {spinning ? '删除中' : '确定'}
         </Button>
       ]}
     >

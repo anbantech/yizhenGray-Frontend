@@ -7,9 +7,10 @@ import {
   TaskList,
   taskParamsFn,
   testAlllogs,
-  testlogs
+  testlogs,
+  TestList
 } from 'Src/globalType/Param'
-import { ResTaskList, ResTaskDetail, isCode, Restestlogs } from 'Src/globalType/Response'
+import { ResTaskList, ResTaskDetail, isCode, Restestlogs, ResTestList } from 'Src/globalType/Response'
 import request from 'Src/services/request/request'
 
 export function taskList(params: TaskList) {
@@ -39,6 +40,10 @@ export function bgTest(params: beginTest) {
   return request.post<isCode>('/api/v1.0/tasks/start', params)
 }
 
+// 获取实列详情
+export function taskTest(params: TestList) {
+  return request.get<ResTestList>('/api/v1.0/instances/query', { params })
+}
 // 暂停测试
 export function stoppaused(params: any) {
   return request.post<null>('/api/v1.0/tasks/paused', params)

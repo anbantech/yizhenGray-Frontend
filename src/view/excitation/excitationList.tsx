@@ -71,11 +71,18 @@ const callBackAn_tabs = {
   three: 2,
   four: 3
 }
+type stateType = { [key: string]: string }
+
+const routerMap: stateType = {
+  '/OneExcitationList': '外设管理',
+  '/TwoExcitationList': '激励单元管理',
+  '/ThreeExcitationList': '激励嵌套管理',
+  '/FourExcitationList': '交互'
+}
 interface ChildRef {
   inputRef: React.MutableRefObject<StepRef | null>
 }
 
-type stateType = { [key: string]: string }
 const inputPlaceholder = {
   0: '根据名称搜索外设',
   1: '根据名称搜索激励单元管理',
@@ -88,7 +95,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   const childRef: ChildRef = {
     inputRef: React.useRef<StepRef | null>(null)
   }
-
+  const name = useLocation()?.pathname
   const state = useLocation()?.state as stateType
 
   const history = useHistory()
@@ -127,6 +134,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         pathname: `${
           +value === 0 ? createExcitation : +value === 1 ? createOneExcitation : +value === 2 ? createDoubleExcitation : createGroupExcitation
         }`,
+
         state: {
           type: `${An_tabsMap[tabs as keyof typeof An_tabsMap]}`,
           isFixForm: false,
@@ -460,7 +468,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   return (
     <div className={styles.AnBan_main}>
       <div className={(styles.AnBan_header, style.AnBan_headerRadio)}>
-        <Radio.Group
+        {/* <Radio.Group
           onChange={(e: RadioChangeEvent) => {
             setOperation(e.target.value, 'type_tag')
           }}
@@ -472,7 +480,8 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
           <Radio.Button value='1'>激励单元管理</Radio.Button>
           <Radio.Button value='2'>激励嵌套管理</Radio.Button>
           <Radio.Button value='3'>交互</Radio.Button>
-        </Radio.Group>
+        </Radio.Group> */}
+        <span>{routerMap[name as keyof typeof routerMap]}</span>
         <div className={styles.AnBan_header_bottom}>
           <SearchInput
             ref={childRef.inputRef}

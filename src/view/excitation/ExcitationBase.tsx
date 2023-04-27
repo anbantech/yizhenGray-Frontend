@@ -13,7 +13,6 @@ const ExcitationBase: React.FC = (props: any) => {
     two: <OneExcotationForm />,
     three: <DoubleExcitationForm />,
     four: <GroupExcitationForm />
-    // five: <GroupExcitationFormGroup />
   }
   return (
     <GlobalBaseMain name={name} isFixForm={isFixForm} type={type} info={info} Data={Data}>
