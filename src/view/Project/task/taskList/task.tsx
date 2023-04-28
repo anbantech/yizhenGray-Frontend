@@ -7,15 +7,17 @@ import { message } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
 import detail_icon from 'Src/assets/image/icon_detail.svg'
 import delete_icon from 'Src/assets/image/icon_delete.svg'
+import running_icon from 'Src/assets/Contents/icon_running.svg'
 import { taskList, deleteTasks } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import globalStyle from 'Src/view/Project/project/project.less'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import styles from './task.less'
+import { InstancesContext } from '../TaskIndex'
 
 const request = {
-  project_id: -1,
+  project_id: '',
   key_word: '',
   page: 1,
   page_size: 20,
@@ -58,8 +60,9 @@ export interface projectInfoType {
 interface PropsData {
   checkInstances: (taskId: string) => void
 }
-// Todo 隐藏删除修改功能
+
 const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<projectInfoType>> & PropsData> = props => {
+  const InstancesDetail = React.useContext(InstancesContext)
   const { projectInfo, taskListOne_id } = props.location?.state
   const { checkInstances } = props
   const layoutRef = useRef<any>()
@@ -111,16 +114,21 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   // 通过维护task_id,且通过路由,或者任务列表第一个数据拿值,并且判断taskList长度是否为空
 
   const keepCheckTask = (id: string) => {
-    checkInstances(id)
-    setModalData({ ...modalData, taskId: id })
+    if (id) {
+      checkInstances(id)
+      setModalData({ ...modalData, taskId: id })
+    }
   }
   // 页面加载时 调用
   const backWebTask = (taskListOne_id: string) => {
     if (taskListOne_id) {
       setModalData({ ...modalData, taskId: taskListOne_id })
       checkInstances(taskListOne_id)
+      return true
     }
+    return false
   }
+
   useEffect(() => {
     backWebTask(taskListOne_id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -135,10 +143,10 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
         setParams({ ...params, key_word: '', page: 1 })
         setModalData({ ...modalData, spinning: false })
         setCommonModleStatus(false)
-        message.success('删除成功')
+        message.success('任务删除成功')
       }
     } catch (error) {
-      throwErrorMessage(error, { 1009: '项目删除失败' })
+      throwErrorMessage(error, { 1009: '任务删除失败' })
     }
   }
 
@@ -153,11 +161,17 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       const result = await taskList(value)
       if (result.data) {
         const newList = taskLists.concat(result.data.results)
+        if (newList.length === 0) {
+          InstancesDetail.setInstance(false)
+          setHasMore(false)
+          return false
+        }
         keepCheckTask(newList[0].id)
         if (newList.length === result.data.total) {
           setHasMore(false)
         }
         setTaskList([...newList])
+        InstancesDetail.setInstance(true)
       }
       return result
     } catch (error) {
@@ -167,6 +181,14 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
 
   const getLayout = () => {
     setHeight(layoutRef.current.clientHeight)
+  }
+
+  // 跳转修改任务
+  const fixTask = (item: any) => {
+    history.push({
+      pathname: '/projects/Tasks/fixTask',
+      state: { projectInfo, taskInfo: { data: item, editTaskMode: true } }
+    })
   }
 
   useEffect(() => {
@@ -190,7 +212,12 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
           next={loadMoreData}
           hasMore={hasMoreData}
           height={height - 214}
-          loader={<h4>正在加载中ing</h4>}
+          loader={
+            <p style={{ textAlign: 'center' }}>
+              <div className={styles.listLine} />
+              <div className={styles.concentList}>内容已经加载完毕</div>
+            </p>
+          }
           endMessage={
             <p style={{ textAlign: 'center' }}>
               <div className={styles.listLine} />
@@ -210,9 +237,16 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
                 }}
                 key={item.id}
               >
+                <img className={item.status !== 2 ? styles.icon : styles.iconShow} src={running_icon} alt='' />
                 <span>{item.name}</span>
                 <div className={styles.icon_layout}>
-                  <img src={detail_icon} alt='' onClick={() => {}} />
+                  <img
+                    src={detail_icon}
+                    alt=''
+                    onClick={() => {
+                      fixTask(item)
+                    }}
+                  />
                   <img
                     src={delete_icon}
                     alt=''
@@ -231,6 +265,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
         spinning={modalData.spinning}
         deleteProjectRight={deleteProjectRight}
         CommonModleClose={CommonModleClose}
+        ing='删除中'
         name='删除任务'
         concent='是否确认删除？'
       />

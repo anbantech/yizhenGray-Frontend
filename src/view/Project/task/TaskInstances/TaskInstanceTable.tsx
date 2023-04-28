@@ -3,7 +3,7 @@ import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import CreateButton from 'Src/components/Button/createButton'
 import Table from 'antd/lib/table'
 import ConfigProvider from 'antd/lib/config-provider'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import * as React from 'react'
 import { message } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
@@ -12,17 +12,18 @@ import deleteImage from 'Image/Deletes.svg'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import { statusList, statusMap } from 'Src/util/DataMap/dataMap'
 import { DownOutlined } from '@ant-design/icons/lib/icons'
-import { deleteTasks, taskTest } from 'Src/services/api/taskApi'
+import { deleteExampleTask, taskTest } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import globalStyle from 'Src/view/Project/project/project.less'
 import NewTaskInstance from 'Src/components/Modal/taskModal/newTaskInstance'
 import styles from '../taskList/task.less'
+import { InstancesContext } from '../TaskIndex'
 
 const customizeRender = () => <DefaultValueTips content='暂无任务' />
 
 const request = {
-  task_id: -1,
+  task_id: '',
   key_word: '',
   page: 1,
   page_size: 10,
@@ -62,9 +63,10 @@ export interface projectInfoType {
   projectDesc: string
   projectName: string
 }
-// Todo 隐藏删除修改功能
-const disPlayNone = false
+
 const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<projectInfoType>>> = props => {
+  const InstancesDetail = React.useContext(InstancesContext)
+
   const { projectInfo } = props.location?.state
 
   const history = useHistory()
@@ -75,7 +77,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
     setVisibility(!visibility)
   }
   // 任务列表参数
-  const [params, setParams] = useState<Resparams>({ ...request, task_id: projectInfo.projectId })
+  const [params, setParams] = useState<Resparams>({ ...request, task_id: InstancesDetail.task_detail.id })
 
   // 项目管理
   const [taskLists, setTaskList] = useState<any>([])
@@ -90,10 +92,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   const [isShows, setShow] = useState<statusValue>(-2)
 
   // 弹窗
-  const [modalData, setModalData] = useState({ taskId: '', fixTitle: false, isModalVisible: false })
-
-  //  删除弹出框
-  const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
+  const [modalData, setModalData] = useState({ instances_id: '', fixTitle: false, isModalVisible: false })
 
   // 筛选状态菜单控制
   const operattion = (operation: boolean) => {
@@ -153,17 +152,16 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   }
 
   const deleteTask = (value: boolean, id: any) => {
-    setModalData({ ...modalData, taskId: id })
-    setCommonModleStatus(value)
+    setModalData({ ...modalData, isModalVisible: value, instances_id: id })
   }
 
   const deleteProjectRight = async () => {
     try {
-      const res = await deleteTasks(projectInfo.projectId, modalData.taskId)
+      const res = await deleteExampleTask(InstancesDetail.task_detail.id, modalData.instances_id)
       if (res.data) {
         setParams({ ...params, key_word: '', page: 1 })
-        setCommonModleStatus(false)
-        message.success('删除成功')
+        setModalData({ ...modalData, isModalVisible: false })
+        message.success('实例删除成功')
       }
     } catch (error) {
       throwErrorMessage(error, { 1009: '项目删除失败' })
@@ -172,27 +170,16 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
 
   // 删除弹出框函数
   const CommonModleClose = (value: boolean) => {
-    setCommonModleStatus(value)
+    setModalData({ ...modalData, isModalVisible: value })
   }
 
-  // 修改任务
-  const fixTask = (value: any) => {
-    if ([0, 1, 4].includes(value.status)) {
-      history.push({
-        pathname: '/projects/Tasks/fixTask',
-        state: { projectInfo, taskInfo: { editTask: true, data: value } }
-      })
-    } else {
-      message.error('任务正在运行中,请结束任务')
-    }
-  }
   // 表格title
   const columns = [
     {
       width: '10%',
-      title: '实列ID',
-      dataIndex: 'name',
-      key: 'name',
+      title: '实例编号',
+      dataIndex: 'num',
+      key: 'num',
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
         return (
@@ -203,7 +190,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
               jumpTasksDetail(row)
             }}
           >
-            {row.name}
+            {row.num}
           </span>
         )
       }
@@ -297,35 +284,21 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
             >
               查看详情
             </span>
-            {disPlayNone && (
-              <>
-                {' '}
-                <span
-                  style={{ marginLeft: '10px', marginRight: '10px' }}
-                  role='button'
-                  tabIndex={0}
-                  onClick={() => {
-                    fixTask(row)
-                  }}
-                >
-                  修改
-                </span>
-                <img
-                  src={deleteImage}
-                  alt=''
-                  onClick={() => {
-                    deleteTask(true, row.id)
-                  }}
-                />
-              </>
-            )}
+
+            <img
+              src={deleteImage}
+              alt=''
+              onClick={() => {
+                deleteTask(true, row.id)
+              }}
+            />
           </div>
         )
       }
     }
   ]
 
-  // 获取任务列表
+  // 获取实列列表
   const getTaskInstancesList = async (value: Resparams) => {
     try {
       const listResult = await taskTest(value)
@@ -341,7 +314,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
 
   useEffect(() => {
     getTaskInstancesList(params)
-  }, [params])
+  }, [params, visibility])
   return (
     <div className={globalStyle.AnBan_main}>
       <div className={styles.instance_header}>
@@ -370,13 +343,14 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         <PaginationsAge length={total} num={10} getParams={changePage} pagenums={params.page} />
       </div>
       <CommonModle
-        IsModalVisible={CommonModleStatus}
+        IsModalVisible={modalData.isModalVisible}
         deleteProjectRight={deleteProjectRight}
         CommonModleClose={CommonModleClose}
+        ing='删除中'
         name='删除实例'
-        concent=''
+        concent='是否确认删除'
       />
-      <NewTaskInstance visibility={visibility} task_id={1} project_id={1} choiceModal={choiceModal} width='522px' />
+      <NewTaskInstance visibility={visibility} task_id={InstancesDetail.task_detail.id} choiceModal={choiceModal} width='522px' />
     </div>
   )
 }

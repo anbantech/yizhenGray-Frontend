@@ -36,11 +36,11 @@ const HeaderComponets: React.FC = () => {
       {InstancesDetail && (
         <div className={styles.headerBody}>
           <div className={styles.headerLeft}>
-            <span className={styles.headerName}>{InstancesDetail.name}</span>
+            <span className={styles.headerName}>{InstancesDetail.task_detail.name}</span>
             <div>
-              <span>描述:{InstancesDetail.desc}</span>
-              <span>仿真节点:{InstancesDetail.simu_instance_id}节点</span>
-              <span>交互:{InstancesDetail.group_name} </span>
+              <span>描述:{InstancesDetail.task_detail.desc}</span>
+              <span>仿真节点:{InstancesDetail.task_detail.simu_instance_id}节点</span>
+              <span>交互:{InstancesDetail.task_detail.group_name} </span>
             </div>
           </div>
           <div className={styles.headerright}>

@@ -1,12 +1,16 @@
 import React, { useRef, useState } from 'react'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
+import { message } from 'antd'
 import CommonButton from 'Src/components/Button/commonButton'
 import FirstConfig from './taskConfigCompents/firstConfig'
 import styles from './newCreateTask.less'
 import { projectInfoType } from '../taskList/task'
 
+type originalDataType = Record<string, unknown>
+
 interface taskInfoType {
-  editTask: boolean
+  editTaskMode: boolean
+  data: originalDataType
 }
 interface taskPropsType<T> {
   taskInfo: T
@@ -34,12 +38,16 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
   const { taskInfo, projectInfo } = props.location?.state
   const [btnLoading, setBtnLoading] = useState(false)
   const createForm = async () => {
+    setBtnLoading(true)
     const result = await childRef.firstForm?.current?.save()
     if (result) {
       history.push({
         pathname: '/projects/Tasks',
         state: { projectInfo }
       })
+      message.success('实列修改成功')
+    } else {
+      setBtnLoading(false)
     }
   }
   const cancenlForm = () => {
@@ -48,33 +56,18 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
       state: { projectInfo }
     })
   }
-  const onFieldsChange = (changedFields: any, allFields: any) => {
-    const disabledData: any = []
-    const errors = allFields.every((item: any) => {
-      return item.errors.length === 0
-    })
-    // eslint-disable-next-line array-callback-return
-    allFields.map((item: any) => {
-      if (item.name[0] !== 'description') return disabledData.push(item.value)
-    })
 
-    const disabledBoolean = disabledData.every((item: any) => {
-      return item !== undefined && item !== ''
-    })
-    if (disabledBoolean && errors) {
-      setIsDisableStatus(false)
-    } else {
-      setIsDisableStatus(true)
-    }
+  const onChange = (val: boolean) => {
+    setIsDisableStatus(val)
   }
 
   return (
     <div className={styles.taskMain}>
       <div className={styles.taskMain_header}>
-        <span className={styles.taskMain_title}>{taskInfo?.editTask ? '修改任务' : '新建任务'}</span>
+        <span className={styles.taskMain_title}>{taskInfo?.editTaskMode ? '修改任务' : '新建任务'}</span>
       </div>
       <div className={styles.taskMain_boby}>
-        <FirstConfig ref={childRef.firstForm} taskInfo={taskInfo} id={projectInfo.projectId} onChange={onFieldsChange} />
+        <FirstConfig ref={childRef.firstForm} taskInfo={taskInfo} id={projectInfo.projectId} onChange={onChange} cancenlForm={cancenlForm} />
       </div>
       <div className={styles.taskMain_footer}>
         <div className={styles.taskMain_footerConcent}>
@@ -91,9 +84,8 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
             type='primary'
             disabled={isDisableStatus}
             loading={btnLoading}
-            name={taskInfo?.editTask ? '修改' : '创建'}
+            name={taskInfo?.editTaskMode ? '修改' : '创建'}
             onClick={() => {
-              setBtnLoading(true)
               createForm()
             }}
           />

@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
 import { Modal, Input, Form, Button, message, Radio, RadioChangeEvent } from 'antd'
 import { throwErrorMessage } from 'Src/util/message'
-import { updateProject, createProject } from 'Src/services/api/projectApi'
+import { createTaskInstance } from 'Src/services/api/taskApi'
 import { CrashInfoMap } from 'Src/util/DataMap/dataMap'
 import styles from '../BaseModle.less'
 
 interface FormInstance {
-  name: string
-  desc: string
+  work_time: number
+  crash_num: number
 }
 
 const layout = {
@@ -19,7 +19,6 @@ const layout = {
 interface NEWTaskInstanceType {
   visibility: boolean
   task_id: number
-  project_id: number
   choiceModal: () => void
   width: string
 }
@@ -39,49 +38,49 @@ interface PriceInputProps {
 type CrashObjType = Record<string, string>
 
 function NewTaskInstance(props: NEWTaskInstanceType) {
-  const { visibility, task_id, project_id, choiceModal, width } = props
+  const { visibility, task_id, choiceModal, width } = props
   const [form] = Form.useForm<FormInstance>()
   const [isDisableStatus, setDisabledStatus] = useState(true)
   const [carshObj, setCrashObj] = useState<CrashObjType>({})
   // 创建列表
-  const createProjectItem = async (params: any) => {
+  const createInstaceItem = async (params: any) => {
     try {
-      const data = await createProject(params)
-      message.success('项目创建成功')
+      const data = await createTaskInstance(params)
+      message.success('实例创建成功')
       return data
     } catch (error) {
-      throwErrorMessage(error, { 1005: '项目名称重复，请修改' })
+      throwErrorMessage(error, { 1005: '实例创建失败' })
       return error
     }
   }
   // 校验表单 且 完成列表刷新  关闭表单
-  const validateForm = async () => {
+  const validateForm = useCallback(async () => {
     try {
       const value = await form.validateFields()
-      const { name, desc } = value
-      if (name) {
-        // if (fixTitle) {
-        //   const res = await updateProject({ name: name.trim(), desc: desc ? desc.trim() : '' }, id)
-        //   message.success('项目修改成功')
-        //   return res
-        // }
-        // if (!fixTitle) {
-        //   const res = await createProjectItem({ name: name.trim(), desc: desc ? desc.trim() : '' })
-        //   return res
-        // }
+      const { work_time, crash_num } = value
+      const copyItem = {
+        task_id,
+        work_time,
+        crash_num,
+        crash_config: carshObj
+      }
+      if (work_time) {
+        const res = await createInstaceItem(copyItem)
+        if (res.data) {
+          choiceModal()
+        }
       }
     } catch (error) {
       setDisabledStatus(true)
-      throwErrorMessage(error, { 1005: '项目名称重复，请修改' })
+      throwErrorMessage(error, { 1005: '创建失败' })
       return error
     }
-  }
+  }, [carshObj, choiceModal, form, task_id])
   const formVali = () => {
     setDisabledStatus(true)
     validateForm()
       .then(res => {
         if (res.code !== 1005) {
-          //   hideModal(false)
           form.resetFields()
         }
         return res
@@ -92,8 +91,8 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
   }
 
   const onValuesChange = (changedValues: any, allValues: any) => {
-    const bol = allValues.desc === undefined || allValues.desc?.length <= 50
-    if (allValues.name?.length >= 2 && allValues.name.length <= 20 && /^[\w\u4E00-\u9FA5]+$/.test(allValues.name) && bol) {
+    const bol = allValues.work_time
+    if (bol) {
       setDisabledStatus(false)
     } else {
       setDisabledStatus(true)
@@ -130,7 +129,14 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         >
           取消
         </Button>,
-        <Button className={styles.btn_createCrashTable} key='submit' disabled={isDisableStatus} type='primary' onClick={() => formVali()}>
+        <Button
+          className={styles.btn_createCrashTable}
+          style={{ marginRight: '18px' }}
+          key='submit'
+          disabled={isDisableStatus}
+          type='primary'
+          onClick={() => formVali()}
+        >
           创建
         </Button>
       ]}

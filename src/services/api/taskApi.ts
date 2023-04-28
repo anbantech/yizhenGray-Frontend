@@ -8,7 +8,8 @@ import {
   taskParamsFn,
   testAlllogs,
   testlogs,
-  TestList
+  TestList,
+  InstanceParams
 } from 'Src/globalType/Param'
 import { ResTaskList, ResTaskDetail, isCode, Restestlogs, ResTestList } from 'Src/globalType/Response'
 import request from 'Src/services/request/request'
@@ -91,8 +92,8 @@ export function taskStatus(id: number | string) {
   return request.get(`/api/v1.0/tasks/status?tasks=${id}`)
 }
 // 删除实例
-export function deleteExampleTask(project_id: any, id: number) {
-  return request.delete<any>('/api/v1.0/instances/remove', { params: { project_id, task: id } })
+export function deleteExampleTask(task_id: any, instances_id: string) {
+  return request.delete<any>('/api/v1.0/instances/remove', { params: { task_id, instances: instances_id } })
 }
 // 更新任务信息
 export function updateTask(id: number, params: taskParamsFn) {
@@ -141,4 +142,8 @@ export function getAllTestingLog(params: testAlllogs) {
 
 export function rePlayTask(params: ReplayIDArrayParams) {
   return request.post<any>('/api/v1.0/tasks/replay', params)
+}
+
+export function createTaskInstance(params: InstanceParams) {
+  return request.post<any>('/api/v1.0/instances/save', params)
 }
