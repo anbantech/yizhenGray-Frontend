@@ -1,6 +1,7 @@
-import { Form, Input, Select } from 'antd'
+import { Form, Input, message, Select } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { excitationListFn } from 'Src/services/api/excitationApi'
 import { createTaskFn, getSimulateNode, updateTask } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
@@ -40,20 +41,30 @@ interface Resparams {
   sort_order?: string
 }
 interface propsFn {
-  onChange: (changedFields: any, allFields: any) => void
+  onChange: (val: boolean) => void
   id: number
   taskInfo: any
+  cancenlForm: () => void
 }
 const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
-  const { onChange, id, taskInfo } = props
+  const { onChange, id, taskInfo, cancenlForm } = props
   const [form] = useForm()
   const { Option } = Select
   const [params, setParams] = useState<Resparams>(request)
+  // 弹窗
+  const [modalData, setModalData] = useState({ spinning: false, isModalVisible: false })
+
+  //  删除弹出框
   const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
   const [nodeList, setNodeList] = useState<number[]>([])
   const scrollRef = useRef(-1)
   const pageRef = useRef(0)
+  // 删除弹出框函数
+  const CommonModleClose = (value: boolean) => {
+    setModalData({ ...modalData, isModalVisible: value })
+  }
   const createOneExcitationFn = React.useCallback(async () => {
+    setModalData({ ...modalData, spinning: true })
     const values = await form.validateFields()
     try {
       if (values) {
@@ -67,14 +78,17 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           crash_num: values.crash_num,
           sender_id: values.sender_id
         }
-        if (taskInfo?.editTask) {
+        if (taskInfo?.editTaskMode) {
           const result = await updateTask(taskInfo.data.id, params)
           if (result.data) {
-            return result.data
+            message.success('实列修改成功')
+            setModalData({ ...modalData, spinning: false, isModalVisible: false })
+            cancenlForm()
           }
         } else {
           const result = await createTaskFn(params)
           if (result.data) {
+            setModalData({ ...modalData, spinning: false })
             return result.data
           }
         }
@@ -83,10 +97,20 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
       throwErrorMessage(error, { 1009: '任务删除失败' })
       return error
     }
-  }, [form, id, taskInfo.data?.id, taskInfo?.editTask])
+  }, [cancenlForm, form, id, modalData, taskInfo?.data?.id, taskInfo?.editTaskMode])
+  const matchItem = React.useCallback(async () => {
+    const values = await form.validateFields()
+    const { sender_id, simu_instance_id } = taskInfo.data as any
+    if (values.simu_instance_id !== simu_instance_id || values.sender_id !== sender_id) {
+      setModalData({ ...modalData, isModalVisible: true })
+      return false
+    }
+    return createOneExcitationFn()
+  }, [createOneExcitationFn, form, modalData, taskInfo.data])
+
   useImperativeHandle(myRef, () => ({
     save: () => {
-      return createOneExcitationFn()
+      return matchItem()
     },
     delete: () => {},
     validate: () => {},
@@ -127,6 +151,38 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     }
   }
 
+  const onFieldsChange = useCallback(
+    async (changedFields?: any, allFields?: any) => {
+      // avoid outOfDate bug, sleep 300ms
+      await new Promise<void>(resolve => setTimeout(() => resolve(), 300))
+
+      if (!changedFields && !allFields) {
+        // eslint-disable-next-line no-param-reassign
+        allFields = form.getFieldsValue()
+      }
+      let allFinished = true
+      // eslint-disable-next-line no-restricted-syntax
+      for (const [fieldName, fieldValue] of Object.entries(allFields)) {
+        if (fieldName !== 'description' && fieldName !== 'rxid' && typeof fieldValue === 'undefined') {
+          allFinished = false
+          break
+        }
+      }
+      if (!allFinished) {
+        onChange(true)
+        return
+      }
+      let values
+      try {
+        values = await form.validateFields()
+      } catch (error) {
+        message.error(error)
+      }
+      onChange(!values)
+    },
+    [form, onChange]
+  )
+
   useEffect(() => {
     getExcitationList(params)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -144,11 +200,13 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         simu_instance_id
       }
       form.setFieldsValue(formData)
+      onFieldsChange()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, taskInfo.data])
   return (
     <div className={styles.stepBaseMain}>
-      <Form name='basic' className={styles.stepBaseMain_Form} {...layout} onFieldsChange={onChange} autoComplete='off' form={form} size='large'>
+      <Form name='basic' className={styles.stepBaseMain_Form} {...layout} onValuesChange={onFieldsChange} autoComplete='off' form={form} size='large'>
         <Form.Item
           label='任务名称'
           name='name'
@@ -185,25 +243,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           <Input placeholder='请输入任务名称' />
         </Form.Item>
 
-        <Form.Item
-          label='节拍单元'
-          name='beat_unit'
-          initialValue={200}
-          // validateFirst
-          // validateTrigger={['onBlur']}
-          // rules={[
-          //   { required: true, message: '请输入节拍单元' },
-          //   {
-          //     validator(_, value) {
-          //       const reg = /^\d+$/
-          //       if (reg.test(value) && value <= 4294967296000) {
-          //         return Promise.resolve()
-          //       }
-          //       return Promise.reject(new Error('请输入 0-4294967296000 之间的整数'))
-          //     }
-          //   }
-          // ]}
-        >
+        <Form.Item label='节拍单元' name='beat_unit' initialValue={200}>
           <Input placeholder='请输入节拍单元' disabled suffix='毫秒' />
         </Form.Item>
         <Form.Item
@@ -265,6 +305,15 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           />
         </Form.Item>
       </Form>
+      <CommonModle
+        IsModalVisible={modalData.isModalVisible}
+        spinning={modalData.spinning}
+        deleteProjectRight={createOneExcitationFn}
+        CommonModleClose={CommonModleClose}
+        ing='修改中'
+        name='修改任务'
+        concent='修改仿真节点、交互会清空关联任务的测试数据，是否确认修改？'
+      />
     </div>
   )
 })

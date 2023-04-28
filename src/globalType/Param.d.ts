@@ -564,3 +564,10 @@ export interface ReplayIDArrayParams {
   task_id: number
   error_id?: number
 }
+
+export interface InstanceParams {
+  task_id: number
+  work_time: number
+  crash_num?: number
+  crash_config?: any
+}

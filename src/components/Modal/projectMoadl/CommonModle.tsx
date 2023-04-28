@@ -5,7 +5,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons'
 import styles from '../BaseModle.less'
 
 function ModalpPop(props: any) {
-  const { IsModalVisible, CommonModleClose, spinning, concent, name, deleteProjectRight } = props
+  const { IsModalVisible, CommonModleClose, ing, spinning, concent, name, deleteProjectRight } = props
   const Title = () => {
     return (
       <div>
@@ -52,7 +52,7 @@ function ModalpPop(props: any) {
             deleteProjectRight()
           }}
         >
-          {spinning ? '删除中' : '确定'}
+          {spinning ? `${ing}` : '确定'}
         </Button>
       ]}
     >
