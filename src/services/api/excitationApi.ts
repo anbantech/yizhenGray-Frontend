@@ -67,3 +67,11 @@ export function getExcitationFn_1(id: number) {
 export function checkDataStructure(params: dataStructureParams) {
   return request.post<checkoutDataStructureRes>('/api/v1.0/temp_and_sti/save/work_check', params)
 }
+
+export function lookUpDependenceUnit(id: number) {
+  return request.get<any>(`/api/v1.0/temp_and_sti/sender/relevance/query/${id}`)
+}
+
+export function lookUpDependencePeripheral(id: number) {
+  return request.get<any>(`/api/v1.0/temp_and_sti/peripheral/relevance/query/${id}`)
+}

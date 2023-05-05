@@ -6,10 +6,11 @@ interface MenuTypes {
   id: number
   updateMenue: (value: number) => void
   status: number
+  onChange: (val: string) => void
 }
 
 function OmitComponents(props: MenuTypes) {
-  const { updateMenue, status, id } = props
+  const { updateMenue, status, id, onChange } = props
   return (
     <div
       className={styles.omitCompoentsTarget}
@@ -24,7 +25,7 @@ function OmitComponents(props: MenuTypes) {
         <span className={styles.omitRoundsSpan} />
       </div>
 
-      {status === id ? <MenuComponents onMouseLeave={updateMenue} changeTimeType={() => {}} /> : null}
+      {status === id ? <MenuComponents onMouseLeave={updateMenue} changeTimeType={onChange} /> : null}
     </div>
   )
 }

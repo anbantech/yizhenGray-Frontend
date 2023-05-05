@@ -5,7 +5,7 @@ import { useContext } from 'react'
 import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
-import { getPortList, createExcitationFn } from 'Src/services/api/excitationApi'
+import { createExcitationFn, excitationListFn } from 'Src/services/api/excitationApi'
 import { getTemplateList } from 'Src/services/api/templateApi'
 import { throwErrorMessage } from 'Src/util/message'
 import { GetDeatilFn } from './getDataDetailFn/getDataDetailFn'
@@ -26,6 +26,27 @@ const templateListRequest = {
   sort_order: 'descend'
 }
 
+const request = {
+  target_type: '0',
+  key_word: '',
+  status: null,
+  page: 1,
+  page_size: 99999,
+  sort_field: 'create_time',
+  sort_order: 'descend'
+}
+
+interface Resparams {
+  target_type: number | string
+  key_word?: string
+  status?: null | number
+  page: number
+  page_size: number
+  sort_field?: string
+  sort_order?: string
+}
+
+type ResparamsType = Record<string, any>
 const OneExcotationForm: React.FC = () => {
   const history = useHistory()
   const { isFixForm, info } = useContext(GlobalContexted)
@@ -33,7 +54,7 @@ const OneExcotationForm: React.FC = () => {
   const [form] = useForm()
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
   const [templateList, setTemplateList] = React.useState<any[]>()
-  const [portList, setPortList] = React.useState<string[]>([])
+  const [excitationList, setExcitationList] = React.useState<ResparamsType[]>([])
   const Data = GetDeatilFn(info?.id)
   // 获取模版列表
   const fetchTemplateList = React.useCallback(async () => {
@@ -49,20 +70,18 @@ const OneExcotationForm: React.FC = () => {
       throwErrorMessage(error, { 1009: '项目删除失败' })
     }
   }, [])
-  // 端口列表
-  const fetchPortList = React.useCallback(async () => {
-    //  Todo code码
+
+  // 获取激励列表
+  const getExcitationList = async (value: Resparams) => {
     try {
-      const result = await getPortList()
+      const result = await excitationListFn(value)
       if (result.data) {
-        const results = result.data
-        setPortList(results)
+        setExcitationList(result.data.results)
       }
-      return result
     } catch (error) {
-      throwErrorMessage(error, { 1009: '项目删除失败' })
+      throwErrorMessage(error, { 1004: '请求资源未找到' })
     }
-  }, [])
+  }
 
   const createOneExcitationFn = async () => {
     let values
@@ -76,13 +95,13 @@ const OneExcotationForm: React.FC = () => {
         const params = {
           group_type: 0,
           name: values.name,
-          port: values.port,
+          target_id: +values.stimulus_id,
           template_id: +values.template_id,
-          recycle_count: +values.recycle_count,
-          recycle_count_0: +values.recycle_count_0,
-          recycle_time: +values.recycle_time,
+          gu_cnt0: +values.gu_cnt0,
+          gu_cnt1: +values.gu_cnt1,
+          gu_w0: +values.gu_w0,
+          gu_w1: +values.gu_w1,
           desc: values.description,
-          wait_time_0: +values.wait_time_0,
           align_delay_0: +values.align_delay_0,
           align_delay_2: +values.align_delay_2
         }
@@ -120,21 +139,18 @@ const OneExcotationForm: React.FC = () => {
 
   React.useEffect(() => {
     fetchTemplateList()
-    fetchPortList()
+    getExcitationList({ ...request })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   React.useEffect(() => {
     if (Data) {
-      const { name, desc, port, template_id, recycle_count_0, recycle_time, recycle_count, wait_time_0, align_delay_0, align_delay_2 } = Data as any
+      const { name, desc, stimulus_id, template_id, gu_w0, align_delay_0, align_delay_2 } = Data as any
       const formData = {
         name,
         description: desc,
-        port,
+        stimulus_id,
         template_id,
-        recycle_count_0,
-        recycle_count,
-        recycle_time,
-        wait_time_0,
+        gu_w0,
         align_delay_0,
         align_delay_2
       }
@@ -145,7 +161,7 @@ const OneExcotationForm: React.FC = () => {
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.oneForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
         <Form.Item
-          label='激励名称'
+          label='激励单元名称'
           name='name'
           validateFirst
           validateTrigger={['onBlur']}
@@ -154,7 +170,7 @@ const OneExcotationForm: React.FC = () => {
               validateTrigger: 'onBlur',
               validator(_, value) {
                 if (typeof value === 'undefined' || value === '') {
-                  return Promise.reject(new Error('请输入旁路名称'))
+                  return Promise.reject(new Error('请输入激励单元名称'))
                 }
                 return Promise.resolve()
               }
@@ -163,7 +179,7 @@ const OneExcotationForm: React.FC = () => {
               required: true,
               max: 6,
               min: 2,
-              message: '任务名称长度为2到6个字符'
+              message: '激励单元名称长度为2到6个字符'
             },
             {
               validateTrigger: 'onBlur',
@@ -172,7 +188,7 @@ const OneExcotationForm: React.FC = () => {
                 if (reg.test(value)) {
                   return Promise.resolve()
                 }
-                return Promise.reject(new Error('任务名称由汉字、数字、字母和下划线组成'))
+                return Promise.reject(new Error('激励单元名称由汉字、数字、字母和下划线组成'))
               }
             }
           ]}
@@ -180,16 +196,16 @@ const OneExcotationForm: React.FC = () => {
           <Input disabled={isFixForm} placeholder='请输入2到6个字符' />
         </Form.Item>
 
-        <Form.Item name='port' label='外设类别' rules={[{ required: true, message: '请选择选择外设类别' }]}>
+        <Form.Item name='stimulus_id' label='外设类别' rules={[{ required: true, message: '请选择选择外设类别' }]}>
           <Select placeholder='请选择外设类别' disabled={isFixForm}>
             {
               /**
                * 根据连接方式列表渲染下拉框可选择的设备比特率
                */
-              portList?.map(rate => {
+              excitationList?.map(rate => {
                 return (
-                  <Option key={rate} value={rate}>
-                    {rate}
+                  <Option key={rate.stimulus_id} value={rate.stimulus_id}>
+                    {rate.stimulus_name}
                   </Option>
                 )
               })
@@ -197,7 +213,7 @@ const OneExcotationForm: React.FC = () => {
           </Select>
         </Form.Item>
         <Form.Item name='template_id' label='模版名称' rules={[{ required: true, message: '请选择选择模版' }]}>
-          <Select placeholder='请选择选择模版' disabled={isFixForm}>
+          <Select placeholder='请选择模版' disabled={isFixForm}>
             {
               /**
                * 根据连接方式列表渲染下拉框可选择的设备比特率
@@ -214,9 +230,10 @@ const OneExcotationForm: React.FC = () => {
         </Form.Item>
         <Form.Item
           label='发送次数'
-          name='recycle_count_0'
+          name='gu_cnt0'
           validateFirst
           validateTrigger={['onBlur']}
+          initialValue={1}
           rules={[
             {
               required: true,
@@ -234,11 +251,11 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入发送次数' />
+          <Input disabled placeholder='请输入发送次数' />
         </Form.Item>
         <Form.Item
           label='等待时间'
-          name='wait_time_0'
+          name='gu_w0'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -263,9 +280,10 @@ const OneExcotationForm: React.FC = () => {
 
         <Form.Item
           label='循环次数'
-          name='recycle_count'
+          name='gu_cnt1'
           validateFirst
           validateTrigger={['onBlur']}
+          initialValue={0}
           rules={[
             {
               required: true,
@@ -283,13 +301,14 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入发送次数' />
+          <Input disabled placeholder='请输入发送次数' />
         </Form.Item>
         <Form.Item
           label='循环间隔'
-          name='recycle_time'
+          name='gu_w1'
           validateFirst
           validateTrigger={['onBlur']}
+          initialValue={0}
           rules={[
             {
               required: true,
@@ -307,7 +326,7 @@ const OneExcotationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入整数,最大10' suffix='毫秒' />
+          <Input disabled placeholder='请输入整数,最大10' suffix='毫秒' />
         </Form.Item>
         <Form.Item
           label='前置时延'

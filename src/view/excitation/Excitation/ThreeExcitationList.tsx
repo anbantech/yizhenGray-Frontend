@@ -9,17 +9,20 @@ import { useState } from 'react'
 import * as React from 'react'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
 // import { message } from 'antd'
-import { excitationListFn } from 'Src/services/api/excitationApi'
+import { excitationListFn, lookUpDependenceUnit } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import zhCN from 'antd/lib/locale/zh_CN'
 // import deleteImage from 'Src/assets/image/Deletes.svg'
 // import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import useDepCollect from 'Src/util/Hooks/useDepCollect'
+import OmitComponents from 'Src/components/OmitComponents/OmitComponents'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import { StepRef } from 'Src/view/Project/task/createTask/newCreateTask'
-import OmitComponents from 'Src/components/OmitComponents/OmitComponents'
 import inputStyle from 'Src/components/Input/searchInput/searchInput.less'
 import styles from 'Src/view/Project/project/project.less'
+import LookUpDependence from 'Src/components/Modal/taskModal/lookUpDependence'
+import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
+import useMenu from 'Src/util/Hooks/useMenu'
 import style from '../excitation.less'
 
 // import { changeParams } from '../Project/taskDetail/taskDetailUtil/getTestLog'
@@ -53,6 +56,8 @@ interface ChildRef {
 type stateType = { [key: string]: string }
 
 type ResparamsType = Record<string, any>
+
+const titleName = ['交互', '任务', '状态']
 const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () => {
   const childRef: ChildRef = {
     inputRef: React.useRef<StepRef | null>(null)
@@ -63,7 +68,8 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
 
   // 项目管理
   const [excitationList, setExcitationList] = useState<ResparamsType[]>([])
-
+  // 查看关联任务
+  const { visibility, chioceModalStatus, deleteVisibility, CommonModleClose, spinnig, chioceBtnLoading } = useMenu()
   // 页码
   const [total, setTotal] = useState<number>()
 
@@ -73,6 +79,8 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
   // loading加载
 
   const [loading, setLoading] = useState(true)
+  // 存储关联任务信息
+  const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
   // 存储单个项目信息
   //   const [excitationInfo, setExcitationInfo] = useState('')
 
@@ -108,10 +116,11 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
   // 查看详情
   const lookDetail = (item: any) => {
     history.push({
-      pathname: '/ThreeExcitation/Deatail',
+      pathname: '/ThreeExcitationList/Detail',
       state: {
         info: { id: item.sender_id },
         type: 'three',
+        lookDetail: true,
         isFixForm: true,
         name: '激励嵌套'
       }
@@ -146,6 +155,30 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
   //     setModalData({ ...modalData, excitationId: id })
   //     setCommonModleStatus(value)
   //   }
+  // 获取关联信息
+  const getDependenceInfo = React.useCallback(async () => {
+    const res = await lookUpDependenceUnit(updateMenue)
+    if (res.data) {
+      setDependenceInfo(res.data)
+    }
+    chioceModalStatus(true)
+  }, [chioceModalStatus, updateMenue])
+
+  const onChange = (val: string) => {
+    switch (val) {
+      case '删除':
+        CommonModleClose(true)
+        break
+      case '查看关联信息':
+        getDependenceInfo()
+        break
+      case '修改':
+        console.log('1')
+        break
+      default:
+        return null
+    }
+  }
 
   // 获取激励列表
   const getExcitationList = async (value: Resparams) => {
@@ -195,7 +228,10 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
     },
     {
       width: '8%',
-      title: '操作',
+      // eslint-disable-next-line react/display-name
+      title: () => {
+        return <span style={{ display: 'block', width: '100%', textAlign: 'right' }}> 操作</span>
+      },
       dataIndex: 'operations',
       key: 'operations',
       // eslint-disable-next-line react/display-name
@@ -203,7 +239,7 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
         return (
           <div className={style.excitaion_operation}>
             <span
-              style={{ marginLeft: '10px', marginRight: '10px' }}
+              style={{ marginLeft: '10px', marginRight: '30px' }}
               role='button'
               tabIndex={0}
               onClick={() => {
@@ -212,7 +248,7 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
             >
               查看详情
             </span>
-            <OmitComponents id={row.sender_id} updateMenue={setUpdateMenue} status={updateMenue} />
+            <OmitComponents id={row.sender_id} onChange={onChange} updateMenue={setUpdateMenue} status={updateMenue} />
           </div>
         )
       }
@@ -257,15 +293,25 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
         id={modalData.excitationId}
         width={480}
       /> */}
-      {/* <CommonModle
-        IsModalVisible={CommonModleStatus}
+      <CommonModle
+        IsModalVisible={deleteVisibility}
         deleteProjectRight={() => {
           deleteExcitationRight()
         }}
         CommonModleClose={CommonModleClose}
-        name='删除激励'
+        ing='删除中'
+        spinnig={spinnig}
+        name='删除激励嵌套'
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
-      /> */}
+      />
+      <LookUpDependence
+        titleName={titleName}
+        visibility={visibility as boolean}
+        name='外设关联信息'
+        data={dependenceInfo}
+        choiceModal={chioceModalStatus}
+        width='300px'
+      />
     </div>
   )
 }
