@@ -9,7 +9,8 @@ import { useState } from 'react'
 import * as React from 'react'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
 // import { message } from 'antd'
-import { excitationListFn } from 'Src/services/api/excitationApi'
+import OmitComponents from 'Src/components/OmitComponents/OmitComponents'
+import { excitationListFn, lookUpDependencePeripheral } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import zhCN from 'antd/lib/locale/zh_CN'
 // import deleteImage from 'Src/assets/image/Deletes.svg'
@@ -17,10 +18,10 @@ import zhCN from 'antd/lib/locale/zh_CN'
 import { StepRef } from 'Src/view/Project/task/createTask/newCreateTask'
 import useDepCollect from 'Src/util/Hooks/useDepCollect'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
-
-import OmitComponents from 'Src/components/OmitComponents/OmitComponents'
+import LookUpDependence from 'Src/components/Modal/taskModal/lookUpDependence'
 import inputStyle from 'Src/components/Input/searchInput/searchInput.less'
-
+import useMenu from 'Src/util/Hooks/useMenu'
+import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import styles from 'Src/view/Project/project/project.less'
 import style from '../excitation.less'
 
@@ -60,6 +61,8 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
     inputRef: React.useRef<StepRef | null>(null)
   }
 
+  const titleName = ['外设', '激励嵌套', '交互', '任务', '状态']
+
   const history = useHistory()
   // 展示菜单
   const [updateMenue, setUpdateMenue] = useState<number>(-1)
@@ -76,6 +79,12 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
   // loading加载
 
   const [loading, setLoading] = useState(true)
+
+  // 查看关联任务
+  const { visibility, chioceModalStatus, deleteVisibility, CommonModleClose, spinnig, chioceBtnLoading } = useMenu()
+
+  // 存储关联任务信息
+  const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
   // 存储单个项目信息
   //   const [excitationInfo, setExcitationInfo] = useState('')
 
@@ -115,6 +124,7 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
       state: {
         info: { id: item.stimulus_id },
         type: 'one',
+        lookDetail: true,
         isFixForm: true,
         name: '外设详情'
       }
@@ -168,6 +178,29 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
     getExcitationList(depData)
   }, [depData])
 
+  // 获取关联信息
+  const getDependenceInfo = React.useCallback(async () => {
+    const res = await lookUpDependencePeripheral(updateMenue)
+    if (res.data) {
+      setDependenceInfo(res.data)
+    }
+    chioceModalStatus(true)
+  }, [chioceModalStatus, updateMenue])
+  const onChange = (val: string) => {
+    switch (val) {
+      case '删除':
+        CommonModleClose(true)
+        break
+      case '查看关联信息':
+        getDependenceInfo()
+        break
+      case '修改':
+        console.log('11')
+        break
+      default:
+        return null
+    }
+  }
   const cloumnMap = [
     {
       width: '15%',
@@ -209,7 +242,10 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
 
     {
       width: '10%',
-      title: '操作',
+      // eslint-disable-next-line react/display-name
+      title: () => {
+        return <span style={{ display: 'block', width: '100%', textAlign: 'right' }}> 操作</span>
+      },
       dataIndex: 'operations',
       key: 'operations',
       // eslint-disable-next-line react/display-name
@@ -217,7 +253,7 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
         return (
           <div className={style.excitaion_operation} key={row.stimulus_id}>
             <span
-              style={{ marginLeft: '10px', marginRight: '10px' }}
+              style={{ marginLeft: '10px', marginRight: '30px' }}
               role='button'
               tabIndex={0}
               onClick={() => {
@@ -226,7 +262,7 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
             >
               查看详情
             </span>
-            <OmitComponents id={row.stimulus_id} updateMenue={setUpdateMenue} status={updateMenue} />
+            <OmitComponents id={row.stimulus_id} updateMenue={setUpdateMenue} onChange={onChange} status={updateMenue} />
           </div>
         )
       }
@@ -257,23 +293,25 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
       <div className={styles.AnBan_PaginationsAge}>
         <PaginationsAge length={total} num={depData.page_size} getParams={setOperation} pagenums={depData.page} />
       </div>
-      {/* <ExcitationModal
-        visible={modalData.isModalVisible}
-        hideModal={cancel}
-        projectInfo={excitationInfo}
-        fixTitle={modalData.fixTitle}
-        id={modalData.excitationId}
-        width={480}
-      /> */}
-      {/* <CommonModle
-        IsModalVisible={CommonModleStatus}
+      <CommonModle
+        IsModalVisible={deleteVisibility}
         deleteProjectRight={() => {
           deleteExcitationRight()
         }}
         CommonModleClose={CommonModleClose}
-        name='删除激励'
+        name='删除外设'
+        ing='删除中'
+        spinnig={spinnig}
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
-      /> */}
+      />
+      <LookUpDependence
+        visibility={visibility as boolean}
+        titleName={titleName}
+        name='外设关联信息'
+        data={dependenceInfo}
+        choiceModal={chioceModalStatus}
+        width='480px'
+      />
     </div>
   )
 }

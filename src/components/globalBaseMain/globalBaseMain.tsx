@@ -7,13 +7,14 @@ interface ContextProps {
   name: string
   info?: any
   propsDatas?: any
+  lookDetail?: boolean
 }
 
 export const GlobalContexted = React.createContext<ContextProps>(null!)
 function GlobalBaseMain(props: any) {
-  const { name, type, isFixForm, info, Data } = props
+  const { name, type, isFixForm, info, Data, lookDetail } = props
   return (
-    <GlobalContexted.Provider value={{ type, isFixForm, name, info, propsDatas: Data }}>
+    <GlobalContexted.Provider value={{ type, isFixForm, lookDetail, name, info, propsDatas: Data }}>
       <div className={styles.taskMain}>
         <div className={styles.taskMain_header}>
           <span className={styles.taskMain_title}>{name}</span>

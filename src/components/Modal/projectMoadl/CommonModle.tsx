@@ -14,9 +14,6 @@ function ModalpPop(props: any) {
       </div>
     )
   }
-  const noop = () => {
-    return false
-  }
 
   const isClose = useCallback(() => {
     if (!spinning) {

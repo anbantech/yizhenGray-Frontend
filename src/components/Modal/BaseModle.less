@@ -296,7 +296,7 @@
 
 .modleStyle {
   :global(.ant-modal-body) {
-    padding: 8px  0 0 52px;
+    padding: 8px  24px 0 52px;
     margin-bottom: 24px;
   }
 
@@ -1648,4 +1648,98 @@
 
 .btn_cancelCrashTable{
     border-radius: 4px;
+}
+
+
+
+
+.excitation {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+
+.main{
+  width: 100%;
+  display: flex;
+  flex-direction:column;
+}
+
+.main_header{
+  width: 100%;
+  display: flex;
+  height: 48px;
+  padding-left: 25px;
+  background-color: #E2EDFC; 
+}
+
+.main_header>div{
+  width: 90px;
+  line-height: 48px;
+  font-weight: 400;
+  font-size: 14px;
+  color: #333333;
+}
+
+.lookUpDependenceModal{
+  :global(.ant-modal-body) {
+     padding: 0 !important;
+  }
+ :global(.ant-modal-footer) {
+     padding: 0 !important;
+  }
+}
+
+.listBody{
+  display: flex;
+  flex-direction: column;
+  max-height: 452px;
+  min-height: 200px;
+  overflow-y: scroll;
+}
+
+.rowList{
+  display: flex;
+  padding-left: 25px;
+  width: 100%;
+  box-shadow: inset 0px -1px 0px rgba(217, 217, 217, 0.3);
+}
+.rowList_Element{
+  display: flex;
+}
+
+.rowList_nextElement{
+  display: flex;
+  flex-direction: column;
+}
+
+.listTitle{
+  width: 90px;
+  display: flex;
+  align-items: center;
+  text-align: left;
+}
+
+.listTitleStatus{
+  line-height: 32px;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.listTitleStatus >span {
+  width: 150px;
+
+}
+
+.listTitle>span{
+  width: 80px;
+  line-height: 32px;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;      
 }

@@ -38,7 +38,7 @@ const MenuComponents: React.FC<MenuProps> = (props: MenuProps) => {
             key={Math.random()}
             role='time'
             onClick={() => {
-              setCurrentType(item.title)
+              changeCurrent(item.title)
             }}
           >
             <img src={item.src} alt='' style={{ width: '13px', height: '13px', marginRight: '10px' }} />

@@ -7,7 +7,7 @@ import ExcitationComponents from './excitationListFrom/excitation'
 // import GroupExcitationFormGroup from './excitationListFrom/groupExcitationFormGroup'
 
 const ExcitationBase: React.FC = (props: any) => {
-  const { type, isFixForm, name, info, Data } = props.location.state
+  const { type, isFixForm, name, info, Data, lookDetail } = props.location.state
   const item = {
     one: <ExcitationComponents />,
     two: <OneExcotationForm />,
