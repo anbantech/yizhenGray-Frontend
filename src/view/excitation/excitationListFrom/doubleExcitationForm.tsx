@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons'
-import { Form, Input } from 'antd'
+import { Form, Input, message } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import * as React from 'react'
 import { useContext, useState } from 'react'
@@ -61,7 +61,7 @@ interface Option {
 const DoubleExcitationForm: React.FC = () => {
   const [form] = useForm()
   const history = useHistory()
-  const { isFixForm, info, type } = useContext(GlobalContexted)
+  const { isFixForm, info, type, lookDetail } = useContext(GlobalContexted)
   const [excitationList, setExcitationList] = useState<Option[]>([
     {
       sender_id: '1',
@@ -163,22 +163,25 @@ const DoubleExcitationForm: React.FC = () => {
   )
 
   const deleteCard = React.useCallback(
-    (val: number) => {
-      const oldItemArray = data as any
-      const clearItem = oldItemArray.splice(val, 0)
+    (val: number, data: number[]) => {
+      const oldItemArray = [...data]
+      const clearItem = oldItemArray.splice(val, 1)
       updateDisabled(clearItem[0], false)
       setData([...oldItemArray])
       return Promise.resolve()
     },
-    [data, updateDisabled]
+    [updateDisabled]
   )
 
-  const sortCardArray = async (val: number) => {
-    await deleteCard(val)
-    const oldItemArray = [...cardArray]
-    oldItemArray.splice(val, 1)
-    setCardArray([...oldItemArray])
-  }
+  const sortCardArray = React.useCallback(
+    async (val: number) => {
+      await deleteCard(val, data)
+      const oldItemArray = [...cardArray]
+      oldItemArray.splice(val, 1)
+      setCardArray([...oldItemArray])
+    },
+    [cardArray, data, deleteCard]
+  )
   // 获取配置列表
   const getExcitationList = async (request1: Resparams, doubleRequest: Resparams) => {
     try {
@@ -268,25 +271,38 @@ const DoubleExcitationForm: React.FC = () => {
     })
   }
 
-  const onFieldsChange = (changedFields: any, allFields: any) => {
-    const disabledData: any = []
-    const errors = allFields.every((item: any) => {
-      return item.errors.length === 0
-    })
-    // eslint-disable-next-line array-callback-return
-    allFields.map((item: any) => {
-      if (item.name[0] !== 'description') return disabledData.push(item.value)
-    })
+  const onFieldsChange = React.useCallback(
+    async (changedFields?: any, allFields?: any) => {
+      // avoid outOfDate bug, sleep 300ms
+      await new Promise<void>(resolve => setTimeout(() => resolve(), 300))
 
-    const disabledBoolean = disabledData.every((item: any) => {
-      return item !== undefined && item !== ''
-    })
-    if (disabledBoolean && errors) {
-      setIsDisableStatus(false)
-    } else {
-      setIsDisableStatus(true)
-    }
-  }
+      if (!changedFields && !allFields) {
+        // eslint-disable-next-line no-param-reassign
+        allFields = form.getFieldsValue()
+      }
+      let allFinished = true
+      // eslint-disable-next-line no-restricted-syntax
+      for (const [fieldName, fieldValue] of Object.entries(allFields)) {
+        if (fieldName !== 'description' && typeof fieldValue === 'undefined') {
+          allFinished = false
+          break
+        }
+      }
+      if (!allFinished) {
+        setIsDisableStatus(true)
+        return
+      }
+      let values
+      try {
+        values = await form.validateFields()
+      } catch (error) {
+        message.error(error)
+      }
+
+      setIsDisableStatus(!values)
+    },
+    [form]
+  )
 
   React.useEffect(() => {
     if (!isDisableStatus) {
@@ -314,7 +330,7 @@ const DoubleExcitationForm: React.FC = () => {
     return res
   }
   React.useEffect(() => {
-    if (Data && isFixForm) {
+    if (Data) {
       const { name, desc, gu_cnt0, gu_w0, gu_w1, gu_cnt1, align_delay_0, align_delay_2, align_delay_1 } = Data as any
       const formData = {
         name,
@@ -329,11 +345,12 @@ const DoubleExcitationForm: React.FC = () => {
       }
       isBack(Data.group_data_list)
       form.setFieldsValue(formData)
+      onFieldsChange()
     }
-  }, [form, info, Data, isFixForm])
+  }, [form, info, Data, isFixForm, onFieldsChange])
   return (
     <div className={styles.baseForm}>
-      <Form name='basic' className={styles.twoForm} {...layout} onFieldsChange={onFieldsChange} autoComplete='off' form={form} size='large'>
+      <Form name='basic' className={styles.twoForm} {...layout} onValuesChange={onFieldsChange} autoComplete='off' form={form} size='large'>
         <Form.Item
           label='激励嵌套管理名称'
           name='name'
@@ -367,7 +384,7 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input placeholder='请输入激励嵌套管理名称' disabled={isFixForm} />
+          <Input placeholder='请输入激励嵌套管理名称' disabled={isFixForm && lookDetail} />
         </Form.Item>
         <Form.Item
           label='前置时延'
@@ -391,7 +408,7 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入前置时延' suffix={<Tip />} />
+          <Input disabled={isFixForm && lookDetail} placeholder='请输入前置时延' suffix={<Tip />} />
         </Form.Item>
         <Form.Item
           label='发送次数'
@@ -514,7 +531,7 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入中间时延' suffix={<Tip />} />
+          <Input disabled={isFixForm && lookDetail} placeholder='请输入中间时延' suffix={<Tip />} />
         </Form.Item>
         <Form.Item
           label='后置时延'
@@ -538,7 +555,7 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input disabled={isFixForm} placeholder='请输入后置时延' suffix={<Tip />} />
+          <Input disabled={isFixForm && lookDetail} placeholder='请输入后置时延' suffix={<Tip />} />
         </Form.Item>
         <Form.Item
           label='激励嵌套管理描述'
@@ -546,7 +563,7 @@ const DoubleExcitationForm: React.FC = () => {
           rules={[{ message: '请输入激励嵌套管理描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
           <Input.TextArea
-            disabled={isFixForm}
+            disabled={isFixForm && lookDetail}
             placeholder={isFixForm ? '' : '请输入激励嵌套管理描述'}
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
@@ -559,18 +576,19 @@ const DoubleExcitationForm: React.FC = () => {
       </Form>
 
       <div className={styles.formOperation}>
-        {cardArray?.map((index: number) => {
+        {cardArray?.map((value: number, index: number) => {
           return (
             <ExcitationCard
               deleteCard={sortCardArray}
               type={type}
               idArray={data[index]}
               isFixForm={isFixForm}
+              lookDetail={lookDetail}
               stepArray={cardArray}
               excitationList={excitationList}
               onChange={onChange}
               index={index}
-              key={index}
+              key={value}
             />
           )
         })}

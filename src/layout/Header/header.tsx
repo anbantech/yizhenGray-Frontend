@@ -163,6 +163,10 @@ function Header(props: any) {
     '/TwoExcitationList/Detail': '激励单元详情',
     '/ThreeExcitationList/Detail': '激励嵌套详情',
     '/FourExcitationList/Deatail': '交互详情',
+    '/OneExcitationList/update': '外设详情',
+    '/TwoExcitationList/update': '激励单元详情',
+    '/ThreeExcitationList/update': '激励嵌套详情',
+    '/FourExcitationList/update': '交互详情',
     '/TwoExcitationList/createDoubleExcitationGroup': '新建端口单元管理',
     '/ThreeExcitationList/createDoubleExcitation': '新建端口嵌套管理',
 

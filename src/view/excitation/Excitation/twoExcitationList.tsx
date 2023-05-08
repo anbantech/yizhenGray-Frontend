@@ -18,7 +18,7 @@ import zhCN from 'antd/lib/locale/zh_CN'
 import useDepCollect from 'Src/util/Hooks/useDepCollect'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import { StepRef } from 'Src/view/Project/task/createTask/newCreateTask'
-
+import useDelete from 'Src/util/Hooks/useDelete'
 import inputStyle from 'Src/components/Input/searchInput/searchInput.less'
 import styles from 'Src/view/Project/project/project.less'
 import LookUpDependence from 'Src/components/Modal/taskModal/lookUpDependence'
@@ -56,8 +56,6 @@ interface ChildRef {
 
 type stateType = { [key: string]: string }
 
-const titleName = ['激励嵌套', '交互', '任务', '状态']
-
 type ResparamsType = Record<string, any>
 const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () => {
   const childRef: ChildRef = {
@@ -65,8 +63,10 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
   }
 
   const history = useHistory()
+
   // 展示菜单
   const [updateMenue, setUpdateMenue] = useState<number>(-1)
+
   // 项目管理
   const [excitationList, setExcitationList] = useState<ResparamsType[]>([])
 
@@ -80,17 +80,13 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
 
   // 查看关联任务
   const { visibility, chioceModalStatus, deleteVisibility, CommonModleClose, spinnig, chioceBtnLoading } = useMenu()
+
   // loading加载
-
   const [loading, setLoading] = useState(true)
-  // 存储单个项目信息
-  //   const [excitationInfo, setExcitationInfo] = useState('')
 
-  // 修改,更新 弹出框基本数据集合
-  //   const [modalData, setModalData] = useState({ excitationId: '', fixTitle: false, isModalVisible: false })
+  // 删除
+  const { deleteExcitationRight } = useDelete()
 
-  //  删除弹出框基本数据集合
-  //   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
   const createProjectModal = React.useCallback(() => {
     const createOneExcitation = '/TwoExcitationList/createDoubleExcitationGroup'
     history.push({
@@ -102,16 +98,6 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
       }
     })
   }, [history])
-
-  // 控制弹出框消失隐藏
-  //   const cancel = (e: boolean) => {
-  //     setParams({ ...params, key_word: '', page: 1 })
-  //   }
-
-  // 删除弹出框
-  //   const CommonModleClose = (value: boolean) => {
-  //     setCommonModleStatus(value)
-  //   }
 
   // 查看详情
   const lookDetail = (item: any) => {
@@ -126,6 +112,20 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
       }
     })
   }
+
+  const jumpUpdateWeb = (item: any) => {
+    history.push({
+      pathname: '/TwoExcitationList/update',
+      state: {
+        info: { id: item },
+        type: 'two',
+        lookDetail: false,
+        isFixForm: false,
+        name: '激励单元'
+      }
+    })
+  }
+
   const updateParams = (value: string) => {
     depCollect(true, { key_word: value, page: 1 })
   }
@@ -165,20 +165,12 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
         getDependenceInfo()
         break
       case '修改':
-        console.log('1')
+        jumpUpdateWeb(updateMenue)
         break
       default:
         return null
     }
   }
-
-  // 更新参数获取列表
-
-  // 删除项目弹出框
-  //   const deleteProject = (id: string, value: boolean) => {
-  //     setModalData({ ...modalData, excitationId: id })
-  //     setCommonModleStatus(value)
-  //   }
 
   // 获取激励列表
   const getExcitationList = async (value: Resparams) => {
@@ -261,7 +253,7 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
       <div className={(styles.AnBan_header, style.AnBan_headerRadio)}>
         <span className={styles.AnBan_header_title}>激励单元列表</span>
         <div className={styles.AnBan_header_bottom}>
-          <SearchInput ref={childRef.inputRef} className={inputStyle.searchInput} placeholder='根据名称搜索交互' onChangeValue={setOperation} />
+          <SearchInput ref={childRef.inputRef} className={inputStyle.searchInput} placeholder='根据名称搜索激励单元' onChangeValue={setOperation} />
           <CreateButton
             name='新建激励单元'
             size='large'
@@ -296,14 +288,7 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
         name='删除激励单元'
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
       />
-      <LookUpDependence
-        titleName={titleName}
-        visibility={visibility as boolean}
-        name='外设关联信息'
-        data={dependenceInfo}
-        choiceModal={chioceModalStatus}
-        width='400px'
-      />
+      <LookUpDependence visibility={visibility as boolean} name='外设关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
     </div>
   )
 }

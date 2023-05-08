@@ -16,7 +16,9 @@ interface AllPropsType {
   excitationList: any
   stepArray: number[]
   isFixForm: boolean
+  lookDetail: boolean
   formData: any
+  type: string
   onChange: (value: any, index: number) => void
   index: number
   deleteCard: (index: number) => void
@@ -28,6 +30,8 @@ interface propsType {
   stepArray: number[]
   isFixForm: boolean
   excitationList: any
+  lookDetail: boolean
+
   index: number
   // eslint-disable-next-line react/require-default-props
   idArray?: number
@@ -121,9 +125,9 @@ interface Option {
 
 const ThreeExcitationCard = (props: AllPropsType) => {
   const [form] = useForm()
-  const { excitationList, deleteCard, onChange, stepArray, index, isFixForm, formData } = props
+  const { excitationList, deleteCard, onChange, type, stepArray, index, isFixForm, formData, lookDetail } = props
   const [desc, setDesc] = useState('')
-
+  console.log(excitationList)
   const clearValue = (val: undefined, index: number) => {
     onChange(undefined, index)
     form.setFieldsValue({ description: '' })
@@ -150,20 +154,26 @@ const ThreeExcitationCard = (props: AllPropsType) => {
     if (desc) {
       form.setFieldsValue({ description: desc })
     }
-
     if (formData) {
       const excitarionListes = formData[index] || formData
-      form.setFieldsValue({
-        port: [excitarionListes.target_type === 1 ? '激励单元管理' : '激励嵌套管理', excitarionListes.name],
-        description: excitarionListes.desc
-      })
+      if (type === 'three') {
+        form.setFieldsValue({
+          port: ['激励单元管理', excitarionListes.name],
+          description: excitarionListes.desc
+        })
+      } else {
+        form.setFieldsValue({
+          port: [excitarionListes.target_type === 1 ? '激励单元管理' : '激励嵌套管理', excitarionListes.name],
+          description: excitarionListes.desc
+        })
+      }
     } else {
       form.setFieldsValue({
         port: undefined,
         description: ''
       })
     }
-  }, [desc, form, formData, index])
+  }, [desc, form, formData, type, index])
   return (
     <div className={styles.card_middle}>
       <div
@@ -176,7 +186,7 @@ const ThreeExcitationCard = (props: AllPropsType) => {
       <Form name='middle' autoComplete='off' className={styles.card_middle_form} form={form}>
         <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择端口' }]}>
           <Cascader
-            disabled={isFixForm}
+            disabled={isFixForm && lookDetail}
             placeholder='选择配置'
             allowClear={false}
             fieldNames={{ label: 'name', value: 'sender_id' }}
@@ -195,7 +205,7 @@ ThreeExcitationCard.displayName = 'ThreeExcitationCard'
 const ThreeExcitationCardCompoent = React.memo(ThreeExcitationCard)
 
 const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
-  const { index, excitationList, stepArray, deleteCard, idArray, formData, onChange, isFixForm } = props
+  const { index, excitationList, stepArray, type, lookDetail, deleteCard, idArray, formData, onChange, isFixForm } = props
   const Data = GetDeatilFn(idArray)
   return (
     <div className={styles.card_main}>
@@ -204,6 +214,8 @@ const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
         index={index}
         stepArray={stepArray}
         deleteCard={deleteCard}
+        lookDetail={lookDetail}
+        type={type as string}
         formData={formData || Data}
         excitationList={excitationList}
         isFixForm={isFixForm}

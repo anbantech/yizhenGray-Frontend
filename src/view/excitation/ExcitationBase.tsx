@@ -15,7 +15,7 @@ const ExcitationBase: React.FC = (props: any) => {
     four: <GroupExcitationForm />
   }
   return (
-    <GlobalBaseMain name={name} isFixForm={isFixForm} type={type} info={info} Data={Data}>
+    <GlobalBaseMain name={name} isFixForm={isFixForm} lookDetail={lookDetail} type={type} info={info} Data={Data}>
       {item[type as keyof typeof item]}
     </GlobalBaseMain>
   )

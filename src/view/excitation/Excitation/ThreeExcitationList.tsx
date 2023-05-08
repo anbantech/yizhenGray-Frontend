@@ -2,18 +2,15 @@
 import SearchInput from 'Src/components/Input/searchInput/searchInput'
 import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import CreateButton from 'Src/components/Button/createButton'
-// import ExcitationModal from 'Src/components/Modal/excitationModal/excitationModal'
 import Table from 'antd/lib/table'
 import ConfigProvider from 'antd/lib/config-provider'
 import { useState } from 'react'
 import * as React from 'react'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
-// import { message } from 'antd'
 import { excitationListFn, lookUpDependenceUnit } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import zhCN from 'antd/lib/locale/zh_CN'
-// import deleteImage from 'Src/assets/image/Deletes.svg'
-// import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
+import useDelete from 'Src/util/Hooks/useDelete'
 import useDepCollect from 'Src/util/Hooks/useDepCollect'
 import OmitComponents from 'Src/components/OmitComponents/OmitComponents'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
@@ -24,8 +21,6 @@ import LookUpDependence from 'Src/components/Modal/taskModal/lookUpDependence'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import useMenu from 'Src/util/Hooks/useMenu'
 import style from '../excitation.less'
-
-// import { changeParams } from '../Project/taskDetail/taskDetailUtil/getTestLog'
 
 const customizeRender = () => <DefaultValueTips content='暂无数据' />
 
@@ -57,7 +52,6 @@ type stateType = { [key: string]: string }
 
 type ResparamsType = Record<string, any>
 
-const titleName = ['交互', '任务', '状态']
 const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () => {
   const childRef: ChildRef = {
     inputRef: React.useRef<StepRef | null>(null)
@@ -81,15 +75,9 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
   const [loading, setLoading] = useState(true)
   // 存储关联任务信息
   const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
-  // 存储单个项目信息
-  //   const [excitationInfo, setExcitationInfo] = useState('')
 
-  // 修改,更新 弹出框基本数据集合
-  //   const [modalData, setModalData] = useState({ excitationId: '', fixTitle: false, isModalVisible: false })
-
-  //  删除弹出框基本数据集合
-  //   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
-
+  // 删除
+  const { deleteExcitationRight } = useDelete()
   // 创建项目 弹出框
   const createProjectModal = React.useCallback(() => {
     const createDoubleExcitation = '/ThreeExcitationList/createDoubleExcitation'
@@ -102,16 +90,6 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
       }
     })
   }, [history])
-
-  // 控制弹出框消失隐藏
-  //   const cancel = (e: boolean) => {
-  //     setParams({ ...params, key_word: '', page: 1 })
-  //   }
-
-  // 删除弹出框
-  //   const CommonModleClose = (value: boolean) => {
-  //     setCommonModleStatus(value)
-  //   }
 
   // 查看详情
   const lookDetail = (item: any) => {
@@ -148,13 +126,7 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
         return null
     }
   }
-  // 更新参数获取列表
 
-  // 删除项目弹出框
-  //   const deleteProject = (id: string, value: boolean) => {
-  //     setModalData({ ...modalData, excitationId: id })
-  //     setCommonModleStatus(value)
-  //   }
   // 获取关联信息
   const getDependenceInfo = React.useCallback(async () => {
     const res = await lookUpDependenceUnit(updateMenue)
@@ -163,6 +135,19 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
     }
     chioceModalStatus(true)
   }, [chioceModalStatus, updateMenue])
+
+  const jumpUpdateWeb = (item: any) => {
+    history.push({
+      pathname: '/ThreeExcitationList/update',
+      state: {
+        info: { id: item },
+        type: 'three',
+        lookDetail: false,
+        isFixForm: false,
+        name: '激励嵌套'
+      }
+    })
+  }
 
   const onChange = (val: string) => {
     switch (val) {
@@ -173,7 +158,7 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
         getDependenceInfo()
         break
       case '修改':
-        console.log('1')
+        jumpUpdateWeb(updateMenue)
         break
       default:
         return null
@@ -304,14 +289,7 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
         name='删除激励嵌套'
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
       />
-      <LookUpDependence
-        titleName={titleName}
-        visibility={visibility as boolean}
-        name='外设关联信息'
-        data={dependenceInfo}
-        choiceModal={chioceModalStatus}
-        width='300px'
-      />
+      <LookUpDependence visibility={visibility as boolean} name='外设关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
     </div>
   )
 }

@@ -2,19 +2,16 @@
 import SearchInput from 'Src/components/Input/searchInput/searchInput'
 import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import CreateButton from 'Src/components/Button/createButton'
-// import ExcitationModal from 'Src/components/Modal/excitationModal/excitationModal'
 import Table from 'antd/lib/table'
 import ConfigProvider from 'antd/lib/config-provider'
 import { useState } from 'react'
 import * as React from 'react'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
-// import { message } from 'antd'
 import OmitComponents from 'Src/components/OmitComponents/OmitComponents'
 import { excitationListFn, lookUpDependencePeripheral } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import zhCN from 'antd/lib/locale/zh_CN'
-// import deleteImage from 'Src/assets/image/Deletes.svg'
-// import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
+import useDelete from 'Src/util/Hooks/useDelete'
 import { StepRef } from 'Src/view/Project/task/createTask/newCreateTask'
 import useDepCollect from 'Src/util/Hooks/useDepCollect'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
@@ -24,8 +21,6 @@ import useMenu from 'Src/util/Hooks/useMenu'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import styles from 'Src/view/Project/project/project.less'
 import style from '../excitation.less'
-
-// import { changeParams } from '../Project/taskDetail/taskDetailUtil/getTestLog'
 
 const customizeRender = () => <DefaultValueTips content='暂无数据' />
 
@@ -61,8 +56,6 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
     inputRef: React.useRef<StepRef | null>(null)
   }
 
-  const titleName = ['外设', '激励嵌套', '交互', '任务', '状态']
-
   const history = useHistory()
   // 展示菜单
   const [updateMenue, setUpdateMenue] = useState<number>(-1)
@@ -85,14 +78,9 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
 
   // 存储关联任务信息
   const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
-  // 存储单个项目信息
-  //   const [excitationInfo, setExcitationInfo] = useState('')
 
-  // 修改,更新 弹出框基本数据集合
-  //   const [modalData, setModalData] = useState({ excitationId: '', fixTitle: false, isModalVisible: false })
-
-  //  删除弹出框基本数据集合
-  //   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
+  // 删除
+  const { deleteExcitationRight } = useDelete()
 
   // 创建项目 弹出框
   const createProjectModal = React.useCallback(() => {
@@ -106,16 +94,6 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
       }
     })
   }, [history])
-
-  // 控制弹出框消失隐藏
-  //   const cancel = (e: boolean) => {
-  //     setParams({ ...params, key_word: '', page: 1 })
-  //   }
-
-  // 删除弹出框
-  //   const CommonModleClose = (value: boolean) => {
-  //     setCommonModleStatus(value)
-  //   }
 
   // 查看详情
   const lookDetail = (item: any) => {
@@ -152,14 +130,6 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
     }
   }
 
-  // 更新参数获取列表
-
-  // 删除项目弹出框
-  //   const deleteProject = (id: string, value: boolean) => {
-  //     setModalData({ ...modalData, excitationId: id })
-  //     setCommonModleStatus(value)
-  //   }
-
   // 获取激励列表
   const getExcitationList = async (value: Resparams) => {
     try {
@@ -186,6 +156,20 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
     }
     chioceModalStatus(true)
   }, [chioceModalStatus, updateMenue])
+
+  const jumpUpdateWeb = (item: any) => {
+    history.push({
+      pathname: '/OneExcitationList/update',
+      state: {
+        info: { id: item },
+        type: 'one',
+        lookDetail: false,
+        isFixForm: false,
+        name: '外设'
+      }
+    })
+  }
+
   const onChange = (val: string) => {
     switch (val) {
       case '删除':
@@ -195,12 +179,13 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
         getDependenceInfo()
         break
       case '修改':
-        console.log('11')
+        jumpUpdateWeb(updateMenue)
         break
       default:
         return null
     }
   }
+
   const cloumnMap = [
     {
       width: '15%',
@@ -304,14 +289,7 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
         spinnig={spinnig}
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
       />
-      <LookUpDependence
-        visibility={visibility as boolean}
-        titleName={titleName}
-        name='外设关联信息'
-        data={dependenceInfo}
-        choiceModal={chioceModalStatus}
-        width='480px'
-      />
+      <LookUpDependence visibility={visibility as boolean} name='外设关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
     </div>
   )
 }

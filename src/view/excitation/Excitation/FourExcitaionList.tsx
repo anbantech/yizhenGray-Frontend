@@ -1,19 +1,16 @@
 /* eslint-disable indent */
 import SearchInput from 'Src/components/Input/searchInput/searchInput'
 import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
-import CreateButton from 'Src/components/Button/createButton'
-// import ExcitationModal from 'Src/components/Modal/excitationModal/excitationModal'
 import Table from 'antd/lib/table'
 import ConfigProvider from 'antd/lib/config-provider'
 import { useState } from 'react'
 import * as React from 'react'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
-// import { message } from 'antd'
 import { excitationListFn, lookUpDependenceUnit } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
+import CreateButton from 'Src/components/Button/createButton'
 import zhCN from 'antd/lib/locale/zh_CN'
-// import deleteImage from 'Src/assets/image/Deletes.svg'
-// import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
+import useDelete from 'Src/util/Hooks/useDelete'
 import useDepCollect from 'Src/util/Hooks/useDepCollect'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import OmitComponents from 'Src/components/OmitComponents/OmitComponents'
@@ -24,7 +21,6 @@ import LookUpDependence from 'Src/components/Modal/taskModal/lookUpDependence'
 import useMenu from 'Src/util/Hooks/useMenu'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import style from '../excitation.less'
-// import { changeParams } from '../Project/taskDetail/taskDetailUtil/getTestLog'
 
 const customizeRender = () => <DefaultValueTips content='暂无数据' />
 
@@ -56,7 +52,6 @@ type stateType = { [key: string]: string }
 
 type ResparamsType = Record<string, any>
 
-const titleName = ['任务', '状态']
 const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () => {
   const childRef: ChildRef = {
     inputRef: React.useRef<StepRef | null>(null)
@@ -83,14 +78,9 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
 
   // 查看关联任务
   const { visibility, chioceModalStatus, deleteVisibility, CommonModleClose, spinnig, chioceBtnLoading } = useMenu()
-  // 存储单个项目信息
-  //   const [excitationInfo, setExcitationInfo] = useState('')
 
-  // 修改,更新 弹出框基本数据集合
-  //   const [modalData, setModalData] = useState({ excitationId: '', fixTitle: false, isModalVisible: false })
-
-  //  删除弹出框基本数据集合
-  //   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
+  // 删除
+  const { deleteExcitationRight } = useDelete()
 
   // 创建项目 弹出框
   const createProjectModal = React.useCallback(() => {
@@ -104,16 +94,6 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       }
     })
   }, [history])
-
-  // 控制弹出框消失隐藏
-  //   const cancel = (e: boolean) => {
-  //     setParams({ ...params, key_word: '', page: 1 })
-  //   }
-
-  // 删除弹出框
-  //   const CommonModleClose = (value: boolean) => {
-  //     setCommonModleStatus(value)
-  //   }
 
   // 查看详情
   const lookDetail = (item: any) => {
@@ -149,13 +129,6 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         return null
     }
   }
-  // 更新参数获取列表
-
-  // 删除项目弹出框
-  //   const deleteProject = (id: string, value: boolean) => {
-  //     setModalData({ ...modalData, excitationId: id })
-  //     setCommonModleStatus(value)
-  //   }
 
   // 获取激励列表
   const getExcitationList = async (value: Resparams) => {
@@ -170,6 +143,8 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       throwErrorMessage(error, { 1004: '请求资源未找到' })
     }
   }
+
+  // 获取依赖信息
   const getDependenceInfo = React.useCallback(async () => {
     const res = await lookUpDependenceUnit(updateMenue)
     if (res.data) {
@@ -177,6 +152,20 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
     }
     chioceModalStatus(true)
   }, [chioceModalStatus, updateMenue])
+
+  // 跳转修改页面
+  const jumpUpdateWeb = (item: any) => {
+    history.push({
+      pathname: '/FourExcitationList/update',
+      state: {
+        info: { id: item },
+        type: 'four',
+        lookDetail: false,
+        isFixForm: false,
+        name: '交互'
+      }
+    })
+  }
   const onChange = (val: string) => {
     switch (val) {
       case '删除':
@@ -186,7 +175,7 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         getDependenceInfo()
         break
       case '修改':
-        console.log('1')
+        jumpUpdateWeb(updateMenue)
         break
       default:
         return null
@@ -294,14 +283,7 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         spinnig={spinnig}
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
       />
-      <LookUpDependence
-        titleName={titleName}
-        visibility={visibility as boolean}
-        name='外设关联信息'
-        data={dependenceInfo}
-        choiceModal={chioceModalStatus}
-        width='225px'
-      />
+      <LookUpDependence visibility={visibility as boolean} name='外设关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
     </div>
   )
 }
