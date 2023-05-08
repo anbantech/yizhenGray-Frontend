@@ -1,8 +1,8 @@
 import { MinusSquareTwoTone, PlusSquareTwoTone } from '@ant-design/icons'
 import { message, Steps, Tooltip } from 'antd'
 import React, { useCallback, useLayoutEffect, useState } from 'react'
-import { useHistory, useLocation } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
+import { useHistory, useLocation } from 'react-router'
 import { createGroupFn } from 'Src/services/api/excitationApi'
 import { useLatest } from 'Src/util/Hooks/useLast'
 import styles from 'Src/view/excitation/excitation.less'
@@ -233,11 +233,10 @@ const Fuzzing: React.FC<al> = (props: al) => {
 
 const TearDown: React.FC<al> = (props: al) => {
   const { state } = props
-  const lineQef = useLatest<any>({})
-
-  const [widths, setWidth] = useState<al>({})
 
   const [map, setMap] = useState<Map<K, V>>(new Map())
+  const [widths, setWidth] = useState<al>({})
+  const lineQef = useLatest<any>({})
   const getRef = (dom: any, item: number, key: string) => {
     if (item === 0 || item === 1) {
       lineQef.current[key] = dom?.offsetWidth

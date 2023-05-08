@@ -86,7 +86,7 @@ const ChartComponents = () => {
 }
 
 const Fuzzing = (props: any) => {
-  const { type, isFixForm, stepArray, changePre2, excitationList, current, deleteCard } = props
+  const { type, isFixForm, stepArray, changePre2, excitationList, current, lookDetail, deleteCard } = props
   const [cardArray, setCardArray] = React.useState([0])
   const addCard = React.useCallback(() => {
     const pre = cardArray
@@ -128,6 +128,7 @@ const Fuzzing = (props: any) => {
                 excitationList={excitationList}
                 isFixForm={isFixForm}
                 onChange={onChange}
+                lookDetail={lookDetail}
                 key={index}
                 index={index}
               />
@@ -391,6 +392,7 @@ const GroupExcitationForm: React.FC = () => {
         const params2 = {
           child_id_list: filterUnfinedItem(stepArray)
         }
+
         const result = await checkDataStructure(params2)
         if (result.data) {
           const params1 = {
@@ -411,7 +413,7 @@ const GroupExcitationForm: React.FC = () => {
 
   const isFixFormDrawView = () => {
     history.push({
-      pathname: '/excitationList/Deatail/ExcitationDraw',
+      pathname: '/FourExcitationList/Deatail/ExcitationDraw',
       state: { Data: detailData || propsDatas, type, isFixForm, name }
     })
   }
