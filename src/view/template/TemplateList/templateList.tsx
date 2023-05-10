@@ -52,6 +52,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
 
   // 存储关联任务信息
   const [dependenceInfo, setDependenceInfo] = useState({})
+
   // 更新参数获取列表
   const changeKeywords = useCallback((value: string) => {
     setParams(params => ({ ...params, key_word: value, page: 1 }))
@@ -64,17 +65,19 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
 
   // 查看关联任务
   const { visibility, chioceModalStatus } = useMenu()
+
   // 查看/修改/创建末班
   const jumpTemplate = useCallback(
-    (value?: ResparamsType, editOriginalTemplate = true, readonlyBaseTemplate = false) => {
+    (value?: ResparamsType, editOriginalTemplate = true, readonlyBaseTemplate = true) => {
       const { id: templateId } = value || {}
       history.push({
-        pathname: '/templateList/template',
+        pathname: '/templateList/templateDetail',
         state: { templateId, templateType: 'user_defined', readonlyBaseTemplate, editOriginalTemplate, from: location.pathname }
       })
     },
     [history, location.pathname]
   )
+
   // 展示菜单
   const [updateMenue, setUpdateMenue] = useState<number>(-1)
 
@@ -231,7 +234,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
         name='删除模板'
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
       />
-      <LookUpDependence visibility={visibility as boolean} name='外设关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
+      <LookUpDependence visibility={visibility as boolean} name='模版关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
     </div>
   )
 }

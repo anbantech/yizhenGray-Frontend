@@ -72,7 +72,7 @@ function content() {
 
         <Route path='/templateList' exact component={TemplateList} />
         <Route path='/templateList/template' exact component={CreateTemplateWrapper} />
-
+        <Route path='/templateList/templateDetail' exact component={CreateTemplateWrapper} />
         {/* <Route path='/excitationList/createGroupExcitation' exact component={ExcitationBase} /> */}
         {/* <Route path='/Arrgemnt/StepSecond' exact component={StepSecond} /> */}
         {/* <Route path='/Arrgemnt/ChangeArrgement' exact component={ChangeArrgement} /> */}

@@ -15,6 +15,7 @@ interface LocationStateType {
   from: string
   // 模板类型
   templateType: 'user_defined' | 'default' | 'recycle_bin'
+  isDetailWeb?: boolean
 }
 
 export enum TemplateStatus {
@@ -50,15 +51,14 @@ const CreateTemplateWrapper: React.FC<RouteComponentProps<any, any, LocationStat
   const status = getTemplateStatusFromLocationState(location.state)
 
   // 获取模板ID、协议ID和项目ID
-  const { templateId } = location.state
+  const { templateId, isDetailWeb } = location.state
   // 模板类型
   const { templateType } = location.state
 
-  const defaultContext = { status, templateId, templateType }
+  const defaultContext = { status, templateId, templateType, isDetailWeb }
 
   // 清除 context 闭包里的对象
   resetDefaultTemplateContextValue()
-
   return (
     <TemplateContextProvider defaultContext={defaultContext}>
       <CreateTemplateComponent />

@@ -173,6 +173,7 @@ function Header(props: any) {
     '/OneExcitationList/createExcitation': '新建外设',
     '/FourExcitationList/Deatail/ExcitationDraw': '预览',
     '/templateList': '模板列表',
+    '/templateList/templateDetail': '模版详情',
     '/templateList/template': `${data && data?.readonlyBaseTemplate ? '查看模板' : data && data?.editOriginalTemplate ? '修改模板' : '创建模板'}`
   }
   const history = useHistory()

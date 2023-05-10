@@ -1,4 +1,4 @@
-import React, { useReducer, createContext, useCallback } from 'react'
+import React, { useReducer, createContext, useCallback, useEffect } from 'react'
 import API from 'Src/services/api'
 import { throwErrorMessage } from 'Utils/common'
 import { useEffectOnce } from 'Utils/Hooks/useEffectOnce'
@@ -145,6 +145,7 @@ function mergePropsIntoContext(from: TemplateContextProviderProps['defaultContex
 
 const TemplateContextProvider: React.FC<TemplateContextProviderProps> = ({ children, defaultContext }) => {
   // 把 props 的参数与默认参数合并
+
   mergePropsIntoContext(defaultContext, defaultTemplateContext.template)
   const { templateId, templateType } = defaultTemplateContext.template
 
@@ -193,6 +194,13 @@ const TemplateContextProvider: React.FC<TemplateContextProviderProps> = ({ child
       fetchTemplateInfo()
     }
   })
+  useEffect(() => {
+    if (template?.isDetailWeb && template.status === 1) {
+      fetchListFormApi()
+      fetchTemplateInfo()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [templateId, template?.isDetailWeb, template.status])
 
   return <TemplateContext.Provider value={{ template, templateDispatch }}>{children}</TemplateContext.Provider>
 }
