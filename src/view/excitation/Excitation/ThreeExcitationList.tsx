@@ -3,14 +3,14 @@ import SearchInput from 'Src/components/Input/searchInput/searchInput'
 import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import CreateButton from 'Src/components/Button/createButton'
 import Table from 'antd/lib/table'
+import { message } from 'antd'
 import ConfigProvider from 'antd/lib/config-provider'
 import { useState } from 'react'
 import * as React from 'react'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
-import { excitationListFn, lookUpDependenceUnit } from 'Src/services/api/excitationApi'
+import { deleteneExcitaionListMore, excitationListFn, lookUpDependenceUnit } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import zhCN from 'antd/lib/locale/zh_CN'
-import useDelete from 'Src/util/Hooks/useDelete'
 import useDepCollect from 'Src/util/Hooks/useDepCollect'
 import OmitComponents from 'Src/components/OmitComponents/OmitComponents'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
@@ -63,7 +63,7 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
   // 项目管理
   const [excitationList, setExcitationList] = useState<ResparamsType[]>([])
   // 查看关联任务
-  const { visibility, chioceModalStatus, deleteVisibility, CommonModleClose, spinnig, chioceBtnLoading } = useMenu()
+  const { visibility, chioceModalStatus, deleteVisibility, CommonModleClose } = useMenu()
   // 页码
   const [total, setTotal] = useState<number>()
 
@@ -75,9 +75,25 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
   const [loading, setLoading] = useState(true)
   // 存储关联任务信息
   const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
+  const [spinning, setSpinning] = useState(false)
+  const chioceBtnLoading = (val: boolean) => {
+    setSpinning(val)
+  }
 
-  // 删除
-  const { deleteExcitationRight } = useDelete()
+  const deleteProjectRight = async () => {
+    chioceBtnLoading(true)
+    try {
+      const res = await deleteneExcitaionListMore(`${updateMenue}`)
+      if (res.data) {
+        depCollect(true, { page: 1, page_size: 10 })
+        CommonModleClose(false)
+        chioceBtnLoading(false)
+        message.success('激励嵌套删除成功')
+      }
+    } catch (error) {
+      throwErrorMessage(error, { 1009: '激励嵌套删除失败' })
+    }
+  }
   // 创建项目 弹出框
   const createProjectModal = React.useCallback(() => {
     const createDoubleExcitation = '/ThreeExcitationList/createDoubleExcitation'
@@ -86,6 +102,7 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
       state: {
         type: 'three',
         isFixForm: false,
+        lookDetail: false,
         name: '新建激励嵌套'
       }
     })
@@ -143,7 +160,7 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
         info: { id: item },
         type: 'three',
         lookDetail: false,
-        isFixForm: false,
+        isFixForm: true,
         name: '激励嵌套'
       }
     })
@@ -281,11 +298,11 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
       <CommonModle
         IsModalVisible={deleteVisibility}
         deleteProjectRight={() => {
-          deleteExcitationRight()
+          deleteProjectRight()
         }}
         CommonModleClose={CommonModleClose}
         ing='删除中'
-        spinnig={spinnig}
+        spinning={spinning}
         name='删除激励嵌套'
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
       />

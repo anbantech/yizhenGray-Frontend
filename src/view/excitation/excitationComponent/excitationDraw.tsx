@@ -357,8 +357,7 @@ const ExcitationDraw: React.FC = () => {
       const result = await createGroupFn(params)
       if (result.data) {
         history.push({
-          pathname: '/excitationList',
-          state: { type: state.type }
+          pathname: '/FourExcitationList'
         })
       }
     } catch (error) {
@@ -368,8 +367,7 @@ const ExcitationDraw: React.FC = () => {
 
   const goBackGroupList = async () => {
     history.push({
-      pathname: '/excitationList',
-      state: { type: state.type }
+      pathname: '/FourExcitationList'
     })
   }
   const steps = [
@@ -435,7 +433,7 @@ const ExcitationDraw: React.FC = () => {
           {current === steps.length - 1 && (
             <CommonButton
               buttonStyle={styles.stepButton}
-              name={state?.isFixForm ? '返回' : '创建'}
+              name={state?.lookDetail ? '返回' : state?.isFixForm ? '修改' : '新建'}
               type='default'
               onClick={state?.isFixForm ? goBackGroupList : createOneExcitationFn}
             />

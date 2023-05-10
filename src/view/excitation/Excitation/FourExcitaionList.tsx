@@ -5,12 +5,12 @@ import Table from 'antd/lib/table'
 import ConfigProvider from 'antd/lib/config-provider'
 import { useState } from 'react'
 import * as React from 'react'
+import { message } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
-import { excitationListFn, lookUpDependenceUnit } from 'Src/services/api/excitationApi'
+import { deleteneExcitaionListMore, excitationListFn, lookUpDependenceUnit } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import CreateButton from 'Src/components/Button/createButton'
 import zhCN from 'antd/lib/locale/zh_CN'
-import useDelete from 'Src/util/Hooks/useDelete'
 import useDepCollect from 'Src/util/Hooks/useDepCollect'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import OmitComponents from 'Src/components/OmitComponents/OmitComponents'
@@ -77,11 +77,25 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
 
   // 查看关联任务
-  const { visibility, chioceModalStatus, deleteVisibility, CommonModleClose, spinnig, chioceBtnLoading } = useMenu()
-
-  // 删除
-  const { deleteExcitationRight } = useDelete()
-
+  const { visibility, chioceModalStatus, deleteVisibility, CommonModleClose } = useMenu()
+  const [spinning, setSpinning] = useState(false)
+  const chioceBtnLoading = (val: boolean) => {
+    setSpinning(val)
+  }
+  const deleteProjectRight = async () => {
+    chioceBtnLoading(true)
+    try {
+      const res = await deleteneExcitaionListMore(`${updateMenue}`)
+      if (res.data) {
+        depCollect(true, { page: 1, page_size: 10 })
+        CommonModleClose(false)
+        chioceBtnLoading(false)
+        message.success('激励嵌套删除成功')
+      }
+    } catch (error) {
+      throwErrorMessage(error, { 1009: '激励嵌套删除失败' })
+    }
+  }
   // 创建项目 弹出框
   const createProjectModal = React.useCallback(() => {
     const createGroupExcitation = '/FourExcitationList/createGroupExcitation'
@@ -161,7 +175,7 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         info: { id: item },
         type: 'four',
         lookDetail: false,
-        isFixForm: false,
+        isFixForm: true,
         name: '交互'
       }
     })
@@ -275,12 +289,12 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       <CommonModle
         IsModalVisible={deleteVisibility}
         deleteProjectRight={() => {
-          deleteExcitationRight()
+          deleteProjectRight()
         }}
         CommonModleClose={CommonModleClose}
         name='删除交互'
         ing='删除中'
-        spinnig={spinnig}
+        spinning={spinning}
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
       />
       <LookUpDependence visibility={visibility as boolean} name='外设关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />

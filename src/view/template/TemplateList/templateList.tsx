@@ -10,17 +10,20 @@ import { message } from 'antd'
 import { throwErrorMessage } from 'Src/util/message'
 import zhCN from 'antd/lib/locale/zh_CN'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
+import LookUpDependence from 'Src/components/Modal/taskModal/lookUpDependence'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import API from 'Src/services/api'
+import { getTemplateDependence } from 'Src/services/api/templateApi'
 import { TemplateListParams } from 'Src/globalType/Param'
 import { TemplateListResponse } from 'Src/globalType/Response'
-// import deleteImage from 'Image/Deletes.svg'
+import useMenu from 'Src/util/Hooks/useMenu'
+import OmitComponents from 'Src/components/OmitComponents/OmitComponents'
 import { useDialog } from 'Src/util/Hooks/useDialog'
 import inputStyle from 'Src/components/Input/searchInput/searchInput.less'
 import styles from './templateList.less'
 
 const customizeRender = () => <DefaultValueTips content='暂无模板' />
-
+type ResparamsType = Record<string, any>
 const request: TemplateListParams = {
   key_word: '',
   page: 1,
@@ -28,8 +31,7 @@ const request: TemplateListParams = {
   sort_field: 'create_time',
   sort_order: 'descend'
 }
-// TODO 隐藏 删除,修改功能
-const disPlayNone = false
+
 const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () => {
   const history = useHistory()
   const location = useLocation()
@@ -39,23 +41,32 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   // 项目管理
   const [templateList, setTemplateList] = useState<TemplateListResponse['results']>([])
 
-  // 缓存当前点击的模板信息
-  const [currentTemplate] = useState<TemplateListResponse['results'][number]>()
-
   // 页码
   const [total, setTotal] = useState<number>(0)
 
   //  删除弹出框
   const { visible: commonModleStatus, changeDialogStatus: changeCommonDialogStatus } = useDialog()
 
+  //
+  const [data, setData] = useState<ResparamsType>(null!)
+
+  // 存储关联任务信息
+  const [dependenceInfo, setDependenceInfo] = useState({})
   // 更新参数获取列表
   const changeKeywords = useCallback((value: string) => {
     setParams(params => ({ ...params, key_word: value, page: 1 }))
   }, [])
 
+  const [spinning, setSpinning] = useState(false)
+  const chioceBtnLoading = (val: boolean) => {
+    setSpinning(val)
+  }
+
+  // 查看关联任务
+  const { visibility, chioceModalStatus } = useMenu()
   // 查看/修改/创建末班
   const jumpTemplate = useCallback(
-    (value?: TemplateListResponse['results'][number], editOriginalTemplate = false, readonlyBaseTemplate = false) => {
+    (value?: ResparamsType, editOriginalTemplate = true, readonlyBaseTemplate = false) => {
       const { id: templateId } = value || {}
       history.push({
         pathname: '/templateList/template',
@@ -64,6 +75,8 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
     },
     [history, location.pathname]
   )
+  // 展示菜单
+  const [updateMenue, setUpdateMenue] = useState<number>(-1)
 
   // 更改页码
   const changePage = useCallback((page: number, type?: string, pageSize?: number) => {
@@ -72,13 +85,14 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
 
   // 删除某个项目
   const deleteTemplate = useCallback(async () => {
-    if (!currentTemplate?.id) return
+    chioceBtnLoading(true)
     try {
-      const res = await API.removeTemplate({ templates: [currentTemplate.id] })
+      const res = await API.removeTemplate({ templates: [updateMenue] })
       if (res.data) {
         setParams(params => ({ ...params, key_word: '', page: 1 }))
         changeCommonDialogStatus(false)
         if (res.data.success_list.length > 0) {
+          chioceBtnLoading(false)
           message.success('删除成功')
         } else {
           message.error(res.data.fail_list[0])
@@ -87,7 +101,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
     } catch (error) {
       throwErrorMessage(error, { 1009: '项目删除失败' })
     }
-  }, [changeCommonDialogStatus, currentTemplate])
+  }, [changeCommonDialogStatus, updateMenue])
 
   // 获取项目管理
   const getTemplateList = useCallback(async (value: TemplateListParams) => {
@@ -101,6 +115,34 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
       throwErrorMessage(error, { 1004: '请求资源未找到' })
     }
   }, [])
+
+  // 获取关联信息
+  const getDependenceInfo = React.useCallback(async () => {
+    const res = await getTemplateDependence(updateMenue)
+    if (res.data) {
+      setDependenceInfo(res.data)
+    }
+    chioceModalStatus(true)
+  }, [chioceModalStatus, updateMenue])
+
+  const onChange = useCallback(
+    (val: string) => {
+      switch (val) {
+        case '删除':
+          changeCommonDialogStatus(true)
+          break
+        case '查看关联信息':
+          getDependenceInfo()
+          break
+        case '修改':
+          jumpTemplate(data)
+          break
+        default:
+          return null
+      }
+    },
+    [changeCommonDialogStatus, data, getDependenceInfo, jumpTemplate]
+  )
 
   useEffect(() => {
     getTemplateList(params)
@@ -152,32 +194,13 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
               >
                 查看详情
               </span>
-              {/* <span
-                style={{ marginLeft: '10px', marginRight: '10px' }}
-                role='button'
-                tabIndex={0}
-                onClick={() => {
-                  jumpTemplate(row, true, false)
-                }}
-              >
-                修改
-              </span>
-              <img
-                src={deleteImage}
-                alt=''
-                onClick={() => {
-                  setCurrentTemplate(row)
-                  // TODO: 具体删除方式待讨论，目前直接点击删除
-                  // changeCommonDialogStatus(true)
-                  deleteTemplate()
-                }}
-              /> */}
+              <OmitComponents data={row} setData={setData} id={row.id} updateMenue={setUpdateMenue} onChange={onChange} status={updateMenue} />
             </div>
           )
         }
       }
     ],
-    [jumpTemplate]
+    [jumpTemplate, onChange, updateMenue]
   )
 
   return (
@@ -199,11 +222,16 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
       </div>
       <CommonModle
         IsModalVisible={commonModleStatus}
-        deleteProjectRight={deleteTemplate}
+        deleteProjectRight={() => {
+          deleteTemplate()
+        }}
         CommonModleClose={changeCommonDialogStatus}
+        ing='删除中'
+        spinning={spinning}
         name='删除模板'
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
       />
+      <LookUpDependence visibility={visibility as boolean} name='外设关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
     </div>
   )
 }

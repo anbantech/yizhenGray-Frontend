@@ -5,7 +5,7 @@ import { useContext } from 'react'
 import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
-import { getPortList, createExcitationFn_1 } from 'Src/services/api/excitationApi'
+import { getPortList, createExcitationFn_1, updateOneExcitaionList } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from '../excitation.less'
 import { GetDeatilExcitation } from './getDataDetailFn/getDataDetailFn'
@@ -19,7 +19,7 @@ const layout = {
 
 const ExcitationComponents: React.FC = () => {
   const history = useHistory()
-  const { isFixForm, info, type, lookDetail } = useContext(GlobalContexted)
+  const { isFixForm, info, lookDetail } = useContext(GlobalContexted)
   const { Option } = Select
   const [form] = useForm()
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
@@ -54,11 +54,16 @@ const ExcitationComponents: React.FC = () => {
           is_enable: values.is_enable,
           stimulus_value: values.stimulus_value
         }
-        const result = await createExcitationFn_1(params)
+        let result
+        if (!isFixForm) {
+          result = await createExcitationFn_1(params)
+        } else {
+          result = await updateOneExcitaionList(info.id, params)
+        }
+
         if (result.data) {
           history.push({
-            pathname: '/OneExcitationList',
-            state: { type }
+            pathname: '/OneExcitationList'
           })
         }
       }
@@ -68,8 +73,7 @@ const ExcitationComponents: React.FC = () => {
   }
   const cancelForm = () => {
     history.push({
-      pathname: '/OneExcitationList',
-      state: { type }
+      pathname: '/OneExcitationList'
     })
   }
   const onFieldsChange = React.useCallback(
@@ -83,7 +87,7 @@ const ExcitationComponents: React.FC = () => {
       }
       let allFinished = true
       // eslint-disable-next-line no-restricted-syntax
-      for (const [fieldName, fieldValue] of Object.entries(allFields)) {
+      for (const [, fieldValue] of Object.entries(allFields)) {
         if (typeof fieldValue === 'undefined') {
           allFinished = false
           break
@@ -195,7 +199,7 @@ const ExcitationComponents: React.FC = () => {
             <CommonButton
               buttonStyle={styles.stepButton}
               type='primary'
-              name='确认'
+              name={isFixForm ? '修改' : '新建建'}
               disabled={isDisableStatus}
               onClick={() => {
                 createOneExcitationFn()

@@ -6,7 +6,8 @@ import {
   doubleExcitationParams,
   groupParams,
   excitation_1Params,
-  dataStructureParams
+  dataStructureParams,
+  UpdateOneExcitaionListParams
 } from 'Src/globalType/Param'
 import { ResExcitationList, ResCreExcitationList, getAllRes, excitationRes, checkoutDataStructureRes } from 'Src/globalType/Response'
 
@@ -74,4 +75,36 @@ export function lookUpDependenceUnit(id: number) {
 
 export function lookUpDependencePeripheral(id: number) {
   return request.get<any>(`/api/v1.0/temp_and_sti/peripheral/relevance/query/${id}`)
+}
+
+// 更新外设信息
+
+export function updateOneExcitaionList(id: number, params: UpdateOneExcitaionListParams) {
+  return request.put<any>(`/api/v1.0/temp_and_sti/update/sti/${id}`, params)
+}
+
+//  更新激励单元
+
+export function updatTwoExcitaionList(id: number, params: ExcitationParams) {
+  return request.put<any>(`/api/v1.0/temp_and_sti/update/single/${id}`, params)
+}
+
+// 更新激励嵌套
+
+export function updatThreeExcitaionList(id: number, params: doubleExcitationParams) {
+  return request.put<any>(`/api/v1.0/temp_and_sti/update/group_unit/${id}`, params)
+}
+
+// 更新交互
+export function updatFourWork(id: number, params: doubleExcitationParams) {
+  return request.put<any>(`/api/v1.0/temp_and_sti/update/work/${id}`, params)
+}
+
+// 删除外设
+export function deleteneExcitaionList(id: string) {
+  return request.delete<any>('/api/v1.0/temp_and_sti/remove/sti', { params: { stimulus: id } })
+}
+
+export function deleteneExcitaionListMore(id: string) {
+  return request.delete<any>('/api/v1.0/temp_and_sti/remove', { params: { senders: id } })
 }

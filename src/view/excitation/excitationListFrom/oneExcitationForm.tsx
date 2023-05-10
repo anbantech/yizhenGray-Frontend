@@ -6,7 +6,7 @@ import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
 // import { GlobalContext } from 'Src/globalContext/globalContext'
-import { createExcitationFn, excitationListFn } from 'Src/services/api/excitationApi'
+import { createExcitationFn, excitationListFn, updatTwoExcitaionList } from 'Src/services/api/excitationApi'
 import { getTemplateList } from 'Src/services/api/templateApi'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from '../excitation.less'
@@ -47,7 +47,7 @@ const OneExcotationForm: React.FC = () => {
   // const { config: globalConfig } = useContext(GlobalContext)
   // const { userInfo } = globalConfig
   // const { username, roles } = userInfo
-  const { isFixForm, info, type, lookDetail } = useContext(GlobalContexted)
+  const { isFixForm, info, lookDetail } = useContext(GlobalContexted)
   const { Option } = Select
   const [form] = useForm()
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
@@ -105,11 +105,15 @@ const OneExcotationForm: React.FC = () => {
           align_delay_0: +values.align_delay_0,
           align_delay_2: +values.align_delay_2
         }
-        const result = await createExcitationFn(params)
+        let result
+        if (!isFixForm) {
+          result = await createExcitationFn(params)
+        } else {
+          result = await updatTwoExcitaionList(info.id, params)
+        }
         if (result.data) {
           history.push({
-            pathname: '/TwoExcitationList',
-            state: { type }
+            pathname: '/TwoExcitationList'
           })
         }
       }
@@ -119,8 +123,7 @@ const OneExcotationForm: React.FC = () => {
   }
   const cancelForm = () => {
     history.push({
-      pathname: '/excitationList',
-      state: { type }
+      pathname: '/TwoExcitationList'
     })
   }
 
@@ -444,7 +447,7 @@ const OneExcotationForm: React.FC = () => {
       </Form>
       <div className={styles.excitaion_footer}>
         <div className={styles.excitaion_footer_footerConcent}>
-          {!isFixForm ? (
+          {!lookDetail ? (
             <CommonButton
               buttonStyle={styles.stepButton}
               name='取消'
@@ -454,11 +457,11 @@ const OneExcotationForm: React.FC = () => {
               }}
             />
           ) : null}
-          {!isFixForm ? (
+          {!lookDetail ? (
             <CommonButton
               buttonStyle={styles.stepButton}
               type='primary'
-              name='确认'
+              name={isFixForm ? '修改' : '新建'}
               disabled={isDisableStatus}
               onClick={() => {
                 createOneExcitationFn()

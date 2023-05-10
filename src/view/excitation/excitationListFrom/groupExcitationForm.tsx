@@ -135,7 +135,7 @@ const Fuzzing = (props: any) => {
             )
           })}
 
-          {cardArray.length < 10 && !isFixForm && (
+          {cardArray.length < 10 && !lookDetail && (
             <div className={styles.nav_Btn} role='time' onClick={addCard}>
               <PlusOutlined style={{ fontSize: '20px', marginBottom: '3px' }} />
               <span>添</span>
@@ -149,7 +149,7 @@ const Fuzzing = (props: any) => {
 }
 
 const GroupExcitationForm: React.FC = () => {
-  const { isFixForm, info, type, name, propsDatas } = useContext(GlobalContexted)
+  const { isFixForm, info, type, name, lookDetail, propsDatas } = useContext(GlobalContexted)
   const { Step } = Steps
   const history = useHistory()
   const [form] = useForm()
@@ -159,12 +159,12 @@ const GroupExcitationForm: React.FC = () => {
   const [stepArray, setStepArray] = useState<number[][]>([[], [], []])
 
   // 过滤已经被使用的数据
-  const filterUseData = (val: FilterType) => {
-    const res = val.filter(item => {
-      return item.disabled === false
-    })
-    return res
-  }
+  // const filterUseData = (val: FilterType) => {
+  //   const res = val.filter(item => {
+  //     return item.disabled === false
+  //   })
+  //   return res
+  // }
 
   // 过滤数组元素中的unfinend
 
@@ -195,34 +195,14 @@ const GroupExcitationForm: React.FC = () => {
       ]
       Promise.all([result1, result2])
         .then(value => {
-          const result1Data = filterUseData(value[0].data?.results as FilterType)
-          const result2Data = filterUseData(value[1].data?.results as FilterType)
-          if (isFixForm) {
-            const data = [
-              { ...pre[1], disabled: isFixForm, children: result2Data },
-              { ...pre[0], disabled: isFixForm, children: result1Data }
-            ]
-            setExcitationList(data)
-          } else {
-            const res1 = result1Data?.length ? result1Data : null
-            const res2 = result2Data?.length ? result2Data : null
-            if (res1 && res2) {
-              const data = [
-                { ...pre[1], children: result2Data },
-                { ...pre[0], children: result1Data }
-              ]
-              setExcitationList(data)
-            } else if (res1) {
-              const data = [{ ...pre[0], children: result1Data }]
-              setExcitationList(data)
-            } else if (res2) {
-              const data = [{ ...pre[0], children: result2Data }]
-              setExcitationList(data)
-            } else {
-              return []
-            }
-          }
+          const result1Data = value[0].data?.results as FilterType
+          const result2Data = value[1].data?.results as FilterType
 
+          const data = [
+            { ...pre[1], children: result2Data },
+            { ...pre[0], children: result1Data }
+          ]
+          setExcitationList([...data])
           return value
         })
         .catch(error => {
@@ -236,7 +216,7 @@ const GroupExcitationForm: React.FC = () => {
   React.useEffect(() => {
     getExcitationList(request, request1)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [stepArray])
 
   //  选择某一参数之后,更新列表的disabled
   const updateDisabled = React.useCallback(
@@ -305,6 +285,7 @@ const GroupExcitationForm: React.FC = () => {
           excitationList={excitationList}
           type={type}
           info={info}
+          lookDetail={lookDetail}
           current={current}
           isFixForm={isFixForm}
           Data={detailData}
@@ -320,6 +301,7 @@ const GroupExcitationForm: React.FC = () => {
           stepArray={stepArray[1]}
           excitationList={excitationList}
           type={type}
+          lookDetail={lookDetail}
           info={info}
           current={current}
           isFixForm={isFixForm}
@@ -340,6 +322,7 @@ const GroupExcitationForm: React.FC = () => {
           current={current}
           isFixForm={isFixForm}
           Data={detailData}
+          lookDetail={lookDetail}
           deleteCard={deleteCard}
           changePre2={changePre}
         />
@@ -435,6 +418,7 @@ const GroupExcitationForm: React.FC = () => {
   // 初始化数据 stepCurrent 数组
   const idMap = React.useCallback((propsDatas, isFixForm) => {
     if (propsDatas) {
+      console.log(propsDatas.group_id_list)
       return isFixForm ? setStepArray([...propsDatas.group_id_list]) : isBack(propsDatas)
     }
   }, [])
@@ -494,7 +478,7 @@ const GroupExcitationForm: React.FC = () => {
               }
             ]}
           >
-            <Input disabled={isFixForm} placeholder='请输入交互名称' />
+            <Input disabled={lookDetail} placeholder='请输入交互名称' />
           </Form.Item>
 
           <Form.Item
@@ -503,7 +487,7 @@ const GroupExcitationForm: React.FC = () => {
             rules={[{ message: '请输入交互描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
           >
             <Input.TextArea
-              disabled={isFixForm}
+              disabled={lookDetail}
               placeholder={isFixForm ? '' : '请输入交互描述'}
               autoSize={{ minRows: 4, maxRows: 5 }}
               showCount={{

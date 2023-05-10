@@ -2,23 +2,19 @@
 import SearchInput from 'Src/components/Input/searchInput/searchInput'
 import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import CreateButton from 'Src/components/Button/createButton'
-// import ExcitationModal from 'Src/components/Modal/excitationModal/excitationModal'
 import Table from 'antd/lib/table'
 import ConfigProvider from 'antd/lib/config-provider'
 import { useState } from 'react'
 import * as React from 'react'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
-// import { message } from 'antd'
-import { excitationListFn, lookUpDependenceUnit } from 'Src/services/api/excitationApi'
+import { message } from 'antd'
+import { deleteneExcitaionListMore, excitationListFn, lookUpDependenceUnit } from 'Src/services/api/excitationApi'
 import OmitComponents from 'Src/components/OmitComponents/OmitComponents'
 import { throwErrorMessage } from 'Src/util/message'
 import zhCN from 'antd/lib/locale/zh_CN'
-// import deleteImage from 'Src/assets/image/Deletes.svg'
-// import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import useDepCollect from 'Src/util/Hooks/useDepCollect'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import { StepRef } from 'Src/view/Project/task/createTask/newCreateTask'
-import useDelete from 'Src/util/Hooks/useDelete'
 import inputStyle from 'Src/components/Input/searchInput/searchInput.less'
 import styles from 'Src/view/Project/project/project.less'
 import LookUpDependence from 'Src/components/Modal/taskModal/lookUpDependence'
@@ -78,14 +74,16 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
   // 存储关联任务信息
   const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
 
+  const [spinning, setSpinning] = useState(false)
+  const chioceBtnLoading = (val: boolean) => {
+    setSpinning(val)
+  }
+
   // 查看关联任务
-  const { visibility, chioceModalStatus, deleteVisibility, CommonModleClose, spinnig, chioceBtnLoading } = useMenu()
+  const { visibility, chioceModalStatus, deleteVisibility, CommonModleClose } = useMenu()
 
   // loading加载
   const [loading, setLoading] = useState(true)
-
-  // 删除
-  const { deleteExcitationRight } = useDelete()
 
   const createProjectModal = React.useCallback(() => {
     const createOneExcitation = '/TwoExcitationList/createDoubleExcitationGroup'
@@ -120,7 +118,7 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
         info: { id: item },
         type: 'two',
         lookDetail: false,
-        isFixForm: false,
+        isFixForm: true,
         name: '激励单元'
       }
     })
@@ -171,7 +169,20 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
         return null
     }
   }
-
+  const deleteProjectRight = async () => {
+    chioceBtnLoading(true)
+    try {
+      const res = await deleteneExcitaionListMore(`${updateMenue}`)
+      if (res.data) {
+        depCollect(true, { page: 1, page_size: 10 })
+        CommonModleClose(false)
+        chioceBtnLoading(false)
+        message.success('激励单元删除成功')
+      }
+    } catch (error) {
+      throwErrorMessage(error, { 1009: '激励单元删除失败' })
+    }
+  }
   // 获取激励列表
   const getExcitationList = async (value: Resparams) => {
     try {
@@ -241,7 +252,7 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
             >
               查看详情
             </span>
-            <OmitComponents id={row.sender_id} onChange={onChange} updateMenue={setUpdateMenue} status={updateMenue} />
+            <OmitComponents id={row.id} onChange={onChange} updateMenue={setUpdateMenue} status={updateMenue} />
           </div>
         )
       }
@@ -278,16 +289,19 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
       <div className={styles.AnBan_PaginationsAge}>
         <PaginationsAge length={total} num={depData.page_size} getParams={setOperation} pagenums={depData.page} />
       </div>
-      <CommonModle
-        IsModalVisible={deleteVisibility}
-        deleteProjectRight={() => {
-          deleteExcitationRight()
-        }}
-        CommonModleClose={CommonModleClose}
-        ing='删除中'
-        name='删除激励单元'
-        concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
-      />
+      {deleteVisibility ? (
+        <CommonModle
+          IsModalVisible={deleteVisibility}
+          deleteProjectRight={() => {
+            deleteProjectRight()
+          }}
+          CommonModleClose={CommonModleClose}
+          ing='删除中'
+          name='删除激励单元'
+          spinning={spinning}
+          concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
+        />
+      ) : null}
       <LookUpDependence visibility={visibility as boolean} name='外设关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
     </div>
   )
