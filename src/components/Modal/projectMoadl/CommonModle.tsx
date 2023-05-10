@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import 'antd/dist/antd.css'
 import { Modal, Button } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
@@ -14,12 +14,6 @@ function ModalpPop(props: any) {
       </div>
     )
   }
-  useEffect(() => {
-    if (spinning) {
-      console.log(spinning)
-    }
-  }, [spinning])
-  console.log(spinning)
   const isClose = useCallback(() => {
     if (!spinning) {
       CommonModleClose(false)

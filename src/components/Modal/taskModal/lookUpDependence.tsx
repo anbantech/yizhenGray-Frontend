@@ -125,10 +125,10 @@ function LookUpDependence(props: NewTaskInstanceType) {
 
         {value?.parents && meomMap(value.id) ? (
           <div className={styles.listComponents}>
-            {value?.parents.map((item: any, index: number) => {
+            {value?.parents.map((item: al, index: number) => {
               return (
                 <div
-                  key={Math.random()}
+                  key={item.id}
                   className={styles.listComponentsBody}
                   ref={el => {
                     getRef(el, item.type, item.name)
