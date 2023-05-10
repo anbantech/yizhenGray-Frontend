@@ -169,13 +169,9 @@ function Header(props: any) {
     '/FourExcitationList/update': '交互详情',
     '/TwoExcitationList/createDoubleExcitationGroup': '新建端口单元管理',
     '/ThreeExcitationList/createDoubleExcitation': '新建端口嵌套管理',
-
     '/FourExcitationList/createGroupExcitation': '新建交互',
-
     '/OneExcitationList/createExcitation': '新建外设',
-
-    '/excitationList/Deatail/ExcitationDraw': '预览',
-    '/excitationList/createGroupExcitation/ExcitationDraw': '预览',
+    '/FourExcitationList/Deatail/ExcitationDraw': '预览',
     '/templateList': '模板列表',
     '/templateList/template': `${data && data?.readonlyBaseTemplate ? '查看模板' : data && data?.editOriginalTemplate ? '修改模板' : '创建模板'}`
   }

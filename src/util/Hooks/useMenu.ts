@@ -3,10 +3,8 @@ import { useState } from 'react'
 interface useMenuType {
   visibility: boolean
   deleteVisibility: boolean
-  spinnig: boolean
   chioceModalStatus: (val: boolean) => void
   CommonModleClose: (val: boolean) => void
-  chioceBtnLoading: (val: boolean) => void
 }
 
 function useMenu(): useMenuType {
@@ -20,11 +18,7 @@ function useMenu(): useMenuType {
     setDeleteVisibility(value)
   }
 
-  const [spinnig, setSpinning] = useState(false)
-  const chioceBtnLoading = (val: boolean) => {
-    setSpinning(val)
-  }
-  return { visibility, chioceModalStatus, deleteVisibility, CommonModleClose, spinnig, chioceBtnLoading }
+  return { visibility, chioceModalStatus, deleteVisibility, CommonModleClose }
 }
 
 export default useMenu

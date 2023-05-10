@@ -580,3 +580,13 @@ export interface excitationRes {
 export interface checkoutDataStructureRes {
   [key: string]: any
 }
+
+export interface templateDependence {
+  id: number
+  name: string
+  type: number
+  status?: number
+  project?: string[]
+  parents: templateDependence[]
+  head?: boolean
+}

@@ -571,3 +571,9 @@ export interface InstanceParams {
   crash_num?: number
   crash_config?: any
 }
+
+export interface UpdateOneExcitaionListParams {
+  stimulus_name: string
+  is_enable: boolean
+  stimulus_value: string
+}

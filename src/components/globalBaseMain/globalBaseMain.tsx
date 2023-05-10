@@ -1,7 +1,11 @@
+import { message } from 'antd'
 import * as React from 'react'
 import { useHistory, useLocation } from 'react-router'
-import { lookUpDependencePeripheral, lookUpDependenceUnit } from 'Src/services/api/excitationApi'
+import { deleteneExcitaionList, deleteneExcitaionListMore, lookUpDependencePeripheral, lookUpDependenceUnit } from 'Src/services/api/excitationApi'
+import useMenu from 'Src/util/Hooks/useMenu'
+import { throwErrorMessage } from 'Src/util/message'
 import styles from 'Src/view/Project/task/createTask/newCreateTask.less'
+import CommonModle from '../Modal/projectMoadl/CommonModle'
 import LookUpDependence from '../Modal/taskModal/lookUpDependence'
 
 interface ContextProps {
@@ -19,15 +23,26 @@ const routerMap = {
   three: '激励嵌套修改',
   four: '交互修改'
 }
-
+const deleteMap = {
+  one: '外设删除',
+  two: '激励单元删除',
+  three: '激励嵌套删除',
+  four: '交互删除'
+}
 export const GlobalContexted = React.createContext<ContextProps>(null!)
 function GlobalBaseMain(props: any) {
   const { name, type, isFixForm, info, Data, lookDetail } = props
   const history = useHistory()
   const pathname = useLocation()?.pathname.split('/')[1]
   // 存储关联任务信息
+  const [spinning, setSpinning] = React.useState(false)
+  const chioceBtnLoading = (val: boolean) => {
+    setSpinning(val)
+  }
   const [dependenceInfo, setDependenceInfo] = React.useState({ id: '', name: '', parents: [] })
   const [visibility, setVisibility] = React.useState(false)
+  // 查看关联任务
+  const { deleteVisibility, CommonModleClose } = useMenu()
   const chioceModalStatus = (val: boolean) => {
     setVisibility(val)
   }
@@ -38,7 +53,7 @@ function GlobalBaseMain(props: any) {
         info,
         type,
         lookDetail: false,
-        isFixForm: false,
+        isFixForm: true,
         name: routerMap[type as keyof typeof routerMap]
       }
     })
@@ -59,14 +74,43 @@ function GlobalBaseMain(props: any) {
     },
     [type]
   )
+
+  const deleteProjectRight = React.useCallback(async () => {
+    chioceBtnLoading(true)
+    let res
+    try {
+      if (type === 'one') {
+        res = await deleteneExcitaionList(`${info.id}`)
+      } else {
+        res = await deleteneExcitaionListMore(`${info.id}`)
+      }
+
+      if (res.data) {
+        CommonModleClose(false)
+        chioceBtnLoading(false)
+        history.push({
+          pathname: `/${pathname}`
+        })
+        message.success(`${deleteMap[type as keyof typeof deleteMap]}成功`)
+      }
+    } catch (error) {
+      throwErrorMessage(error, { 1009: `${deleteMap[type as keyof typeof deleteMap]}失败` })
+    }
+  }, [CommonModleClose, history, info?.id, pathname, type])
   return (
     <GlobalContexted.Provider value={{ type, isFixForm, lookDetail, name, info, propsDatas: Data }}>
       <div className={styles.taskMain}>
         <div className={styles.taskMain_header}>
           <span className={styles.taskMain_title}>{name}</span>
-          {isFixForm && (
+          {isFixForm && lookDetail && (
             <div className={styles.operationHeader}>
-              <span className={styles.upDataBtn} role='time' onClick={() => {}}>
+              <span
+                className={styles.upDataBtn}
+                role='time'
+                onClick={() => {
+                  CommonModleClose(true)
+                }}
+              >
                 删除
               </span>
               <span
@@ -92,7 +136,19 @@ function GlobalBaseMain(props: any) {
         </div>
         {props.children}
       </div>
-
+      {deleteVisibility ? (
+        <CommonModle
+          IsModalVisible={deleteVisibility}
+          deleteProjectRight={() => {
+            deleteProjectRight()
+          }}
+          CommonModleClose={CommonModleClose}
+          name={deleteMap[type as keyof typeof deleteMap]}
+          ing='删除中'
+          spinning={spinning}
+          concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
+        />
+      ) : null}
       <LookUpDependence visibility={visibility as boolean} name='外设关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
     </GlobalContexted.Provider>
   )

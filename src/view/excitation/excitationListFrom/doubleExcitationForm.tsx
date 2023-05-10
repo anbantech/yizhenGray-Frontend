@@ -7,7 +7,7 @@ import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
 import { getAllRes } from 'Src/globalType/Response'
-import { createGroup_unitFn, excitationListFn } from 'Src/services/api/excitationApi'
+import { createGroup_unitFn, excitationListFn, updatThreeExcitaionList } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 
 import styles from '../excitation.less'
@@ -30,15 +30,15 @@ const request = {
   sort_field: 'create_time',
   sort_order: 'descend'
 }
-const request1 = {
-  target_type: 2,
-  key_word: '',
-  status: null,
-  page: 1,
-  page_size: 999,
-  sort_field: 'create_time',
-  sort_order: 'descend'
-}
+// const request1 = {
+//   target_type: 2,
+//   key_word: '',
+//   status: null,
+//   page: 1,
+//   page_size: 999,
+//   sort_field: 'create_time',
+//   sort_order: 'descend'
+// }
 
 interface Resparams {
   target_type: number | string
@@ -64,12 +64,6 @@ const DoubleExcitationForm: React.FC = () => {
   const { isFixForm, info, type, lookDetail } = useContext(GlobalContexted)
   const [excitationList, setExcitationList] = useState<Option[]>([
     {
-      sender_id: '1',
-      name: '激励嵌套管理',
-      disabled: false,
-      children: []
-    },
-    {
       sender_id: '0',
       name: '激励单元管理',
       disabled: false,
@@ -87,33 +81,35 @@ const DoubleExcitationForm: React.FC = () => {
     setCardArray([...pre])
   }, [cardArray])
 
-  // const getExcitationList = async (value: Resparams) => {
-  //   try {
-  //     const result = await excitationListFn(value)
-  //     if (result.data) {
-  //       setExcitationList(result.data.results)
-  //     }
-  //   } catch (error) {
-  //     throwErrorMessage(error, { 1004: '请求资源未找到' })
-  //   }
-  // }
-
   // 过滤已经被使用的数据
-  const filterUseData = (val: FilterType) => {
-    const res = val.filter(item => {
-      return item.disabled === false
+  // const filterUseData = (val: FilterType) => {
+  //   const res = val.filter(item => {
+  //     return item.disabled === false
+  //   })
+  //   return res
+  // }
+  const filterUseData = (init: FilterType, val: number[]) => {
+    return init.map(item => {
+      const pre = item
+      val?.forEach((id: number) => {
+        pre.disabled = item.sender_id === id
+      })
+      return pre
     })
+  }
+  // 过滤数组元素中的unfinend
+  const filterUnfinedItem = (val: number[]) => {
+    return val.filter(value => value !== undefined)
+  }
+
+  // 获取
+  const isBack = (propsDatas: any) => {
+    const res = propsDatas.map((item: any) => {
+      return item.sender_id
+    })
+    setData([...res])
     return res
   }
-
-  // 过滤数组元素中的unfinend
-
-  const filterUnfinedItem = (val: number[]) => {
-    const mapArray = val.filter(value => value !== undefined)
-    return mapArray
-  }
-
-  // 添加元素
 
   //  选择某一参数之后,更新列表的disabled
   const updateDisabled = React.useCallback(
@@ -127,6 +123,7 @@ const DoubleExcitationForm: React.FC = () => {
           }
         })
       })
+
       setExcitationList([...excitationListOld])
     },
     [excitationList]
@@ -182,52 +179,34 @@ const DoubleExcitationForm: React.FC = () => {
     },
     [cardArray, data, deleteCard]
   )
-  // 获取配置列表
-  const getExcitationList = async (request1: Resparams, doubleRequest: Resparams) => {
-    try {
-      const result2 = await excitationListFn(doubleRequest)
-      const result1 = await excitationListFn(request1)
-      Promise.all([result1, result2])
-        .then(value => {
-          const result1Data = filterUseData(value[0].data?.results as FilterType)
-          const result2Data = filterUseData(value[1].data?.results as FilterType)
 
-          setExcitationList(pre => {
-            const preCopy = pre
-            if (isFixForm) {
-              return [
-                { ...preCopy[1], disabled: isFixForm, children: result2Data },
-                { ...preCopy[0], disabled: isFixForm, children: result1Data }
-              ]
+  // 获取配置列表
+  const getExcitationList = React.useCallback(
+    async (request1: Resparams, resOld?: any) => {
+      try {
+        const result1 = await excitationListFn(request1)
+        Promise.all([result1])
+          .then(value => {
+            if (resOld && value[0].data) {
+              const res = filterUseData(value[0].data?.results, resOld)
+              const data = [{ ...excitationList[0], children: res }]
+              setExcitationList([...data])
             }
-            const res1 = result1Data?.length ? result1Data : null
-            const res2 = result2Data?.length ? result2Data : null
-            if (res1 && res2) {
-              const data = [
-                { ...pre[1], children: result2Data },
-                { ...pre[0], children: result1Data }
-              ]
-              setExcitationList(data)
-            } else if (res1) {
-              const data = [{ ...pre[0], children: result1Data }]
-              setExcitationList(data)
-            } else if (res2) {
-              const data = [{ ...pre[1], children: result2Data }]
-              setExcitationList(data)
-            } else {
-              return []
-            }
-            return []
+            const result1Data = value[0].data?.results
+            const data = [{ ...excitationList[0], children: result1Data }]
+            setExcitationList([...data])
+            return value
           })
-          return value
-        })
-        .catch(error => {
-          throwErrorMessage(error)
-        })
-    } catch (error) {
-      throwErrorMessage(error, { 1004: '请求资源未找到' })
-    }
-  }
+          .catch(error => {
+            throwErrorMessage(error)
+          })
+        return result1
+      } catch (error) {
+        throwErrorMessage(error, { 1004: '请求资源未找到' })
+      }
+    },
+    [excitationList]
+  )
 
   // 创建级联
   const createOneExcitationFn = React.useCallback(async () => {
@@ -251,23 +230,27 @@ const DoubleExcitationForm: React.FC = () => {
           align_delay_2: +values.align_delay_2,
           child_id_list: filterUnfinedItem(data)
         }
-        const result = await createGroup_unitFn(params)
+        let result
+        if (!isFixForm) {
+          result = await createGroup_unitFn(params)
+        } else {
+          result = await updatThreeExcitaionList(info.id, params)
+        }
+
         if (result.data) {
           history.push({
-            pathname: '/excitationList',
-            state: { type }
+            pathname: '/ThreeExcitationList'
           })
         }
       }
     } catch (error) {
       throwErrorMessage(error)
     }
-  }, [form, data, history, type])
+  }, [form, data, isFixForm, info?.id, history])
 
   const cancelForm = () => {
     history.push({
-      pathname: '/excitationList',
-      state: { type }
+      pathname: '/ThreeExcitationList'
     })
   }
 
@@ -283,7 +266,7 @@ const DoubleExcitationForm: React.FC = () => {
       let allFinished = true
       // eslint-disable-next-line no-restricted-syntax
       for (const [fieldName, fieldValue] of Object.entries(allFields)) {
-        if (fieldName !== 'description' && typeof fieldValue === 'undefined') {
+        if ((fieldName !== 'description' && typeof fieldValue) === 'undefined') {
           allFinished = false
           break
         }
@@ -311,24 +294,18 @@ const DoubleExcitationForm: React.FC = () => {
       } else {
         setCardCheckStatus(true)
       }
+    } else {
+      setCardCheckStatus(true)
     }
     if (data.length > 1) {
       setCardArray(Array.from({ length: data.length }, (v, i) => i))
     }
   }, [data, isDisableStatus])
-
   React.useEffect(() => {
-    getExcitationList(request1, request)
+    getExcitationList(request)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const isBack = (propsDatas: any) => {
-    const res = propsDatas.map((item: any) => {
-      return item.sender_id
-    })
-    setData([...res])
-    return res
-  }
   React.useEffect(() => {
     if (Data) {
       const { name, desc, gu_cnt0, gu_w0, gu_w1, gu_cnt1, align_delay_0, align_delay_2, align_delay_1 } = Data as any
@@ -343,11 +320,14 @@ const DoubleExcitationForm: React.FC = () => {
         align_delay_1,
         align_delay_2
       }
-      isBack(Data.group_data_list)
+      const res = isBack(Data.group_data_list)
       form.setFieldsValue(formData)
       onFieldsChange()
+      getExcitationList(request, res)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, info, Data, isFixForm, onFieldsChange])
+
   return (
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.twoForm} {...layout} onValuesChange={onFieldsChange} autoComplete='off' form={form} size='large'>
@@ -592,7 +572,7 @@ const DoubleExcitationForm: React.FC = () => {
             />
           )
         })}
-        {cardArray.length < 10 && !isFixForm && (
+        {cardArray.length < 10 && !lookDetail && (
           <div className={styles.nav_Btn} role='time' onClick={addCard}>
             <PlusOutlined style={{ fontSize: '20px', marginBottom: '3px' }} />
             <span>添</span>
@@ -603,7 +583,7 @@ const DoubleExcitationForm: React.FC = () => {
 
       <div className={styles.excitaion_footer}>
         <div className={styles.excitaion_footer_footerConcent}>
-          {!isFixForm ? (
+          {!lookDetail ? (
             <CommonButton
               buttonStyle={styles.stepButton}
               name='取消'
@@ -613,12 +593,12 @@ const DoubleExcitationForm: React.FC = () => {
               }}
             />
           ) : null}
-          {!isFixForm ? (
+          {!lookDetail ? (
             <CommonButton
               buttonStyle={styles.stepButton}
               type='primary'
-              name='确认'
-              disabled={isFixForm ? true : cardCheckStatus}
+              name={isFixForm ? '修改' : '新建'}
+              disabled={cardCheckStatus}
               onClick={() => {
                 createOneExcitationFn()
               }}

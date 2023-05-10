@@ -1,5 +1,5 @@
 import { TemplateListParams, DeleteTemplateParams, CreateTemplateParams, UpdateTemplateParams } from 'Src/globalType/Param'
-import { TemplateListResponse, TemplateDetailInfo, Primitive } from 'Src/globalType/Response'
+import { TemplateListResponse, TemplateDetailInfo, Primitive, templateDependence } from 'Src/globalType/Response'
 import request from 'Src/services/request/request'
 
 /**
@@ -13,7 +13,7 @@ export function getTemplateList(params: TemplateListParams) {
  * 删除模板
  */
 export function removeTemplate(params: DeleteTemplateParams) {
-  return request.delete('/api/v1.0/templates/delete', { params })
+  return request.delete('/api/v1.0/templates/remove', { params })
 }
 
 /**
@@ -42,4 +42,8 @@ export function createTemplate(params: CreateTemplateParams) {
  */
 export function getPrimitivesList() {
   return request.get<Primitive[]>('/api/v1.0/primitives/query')
+}
+
+export function getTemplateDependence(id: number) {
+  return request.get<templateDependence[]>(`/api/v1.0/templates/relevance/query/${id}`)
 }

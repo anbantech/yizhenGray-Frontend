@@ -101,7 +101,6 @@ export function updateTask(id: number, params: taskParamsFn) {
 }
 
 // 仿真启动
-
 export function simulate(params: simulateParams) {
   return request.get<any>(`/api/v1.0/simulate/status`, { params })
 }

@@ -127,7 +127,6 @@ const ThreeExcitationCard = (props: AllPropsType) => {
   const [form] = useForm()
   const { excitationList, deleteCard, onChange, type, stepArray, index, isFixForm, formData, lookDetail } = props
   const [desc, setDesc] = useState('')
-  console.log(excitationList)
   const clearValue = (val: undefined, index: number) => {
     onChange(undefined, index)
     form.setFieldsValue({ description: '' })
@@ -181,12 +180,12 @@ const ThreeExcitationCard = (props: AllPropsType) => {
         onClick={() => {
           deleteCard(index)
         }}
-        className={!isFixForm && stepArray.length > 1 ? styles.deleteCardTopRight : null}
+        className={lookDetail && stepArray.length > 1 ? styles.deleteCardTopRight : null}
       />
       <Form name='middle' autoComplete='off' className={styles.card_middle_form} form={form}>
         <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择端口' }]}>
           <Cascader
-            disabled={isFixForm && lookDetail}
+            disabled={lookDetail}
             placeholder='选择配置'
             allowClear={false}
             fieldNames={{ label: 'name', value: 'sender_id' }}

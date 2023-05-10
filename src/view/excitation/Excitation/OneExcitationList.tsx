@@ -6,12 +6,12 @@ import Table from 'antd/lib/table'
 import ConfigProvider from 'antd/lib/config-provider'
 import { useState } from 'react'
 import * as React from 'react'
+import { message } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
 import OmitComponents from 'Src/components/OmitComponents/OmitComponents'
-import { excitationListFn, lookUpDependencePeripheral } from 'Src/services/api/excitationApi'
+import { excitationListFn, deleteneExcitaionList, lookUpDependencePeripheral } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import zhCN from 'antd/lib/locale/zh_CN'
-import useDelete from 'Src/util/Hooks/useDelete'
 import { StepRef } from 'Src/view/Project/task/createTask/newCreateTask'
 import useDepCollect from 'Src/util/Hooks/useDepCollect'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
@@ -66,6 +66,10 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
   // 页码
   const [total, setTotal] = useState<number>()
 
+  const [spinning, setSpinning] = useState(false)
+  const chioceBtnLoading = (val: boolean) => {
+    setSpinning(val)
+  }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [status, depCollect, depData] = useDepCollect(request)
 
@@ -74,13 +78,9 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
   const [loading, setLoading] = useState(true)
 
   // 查看关联任务
-  const { visibility, chioceModalStatus, deleteVisibility, CommonModleClose, spinnig, chioceBtnLoading } = useMenu()
-
+  const { visibility, chioceModalStatus, deleteVisibility, CommonModleClose } = useMenu()
   // 存储关联任务信息
   const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
-
-  // 删除
-  const { deleteExcitationRight } = useDelete()
 
   // 创建项目 弹出框
   const createProjectModal = React.useCallback(() => {
@@ -112,6 +112,20 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
     depCollect(true, { key_word: value, page: 1 })
   }
 
+  const deleteProjectRight = async () => {
+    chioceBtnLoading(true)
+    try {
+      const res = await deleteneExcitaionList(`${updateMenue}`)
+      if (res.data) {
+        depCollect(true, { page: 1, page_size: 10 })
+        CommonModleClose(false)
+        chioceBtnLoading(false)
+        message.success('外设删除成功')
+      }
+    } catch (error) {
+      throwErrorMessage(error, { 1009: '外设删除失败' })
+    }
+  }
   const changePage = (page: number, pageSize: number) => {
     depCollect(true, { page, page_size: pageSize })
   }
@@ -164,7 +178,7 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
         info: { id: item },
         type: 'one',
         lookDetail: false,
-        isFixForm: false,
+        isFixForm: true,
         name: '外设'
       }
     })
@@ -278,17 +292,19 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
       <div className={styles.AnBan_PaginationsAge}>
         <PaginationsAge length={total} num={depData.page_size} getParams={setOperation} pagenums={depData.page} />
       </div>
-      <CommonModle
-        IsModalVisible={deleteVisibility}
-        deleteProjectRight={() => {
-          deleteExcitationRight()
-        }}
-        CommonModleClose={CommonModleClose}
-        name='删除外设'
-        ing='删除中'
-        spinnig={spinnig}
-        concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
-      />
+      {deleteVisibility ? (
+        <CommonModle
+          IsModalVisible={deleteVisibility}
+          deleteProjectRight={() => {
+            deleteProjectRight()
+          }}
+          CommonModleClose={CommonModleClose}
+          name='删除外设'
+          ing='删除中'
+          spinning={spinning}
+          concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
+        />
+      ) : null}
       <LookUpDependence visibility={visibility as boolean} name='外设关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
     </div>
   )
