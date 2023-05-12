@@ -239,7 +239,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
               operattion(statusOperationStatus)
             }}
           >
-            <span>任务状态</span>
+            <span>实例状态</span>
             <DownOutlined rotate={statusOperationStatus ? -180 : 0} />
           </div>
           {statusOperationStatus ? <StatusMenuComponents /> : null}
