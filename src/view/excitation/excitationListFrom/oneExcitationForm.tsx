@@ -42,9 +42,6 @@ interface listArray {
 
 const OneExcotationForm: React.FC = () => {
   const history = useHistory()
-  // const { config: globalConfig } = useContext(GlobalContext)
-  // const { userInfo } = globalConfig
-  // const { username, roles } = userInfo
   const { isFixForm, info, lookDetail } = useContext(GlobalContexted)
   const { Option } = Select
   const [form] = useForm()
@@ -138,7 +135,6 @@ const OneExcotationForm: React.FC = () => {
     async (changedFields?: any, allFields?: any) => {
       // avoid outOfDate bug, sleep 300ms
       await new Promise<void>(resolve => setTimeout(() => resolve(), 300))
-
       if (!changedFields && !allFields) {
         // eslint-disable-next-line no-param-reassign
         allFields = form.getFieldsValue()
@@ -489,8 +485,8 @@ const OneExcotationForm: React.FC = () => {
         deleteProjectRight={createOneExcitationFn}
         CommonModleClose={CommonModleClose}
         ing='修改中'
-        name='修改外设'
-        concent='修改外设信息，关联任务实例会被停止，是否确认修改？'
+        name='修改激励单元'
+        concent='修改除名称,描述以外的配置项,会停止关联任务，并清空关联任务的测试数据。是否确认修改？'
       />
     </div>
   )

@@ -1,6 +1,7 @@
 import { MinusSquareTwoTone, PlusSquareTwoTone } from '@ant-design/icons'
 import { message, Steps, Tooltip } from 'antd'
 import React, { useCallback, useLayoutEffect, useState } from 'react'
+import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import CommonButton from 'Src/components/Button/commonButton'
 import { useHistory, useLocation } from 'react-router'
 import { createGroupFn, updatFourWork } from 'Src/services/api/excitationApi'
@@ -70,7 +71,7 @@ const SetUp: React.FC<al> = (props: al) => {
         {value?.map((item: any, index: number) => {
           return (
             <div
-              key={item.sender_id}
+              key={`${item.sender_id}${Math.random()}`}
               className={StyleSheet.drawBody_concentBody}
               ref={el => {
                 getRef(el, item.target_type, item.name)
@@ -174,7 +175,7 @@ const Fuzzing: React.FC<al> = (props: al) => {
         {value?.map((item: any, index: number) => {
           return (
             <div
-              key={item.sender_id}
+              key={`${item.sender_id}${Math.random()}`}
               className={StyleSheet.drawBody_concentBody}
               ref={el => {
                 getRef(el, item.target_type, item.name)
@@ -213,16 +214,6 @@ const Fuzzing: React.FC<al> = (props: al) => {
       </div>
     )
   }
-
-  // const createOneExcitationFn = async () => {
-  //   const result = await createGroupFn(state.Data)
-  //   if (result.data) {
-  //     history.push({
-  //       pathname: '/excitationList',
-  //       state: { type: state.type }
-  //     })
-  //   }
-  // }
 
   return (
     <div className={StyleSheet.drawbodys}>
@@ -283,11 +274,11 @@ const TearDown: React.FC<al> = (props: al) => {
     const { value } = props
 
     return (
-      <div className={StyleSheet.drawBody}>
+      <div className={StyleSheet.drawBody} key={`${Math.random()}`}>
         {value?.map((item: any, index: number) => {
           return (
             <div
-              key={item.sender_id}
+              key={`${item.sender_id}${Math.random()}`}
               className={StyleSheet.drawBody_concentBody}
               ref={el => {
                 getRef(el, item.target_type, item.name)
@@ -340,12 +331,15 @@ const ExcitationDraw: React.FC = () => {
   const history = useHistory()
 
   const state = useLocation()?.state as al
-
+  const [spinning, setSpinning] = React.useState(false)
+  const [visibility, setVisibility] = React.useState(false)
   const [current, setCurrent] = useState(0)
   const stepData = (value: number, state: any) => {
     return { name: state.Data.name, desc: state.Data.desc, group_data_list: state.Data.group_data_list[value].group_data_list }
   }
-
+  const CommonModleClose = (val: boolean) => {
+    setVisibility(val)
+  }
   const createOneExcitationFn = async () => {
     const { child_id_list } = state.child_id_list
     const params = {
@@ -366,6 +360,7 @@ const ExcitationDraw: React.FC = () => {
   }
 
   const updatFourWorkFn = React.useCallback(async () => {
+    setSpinning(true)
     const { child_id_list } = state.child_id_list
     const params = {
       name: state.Data.name,
@@ -373,8 +368,9 @@ const ExcitationDraw: React.FC = () => {
       child_id_list
     }
     try {
-      const result = await updatFourWork(state.sender_id, params)
+      const result = await updatFourWork(state.Data.sender_id, params)
       if (result.data) {
+        setSpinning(false)
         history.push({
           pathname: '/FourExcitationList'
         })
@@ -382,7 +378,7 @@ const ExcitationDraw: React.FC = () => {
     } catch (error) {
       message.error(error.message)
     }
-  }, [history, state.Data.desc, state.Data.name, state.child_id_list, state.sender_id])
+  }, [history, state.Data.desc, state.Data.name, state.Data.sender_id, state.child_id_list])
   const goBackGroupList = async () => {
     history.push({
       pathname: '/FourExcitationList'
@@ -411,6 +407,9 @@ const ExcitationDraw: React.FC = () => {
     setCurrent(current - 1)
   }
 
+  const oepenModal = () => {
+    setVisibility(true)
+  }
   return (
     <div className={StyleSheet.DrawBody}>
       <div className={StyleSheet.DrawBody_headers}>
@@ -453,11 +452,20 @@ const ExcitationDraw: React.FC = () => {
               buttonStyle={styles.stepButton}
               name={state?.lookDetail ? '返回' : state?.isFixForm ? '修改' : '新建'}
               type='default'
-              onClick={state?.lookDetail ? goBackGroupList : state?.isFixForm ? updatFourWorkFn : createOneExcitationFn}
+              onClick={state?.lookDetail ? goBackGroupList : state?.isFixForm ? oepenModal : createOneExcitationFn}
             />
           )}
         </div>
       </div>
+      <CommonModle
+        IsModalVisible={visibility}
+        spinning={spinning}
+        deleteProjectRight={updatFourWorkFn}
+        CommonModleClose={CommonModleClose}
+        ing='修改中'
+        name='修改激励交互'
+        concent='修改除名称,描述以外的配置项,会停止关联任务，并清空关联任务的测试数据。是否确认修改？'
+      />
     </div>
   )
 }

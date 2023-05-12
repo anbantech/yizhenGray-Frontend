@@ -5,9 +5,8 @@ import { useEffect, useRef, useState } from 'react'
 import * as React from 'react'
 import { message } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
-import detail_icon from 'Src/assets/image/icon_detail.svg'
-import delete_icon from 'Src/assets/image/icon_delete.svg'
-import running_icon from 'Src/assets/Contents/icon_running.svg'
+
+import testing from 'Src/assets/Contents/Group692.svg'
 import { taskList, deleteTasks } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
@@ -236,19 +235,19 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
                 }}
                 key={item.id}
               >
-                <img className={item.status !== 2 ? styles.icon : styles.iconShow} src={running_icon} alt='' />
+                <img className={item.status !== 2 ? styles.icon : styles.iconShow} src={testing} alt='' />
                 <span>{item.name}</span>
                 <div className={styles.icon_layout}>
-                  <img
-                    src={detail_icon}
-                    alt=''
+                  <div
+                    role='time'
                     onClick={() => {
                       fixTask(item)
                     }}
+                    className={styles.taskListLeft_editImg}
                   />
-                  <img
-                    src={delete_icon}
-                    alt=''
+                  <div
+                    role='time'
+                    className={styles.taskListLeft_detailImg}
                     onClick={() => {
                       CommonModleClose(true)
                     }}

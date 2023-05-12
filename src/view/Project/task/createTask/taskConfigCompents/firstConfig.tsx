@@ -54,10 +54,6 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   // 弹窗
   const [modalData, setModalData] = useState({ spinning: false, isModalVisible: false })
 
-  // 记录修改的数据信息
-
-  const [fixStatus, setFixStatus] = useState(0)
-
   //  删除弹出框
   const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
   const [nodeList, setNodeList] = useState<number[]>([])
@@ -72,7 +68,6 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     const values = await form.validateFields()
     try {
       if (values) {
-        console.log(values)
         const params = {
           name: values.name,
           desc: values.description,

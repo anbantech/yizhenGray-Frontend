@@ -15,7 +15,6 @@ function ModalpPop(props: any) {
     )
   }
 
-  console.log(IsModalVisible)
   const isClose = useCallback(() => {
     if (!spinning) {
       CommonModleClose(false)
