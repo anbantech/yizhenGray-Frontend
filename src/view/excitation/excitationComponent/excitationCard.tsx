@@ -180,7 +180,7 @@ const ThreeExcitationCard = (props: AllPropsType) => {
         onClick={() => {
           deleteCard(index)
         }}
-        className={lookDetail && stepArray.length > 1 ? styles.deleteCardTopRight : null}
+        className={!lookDetail && stepArray.length > 1 ? styles.deleteCardTopRight : null}
       />
       <Form name='middle' autoComplete='off' className={styles.card_middle_form} form={form}>
         <Form.Item name='port' label='名称' rules={[{ required: true, message: '请选择端口' }]}>

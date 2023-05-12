@@ -5,15 +5,13 @@ import { useContext } from 'react'
 import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
-// import { GlobalContext } from 'Src/globalContext/globalContext'
+import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { createExcitationFn, excitationListFn, updatTwoExcitaionList } from 'Src/services/api/excitationApi'
 import { getTemplateList } from 'Src/services/api/templateApi'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from '../excitation.less'
 import { Tip } from '../excitationComponent/Tip'
 import { GetDeatilFn } from './getDataDetailFn/getDataDetailFn'
-
-// import { RouteComponentProps, StaticContext } from 'react-router'
 
 const layout = {
   labelCol: { span: 6 },
@@ -52,8 +50,14 @@ const OneExcotationForm: React.FC = () => {
   const [form] = useForm()
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
   const [templateList, setTemplateList] = React.useState<any[]>()
+  const [spinning, setSpinning] = React.useState(false)
+  const [visibility, setVisibility] = React.useState(false)
   const [portList, setPortList] = React.useState<listArray[]>([])
   const Data = GetDeatilFn(info?.id)
+
+  const CommonModleClose = (val: boolean) => {
+    setVisibility(val)
+  }
   // 获取模版列表
   const fetchTemplateList = React.useCallback(async () => {
     //  Todo code码
@@ -83,7 +87,8 @@ const OneExcotationForm: React.FC = () => {
     }
   }, [])
 
-  const createOneExcitationFn = async () => {
+  const createOneExcitationFn = React.useCallback(async () => {
+    setSpinning(true)
     let values
     try {
       values = await form.validateFields()
@@ -111,6 +116,7 @@ const OneExcotationForm: React.FC = () => {
         } else {
           result = await updatTwoExcitaionList(info.id, params)
         }
+        setSpinning(false)
         if (result.data) {
           history.push({
             pathname: '/TwoExcitationList'
@@ -120,7 +126,8 @@ const OneExcotationForm: React.FC = () => {
     } catch (error) {
       throwErrorMessage(error, { 1009: '激励创建失败' })
     }
-  }
+  }, [form, history, info?.id, isFixForm])
+
   const cancelForm = () => {
     history.push({
       pathname: '/TwoExcitationList'
@@ -158,6 +165,14 @@ const OneExcotationForm: React.FC = () => {
     },
     [form]
   )
+
+  const createOrUpdate = React.useCallback(() => {
+    if (isFixForm) {
+      CommonModleClose(true)
+    } else {
+      createOneExcitationFn()
+    }
+  }, [createOneExcitationFn, isFixForm])
 
   React.useEffect(() => {
     fetchTemplateList()
@@ -463,13 +478,20 @@ const OneExcotationForm: React.FC = () => {
               type='primary'
               name={isFixForm ? '修改' : '新建'}
               disabled={isDisableStatus}
-              onClick={() => {
-                createOneExcitationFn()
-              }}
+              onClick={createOrUpdate}
             />
           ) : null}
         </div>
       </div>
+      <CommonModle
+        IsModalVisible={visibility}
+        spinning={spinning}
+        deleteProjectRight={createOneExcitationFn}
+        CommonModleClose={CommonModleClose}
+        ing='修改中'
+        name='修改外设'
+        concent='修改外设信息，关联任务实例会被停止，是否确认修改？'
+      />
     </div>
   )
 }
