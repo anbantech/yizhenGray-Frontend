@@ -6,6 +6,7 @@ import { useContext, useState } from 'react'
 import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
+import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { getAllRes } from 'Src/globalType/Response'
 import { createGroup_unitFn, excitationListFn, updatThreeExcitaionList } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
@@ -30,15 +31,6 @@ const request = {
   sort_field: 'create_time',
   sort_order: 'descend'
 }
-// const request1 = {
-//   target_type: 2,
-//   key_word: '',
-//   status: null,
-//   page: 1,
-//   page_size: 999,
-//   sort_field: 'create_time',
-//   sort_order: 'descend'
-// }
 
 interface Resparams {
   target_type: number | string
@@ -74,6 +66,12 @@ const DoubleExcitationForm: React.FC = () => {
   const [cardArray, setCardArray] = React.useState([0])
   const [cardCheckStatus, setCardCheckStatus] = useState(true)
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
+  const [spinning, setSpinning] = React.useState(false)
+  const [visibility, setVisibility] = React.useState(false)
+
+  const CommonModleClose = (val: boolean) => {
+    setVisibility(val)
+  }
   const Data = GetDeatilFn(info?.id) as getAllRes
   const addCard = React.useCallback(() => {
     const pre = cardArray
@@ -81,22 +79,6 @@ const DoubleExcitationForm: React.FC = () => {
     setCardArray([...pre])
   }, [cardArray])
 
-  // 过滤已经被使用的数据
-  // const filterUseData = (val: FilterType) => {
-  //   const res = val.filter(item => {
-  //     return item.disabled === false
-  //   })
-  //   return res
-  // }
-  const filterUseData = (init: FilterType, val: number[]) => {
-    return init.map(item => {
-      const pre = item
-      val?.forEach((id: number) => {
-        pre.disabled = item.sender_id === id
-      })
-      return pre
-    })
-  }
   // 过滤数组元素中的unfinend
   const filterUnfinedItem = (val: number[]) => {
     return val.filter(value => value !== undefined)
@@ -110,24 +92,6 @@ const DoubleExcitationForm: React.FC = () => {
     setData([...res])
     return res
   }
-
-  //  选择某一参数之后,更新列表的disabled
-  const updateDisabled = React.useCallback(
-    (value: number, bol: boolean) => {
-      const excitationListOld = excitationList as Option[]
-      excitationListOld?.forEach((item: any) => {
-        item.children.forEach((element: any) => {
-          if (value === element.sender_id) {
-            const pre = element
-            pre.disabled = bol
-          }
-        })
-      })
-
-      setExcitationList([...excitationListOld])
-    },
-    [excitationList]
-  )
 
   // 删除某个id
   const deleteID = React.useCallback(
@@ -146,29 +110,22 @@ const DoubleExcitationForm: React.FC = () => {
       const oldStepArray = data
       if (val === undefined) {
         const item = deleteID(index)
-        updateDisabled(item, false)
         return item
       }
       if (oldStepArray[index] !== val) {
-        updateDisabled(oldStepArray[index], false)
         oldStepArray[index] = val
         setData([...oldStepArray])
-        updateDisabled(val, true)
       }
     },
-    [data, deleteID, updateDisabled]
+    [data, deleteID]
   )
 
-  const deleteCard = React.useCallback(
-    (val: number, data: number[]) => {
-      const oldItemArray = [...data]
-      const clearItem = oldItemArray.splice(val, 1)
-      updateDisabled(clearItem[0], false)
-      setData([...oldItemArray])
-      return Promise.resolve()
-    },
-    [updateDisabled]
-  )
+  const deleteCard = React.useCallback((val: number, data: number[]) => {
+    const oldItemArray = [...data]
+    oldItemArray.splice(val, 1)
+    setData([...oldItemArray])
+    return Promise.resolve()
+  }, [])
 
   const sortCardArray = React.useCallback(
     async (val: number) => {
@@ -182,16 +139,11 @@ const DoubleExcitationForm: React.FC = () => {
 
   // 获取配置列表
   const getExcitationList = React.useCallback(
-    async (request1: Resparams, resOld?: any) => {
+    async (request1: Resparams) => {
       try {
         const result1 = await excitationListFn(request1)
         Promise.all([result1])
           .then(value => {
-            if (resOld && value[0].data) {
-              const res = filterUseData(value[0].data?.results, resOld)
-              const data = [{ ...excitationList[0], children: res }]
-              setExcitationList([...data])
-            }
             const result1Data = value[0].data?.results
             const data = [{ ...excitationList[0], children: result1Data }]
             setExcitationList([...data])
@@ -210,6 +162,7 @@ const DoubleExcitationForm: React.FC = () => {
 
   // 创建级联
   const createOneExcitationFn = React.useCallback(async () => {
+    setSpinning(true)
     let values
     try {
       values = await form.validateFields()
@@ -236,7 +189,7 @@ const DoubleExcitationForm: React.FC = () => {
         } else {
           result = await updatThreeExcitaionList(info.id, params)
         }
-
+        setSpinning(false)
         if (result.data) {
           history.push({
             pathname: '/ThreeExcitationList'
@@ -301,10 +254,19 @@ const DoubleExcitationForm: React.FC = () => {
       setCardArray(Array.from({ length: data.length }, (v, i) => i))
     }
   }, [data, isDisableStatus])
+
   React.useEffect(() => {
     getExcitationList(request)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const createOrUpdate = React.useCallback(() => {
+    if (isFixForm) {
+      CommonModleClose(true)
+    } else {
+      createOneExcitationFn()
+    }
+  }, [createOneExcitationFn, isFixForm])
 
   React.useEffect(() => {
     if (Data) {
@@ -320,10 +282,9 @@ const DoubleExcitationForm: React.FC = () => {
         align_delay_1,
         align_delay_2
       }
-      const res = isBack(Data.group_data_list)
+      isBack(Data.group_data_list)
       form.setFieldsValue(formData)
       onFieldsChange()
-      getExcitationList(request, res)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, info, Data, isFixForm, onFieldsChange])
@@ -600,12 +561,22 @@ const DoubleExcitationForm: React.FC = () => {
               name={isFixForm ? '修改' : '新建'}
               disabled={cardCheckStatus}
               onClick={() => {
-                createOneExcitationFn()
+                createOrUpdate()
               }}
             />
           ) : null}
         </div>
       </div>
+
+      <CommonModle
+        IsModalVisible={visibility}
+        spinning={spinning}
+        deleteProjectRight={createOneExcitationFn}
+        CommonModleClose={CommonModleClose}
+        ing='修改中'
+        name='修改外设'
+        concent='修改外设信息，关联任务实例会被停止，是否确认修改？'
+      />
     </div>
   )
 }

@@ -5,6 +5,7 @@ import { useContext } from 'react'
 import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
+import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { getPortList, createExcitationFn_1, updateOneExcitaionList } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from '../excitation.less'
@@ -23,8 +24,15 @@ const ExcitationComponents: React.FC = () => {
   const { Option } = Select
   const [form] = useForm()
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
+  const [spinning, setSpinning] = React.useState(false)
+  const [visibility, setVisibility] = React.useState(false)
   const [portList, setPortList] = React.useState<string[]>([])
   const Data = GetDeatilExcitation(info?.id)
+
+  // 查看关联任务
+  const CommonModleClose = (val: boolean) => {
+    setVisibility(val)
+  }
   // 端口列表
   const fetchPortList = React.useCallback(async () => {
     //  Todo code码
@@ -39,8 +47,8 @@ const ExcitationComponents: React.FC = () => {
       throwErrorMessage(error, { 1009: '请稍后再试' })
     }
   }, [])
-
-  const createOneExcitationFn = async () => {
+  const createOneExcitationFn = React.useCallback(async () => {
+    setSpinning(true)
     let values
     try {
       values = await form.validateFields()
@@ -60,7 +68,7 @@ const ExcitationComponents: React.FC = () => {
         } else {
           result = await updateOneExcitaionList(info.id, params)
         }
-
+        setSpinning(false)
         if (result.data) {
           history.push({
             pathname: '/OneExcitationList'
@@ -70,12 +78,14 @@ const ExcitationComponents: React.FC = () => {
     } catch (error) {
       throwErrorMessage(error, { 1009: '外设创建失败' })
     }
-  }
+  }, [form, history, info?.id, isFixForm])
+
   const cancelForm = () => {
     history.push({
       pathname: '/OneExcitationList'
     })
   }
+
   const onFieldsChange = React.useCallback(
     async (changedFields?: any, allFields?: any) => {
       // avoid outOfDate bug, sleep 300ms
@@ -109,6 +119,14 @@ const ExcitationComponents: React.FC = () => {
     [form]
   )
 
+  // 创建或者修改
+  const createOrUpdate = React.useCallback(() => {
+    if (isFixForm) {
+      CommonModleClose(true)
+    } else {
+      createOneExcitationFn()
+    }
+  }, [createOneExcitationFn, isFixForm])
   React.useEffect(() => {
     fetchPortList()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -185,7 +203,7 @@ const ExcitationComponents: React.FC = () => {
       </Form>
       <div className={styles.excitaion_footer}>
         <div className={styles.excitaion_footer_footerConcent}>
-          {!isFixForm ? (
+          {!lookDetail ? (
             <CommonButton
               buttonStyle={styles.stepButton}
               name='取消'
@@ -195,19 +213,27 @@ const ExcitationComponents: React.FC = () => {
               }}
             />
           ) : null}
-          {!isFixForm ? (
+          {!lookDetail ? (
             <CommonButton
               buttonStyle={styles.stepButton}
               type='primary'
-              name={isFixForm ? '修改' : '新建建'}
+              name={isFixForm ? '修改' : '新建'}
               disabled={isDisableStatus}
-              onClick={() => {
-                createOneExcitationFn()
-              }}
+              onClick={createOrUpdate}
             />
           ) : null}
         </div>
       </div>
+
+      <CommonModle
+        IsModalVisible={visibility}
+        spinning={spinning}
+        deleteProjectRight={createOneExcitationFn}
+        CommonModleClose={CommonModleClose}
+        ing='修改中'
+        name='修改外设'
+        concent='修改外设信息，关联任务实例会被停止，是否确认修改？'
+      />
     </div>
   )
 }

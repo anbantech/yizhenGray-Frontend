@@ -3,7 +3,7 @@ import { message, Steps, Tooltip } from 'antd'
 import React, { useCallback, useLayoutEffect, useState } from 'react'
 import CommonButton from 'Src/components/Button/commonButton'
 import { useHistory, useLocation } from 'react-router'
-import { createGroupFn } from 'Src/services/api/excitationApi'
+import { createGroupFn, updatFourWork } from 'Src/services/api/excitationApi'
 import { useLatest } from 'Src/util/Hooks/useLast'
 import styles from 'Src/view/excitation/excitation.less'
 import StyleSheet from './excitationDraw.less'
@@ -365,6 +365,24 @@ const ExcitationDraw: React.FC = () => {
     }
   }
 
+  const updatFourWorkFn = React.useCallback(async () => {
+    const { child_id_list } = state.child_id_list
+    const params = {
+      name: state.Data.name,
+      desc: state.Data.desc,
+      child_id_list
+    }
+    try {
+      const result = await updatFourWork(state.sender_id, params)
+      if (result.data) {
+        history.push({
+          pathname: '/FourExcitationList'
+        })
+      }
+    } catch (error) {
+      message.error(error.message)
+    }
+  }, [history, state.Data.desc, state.Data.name, state.child_id_list, state.sender_id])
   const goBackGroupList = async () => {
     history.push({
       pathname: '/FourExcitationList'
@@ -435,7 +453,7 @@ const ExcitationDraw: React.FC = () => {
               buttonStyle={styles.stepButton}
               name={state?.lookDetail ? '返回' : state?.isFixForm ? '修改' : '新建'}
               type='default'
-              onClick={state?.isFixForm ? goBackGroupList : createOneExcitationFn}
+              onClick={state?.lookDetail ? goBackGroupList : state?.isFixForm ? updatFourWorkFn : createOneExcitationFn}
             />
           )}
         </div>

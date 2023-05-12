@@ -112,7 +112,6 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
 
   // 实列详情返回任务列表,左侧任务列表,与实列列表保持一致
   // 通过维护task_id,且通过路由,或者任务列表第一个数据拿值,并且判断taskList长度是否为空
-
   const keepCheckTask = (id: string) => {
     if (id) {
       checkInstances(id)

@@ -197,7 +197,6 @@ const GroupExcitationForm: React.FC = () => {
         .then(value => {
           const result1Data = value[0].data?.results as FilterType
           const result2Data = value[1].data?.results as FilterType
-
           const data = [
             { ...pre[1], children: result2Data },
             { ...pre[0], children: result1Data }
@@ -218,23 +217,6 @@ const GroupExcitationForm: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stepArray])
 
-  //  选择某一参数之后,更新列表的disabled
-  const updateDisabled = React.useCallback(
-    (value: number, bol: boolean) => {
-      const excitationListOld = excitationList as Option[]
-      excitationListOld?.forEach((item: any) => {
-        item.children.forEach((element: any) => {
-          if (value === element.sender_id) {
-            const pre = element
-            pre.disabled = bol
-          }
-        })
-      })
-      setExcitationList([...excitationListOld])
-    },
-    [excitationList]
-  )
-
   // 删除数据
   const clearArrayItem = React.useCallback((val: number[][] | undefined[][], current, index: number) => {
     const oldItemArray = [...val]
@@ -250,30 +232,26 @@ const GroupExcitationForm: React.FC = () => {
       const oldStepArray = stepArray
       if (val === undefined) {
         const res = clearArrayItem(oldStepArray, current, index)
-        updateDisabled(res, false)
         return res
       }
       if (oldStepArray[current][index] !== val) {
-        updateDisabled(oldStepArray[current][index], false)
         oldStepArray[current][index] = val
         setStepArray([...oldStepArray])
-        updateDisabled(val, true)
         return oldStepArray
       }
     },
-    [clearArrayItem, current, stepArray, updateDisabled]
+    [clearArrayItem, current, stepArray]
   )
 
   // 删除元素
   const deleteCard = React.useCallback(
     (index: number) => {
       const oldItemArray = [...stepArray]
-      const res = oldItemArray[current].splice(index, 1)
-      updateDisabled(res[0], false)
+      oldItemArray[current].splice(index, 1)
       setStepArray([...oldItemArray])
       return Promise.resolve()
     },
-    [current, stepArray, updateDisabled]
+    [current, stepArray]
   )
 
   const steps = [
@@ -285,7 +263,7 @@ const GroupExcitationForm: React.FC = () => {
           excitationList={excitationList}
           type={type}
           info={info}
-          lookDetail={lookDetail}
+          lookDetail={+true}
           current={current}
           isFixForm={isFixForm}
           Data={detailData}
@@ -322,7 +300,7 @@ const GroupExcitationForm: React.FC = () => {
           current={current}
           isFixForm={isFixForm}
           Data={detailData}
-          lookDetail={lookDetail}
+          lookDetail={+true}
           deleteCard={deleteCard}
           changePre2={changePre}
         />
@@ -363,7 +341,7 @@ const GroupExcitationForm: React.FC = () => {
     isLookDetailDecrease()
   }
 
-  const viewDraw = async () => {
+  const viewDraw = React.useCallback(async () => {
     let values
     try {
       values = await form.validateFields()
@@ -384,20 +362,28 @@ const GroupExcitationForm: React.FC = () => {
             group_data_list: result.data
           }
           history.push({
-            pathname: '/excitationList/createGroupExcitation/ExcitationDraw',
-            state: { Data: params1, child_id_list: params2, type, isFixForm, name }
+            pathname: '/FourExcitationList/Deatail/ExcitationDraw',
+            state: {
+              Data: { ...detailData, ...propsDatas, ...params1 },
+              isFixForm,
+              info,
+              type,
+              name,
+              lookDetail,
+              child_id_list: params2
+            }
           })
         }
       }
     } catch (error) {
       throwErrorMessage(error, { 1009: '项目删除失败' })
     }
-  }
+  }, [form, stepArray, history, detailData, propsDatas, isFixForm, info, type, name, lookDetail])
 
   const isFixFormDrawView = () => {
     history.push({
       pathname: '/FourExcitationList/Deatail/ExcitationDraw',
-      state: { Data: detailData || propsDatas, type, isFixForm, name }
+      state: { Data: detailData || propsDatas, isFixForm, info, type, name, lookDetail }
     })
   }
 
@@ -418,7 +404,6 @@ const GroupExcitationForm: React.FC = () => {
   // 初始化数据 stepCurrent 数组
   const idMap = React.useCallback((propsDatas, isFixForm) => {
     if (propsDatas) {
-      console.log(propsDatas.group_id_list)
       return isFixForm ? setStepArray([...propsDatas.group_id_list]) : isBack(propsDatas)
     }
   }, [])
@@ -532,7 +517,7 @@ const GroupExcitationForm: React.FC = () => {
               />
             )}
             {current === steps.length - 1 && (
-              <CommonButton buttonStyle={styles.active_button} name='预览' type='default' onClick={isFixForm ? isFixFormDrawView : viewDraw} />
+              <CommonButton buttonStyle={styles.active_button} name='预览' type='default' onClick={lookDetail ? isFixFormDrawView : viewDraw} />
             )}
           </div>
         </div>
