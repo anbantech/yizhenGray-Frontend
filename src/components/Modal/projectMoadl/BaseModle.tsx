@@ -85,6 +85,7 @@ function ModalpPop(props: any) {
       // thus remove prefix of queue name when editing
       const formData = { name, desc }
       form.setFieldsValue(formData)
+      setDisabledStatus(false)
     }
   }, [form, projectInfo])
 

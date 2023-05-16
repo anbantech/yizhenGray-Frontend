@@ -65,6 +65,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   const { projectInfo, taskListOne_id } = props.location?.state
   const { checkInstances } = props
   const layoutRef = useRef<any>()
+  const timerRef = React.useRef<any>()
   const history = useHistory()
   // 任务列表参数
   const [params, setParams] = useState<Resparams>({ ...request, project_id: projectInfo.projectId })
@@ -74,7 +75,6 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   const [taskLists, setTaskList] = useState<any>([])
 
   // 数据是否还有更多
-
   const [hasMoreData, setHasMore] = useState(true)
 
   // 弹窗
@@ -99,8 +99,8 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
 
   //  更改页码
   const loadMoreData = () => {
-    const newPage = params.page + 1
-    setParams({ ...params, page: newPage })
+    const newPage = params.page_size + 10
+    setParams({ ...params, page_size: newPage })
   }
 
   // 更新右侧列表
@@ -111,12 +111,15 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
 
   // 实列详情返回任务列表,左侧任务列表,与实列列表保持一致
   // 通过维护task_id,且通过路由,或者任务列表第一个数据拿值,并且判断taskList长度是否为空
-  const keepCheckTask = (id: string) => {
-    if (id) {
-      checkInstances(id)
-      setModalData({ ...modalData, taskId: id })
-    }
-  }
+  const keepCheckTask = React.useCallback(
+    (id: string | number) => {
+      if (id) {
+        checkInstances(id as string)
+        setModalData({ ...modalData, taskId: id as string })
+      }
+    },
+    [checkInstances, modalData]
+  )
   // 页面加载时 调用
   const backWebTask = (taskListOne_id: string) => {
     if (taskListOne_id) {
@@ -154,28 +157,36 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   }
 
   // 获取任务列表
-  const getTaskList = async (value: Resparams) => {
-    try {
-      const result = await taskList(value)
-      if (result.data) {
-        const newList = taskLists.concat(result.data.results)
-        if (newList.length === 0) {
-          InstancesDetail.setInstance(false)
-          setHasMore(false)
-          return false
+  const getTaskList = React.useCallback(
+    async (value: Resparams) => {
+      try {
+        const result = await taskList(value)
+        if (result.data) {
+          const newList = [...result.data.results]
+          if (newList.length === 0) {
+            InstancesDetail.setInstance(false)
+            setHasMore(false)
+            return false
+          }
+          if (modalData.taskId) {
+            keepCheckTask(modalData.taskId)
+          } else {
+            keepCheckTask(newList[0].id)
+          }
+
+          if (newList.length === result.data.total) {
+            setHasMore(false)
+          }
+          setTaskList([...newList])
+          InstancesDetail.setInstance(true)
         }
-        keepCheckTask(newList[0].id)
-        if (newList.length === result.data.total) {
-          setHasMore(false)
-        }
-        setTaskList([...newList])
-        InstancesDetail.setInstance(true)
+        return result
+      } catch (error) {
+        throwErrorMessage(error)
       }
-      return result
-    } catch (error) {
-      throwErrorMessage(error)
-    }
-  }
+    },
+    [InstancesDetail, keepCheckTask, modalData.taskId]
+  )
 
   const getLayout = () => {
     setHeight(layoutRef.current.clientHeight)
@@ -188,6 +199,16 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       state: { projectInfo, taskInfo: { data: item, editTaskMode: true } }
     })
   }
+
+  React.useEffect(() => {
+    timerRef.current = setInterval(() => {
+      getTaskList({ ...params })
+    }, 60000)
+    return () => {
+      clearInterval(timerRef.current)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params, modalData?.taskId])
 
   useEffect(() => {
     getLayout()
@@ -235,8 +256,10 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
                 }}
                 key={item.id}
               >
-                <img className={item.status !== 2 ? styles.icon : styles.iconShow} src={testing} alt='' />
-                <span>{item.name}</span>
+                <span>
+                  <img className={item.status !== 2 ? styles.icon : styles.iconShow} src={testing} alt='' />
+                  {item.name}
+                </span>
                 <div className={styles.icon_layout}>
                   <div
                     role='time'

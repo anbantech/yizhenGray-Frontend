@@ -13,10 +13,12 @@ interface MenuTypes {
   data?: Data
   // eslint-disable-next-line react/require-default-props
   setData?: Dispatch<SetStateAction<any>>
+  // eslint-disable-next-line react/require-default-props
+  type?: string
 }
 
 function OmitComponents(props: MenuTypes) {
-  const { updateMenue, status, id, setData, data, onChange } = props
+  const { updateMenue, status, id, setData, type, data, onChange } = props
   return (
     <div
       className={styles.omitCompoentsTarget}
@@ -34,7 +36,7 @@ function OmitComponents(props: MenuTypes) {
         <span className={styles.omitRoundsSpan} />
       </div>
 
-      {status === id ? <MenuComponents onMouseLeave={updateMenue} changeTimeType={onChange} /> : null}
+      {status === id ? <MenuComponents onMouseLeave={updateMenue} type={type} changeTimeType={onChange} /> : null}
     </div>
   )
 }

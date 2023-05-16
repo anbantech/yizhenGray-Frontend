@@ -20,6 +20,7 @@ import CheckCompoents from '../taskDetailCompoents/CheckCompoents'
 interface taskDetailType<S, T> {
   projectInfo: T
   taskInfo: S
+  instanceInfo: any
 }
 
 interface propsType {
@@ -35,6 +36,8 @@ interface propsType {
   // cancelMenu: (e: React.MouseEvent<HTMLDivElement>) => void
   system: string
   Checked: (value: string) => void
+  BranchSort: (value: string) => void
+  StatementSort: (value: string) => void
 }
 
 interface DataType {
@@ -51,12 +54,14 @@ interface DataType {
   update_time: string
   update_user: string
   msg_index: number
+  statement_coverage: string
+  branch_coverage: string
 }
 type Detail_Type = Record<string, any>
 const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
-  const { task_id, params, total, system, Checked, status, logData, changePage, testTimeSort, caseSort } = props
+  const { task_id, params, total, system, Checked, status, logData, StatementSort, BranchSort, changePage, testTimeSort, caseSort } = props
+  const { taskInfo, projectInfo, instanceInfo } = props.infoMap
 
-  const { taskInfo, projectInfo } = props.infoMap
   const history = useHistory()
   const [currentOpenId, setCurrentOpenId] = useState<number>(-1)
 
@@ -66,6 +71,9 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
 
   const [currentTypeTime, setCurrentTypeTime] = useState('ascend')
 
+  const [currentTypeBranch, setCurrentTypeBranch] = useState('ascend')
+
+  const [currentTypeStatement, setCurrentTypeStatement] = useState('ascend')
   const setOperation = (value1?: any, type?: string, value2?: any) => {
     switch (type) {
       case 'page':
@@ -76,6 +84,12 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
         break
       case 'case_type':
         caseSort(value1)
+        break
+      case 'Statement':
+        StatementSort(value1)
+        break
+      case 'Branch':
+        BranchSort(value1)
         break
       default:
         return null
@@ -90,19 +104,59 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     setCurrentTypeTime(e.key)
     setOperation(e.key, 'time')
   }
+
+  const changeCurrentTypeBranch = (e: any) => {
+    setCurrentTypeBranch(e.key)
+    setOperation(e.key, 'Branch')
+  }
+
+  const changeStatementType = (e: any) => {
+    setCurrentTypeStatement(e.key)
+    setOperation(e.key, 'Statement')
+  }
+
   const statusMemo = useMemo(() => {
     return status
   }, [status])
+
   const menu = (
     <Menu selectable onClick={changeCurrentType} selectedKeys={[currentType]}>
       <Menu.Item key='' style={{ textAlign: 'center' }}>
-        全部
+        默认
       </Menu.Item>
       <Menu.Item key={1} style={{ textAlign: 'center' }}>
         是
       </Menu.Item>
       <Menu.Item key={0} style={{ textAlign: 'center' }}>
         否
+      </Menu.Item>
+    </Menu>
+  )
+
+  const menuBranch = (
+    <Menu selectable onClick={changeCurrentTypeBranch} selectedKeys={[currentTypeBranch]}>
+      <Menu.Item key='' style={{ textAlign: 'center' }}>
+        默认
+      </Menu.Item>
+      <Menu.Item key='ascend' style={{ textAlign: 'center' }}>
+        升序
+      </Menu.Item>
+      <Menu.Item key='descend' style={{ textAlign: 'center' }}>
+        降序
+      </Menu.Item>
+    </Menu>
+  )
+
+  const menuStatement = (
+    <Menu selectable onClick={changeStatementType} selectedKeys={[currentTypeStatement]}>
+      <Menu.Item key='' style={{ textAlign: 'center' }}>
+        默认
+      </Menu.Item>
+      <Menu.Item key='ascend' style={{ textAlign: 'center' }}>
+        升序
+      </Menu.Item>
+      <Menu.Item key='descend' style={{ textAlign: 'center' }}>
+        降序
       </Menu.Item>
     </Menu>
   )
@@ -117,6 +171,28 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
       </Menu.Item>
     </Menu>
   )
+
+  function BranchMenu() {
+    return (
+      <Dropdown overlay={menuStatement}>
+        <Space>
+          分支覆盖率
+          <DownOutlined />
+        </Space>
+      </Dropdown>
+    )
+  }
+
+  function StatementMenu() {
+    return (
+      <Dropdown overlay={menuBranch}>
+        <Space>
+          语句覆盖率
+          <DownOutlined />
+        </Space>
+      </Dropdown>
+    )
+  }
 
   function IsWrongDownMenu() {
     return (
@@ -150,7 +226,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   // 单个用例的重放
   const oneCaseReplay = async (taskID: number, caseID: number) => {
     const idArray = {
-      task_id: taskID,
+      instance_id: taskID,
       error_id: caseID
     }
     try {
@@ -165,7 +241,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   const inScale = (value: boolean, data: Detail_Type) => {
     history.push({
       pathname: '/projects/Tasks/Detail/ScaleDetail',
-      state: { taskInfo, projectInfo, isTesting: value, logId: data.id, data }
+      state: { taskInfo, projectInfo, isTesting: value, logId: data.id, data, instanceInfo }
     })
   }
 
@@ -225,6 +301,12 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
           </div>
           <div className={styles.Header_Main}>
             <TimeDownMenu />
+          </div>
+          <div className={styles.Header_Main}>
+            <BranchMenu />
+          </div>
+          <div className={styles.Header_Main}>
+            <StatementMenu />
           </div>
           <div style={{ textAlign: 'left' }} className={styles.Header_Main}>
             <span>缺陷结果</span>
@@ -298,6 +380,8 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     </div>
                     <div>{item.case_type ? '是' : '否'}</div>
                     <div>{getTime(item.update_time)}</div>
+                    <div>{item.branch_coverage}</div>
+                    <div>{item.statement_coverage}</div>
                     <div style={{ textAlign: 'left' }}>
                       <div className={styles.dataLongInfoResult}>
                         {Object.keys(item.crash_info).map(item => {

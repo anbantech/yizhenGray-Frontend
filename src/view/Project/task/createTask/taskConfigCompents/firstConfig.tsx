@@ -99,14 +99,8 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     }
   }, [cancenlForm, form, id, modalData, taskInfo?.data?.id, taskInfo?.editTaskMode])
   const matchItem = React.useCallback(async () => {
-    const values = await form.validateFields()
-    const { sender_id, simu_instance_id } = taskInfo.data as any
-    if (values.simu_instance_id !== simu_instance_id || values.sender_id !== sender_id) {
-      setModalData({ ...modalData, isModalVisible: true })
-      return false
-    }
-    return createOneExcitationFn()
-  }, [createOneExcitationFn, form, modalData, taskInfo.data])
+    setModalData({ ...modalData, isModalVisible: true })
+  }, [modalData])
 
   useImperativeHandle(myRef, () => ({
     save: () => {
@@ -312,7 +306,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         CommonModleClose={CommonModleClose}
         ing='修改中'
         name='修改任务'
-        concent='修改仿真节点、交互会清空关联任务的测试数据，是否确认修改？'
+        concent='修改除名称、描述以外的配置项，会停止关联任务，并清空关联任务的测试数据，是否确认修改？'
       />
     </div>
   )

@@ -271,7 +271,7 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
   return (
     <div className={styles.AnBan_main}>
       <div className={(styles.AnBan_header, style.AnBan_headerRadio)}>
-        <span className={styles.AnBan_header_title}>外设列表</span>
+        <span className={styles.AnBan_header_title}>外设管理</span>
         <div className={styles.AnBan_header_bottom}>
           <SearchInput ref={childRef.inputRef} className={inputStyle.searchInput} placeholder='根据名称搜索外设' onChangeValue={setOperation} />
           <CreateButton
@@ -305,7 +305,15 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
           concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
         />
       ) : null}
-      <LookUpDependence visibility={visibility as boolean} name='外设关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
+      {dependenceInfo ? (
+        <LookUpDependence
+          visibility={visibility as boolean}
+          name='外设关联信息'
+          data={dependenceInfo}
+          choiceModal={chioceModalStatus}
+          width='760px'
+        />
+      ) : null}
     </div>
   )
 }

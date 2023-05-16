@@ -146,3 +146,9 @@ export function rePlayTask(params: ReplayIDArrayParams) {
 export function createTaskInstance(params: InstanceParams) {
   return request.post<any>('/api/v1.0/instances/save', params)
 }
+
+// 实例详情
+
+export function instanceDetail(id: string) {
+  return request.get<any>(` /api/v1.0/instances/get/${id}`)
+}

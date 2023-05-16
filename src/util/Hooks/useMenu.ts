@@ -9,7 +9,8 @@ interface useMenuType {
 
 function useMenu(): useMenuType {
   const [visibility, setVisibility] = useState(false)
-  const chioceModalStatus = (val: boolean) => {
+  const chioceModalStatus = async (val: boolean) => {
+    await new Promise<void>(resolve => setTimeout(() => resolve(), 300))
     setVisibility(val)
   }
 

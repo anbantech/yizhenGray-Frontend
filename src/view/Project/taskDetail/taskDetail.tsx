@@ -5,7 +5,7 @@ import { RouteComponentProps, StaticContext, useHistory } from 'react-router'
 import { ResTaskDetail } from 'Src/globalType/Response'
 import UseWebsocket from 'Src/webSocket/useWebSocket'
 import useDepCollect from 'Src/util/Hooks/useDepCollect'
-import { TaskDetail } from 'Src/services/api/taskApi'
+import { instanceDetail } from 'Src/services/api/taskApi'
 import globalStyle from 'Src/view/Project/project/project.less'
 import { projectInfoType } from '../task/taskList/task'
 import DetailTestingTable from './tasklog/DetailTestingTable'
@@ -24,13 +24,14 @@ export interface taskDetailInfoType {
 interface taskDetailType<S, T> {
   projectInfo: T
   taskInfo: S
+  instanceInfo: any
 }
 
 const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetailType<taskDetailInfoType, projectInfoType>>> = props => {
-  const { taskInfo, projectInfo } = props.location.state
+  const { taskInfo, projectInfo, instanceInfo } = props.location.state
 
   const RequsetParams = {
-    task_id: +taskInfo.task_id,
+    instance_id: +instanceInfo.id,
     page: 1,
     page_size: 10,
     start_time: '',
@@ -39,6 +40,8 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     sort_field: 'create_time',
     sort_order: 'descend',
     system: 'hex',
+    statement_coverage: 'descend',
+    branch_coverage: 'descend',
     diagnosis: ''
   }
 
@@ -46,26 +49,27 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   const [taskDetailInfo, setTaskDetailInfo] = React.useState<ResTaskDetail>()
   const [updateStatus, setUpdateStatus] = React.useState(0)
   const timer = useRef<any>()
-  const [messageInfo] = UseWebsocket(+taskInfo.task_id)
+  const [messageInfo] = UseWebsocket(+instanceInfo.id)
   const [status, depCollect, depData] = useDepCollect(RequsetParams)
   const [total, logData] = UseGetTestLog(depData, updateStatus)
   const [spinning, setSpinning] = React.useState(true)
   const updateRef = useRef<any>()
-  const getTaskDetail = async (value: string) => {
-    const getTaskDetails = await TaskDetail(value)
+
+  const getInstanceDetail = async (value: string) => {
+    const getTaskDetails = await instanceDetail(value)
     if (getTaskDetails.data) {
       setTaskDetailInfo(getTaskDetails.data)
     }
   }
 
-  // 跳转任务详情
+  // 跳转实例详情
   const jumpLookTaskInfo = React.useCallback(() => {
     history.push({
       pathname: '/projects/Tasks/Detail/lookTaskDetailInfo',
-      state: { projectInfo, taskInfo, taskDetailInfo }
+      state: { projectInfo, taskInfo, instanceInfo }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskDetailInfo])
+  }, [instanceInfo])
 
   // 测试降序
   const testTimeSort = (value: string) => {
@@ -77,11 +81,19 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     depCollect(true, { case_type: value, page: 1 })
   }
 
+  //
+  const statementSort = (value: string) => {
+    depCollect(true, { statement_coverage: value, page: 1 })
+  }
+
+  const branchSort = (value: string) => {
+    depCollect(true, { branch_coverage: value, page: 1 })
+  }
   // 跳转日志
   const lookLog = React.useCallback(() => {
     history.push({
       pathname: '/projects/Tasks/Detail/TaskLog',
-      state: { projectInfo, taskInfo }
+      state: { projectInfo, taskInfo, instanceInfo }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -94,18 +106,18 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     depCollect(true, { system: value, page: 1 })
   }
   const getMessageStatus = React.useCallback(() => {
-    if (messageInfo && messageInfo.task_id) {
-      if (+messageInfo.task_id === +taskInfo.task_id) {
+    if (messageInfo && messageInfo.instance_id) {
+      if (+messageInfo.instance_id === +instanceInfo.id) {
         if (updateStatus !== messageInfo.task_status) {
           setUpdateStatus(messageInfo.task_status)
           if ([1, 4].includes(messageInfo.task_status)) {
             setSpinning(true)
           }
         }
-        getTaskDetail(taskInfo.task_id)
+        getInstanceDetail(instanceInfo.id)
       }
     }
-  }, [messageInfo, taskInfo.task_id, updateStatus])
+  }, [instanceInfo.id, messageInfo, updateStatus])
 
   useEffect(() => {
     getMessageStatus()
@@ -126,14 +138,14 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   useEffect(() => {
     if (taskInfo.task_id && updateStatus === 2) {
       timer.current = setInterval(() => {
-        getTaskDetail(taskInfo.task_id)
+        getInstanceDetail(instanceInfo.id)
       }, 1000)
     }
     return () => {
       clearInterval(timer.current)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskDetailInfo?.status, taskInfo.task_id, updateStatus])
+  }, [instanceInfo?.status, instanceInfo.id, updateStatus])
 
   return (
     <>
@@ -151,7 +163,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
                     system={depData.system}
                     status={updateStatus}
                     Checked={checked}
-                    task_id={+taskInfo.task_id}
+                    task_id={+instanceInfo.id}
                     infoMap={props.location?.state}
                     testTimeSort={testTimeSort}
                     caseSort={caseSort}
@@ -159,6 +171,8 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
                     total={total as number}
                     params={depData}
                     logData={logData}
+                    BranchSort={branchSort}
+                    StatementSort={statementSort}
                   />
                 )}
               </>

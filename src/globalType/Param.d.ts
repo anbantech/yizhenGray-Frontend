@@ -89,7 +89,7 @@ export interface UpdateTemplateParams extends CreateTemplateParams {
   templates_id: number
 }
 
-// 9. 模板列表
+// 9. 模版管理
 
 export interface TemplateListParams {
   key_word?: string
@@ -126,7 +126,7 @@ export interface interactions {
   elements: elementIs_expected | any
 }
 
-// 12. 交互列表
+// 12. 交互管理
 
 export interface interactionsList {
   protocol_id: number | string
@@ -290,6 +290,8 @@ export interface testlogs {
   is_wrong?: string
   system?: string
   diagnosis?: string
+  statement_coverage?: string
+  branch_coverage?: string
 }
 export interface testAlllogs {
   task_id: number
@@ -561,12 +563,14 @@ export interface dataStructureParams {
 }
 
 export interface ReplayIDArrayParams {
-  task_id: number
+  task_id?: number
+  instance_id?: number
   error_id?: number
 }
 
 export interface InstanceParams {
-  task_id: number
+  instance_id: number
+  task_id?: number
   work_time: number
   crash_num?: number
   crash_config?: any

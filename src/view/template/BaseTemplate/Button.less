@@ -1,0 +1,74 @@
+.buttonStyle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    border-radius: 4px;
+    background-color: #488ff4 !important;
+}
+
+
+.ButtonChart {
+    margin-left: 8px;
+    color: #fff;
+    font-weight: normal;
+    font-style: normal;
+    line-height: 32px;
+    letter-spacing: 0.44px;
+}
+
+
+
+.export_template_button {
+    display: inline-block;
+    box-sizing: border-box;
+    margin-left: 12px;
+    padding: 4px 11px;
+    color: #2979ff;
+    font-weight: normal;
+    font-size: 14px;
+    font-style: normal;
+    line-height: 22px;
+    letter-spacing: 0.1px;
+    text-align: center;
+    background-color: transparent;
+    border: 1px solid #2979ff;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    transition: none;
+
+    .title {
+        color: #2979ff;
+    }
+
+    img {
+        margin-right: 5px;
+        vertical-align: bottom;
+    }
+
+    &:hover {
+        color: white;
+        background-color: #2979ff;
+
+        .active {
+            display: inline-block;
+        }
+
+        .deactive {
+            display: none;
+        }
+
+        .title {
+            color: white;
+        }
+    }
+
+    .active {
+        display: none;
+    }
+
+    .deactive {
+        display: inline-block;
+    }
+}

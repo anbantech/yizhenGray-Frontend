@@ -8,7 +8,7 @@ import * as React from 'react'
 import { message } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
 import zhCN from 'antd/lib/locale/zh_CN'
-import deleteImage from 'Image/Deletes.svg'
+import deleteImage from 'Src/assets/image/icon_delete.svg'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import { statusList, statusMap } from 'Src/util/DataMap/dataMap'
 import { DownOutlined } from '@ant-design/icons/lib/icons'
@@ -46,6 +46,7 @@ interface statusItemType {
   lable: string
   value: number | string
 }
+
 type statusValue = string | number
 
 interface projectListType {
@@ -119,6 +120,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
     }
     setStatusOperationStatus(false)
   }
+
   // 状态菜单
   const StatusMenuComponents = () => {
     return (
@@ -144,10 +146,10 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   }
 
   const jumpTasksDetail = (value: any) => {
-    const task_id = value.id
+    const { task_id } = value
     history.push({
       pathname: '/projects/Tasks/Detail',
-      state: { projectInfo, taskInfo: { editTask: false, task_id } }
+      state: { projectInfo, taskInfo: { editTask: false, task_id }, instanceInfo: value }
     })
   }
 
@@ -268,7 +270,11 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
     },
     {
       width: '15%',
-      title: '更多操作',
+
+      // eslint-disable-next-line react/display-name
+      title: () => {
+        return <span style={{ display: 'block', width: '100%', textAlign: 'right' }}>更多操作</span>
+      },
       dataIndex: 'operations',
       key: 'operations',
       // eslint-disable-next-line react/display-name
@@ -276,6 +282,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         return (
           <div className={globalStyle.Opera_detaile}>
             <span
+              style={{ marginLeft: '10px', marginRight: '30px' }}
               role='button'
               tabIndex={0}
               onClick={() => {
@@ -299,9 +306,10 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   ]
 
   // 获取实列列表
-  const getTaskInstancesList = async (value: Resparams) => {
+  const getTaskInstancesList = async (value: Resparams, id: number) => {
+    const val = { ...value, task_id: id }
     try {
-      const listResult = await taskTest(value)
+      const listResult = await taskTest(val)
       if (listResult.data) {
         setTotal(listResult.data.total)
         setTaskList(listResult.data.results)
@@ -313,8 +321,9 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   }
 
   useEffect(() => {
-    getTaskInstancesList(params)
-  }, [params, visibility])
+    getTaskInstancesList(params, InstancesDetail.task_detail.id)
+  }, [params, visibility, InstancesDetail?.task_detail.id])
+
   return (
     <div className={globalStyle.AnBan_main}>
       <div className={styles.instance_header}>
