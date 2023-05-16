@@ -148,14 +148,14 @@ function Header(props: any) {
   const name: any = {
     '/projects': '项目管理',
     '/projects/Tasks': '任务列表',
-    '/projects/Tasks/Detail': '任务详情',
+    '/projects/Tasks/Detail': '实例详情',
     '/projects/Tasks/createTask': '新建任务',
     '/projects/Tasks/fixTask': '修改任务',
-    '/projects/Tasks/Detail/lookTaskDetailInfo': '任务信息',
+    '/projects/Tasks/Detail/lookTaskDetailInfo': '实例信息',
     '/projects/Tasks/Detail/TaskLog': '日志',
     '/projects/Tasks/Detail/Scale': '动态监控',
     '/projects/Tasks/Detail/ScaleDetail': '缺陷详情',
-    '/OneExcitationList': '外设列表',
+    '/OneExcitationList': '外设管理',
     '/TwoExcitationList': '激励单元管理',
     '/ThreeExcitationList': '激励嵌套管理',
     '/FourExcitationList': '交互管理',
@@ -172,7 +172,7 @@ function Header(props: any) {
     '/FourExcitationList/createGroupExcitation': '新建交互',
     '/OneExcitationList/createExcitation': '新建外设',
     '/FourExcitationList/Deatail/ExcitationDraw': '预览',
-    '/templateList': '模板列表',
+    '/templateList': '模版管理',
     '/templateList/templateDetail': '模版详情',
     '/templateList/template': `${data && data?.readonlyBaseTemplate ? '查看模板' : data && data?.editOriginalTemplate ? '修改模板' : '创建模板'}`
   }

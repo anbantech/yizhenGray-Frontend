@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import 'antd/dist/antd.css'
 import { Modal, Tooltip } from 'antd'
 import testing from 'Src/assets/Contents/Group692.svg'
@@ -65,17 +65,22 @@ function LookUpDependence(props: NewTaskInstanceType) {
       return temp
     })
   }
-  const acl = useCallback(
-    name => {
-      if (name && visibility) {
-        return `${widths[name]}px`
-      }
-    },
-    [widths, visibility]
-  )
+  const acl = (name: any) => {
+    if (name && visibility) {
+      return `${widths[name]}px`
+    }
+  }
+
   useLayoutEffect(() => {
     setWidth({ ...lineQef.current })
   }, [lineQef, visibility, map])
+
+  useEffect(() => {
+    return () => {
+      setMap(new Map())
+      setWidth({})
+    }
+  }, [visibility])
   // 创建列表
   const ListComponment = (props: any) => {
     const value = props.value as mapType
@@ -153,14 +158,17 @@ function LookUpDependence(props: NewTaskInstanceType) {
       width={width}
       visible={visibility}
       title={name}
+      centered
       onCancel={() => {
         choiceModal(false)
       }}
       footer={[]}
     >
-      <div className={styles.main}>
-        <ListComponment value={data} />
-      </div>
+      {visibility ? (
+        <div className={styles.main}>
+          <ListComponment value={data} />
+        </div>
+      ) : null}
     </Modal>
   )
 }

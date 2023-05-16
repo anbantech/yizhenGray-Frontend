@@ -118,7 +118,7 @@ export interface ResprotocolsDetails {
 
 // 8.创建模板 返回为null
 
-// 9. 模板列表
+// 9. 模版管理
 
 export interface TemplateListResponse {
   results: {
@@ -154,7 +154,7 @@ export interface TemplateDetailInfo {
 }
 // 11. 创建模板交互 返回为null
 
-// 12. 交互列表
+// 12. 交互管理
 
 export interface ResinteractionsList {
   id: number
@@ -298,6 +298,7 @@ export interface ResTaskDetail {
   warning_count: number
   group_name: string
   simu_instance_id: number
+  num: string
 }
 
 // 22. 任务删除  返回为null

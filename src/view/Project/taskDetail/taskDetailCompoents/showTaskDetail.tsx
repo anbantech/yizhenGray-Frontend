@@ -17,7 +17,7 @@ const ShowTaskDetail: React.FC<RouteComponentProps<any, StaticContext, any>> = (
   return (
     <div className={styles.showTaskDetail_container}>
       <div className={styles.showTaskDetail_container_header}>
-        <span className={styles.showTaskDetail_container_header_title}>任务信息</span>
+        <span className={styles.showTaskDetail_container_header_title}>实例信息</span>
       </div>
       <div className={styles.showTaskDetail_container_boby}>
         <TaskForm taskInfo={taskInfo} />

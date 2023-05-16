@@ -394,8 +394,8 @@
   letter-spacing: 0.1px;
   text-align: center;
   background-color: transparent;
-  border: 0.5px solid #2979ff;
-  border-radius: 5px;
+  border: 1px solid #2979ff;
+  border-radius: 4px;
   outline: none;
   cursor: pointer;
   transition: none;
@@ -819,16 +819,16 @@
   padding: 0 24px;
 }
 
-.Header > div:nth-child(1) {
-  flex: 0.08;
+.Header >div:nth-child(1) {
+  flex: 0.07;
 }
 
 .Header > div:nth-child(2) {
-  flex: 0.2;
+  flex: 0.15;
 }
 
 .Header > div:nth-child(3) {
-  flex: 0.2;
+  flex: 0.1;
 }
 
 .Header > div:nth-child(4) {
@@ -836,18 +836,26 @@
 }
 
 .Header > div:nth-child(5) {
-  flex: 0.14;
+  flex: 0.15;
 }
 
-.Header > div:nth-child(6) {
-  flex: 0.13;
+.Header>div:nth-child(6) {
+  flex: 0.1;
+}
+
+.Header>div:nth-child(7) {
+  flex: 0.1;
+}
+
+.Header > div:nth-child(8) {
+  flex: 0.1;
   display: flex;
   align-items: center;
   position: relative;
 }
 
 .Header > div:last-child {
-  flex: 0.17;
+  flex: 0.15;
   display: flex;
   align-items: center;
   position: relative;
@@ -870,7 +878,7 @@
 }
 
 .Table_concent > div:nth-child(1) {
-  flex: 0.08;
+  flex: 0.07;
   overflow: hidden;
   /* 超出要隐藏 */
   white-space: nowrap;
@@ -880,7 +888,7 @@
 }
 
 .Table_concent > div:nth-child(2) {
-  flex: 0.2;
+  flex: 0.15;
 
   overflow: hidden;
   /* 超出要隐藏 */
@@ -891,7 +899,7 @@
 }
 
 .Table_concent > div:nth-child(3) {
-  flex: 0.2;
+  flex: 0.1;
   overflow: hidden;
   /* 超出要隐藏 */
   white-space: nowrap;
@@ -917,7 +925,7 @@
   /* 让文字不换行 */
   text-overflow: ellipsis;
   /* 让截断的文字显示为点点。还有一个值是clip意截断不显示点点 */
-  flex: 0.14;
+  flex: 0.15;
 }
 
 .Table_concent > div:nth-child(6) {
@@ -927,11 +935,30 @@
   /* 让文字不换行 */
   text-overflow: ellipsis;
   /* 让截断的文字显示为点点。还有一个值是clip意截断不显示点点 */
-  flex: 0.13;
+  flex: 0.1;
 }
 
+.Table_concent>div:nth-child(7) {
+  overflow: hidden;
+  /* 超出要隐藏 */
+  white-space: nowrap;
+  /* 让文字不换行 */
+  text-overflow: ellipsis;
+  /* 让截断的文字显示为点点。还有一个值是clip意截断不显示点点 */
+  flex: 0.1;
+}
+
+.Table_concent>div:nth-child(8) {
+  overflow: hidden;
+  /* 超出要隐藏 */
+  white-space: nowrap;
+  /* 让文字不换行 */
+  text-overflow: ellipsis;
+  /* 让截断的文字显示为点点。还有一个值是clip意截断不显示点点 */
+  flex: 0.1;
+}
 .Table_concent > div:last-child {
-  flex: 0.17;
+  flex: 0.15;
   text-align: right;
   overflow: hidden;
   /* 超出要隐藏 */

@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import 'antd/dist/antd.css'
-import { Modal, Input, Form, Button, message, Radio, RadioChangeEvent } from 'antd'
+import { Modal, Input, Form, Button, message, Radio } from 'antd'
 import { throwErrorMessage } from 'Src/util/message'
+import { InfoTip } from 'Src/view/excitation/excitationComponent/Tip'
 import { createTaskInstance } from 'Src/services/api/taskApi'
 import { CrashInfoMap } from 'Src/util/DataMap/dataMap'
 import styles from '../BaseModle.less'
@@ -35,18 +36,30 @@ interface PriceInputProps {
   onChange?: (value: PriceValue) => void
 }
 
+type SetObjDataProps = {
+  [key: string]: any
+}
+
 type CrashObjType = Record<string, string>
 
 function NewTaskInstance(props: NEWTaskInstanceType) {
   const { visibility, task_id, choiceModal, width } = props
   const [form] = Form.useForm<FormInstance>()
   const [isDisableStatus, setDisabledStatus] = useState(true)
-  const [carshObj, setCrashObj] = useState<CrashObjType>({})
+  const [carshObj, setCrashObj] = useState<CrashObjType | Record<string, unknown>>({})
+  const filterData = (value: CrashObjType | Record<string, unknown>) => {
+    const oldVal = value
+    Object.keys(oldVal).forEach(item => {
+      if (oldVal[item] === undefined) {
+        delete oldVal[item]
+      }
+    })
+    return oldVal
+  }
   // 创建列表
   const createInstaceItem = async (params: any) => {
     try {
       const data = await createTaskInstance(params)
-      message.success('实例创建成功')
       return data
     } catch (error) {
       throwErrorMessage(error, { 1005: '实例创建失败' })
@@ -62,12 +75,14 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         task_id,
         work_time,
         crash_num,
-        crash_config: carshObj
+        crash_config: filterData(carshObj)
       }
       if (work_time) {
         const res = await createInstaceItem(copyItem)
         if (res.data) {
+          setCrashObj({})
           choiceModal()
+          message.success('实例创建成功')
         }
       }
     } catch (error) {
@@ -99,16 +114,17 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
     }
   }
 
-  const onChange = (e: RadioChangeEvent, value: string) => {
-    const newCrashObj = carshObj
-    newCrashObj[value] = e.target.value
-    setCrashObj({ ...newCrashObj })
-  }
-  useEffect(() => {
-    return () => {
-      setCrashObj({})
+  const handleCancel = (e: any, value: string) => {
+    e.stopPropagation()
+    const obj = carshObj
+    if (obj[value] === e.target.value) {
+      obj[value] = undefined
+    } else {
+      obj[value] = e.target.value
     }
-  }, [])
+    setCrashObj({ ...obj })
+  }
+
   return (
     <Modal
       className={styles.formModal}
@@ -166,15 +182,35 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         >
           <Input placeholder='请输入运行时长' suffix='小时' />
         </Form.Item>
-        <Form.Item label='Crash数量' name='crash_num' help='填写crash数量后，任务运行中只要运行时长或crash数量达到'>
-          <Input placeholder='请输入Crash数量' />
+        <Form.Item
+          label='Crash数量'
+          name='crash_num'
+          rules={[
+            {
+              validator(_, value) {
+                if (!value) {
+                  return Promise.resolve()
+                }
+                const reg = /^\d+$/
+                if (reg.test(value)) {
+                  if (value >= 1 && value <= 100) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('请输入 1-100 之间的整数'))
+                }
+                return Promise.reject(new Error('请输入 1-100 之间的整数'))
+              }
+            }
+          ]}
+        >
+          <Input placeholder='请输入Crash数量' suffix={<InfoTip />} />
         </Form.Item>
       </Form>
       <div className={styles.CrashTableBody}>
-        <span style={{ paddingLeft: '17px' }}>Crash类型:</span>
+        <span style={{ paddingLeft: '25px' }}> 缺陷类型 :</span>
         <div className={styles.crashTable}>
           <div className={styles.crashTable_header}>
-            <span className={styles.crashTable_headerLeft}> 错误类型 </span>
+            <span className={styles.crashTable_headerLeft}> 缺陷类型 </span>
             <div className={styles.crashTable_headerRight}>
               <span> Crash </span>
               <span> Warn </span>
@@ -185,14 +221,22 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
               return (
                 <div className={styles.tableFooter} key={value}>
                   <div className={styles.crashTable_headerLeft}>{CrashInfoMap[+value]}</div>
-                  <Radio.Group
-                    style={{ width: '30%' }}
-                    onChange={(e: RadioChangeEvent) => {
-                      onChange(e, value)
-                    }}
-                  >
-                    <Radio value='1' className={styles.leftCheckbox} style={{ lineHeight: '39px', width: '56px' }} />
-                    <Radio value='0' style={{ lineHeight: '39px', width: '52px', margin: '0 auto' }} />
+                  <Radio.Group style={{ width: '30%' }} value={carshObj[value]}>
+                    <Radio
+                      value='1'
+                      onClick={e => {
+                        handleCancel(e, value)
+                      }}
+                      className={styles.leftCheckbox}
+                      style={{ lineHeight: '39px', width: '56px' }}
+                    />
+                    <Radio
+                      value='0'
+                      onClick={e => {
+                        handleCancel(e, value)
+                      }}
+                      style={{ lineHeight: '39px', width: '52px', margin: '0 auto' }}
+                    />
                   </Radio.Group>
                 </div>
               )

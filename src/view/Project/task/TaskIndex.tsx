@@ -35,12 +35,15 @@ export const NoTask = () => {
 const TaskIndex: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<projectInfoType>>> = () => {
   // 获取任务详情信息
   const [task_detail, getDetail] = GetTaskDetail()
+
   // 更新实列界面
   const [isInStance, setInstance] = React.useState(false)
+
   // 查看实例信息
   const checkInstances = (taskId: string) => {
     getDetail(taskId)
   }
+
   return (
     <div className={styles.TaskIndexBody}>
       <InstancesContext.Provider value={{ task_detail, setInstance }}>
