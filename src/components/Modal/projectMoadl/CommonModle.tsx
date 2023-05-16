@@ -33,6 +33,7 @@ function ModalpPop(props: any) {
           className={styles.btn_cancelCrashTable}
           key='back'
           disabled={spinning}
+          style={{ width: '96px' }}
           onClick={() => {
             CommonModleClose(false)
           }}

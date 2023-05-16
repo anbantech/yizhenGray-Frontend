@@ -181,7 +181,10 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
       },
       {
         width: '10%',
-        title: '操作',
+        // eslint-disable-next-line react/display-name
+        title: () => {
+          return <span style={{ display: 'block', width: '100%', textAlign: 'right' }}> 操作</span>
+        },
         dataIndex: 'operations',
         key: 'operations',
         // eslint-disable-next-line react/display-name

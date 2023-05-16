@@ -3,6 +3,7 @@ import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import CreateButton from 'Src/components/Button/createButton'
 import ModalpPop from 'Src/components/Modal/projectMoadl/BaseModle'
 import Table from 'antd/lib/table'
+import OmitComponents from 'Src/components/OmitComponents/OmitComponents'
 import ConfigProvider from 'antd/lib/config-provider'
 import * as React from 'react'
 import { useState } from 'react'
@@ -11,7 +12,6 @@ import { message } from 'antd'
 import { ProList, removeProject } from 'Src/services/api/projectApi'
 import { throwErrorMessage } from 'Src/util/message'
 import zhCN from 'antd/lib/locale/zh_CN'
-import deleteImage from 'Image/Deletes.svg'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import inputStyle from 'Src/components/Input/searchInput/searchInput.less'
@@ -54,6 +54,9 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   // 目标列表参数
   const [params, setParams] = useState(request)
 
+  // 展示菜单
+  const [updateMenue, setUpdateMenue] = useState<number>(-1)
+
   // 项目管理
   const [projectList, setProjectList] = useState<projectListType[]>([])
 
@@ -68,6 +71,9 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
 
   //  删除弹出框
   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
+
+  // 存储项目信息
+  const [data, setData] = useState()
 
   // 创建项目 弹出框
   const createProjectModal = () => {
@@ -113,6 +119,19 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   // 更改页码
   const changePage = (page: number, type: string, pageSize: number) => {
     setParams({ ...params, page, page_size: pageSize })
+  }
+
+  const onChange = (val: string) => {
+    switch (val) {
+      case '删除':
+        deleteProject(`${updateMenue}`, true)
+        break
+      case '修改':
+        fixProject(data)
+        break
+      default:
+        return null
+    }
   }
 
   const deleteProjectRight = async () => {
@@ -189,6 +208,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
         return (
           <div className={styles.Opera_detaile}>
             <span
+              style={{ marginLeft: '10px', marginRight: '30px' }}
               role='button'
               tabIndex={0}
               onClick={() => {
@@ -197,22 +217,14 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
             >
               查看详情
             </span>
-            <span
-              style={{ marginLeft: '10px', marginRight: '10px' }}
-              role='button'
-              tabIndex={0}
-              onClick={() => {
-                fixProject(row)
-              }}
-            >
-              修改
-            </span>
-            <img
-              src={deleteImage}
-              alt=''
-              onClick={() => {
-                deleteProject(row.id, true)
-              }}
+            <OmitComponents
+              data={row}
+              setData={setData}
+              id={row.id}
+              type='project'
+              onChange={onChange}
+              updateMenue={setUpdateMenue}
+              status={updateMenue}
             />
           </div>
         )

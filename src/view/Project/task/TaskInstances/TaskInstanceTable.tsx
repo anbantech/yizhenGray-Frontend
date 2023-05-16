@@ -8,7 +8,7 @@ import * as React from 'react'
 import { message } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
 import zhCN from 'antd/lib/locale/zh_CN'
-import deleteImage from 'Image/Deletes.svg'
+import deleteImage from 'Src/assets/image/icon_delete.svg'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import { statusList, statusMap } from 'Src/util/DataMap/dataMap'
 import { DownOutlined } from '@ant-design/icons/lib/icons'
@@ -268,7 +268,11 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
     },
     {
       width: '15%',
-      title: '更多操作',
+
+      // eslint-disable-next-line react/display-name
+      title: () => {
+        return <span style={{ display: 'block', width: '100%', textAlign: 'right' }}>更多操作</span>
+      },
       dataIndex: 'operations',
       key: 'operations',
       // eslint-disable-next-line react/display-name
@@ -276,6 +280,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         return (
           <div className={globalStyle.Opera_detaile}>
             <span
+              style={{ marginLeft: '10px', marginRight: '30px' }}
               role='button'
               tabIndex={0}
               onClick={() => {
