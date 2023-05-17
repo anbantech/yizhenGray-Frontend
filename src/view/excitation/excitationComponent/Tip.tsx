@@ -36,7 +36,7 @@ const WarnTip = () => {
 const InfoTip = () => {
   return (
     <div className={StyleSheet.stepInfoTip}>
-      <Tooltip title='填写crash数量后，任务运行中只要运行时长或crash数量达到' placement='bottom'>
+      <Tooltip title='填写crash数量后，任务运行中只要运行时长或crash数量达到设置即可停止' placement='bottom'>
         <QuestionCircleOutlined style={{ fontSize: '15px' }} />
       </Tooltip>
     </div>

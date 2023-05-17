@@ -44,7 +44,7 @@ const HeaderComponets: React.FC = () => {
             </div>
           </div>
           <div className={styles.headerright}>
-            <img className={styles.headerright} src={ImageMap[0]} alt='' />
+            <img className={styles.headerright} src={ImageMap[InstancesDetail.task_detail.status as keyof typeof ImageMap]} alt='' />
           </div>
         </div>
       )}

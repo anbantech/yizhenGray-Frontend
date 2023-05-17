@@ -3,7 +3,7 @@ import { TemplateListResponse, TemplateDetailInfo, Primitive, templateDependence
 import request from 'Src/services/request/request'
 
 /**
- * 获取模板列表
+ * 获取模版管理
  */
 export function getTemplateList(params: TemplateListParams) {
   return request.get<TemplateListResponse>('/api/v1.0/templates/query', { params })

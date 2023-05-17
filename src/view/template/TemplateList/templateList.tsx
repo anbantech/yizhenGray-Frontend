@@ -212,7 +212,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   return (
     <div className={styles.AnBan_main}>
       <div className={styles.AnBan_header}>
-        <span className={styles.AnBan_header_title}>模板列表</span>
+        <span className={styles.AnBan_header_title}>模版管理</span>
         <div className={styles.AnBan_header_bottom}>
           <SearchInput className={inputStyle.searchInput} placeholder='根据名称搜索模板' onChangeValue={changeKeywords} />
           <CreateButton width='146px' name='新建模板' size='large' type='primary' onClick={() => jumpTemplate(undefined, false, false)} />

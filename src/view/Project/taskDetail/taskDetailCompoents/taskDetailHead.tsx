@@ -35,7 +35,7 @@ interface InfoType {
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
 function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
   const { taskInfo, projectInfo } = props.infoMap
-  const { name, start_time, end_time, status, id, project_id, desc } = props.taskDetailInfo
+  const { num, start_time, end_time, status, id, project_id } = props.taskDetailInfo
   const [spinStatus, setSpinStatus] = React.useState(false)
 
   const [index, setIndex] = React.useState(0)
@@ -59,7 +59,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setSpinStatus(true)
       setIndex(4)
       try {
-        await stoppaused({ task_id: id })
+        await stoppaused({ instance_id: id })
         return
       } catch (error) {
         setSpinStatus(false)
@@ -70,7 +70,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setIndex(5)
       setSpinStatus(true)
       try {
-        await stopcontuine({ task_id: id })
+        await stopcontuine({ instance_id: id })
         return
       } catch (error) {
         setSpinStatus(false)
@@ -86,7 +86,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       // 停止任务  通过任务ID
       setSpinStatus(true)
       try {
-        await stoptest({ task_id: id })
+        await stoptest({ instance_id: id })
         return
       } catch (error) {
         message.error(error.message)
@@ -97,7 +97,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setSpinStatus(true)
       setIndex(2)
       try {
-        await rePlayTask({ task_id: id })
+        await rePlayTask({ instance_id: id })
         return
       } catch (error) {
         setSpinStatus(false)
@@ -111,7 +111,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
     setSpinStatus(true)
     setIndex(3)
     try {
-      await bgTest({ task_id: id as number })
+      await bgTest({ instance_id: id as number })
       return
     } catch (error) {
       setSpinStatus(false)
@@ -135,16 +135,15 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
     <div className={styles.taskDetailHead_Main}>
       <div className={styles.taskDetailHead_Main_left}>
         <div className={styles.taskDetailHead_Main_titlelayout}>
-          <span className={styles.taskDetailHead_Main_left_title}>{`${name}`}</span>
+          <span className={styles.taskDetailHead_Main_left_title}>{`${num}`}</span>
           <div style={{ marginTop: '6px' }} className={styles.taskDetailCard_Main_left_footer_detail}>
             <span role='time' onClick={lookTaskInfo}>
-              查看任务信息
+              查看停止条件
             </span>
             <RightOutlined />
           </div>
         </div>
         <div className={styles.taskDetailHead_Main_left_footer}>
-          <span> {`任务描述 : ${desc}`}</span>
           <span>
             {' '}
             {[0, 1].includes(status)
@@ -157,7 +156,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       </div>
       <div className={styles.taskDetailHead_Main_right}>
         {[0, 1].includes(status) && (
-          <Link to={`/OnlineReporting?id=${id}?name=${name}`} target='_blank' style={{ color: '#000000' }}>
+          <Link to={`/OnlineReporting?id=${id}?name=${num}`} target='_blank' style={{ color: '#000000' }}>
             <div role='button' className={styles.ImageContioner} tabIndex={0}>
               <img className={styles.ImageSize} src={report} alt='stopCourse' />
               <span>查看报告</span>

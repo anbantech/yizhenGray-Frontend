@@ -104,7 +104,7 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       state: {
         type: 'four',
         isFixForm: false,
-        name: '交互列表'
+        name: '交互管理'
       }
     })
   }, [history])
@@ -259,7 +259,7 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   return (
     <div className={styles.AnBan_main}>
       <div className={(styles.AnBan_header, style.AnBan_headerRadio)}>
-        <span className={styles.AnBan_header_title}>交互列表</span>
+        <span className={styles.AnBan_header_title}>交互管理</span>
         <div className={styles.AnBan_header_bottom}>
           <SearchInput ref={childRef.inputRef} className={inputStyle.searchInput} placeholder='根据名称搜索交互' onChangeValue={setOperation} />
           <CreateButton

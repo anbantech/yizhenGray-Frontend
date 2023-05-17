@@ -271,7 +271,7 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
   return (
     <div className={styles.AnBan_main}>
       <div className={(styles.AnBan_header, style.AnBan_headerRadio)}>
-        <span className={styles.AnBan_header_title}>外设列表</span>
+        <span className={styles.AnBan_header_title}>外设管理</span>
         <div className={styles.AnBan_header_bottom}>
           <SearchInput ref={childRef.inputRef} className={inputStyle.searchInput} placeholder='根据名称搜索外设' onChangeValue={setOperation} />
           <CreateButton

@@ -207,10 +207,10 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         </Form.Item>
       </Form>
       <div className={styles.CrashTableBody}>
-        <span style={{ paddingLeft: '17px' }}>Crash类型:</span>
+        <span style={{ paddingLeft: '25px' }}> 缺陷类型 :</span>
         <div className={styles.crashTable}>
           <div className={styles.crashTable_header}>
-            <span className={styles.crashTable_headerLeft}> 错误类型 </span>
+            <span className={styles.crashTable_headerLeft}> 缺陷类型 </span>
             <div className={styles.crashTable_headerRight}>
               <span> Crash </span>
               <span> Warn </span>

@@ -46,6 +46,7 @@ interface statusItemType {
   lable: string
   value: number | string
 }
+
 type statusValue = string | number
 
 interface projectListType {
@@ -119,6 +120,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
     }
     setStatusOperationStatus(false)
   }
+
   // 状态菜单
   const StatusMenuComponents = () => {
     return (
@@ -144,10 +146,10 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   }
 
   const jumpTasksDetail = (value: any) => {
-    const task_id = value.id
+    const { task_id } = value
     history.push({
       pathname: '/projects/Tasks/Detail',
-      state: { projectInfo, taskInfo: { editTask: false, task_id } }
+      state: { projectInfo, taskInfo: { editTask: false, task_id }, instanceInfo: value }
     })
   }
 
@@ -304,9 +306,10 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   ]
 
   // 获取实列列表
-  const getTaskInstancesList = async (value: Resparams) => {
+  const getTaskInstancesList = async (value: Resparams, id: number) => {
+    const val = { ...value, task_id: id }
     try {
-      const listResult = await taskTest(value)
+      const listResult = await taskTest(val)
       if (listResult.data) {
         setTotal(listResult.data.total)
         setTaskList(listResult.data.results)
@@ -318,8 +321,9 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   }
 
   useEffect(() => {
-    getTaskInstancesList(params)
-  }, [params, visibility])
+    getTaskInstancesList(params, InstancesDetail.task_detail.id)
+  }, [params, visibility, InstancesDetail?.task_detail.id])
+
   return (
     <div className={globalStyle.AnBan_main}>
       <div className={styles.instance_header}>

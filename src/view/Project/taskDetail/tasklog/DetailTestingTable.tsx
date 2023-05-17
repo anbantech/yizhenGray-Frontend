@@ -98,6 +98,42 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       ),
       width: '10%'
     },
+
+    {
+      title: () => {
+        return (
+          <div>
+            <span>分支覆盖率 </span>
+          </div>
+        )
+      },
+      dataIndex: 'branch_coverage',
+      key: 'branch_coverage',
+      render: (text: any, record: any) => (
+        <div className={styles.checkDetail} key={record.id}>
+          {record.branch_coverage}
+        </div>
+      ),
+      width: '10%'
+    },
+
+    {
+      title: () => {
+        return (
+          <div>
+            <span>语句覆盖率 </span>
+          </div>
+        )
+      },
+      dataIndex: 'statement_coverage',
+      key: 'statement_coverage',
+      render: (text: any, record: any) => (
+        <div className={styles.checkDetail} key={record.id}>
+          {record.statement_coverage}
+        </div>
+      ),
+      width: '10%'
+    },
     {
       title: () => {
         return (
