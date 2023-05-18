@@ -684,7 +684,7 @@ const templateDataLoader = {
         })
       }
     } catch {
-      warn(false, '拉取模版管理失败')
+      warn(false, '拉取模板管理失败')
     }
     const blob = new Blob([JSON.stringify(exportJson, null, 2) as string])
     browserDownload.createFrontendDownloadAction(`${name}.json`, blob)

@@ -81,16 +81,21 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
   }
 
   const deleteProjectRight = async () => {
-    chioceBtnLoading(true)
     try {
       const res = await deleteneExcitaionListMore(`${updateMenue}`)
       if (res.data) {
-        depCollect(true, { page: 1, page_size: 10 })
-        CommonModleClose(false)
-        chioceBtnLoading(false)
-        message.success('激励嵌套删除成功')
+        if (res.data.success_list.length > 0) {
+          depCollect(true, { page: 1, page_size: 10 })
+          message.success('激励嵌套删除成功')
+        } else {
+          message.error(res.data.fail_list[0])
+        }
       }
+      CommonModleClose(false)
+      chioceBtnLoading(false)
     } catch (error) {
+      CommonModleClose(false)
+      chioceBtnLoading(false)
       throwErrorMessage(error, { 1009: '激励嵌套删除失败' })
     }
   }

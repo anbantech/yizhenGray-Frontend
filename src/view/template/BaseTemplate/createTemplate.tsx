@@ -77,22 +77,23 @@ const CreateTemplateComponent: React.FC = () => {
     },
     [history, template]
   )
-  // 删除模版
+  // 删除模板
   const deleteTemplate = useCallback(async () => {
     chioceBtnLoading(true)
     try {
       const res = await API.removeTemplate({ templates: [template.templateId] })
       if (res.data) {
-        changeCommonDialogStatus(false)
         if (res.data.success_list.length > 0) {
           chioceBtnLoading(false)
           message.success('删除成功')
         } else {
           message.error(res.data.fail_list[0])
         }
+        changeCommonDialogStatus(false)
       }
     } catch (error) {
-      throwErrorMessage(error, { 1009: '项目删除失败' })
+      changeCommonDialogStatus(false)
+      throwErrorMessage(error, { 1009: '模板删除失败' })
     }
   }, [changeCommonDialogStatus, template.templateId])
   const nameRenderFn = () => {
@@ -177,7 +178,7 @@ const CreateTemplateComponent: React.FC = () => {
         name='删除模板'
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
       />
-      <LookUpDependence visibility={visibility as boolean} name='模版关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
+      <LookUpDependence visibility={visibility as boolean} name='模板关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
     </>
   )
 }

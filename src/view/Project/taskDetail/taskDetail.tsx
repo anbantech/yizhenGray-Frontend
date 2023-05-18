@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useEffect, useRef } from 'react'
-import { Spin } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory } from 'react-router'
 import { ResTaskDetail } from 'Src/globalType/Response'
 import UseWebsocket from 'Src/webSocket/useWebSocket'
@@ -150,35 +149,33 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   return (
     <>
       {taskDetailInfo ? (
-        <Spin tip='数据重载ing' size='large' spinning={[1, 4].includes(updateStatus) && spinning}>
-          <div className={globalStyle.AnBan_main}>
-            {taskDetailInfo && (
-              <>
-                <TaskDetailHead taskDetailInfo={taskDetailInfo} infoMap={props.location?.state} jumpLookTaskInfo={jumpLookTaskInfo} />
-                <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
-                {taskDetailInfo?.status === 2 ? (
-                  <DetailTestingTable params={depData} taskDetailInfo={taskDetailInfo} status={updateStatus} />
-                ) : (
-                  <DetailTestedTable
-                    system={depData.system}
-                    status={updateStatus}
-                    Checked={checked}
-                    task_id={+instanceInfo.id}
-                    infoMap={props.location?.state}
-                    testTimeSort={testTimeSort}
-                    caseSort={caseSort}
-                    changePage={changePage}
-                    total={total as number}
-                    params={depData}
-                    logData={logData}
-                    BranchSort={branchSort}
-                    StatementSort={statementSort}
-                  />
-                )}
-              </>
-            )}
-          </div>
-        </Spin>
+        <div className={globalStyle.AnBan_main}>
+          {taskDetailInfo && (
+            <>
+              <TaskDetailHead taskDetailInfo={taskDetailInfo} infoMap={props.location?.state} jumpLookTaskInfo={jumpLookTaskInfo} />
+              <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
+              {taskDetailInfo?.status === 2 ? (
+                <DetailTestingTable params={depData} taskDetailInfo={taskDetailInfo} status={updateStatus} />
+              ) : (
+                <DetailTestedTable
+                  system={depData.system}
+                  status={updateStatus}
+                  Checked={checked}
+                  task_id={+instanceInfo.id}
+                  infoMap={props.location?.state}
+                  testTimeSort={testTimeSort}
+                  caseSort={caseSort}
+                  changePage={changePage}
+                  total={total as number}
+                  params={depData}
+                  logData={logData}
+                  BranchSort={branchSort}
+                  StatementSort={statementSort}
+                />
+              )}
+            </>
+          )}
+        </div>
       ) : (
         <ReportLoading value='数据正在加载ing' />
       )}

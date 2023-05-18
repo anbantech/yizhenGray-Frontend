@@ -37,7 +37,7 @@ const normalizeBackendTime = (time: string) => {
 const CreateTemplateTitle: React.FC = () => {
   /**
    * 初始化页面状态
-   * 包括模板状态、模板ID、模板基本信息、模版管理和预期模版管理
+   * 包括模板状态、模板ID、模板基本信息、模板管理和预期模板管理
    */
   const { template, templateDispatch } = useContext(TemplateContext)
   const { status, baseInfo, templateId, templateElements } = template
@@ -94,7 +94,7 @@ const CreateTemplateTitle: React.FC = () => {
    * 导入模板
    * 1. 把文本内容当作 json 解析
    * 2. 检查单模板格式，是否是有效的模板格式，只校验格式
-   * 3. 检查模版管理能否转化为 tdList，检查模版管理的内容是否正确
+   * 3. 检查模板管理能否转化为 tdList，检查模板管理的内容是否正确
    *    如果不能成功转化，说明导入的模板格式存在问题
    *    如果转化成功，则将原数据写入页面状态中，在对应的组件观察，并走 init 逻辑
    * 4. 检查预期模板格式是否正确

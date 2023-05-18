@@ -55,7 +55,7 @@ const OneExcotationForm: React.FC = () => {
   const CommonModleClose = (val: boolean) => {
     setVisibility(val)
   }
-  // 获取模版列表
+  // 获取模板列表
   const fetchTemplateList = React.useCallback(async () => {
     //  Todo code码
     try {
@@ -66,7 +66,7 @@ const OneExcotationForm: React.FC = () => {
       }
       return result
     } catch (error) {
-      throwErrorMessage(error, { 1009: '项目删除失败' })
+      message.error(error.message)
     }
   }, [])
   // 端口列表
@@ -80,7 +80,7 @@ const OneExcotationForm: React.FC = () => {
       }
       return result
     } catch (error) {
-      throwErrorMessage(error, { 1009: '项目删除失败' })
+      message.error(error.message)
     }
   }, [])
 
@@ -121,7 +121,7 @@ const OneExcotationForm: React.FC = () => {
         }
       }
     } catch (error) {
-      throwErrorMessage(error, { 1009: '激励创建失败' })
+      throwErrorMessage(error, { 1009: '激励单元删除失败' })
     }
   }, [form, history, info?.id, isFixForm])
 
@@ -251,11 +251,11 @@ const OneExcotationForm: React.FC = () => {
             }
           </Select>
         </Form.Item>
-        <Form.Item name='template_id' label='模版名称' rules={[{ required: true, message: '请选择模版' }]}>
-          <Select placeholder='请选择模版' disabled={isFixForm && lookDetail}>
+        <Form.Item name='template_id' label='模板名称' rules={[{ required: true, message: '请选择模板' }]}>
+          <Select placeholder='请选择模板' disabled={isFixForm && lookDetail}>
             {
               /**
-               *  选择不同模版
+               *  选择不同模板
                */
               templateList?.map(rate => {
                 return (
