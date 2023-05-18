@@ -89,7 +89,7 @@ export interface UpdateTemplateParams extends CreateTemplateParams {
   templates_id: number
 }
 
-// 9. 模版管理
+// 9. 模板管理
 
 export interface TemplateListParams {
   key_word?: string

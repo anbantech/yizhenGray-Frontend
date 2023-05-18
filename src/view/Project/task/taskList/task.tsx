@@ -78,11 +78,13 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   const [hasMoreData, setHasMore] = useState(true)
 
   // 弹窗
-  const [modalData, setModalData] = useState({ taskId: '', spinning: false, fixTitle: false, isModalVisible: false })
+  const [modalData, setModalData] = useState({ taskId: '', fixTitle: false, isModalVisible: false })
 
   //  删除弹出框
   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
 
+  //
+  const [spinning, setSpinning] = useState(false)
   // 新建任务
   const jumpNewCreateTask = () => {
     history.push({
@@ -135,25 +137,32 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const deleteProjectRight = async () => {
-    setModalData({ ...modalData, spinning: true })
-    try {
-      const res = await deleteTasks(projectInfo.projectId, modalData.taskId)
-      if (res.data) {
-        setTaskList([])
-        setParams({ ...params, key_word: '', page: 1 })
-        setModalData({ ...modalData, spinning: false })
-        setCommonModleStatus(false)
-        message.success('任务删除成功')
-      }
-    } catch (error) {
-      throwErrorMessage(error, { 1009: '任务删除失败' })
-    }
-  }
-
   // 删除弹出框函数
   const CommonModleClose = (value: boolean) => {
     setCommonModleStatus(value)
+  }
+
+  const deleteProjectRight = async () => {
+    setSpinning(true)
+    try {
+      const res = await deleteTasks(projectInfo.projectId, modalData.taskId)
+      setModalData({ ...modalData, taskId: '' })
+      if (res.data) {
+        if (res.data.success_list.length > 0) {
+          setTaskList([])
+          message.success('删除成功')
+        } else {
+          message.error(res.data.fail_list[0])
+        }
+        setParams({ ...params, key_word: '', page: 1 })
+        message.success('任务删除成功')
+      }
+      setSpinning(false)
+      CommonModleClose(false)
+    } catch (error) {
+      CommonModleClose(false)
+      throwErrorMessage(error, { 1009: '任务删除失败' })
+    }
   }
 
   // 获取任务列表
@@ -283,7 +292,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       </div>
       <CommonModle
         IsModalVisible={CommonModleStatus}
-        spinning={modalData.spinning}
+        spinning={spinning}
         deleteProjectRight={deleteProjectRight}
         CommonModleClose={CommonModleClose}
         ing='删除中'

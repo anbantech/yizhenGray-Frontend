@@ -93,15 +93,16 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
       const res = await API.removeTemplate({ templates: [updateMenue] })
       if (res.data) {
         setParams(params => ({ ...params, key_word: '', page: 1 }))
-        changeCommonDialogStatus(false)
         if (res.data.success_list.length > 0) {
           chioceBtnLoading(false)
           message.success('删除成功')
         } else {
           message.error(res.data.fail_list[0])
         }
+        changeCommonDialogStatus(false)
       }
     } catch (error) {
+      changeCommonDialogStatus(false)
       throwErrorMessage(error, { 1009: '项目删除失败' })
     }
   }, [changeCommonDialogStatus, updateMenue])
@@ -212,7 +213,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   return (
     <div className={styles.AnBan_main}>
       <div className={styles.AnBan_header}>
-        <span className={styles.AnBan_header_title}>模版管理</span>
+        <span className={styles.AnBan_header_title}>模板管理</span>
         <div className={styles.AnBan_header_bottom}>
           <SearchInput className={inputStyle.searchInput} placeholder='根据名称搜索模板' onChangeValue={changeKeywords} />
           <CreateButton width='146px' name='新建模板' size='large' type='primary' onClick={() => jumpTemplate(undefined, false, false)} />
@@ -237,7 +238,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
         name='删除模板'
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
       />
-      <LookUpDependence visibility={visibility as boolean} name='模版关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
+      <LookUpDependence visibility={visibility as boolean} name='模板关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
     </div>
   )
 }

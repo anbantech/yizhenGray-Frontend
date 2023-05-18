@@ -117,15 +117,22 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
     try {
       const res = await deleteneExcitaionList(`${updateMenue}`)
       if (res.data) {
-        depCollect(true, { page: 1, page_size: 10 })
+        if (res.data.success_list.length > 0) {
+          depCollect(true, { page: 1, page_size: 10 })
+          message.success('外设删除成功')
+        } else {
+          message.error(res.data.fail_list[0])
+        }
         CommonModleClose(false)
         chioceBtnLoading(false)
-        message.success('外设删除成功')
       }
     } catch (error) {
+      CommonModleClose(false)
+      chioceBtnLoading(false)
       throwErrorMessage(error, { 1009: '外设删除失败' })
     }
   }
+
   const changePage = (page: number, pageSize: number) => {
     depCollect(true, { page, page_size: pageSize })
   }
