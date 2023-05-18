@@ -23,7 +23,7 @@ export interface isCode {
   message: string
 }
 
-// 2. 创建项目  返回为null
+// 2. 新建项目  返回为null
 
 // 3. 项目管理
 
@@ -84,7 +84,7 @@ export interface ResProjectDetails {
   update_user: string
 }
 
-// 5. 创建协议 返回为null
+// 5. 新建协议 返回为null
 
 // 6. 协议列表
 
@@ -116,7 +116,7 @@ export interface ResprotocolsDetails {
   update_user: string
 }
 
-// 8.创建模板 返回为null
+// 8.新建模板 返回为null
 
 // 9. 模板管理
 
@@ -152,7 +152,7 @@ export interface TemplateDetailInfo {
   create_user: string
   update_user: string
 }
-// 11. 创建模板交互 返回为null
+// 11. 新建模板交互 返回为null
 
 // 12. 交互管理
 
@@ -196,7 +196,7 @@ export interface Resexception_list {
   total: number
 }
 
-// 15. 创建目标  返回为null
+// 15. 新建目标  返回为null
 
 // 16. 目标列表
 
@@ -248,7 +248,7 @@ export interface updateTarget {
 }
 // 18. 目标删除  返回为Null
 
-// 19.  创建任务  返回为NUll
+// 19.  新建任务  返回为NUll
 
 // 20.  任务列表
 
@@ -395,7 +395,7 @@ export interface Restestlogs {
 
 // 33 手动接续测试  返回为null
 
-// 34. 创建引擎  返回为null
+// 34. 新建引擎  返回为null
 
 export interface Resengines {
   type: string

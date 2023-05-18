@@ -102,7 +102,7 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       throwErrorMessage(error, { 1009: '交互删除失败' })
     }
   }
-  // 创建项目 弹出框
+  // 新建项目 弹出框
   const createProjectModal = React.useCallback(() => {
     const createGroupExcitation = '/FourExcitationList/createGroupExcitation'
     history.push({
@@ -124,7 +124,8 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         type: 'four',
         lookDetail: true,
         isFixForm: true,
-        name: '交互'
+        name: '交互',
+        from: '/FourExcitationList'
       }
     })
   }
@@ -182,7 +183,8 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         type: 'four',
         lookDetail: false,
         isFixForm: true,
-        name: '交互'
+        name: '修改交互',
+        fromPathName: '/FourExcitationList'
       }
     })
   }

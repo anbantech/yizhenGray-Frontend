@@ -20,7 +20,7 @@ const layout = {
 
 const ExcitationComponents: React.FC = () => {
   const history = useHistory()
-  const { isFixForm, info, lookDetail } = useContext(GlobalContexted)
+  const { isFixForm, info, lookDetail, fromPathName, type, name } = useContext(GlobalContexted)
   const { Option } = Select
   const [form] = useForm()
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
@@ -49,6 +49,7 @@ const ExcitationComponents: React.FC = () => {
   }, [])
   const createOneExcitationFn = React.useCallback(async () => {
     setSpinning(true)
+    const routerInfo = { isFixForm, info, lookDetail, type, name }
     let values
     try {
       values = await form.validateFields()
@@ -69,16 +70,18 @@ const ExcitationComponents: React.FC = () => {
           result = await updateOneExcitaionList(info.id, params)
         }
         setSpinning(false)
+        CommonModleClose(false)
         if (result.data) {
           history.push({
-            pathname: '/OneExcitationList'
+            state: { ...routerInfo, lookDetail: true },
+            pathname: `${fromPathName}`
           })
         }
       }
     } catch (error) {
-      throwErrorMessage(error, { 1009: '外设创建失败' })
+      throwErrorMessage(error, { 1009: '外设新建失败' })
     }
-  }, [form, history, info?.id, isFixForm])
+  }, [isFixForm, info, lookDetail, type, name, form, history, fromPathName])
 
   const cancelForm = () => {
     history.push({
@@ -119,7 +122,7 @@ const ExcitationComponents: React.FC = () => {
     [form]
   )
 
-  // 创建或者修改
+  // 新建或者修改
   const createOrUpdate = React.useCallback(() => {
     if (isFixForm) {
       CommonModleClose(true)

@@ -56,13 +56,13 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
     })
     return oldVal
   }
-  // 创建列表
+  // 新建列表
   const createInstaceItem = async (params: any) => {
     try {
       const data = await createTaskInstance(params)
       return data
     } catch (error) {
-      throwErrorMessage(error, { 1005: '实例创建失败' })
+      throwErrorMessage(error, { 1005: '实例新建失败' })
       return error
     }
   }
@@ -82,12 +82,12 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         if (res.data) {
           setCrashObj({})
           choiceModal()
-          message.success('实例创建成功')
+          message.success('实例新建成功')
         }
       }
     } catch (error) {
       setDisabledStatus(true)
-      throwErrorMessage(error, { 1005: '创建失败' })
+      throwErrorMessage(error, { 1005: '新建失败' })
       return error
     }
   }, [carshObj, choiceModal, form, task_id])
@@ -153,7 +153,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
           type='primary'
           onClick={() => formVali()}
         >
-          创建
+          新建
         </Button>
       ]}
     >

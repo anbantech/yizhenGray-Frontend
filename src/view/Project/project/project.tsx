@@ -75,7 +75,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   // 存储项目信息
   const [data, setData] = useState()
 
-  // 创建项目 弹出框
+  // 新建项目 弹出框
   const createProjectModal = () => {
     setModalData({ ...modalData, fixTitle: false, isModalVisible: true })
   }

@@ -188,7 +188,7 @@ const TemplateResult: React.FC<RouteComponentProps<any, any, any>> = () => {
     initTemplateFromContext()
   }, [initTemplateFromContext, template.ptList])
 
-  // 创建模板函数
+  // 新建模板函数
   const createTemplate = () => {
     let elements
     try {

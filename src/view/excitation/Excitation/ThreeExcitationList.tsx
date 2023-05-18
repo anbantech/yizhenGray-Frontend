@@ -99,7 +99,7 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
       throwErrorMessage(error, { 1009: '激励嵌套删除失败' })
     }
   }
-  // 创建项目 弹出框
+  // 新建项目 弹出框
   const createProjectModal = React.useCallback(() => {
     const createDoubleExcitation = '/ThreeExcitationList/createDoubleExcitation'
     history.push({
@@ -122,10 +122,12 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
         type: 'three',
         lookDetail: true,
         isFixForm: true,
-        name: '激励嵌套'
+        name: '激励嵌套',
+        fromPathName: '/ThreeExcitationList'
       }
     })
   }
+
   const updateParams = (value: string) => {
     depCollect(true, { key_word: value, page: 1 })
   }
@@ -166,7 +168,7 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
         type: 'three',
         lookDetail: false,
         isFixForm: true,
-        name: '激励嵌套'
+        name: '修改激励嵌套'
       }
     })
   }

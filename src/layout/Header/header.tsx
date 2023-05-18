@@ -163,18 +163,18 @@ function Header(props: any) {
     '/TwoExcitationList/Detail': '激励单元详情',
     '/ThreeExcitationList/Detail': '激励嵌套详情',
     '/FourExcitationList/Deatail': '交互详情',
-    '/OneExcitationList/update': '外设详情',
-    '/TwoExcitationList/update': '激励单元详情',
-    '/ThreeExcitationList/update': '激励嵌套详情',
-    '/FourExcitationList/update': '交互详情',
+    '/OneExcitationList/update': '修改外设',
+    '/TwoExcitationList/update': '修改激励单元',
+    '/ThreeExcitationList/update': '修改激励嵌套',
+    '/FourExcitationList/update': '修改交互',
     '/TwoExcitationList/createDoubleExcitationGroup': '新建端口单元管理',
     '/ThreeExcitationList/createDoubleExcitation': '新建端口嵌套管理',
     '/FourExcitationList/createGroupExcitation': '新建交互',
     '/OneExcitationList/createExcitation': '新建外设',
     '/FourExcitationList/Deatail/ExcitationDraw': '预览',
     '/templateList': '模板管理',
-    '/templateList/templateDetail': '模板详情',
-    '/templateList/template': `${data && data?.readonlyBaseTemplate ? '查看模板' : data && data?.editOriginalTemplate ? '修改模板' : '创建模板'}`
+    '/templateList/templateDetail': `${data?.editOriginalTemplate ? '修改模板' : '模版详情'}`,
+    '/templateList/template': `${data && data?.readonlyBaseTemplate ? '查看模板' : data && data?.editOriginalTemplate ? '修改模板' : '新建模板'}`
   }
   const history = useHistory()
   const jumpTest = (value: any) => {

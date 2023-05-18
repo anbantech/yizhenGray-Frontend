@@ -6,7 +6,6 @@ import styles from '../BaseModle.less'
 
 function ModalpPop(props: any) {
   const { IsModalVisible, CommonModleClose, ing, spinning, concent, name, deleteProjectRight } = props
-  console.log(spinning)
   const Title = () => {
     return (
       <div>

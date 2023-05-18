@@ -260,7 +260,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
     },
     {
       width: '10%',
-      title: '创建时间',
+      title: '新建时间',
       dataIndex: 'create_time',
       key: 'create_time',
       // eslint-disable-next-line react/display-name
