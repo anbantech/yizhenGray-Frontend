@@ -51,7 +51,7 @@ const CreateResponseTemplateComponent: React.FC<RouteComponentProps<any, any, an
 
   /**
    * 初始化默认预期模板数据
-   * 由于默认数据第一次渲染后就不需要重新创建
+   * 由于默认数据第一次渲染后就不需要重新新建
    * 且放在 function 外部形成闭包会造成组件销毁，状态不恢复默认的情况
    * 故使用 useMemo 在首次渲染的时候将默认数据保存
    */
@@ -128,7 +128,7 @@ const CreateResponseTemplateComponent: React.FC<RouteComponentProps<any, any, an
    * baseInfoRef 和 templateRef 用于调用兄弟组件的 validator 函数
    * templateId、protocolId 和 projectId
    * 模板状态如果是修改，则需要调用修改接口
-   * 模板状态如果不是修改，则需要调用创建接口
+   * 模板状态如果不是修改，则需要调用新建接口
    */
   const { template } = useContext(TemplateContext)
   const { responseTemplate, status, baseInfoRef, templateRef, templateId, protocolId, projectId } = template
@@ -404,7 +404,7 @@ const CreateResponseTemplateComponent: React.FC<RouteComponentProps<any, any, an
         try {
           // TODO 接口类型定义错误
           await API.createTemplate(params)
-          message.success('创建成功')
+          message.success('新建成功')
           routerPush()
         } catch (error) {
           throwErrorMessage(error, {
@@ -419,14 +419,14 @@ const CreateResponseTemplateComponent: React.FC<RouteComponentProps<any, any, an
   )
 
   /**
-   * 创建或修改模板
+   * 新建或修改模板
    * 1. 依次校验基础信息、模板信息和解析模板信息
    * 2. 加载基础信息：模板名称和模板描述
    * 3. 加载模板配置信息：模板结果列表
    * 4. 加载解析模板配置信息：解析模板管理和解析器
    * 5. 初始化接口内置信息：引擎参数、协议参数、模板参数
    * 6. 合并基础信息、模板配置信息、解析模板配置信息和接口内置信息
-   * 7. 调用接口创建模板或修改模板整体
+   * 7. 调用接口新建模板或修改模板整体
    */
   const nextStep = useCallback(async () => {
     if (readonlyBaseTemplate) {
@@ -695,13 +695,13 @@ const CreateResponseTemplateComponent: React.FC<RouteComponentProps<any, any, an
               </div>
             </div>
             <div className={styles.footerOpations}>
-              <StepSection onClickCallback={nextStep} label={editOriginalTemplate ? '修改' : '创建'} readonly={readonlyBaseTemplate} />
+              <StepSection onClickCallback={nextStep} label={editOriginalTemplate ? '修改' : '新建'} readonly={readonlyBaseTemplate} />
             </div>
           </div>
         )}
       </MainBorder>
       {/* <div className={styles.template_btn}>
-        <StepSection onClickCallback={nextStep} label={editOriginalTemplate ? '修改' : '创建'} readonly={readonlyBaseTemplate} />
+        <StepSection onClickCallback={nextStep} label={editOriginalTemplate ? '修改' : '新建'} readonly={readonlyBaseTemplate} />
       </div> */}
     </>
   )

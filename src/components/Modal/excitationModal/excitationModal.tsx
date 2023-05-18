@@ -18,11 +18,11 @@ function ExcitationModal(props: any) {
   const [form] = Form.useForm<FormInstance>()
   const [isDisableStatus, setDisabledStatus] = useState(true)
 
-  // 创建激励
+  // 新建激励
   const createProjectItem = async (params: any) => {
     try {
       const data = await createExcitationListFn(params)
-      message.success('项目创建成功')
+      message.success('项目新建成功')
       return data
     } catch (error) {
       message.error(error.message)

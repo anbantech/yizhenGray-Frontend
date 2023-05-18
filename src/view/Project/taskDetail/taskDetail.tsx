@@ -39,8 +39,8 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     sort_field: 'create_time',
     sort_order: 'descend',
     system: 'hex',
-    statement_coverage: 'descend',
-    branch_coverage: 'descend',
+    statement_coverage: '',
+    branch_coverage: '',
     diagnosis: ''
   }
 

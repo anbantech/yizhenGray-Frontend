@@ -66,7 +66,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   // 查看关联任务
   const { visibility, chioceModalStatus } = useMenu()
 
-  // 查看/修改/创建末班
+  // 查看/修改/新建末班
   const jumpTemplate = useCallback(
     (value?: ResparamsType, editOriginalTemplate = true, readonlyBaseTemplate = true) => {
       const { id: templateId } = value || {}

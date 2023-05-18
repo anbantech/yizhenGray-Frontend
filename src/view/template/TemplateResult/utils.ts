@@ -634,7 +634,7 @@ const templateDataChecker = {
   }
 }
 
-// 纯前端创建文件下载
+// 纯前端新建文件下载
 const browserDownload = {
   ifHasDownloadAPI: 'download' in document.createElement('a'),
   createFrontendDownloadAction(name: string, content: Blob) {

@@ -12,10 +12,10 @@ import { TemplateContext, TEMPLATE_VERSION } from './templateContext'
 import { TemplateStatus } from './createTemplateWrapper'
 import Utils from '../TemplateResult/utils'
 
-// 根据状态显示是创建模板，还是修改模板
+// 根据状态显示是新建模板，还是修改模板
 const generateTitle = (status: TemplateStatus, name?: string) => {
   if (status === TemplateStatus.CREATE) {
-    return '创建模板'
+    return '新建模板'
   }
   if (status === TemplateStatus.CONFIG) {
     return '修改模板'
@@ -155,7 +155,7 @@ const CreateTemplateTitle: React.FC = () => {
           <p>
             <span>{baseInfo.description || '无描述'}</span>
             <span style={{ padding: '0 4px' }}>|</span>
-            <span>{normalizeBackendTime(baseInfo.createTime) || '创建时间未知'}</span>
+            <span>{normalizeBackendTime(baseInfo.createTime) || '新建时间未知'}</span>
           </p>
         )}
       </div>

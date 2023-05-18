@@ -22,7 +22,7 @@ const CreateTemplateBottom: React.FC = () => {
    * baseInfoRef 和 templateRef 用于调用兄弟组件的 validator 函数
    * templateId
    * 模板状态如果是修改，则需要调用修改接口
-   * 模板状态如果不是修改，则需要调用创建接口
+   * 模板状态如果不是修改，则需要调用新建接口
    */
   const { template } = useContext(TemplateContext)
   const { status, baseInfoRef, templateRef, templateId } = template
@@ -36,9 +36,16 @@ const CreateTemplateBottom: React.FC = () => {
   }
   const routerPush = useCallback(() => {
     history.push({
-      pathname: location.state.from
+      pathname: location.state.from,
+      state: {
+        templateId: template.templateId,
+        templateType: 'user_defined',
+        readonlyBaseTemplate: true,
+        editOriginalTemplate: false,
+        isDetailWeb: true
+      }
     })
-  }, [history, location.state.from])
+  }, [history, location.state.from, template.templateId])
 
   const createTemplate = useCallback(
     async (eidt: boolean, createTemplateParams: CreateTemplateParams) => {
@@ -56,7 +63,7 @@ const CreateTemplateBottom: React.FC = () => {
       } else {
         try {
           await API.createTemplate(createTemplateParams)
-          message.success('创建成功')
+          message.success('新建成功')
           routerPush()
         } catch (error) {
           throwErrorMessage(error, { 1005: '校验错误 => 模板名称重复，请修改', 4003: '校验错误 => 该模板无效，请检查模板' })
@@ -67,13 +74,13 @@ const CreateTemplateBottom: React.FC = () => {
   )
 
   /**
-   * 创建或修改模板
+   * 新建或修改模板
    * 1. 依次校验基础信息、模板信息和解析模板信息
    * 2. 加载基础信息：模板名称和模板描述
    * 3. 加载模板配置信息：模板结果列表
    * 4. 初始化接口内置信息：引擎参数、协议参数、模板参数
    * 5. 合并基础信息、模板配置信息、解析模板配置信息和接口内置信息
-   * 6. 调用接口创建模板或修改模板整体
+   * 6. 调用接口新建模板或修改模板整体
    */
   const nextStep = useCallback(async () => {
     setSpinning(true)
@@ -106,7 +113,7 @@ const CreateTemplateBottom: React.FC = () => {
     <div className={styles.footerOpations}>
       <StepSection
         onClickCallback={editOriginalTemplate ? openModal : nextStep}
-        label={editOriginalTemplate ? '修改' : '创建'}
+        label={editOriginalTemplate ? '修改' : '新建'}
         readonly={readonlyBaseTemplate}
       />
       <CommonModle

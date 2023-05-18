@@ -53,7 +53,7 @@ interface Option {
 const DoubleExcitationForm: React.FC = () => {
   const [form] = useForm()
   const history = useHistory()
-  const { isFixForm, info, type, lookDetail } = useContext(GlobalContexted)
+  const { isFixForm, info, lookDetail, fromPathName, type, name } = useContext(GlobalContexted)
   const [excitationList, setExcitationList] = useState<Option[]>([
     {
       sender_id: '0',
@@ -160,9 +160,10 @@ const DoubleExcitationForm: React.FC = () => {
     [excitationList]
   )
 
-  // 创建级联
+  // 新建级联
   const createOneExcitationFn = React.useCallback(async () => {
     setSpinning(true)
+    const routerInfo = { isFixForm, info, lookDetail, type, name }
     let values
     try {
       values = await form.validateFields()
@@ -190,16 +191,18 @@ const DoubleExcitationForm: React.FC = () => {
           result = await updatThreeExcitaionList(info.id, params)
         }
         setSpinning(false)
+        CommonModleClose(false)
         if (result.data) {
           history.push({
-            pathname: '/ThreeExcitationList'
+            state: { ...routerInfo, lookDetail: true },
+            pathname: `${fromPathName}`
           })
         }
       }
     } catch (error) {
       throwErrorMessage(error)
     }
-  }, [form, data, isFixForm, info?.id, history])
+  }, [isFixForm, info, lookDetail, type, name, form, data, history, fromPathName])
 
   const cancelForm = () => {
     history.push({

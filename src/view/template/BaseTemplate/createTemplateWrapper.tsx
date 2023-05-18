@@ -4,14 +4,14 @@ import CreateTemplateComponent from './createTemplate'
 import TemplateContextProvider, { resetDefaultTemplateContextValue } from './templateContext'
 
 interface LocationStateType {
-  // 区分模板查看、修改和创建状态
+  // 区分模板查看、修改和新建状态
   readonlyBaseTemplate: boolean
   editOriginalTemplate: boolean
-  // 创建或修改模板所需信息：模板ID
+  // 新建或修改模板所需信息：模板ID
   templateId: number
-  // 创建或修改任务所需信息：是否处于修改状态
+  // 新建或修改任务所需信息：是否处于修改状态
   editTaskMode: boolean
-  // 从哪里来，创建完，回哪里去
+  // 从哪里来，新建完，回哪里去
   from: string
   // 模板类型
   templateType: 'user_defined' | 'default' | 'recycle_bin'
@@ -19,7 +19,7 @@ interface LocationStateType {
 }
 
 export enum TemplateStatus {
-  CREATE = 0, // 创建包括两种：空模板创建和从备份创建
+  CREATE = 0, // 新建包括两种：空模板新建和从备份新建
   CONFIG,
   READ
 }
@@ -59,6 +59,7 @@ const CreateTemplateWrapper: React.FC<RouteComponentProps<any, any, LocationStat
 
   // 清除 context 闭包里的对象
   resetDefaultTemplateContextValue()
+
   return (
     <TemplateContextProvider defaultContext={defaultContext}>
       <CreateTemplateComponent />

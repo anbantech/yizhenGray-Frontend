@@ -15,13 +15,14 @@ interface ContextProps {
   info?: any
   propsDatas?: any
   lookDetail: boolean
+  fromPathName: string
 }
 
 const routerMap = {
-  one: '外设修改',
-  two: '激励单元修改',
-  three: '激励嵌套修改',
-  four: '交互修改'
+  one: '修改外设',
+  two: '修改激励单元',
+  three: '修改激励嵌套',
+  four: '修改交互'
 }
 const deleteMap = {
   one: '外设删除',
@@ -31,7 +32,7 @@ const deleteMap = {
 }
 export const GlobalContexted = React.createContext<ContextProps>(null!)
 function GlobalBaseMain(props: any) {
-  const { name, type, isFixForm, info, Data, lookDetail } = props
+  const { name, type, isFixForm, info, Data, lookDetail, fromPathName } = props
   const history = useHistory()
   const pathname = useLocation()?.pathname.split('/')[1]
   // 存储关联任务信息
@@ -54,6 +55,7 @@ function GlobalBaseMain(props: any) {
         type,
         lookDetail: false,
         isFixForm: true,
+        fromPathName: `/${pathname}/Detail`,
         name: routerMap[type as keyof typeof routerMap]
       }
     })
@@ -104,7 +106,7 @@ function GlobalBaseMain(props: any) {
     }
   }, [CommonModleClose, history, info?.id, pathname, type])
   return (
-    <GlobalContexted.Provider value={{ type, isFixForm, lookDetail, name, info, propsDatas: Data }}>
+    <GlobalContexted.Provider value={{ type, isFixForm, lookDetail, fromPathName, name, info, propsDatas: Data }}>
       <div className={styles.taskMain}>
         <div className={styles.taskMain_header}>
           <span className={styles.taskMain_title}>{name}</span>

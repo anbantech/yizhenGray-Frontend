@@ -84,7 +84,7 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
             type='primary'
             disabled={isDisableStatus}
             loading={btnLoading}
-            name={taskInfo?.editTaskMode ? '修改' : '创建'}
+            name={taskInfo?.editTaskMode ? '修改' : '新建'}
             onClick={() => {
               createForm()
             }}

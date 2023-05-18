@@ -33,12 +33,12 @@ export function getPortList() {
 export function createExcitationFn(params: ExcitationParams) {
   return request.post<any>(`/api/v1.0/temp_and_sti/save/single`, params)
 }
-// 创建级联
+// 新建级联
 export function createDoubleExcitationFn(params: doubleExcitationParams) {
   return request.post<any>(`/api/v1.0/temp_and_sti/save/group`, params)
 }
 
-// 创建级联unit
+// 新建级联unit
 export function createGroup_unitFn(params: doubleExcitationParams) {
   return request.post<any>(`/api/v1.0/temp_and_sti/save/group_unit`, params)
 }
@@ -51,7 +51,7 @@ export function createGroupFn(params: groupParams) {
   return request.post<any>('/api/v1.0/temp_and_sti/save/work', params)
 }
 
-// 创建激励
+// 新建激励
 
 export function createExcitationFn_1(params: excitation_1Params) {
   return request.post<excitationRes>('/api/v1.0/temp_and_sti/save/sti', params)

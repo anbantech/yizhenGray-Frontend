@@ -331,6 +331,7 @@ const ExcitationDraw: React.FC = () => {
   const history = useHistory()
 
   const state = useLocation()?.state as al
+
   const [spinning, setSpinning] = React.useState(false)
   const [visibility, setVisibility] = React.useState(false)
   const [current, setCurrent] = useState(0)
@@ -361,6 +362,7 @@ const ExcitationDraw: React.FC = () => {
 
   const updatFourWorkFn = React.useCallback(async () => {
     setSpinning(true)
+    const { isFixForm, info, fromPathName, type, name } = state
     const { child_id_list } = state.child_id_list
     const params = {
       name: state.Data.name,
@@ -370,15 +372,19 @@ const ExcitationDraw: React.FC = () => {
     try {
       const result = await updatFourWork(state.Data.sender_id, params)
       if (result.data) {
-        setSpinning(false)
-        history.push({
-          pathname: '/FourExcitationList'
-        })
+        if (result.data) {
+          setSpinning(false)
+          history.push({
+            state: { isFixForm, info, type, name, lookDetail: true },
+
+            pathname: fromPathName === '/FourExcitationList' ? '/FourExcitationList' : '/FourExcitationList/Deatail'
+          })
+        }
       }
     } catch (error) {
       message.error(error.message)
     }
-  }, [history, state.Data.desc, state.Data.name, state.Data.sender_id, state.child_id_list])
+  }, [history, state])
   const goBackGroupList = async () => {
     history.push({
       pathname: '/FourExcitationList'

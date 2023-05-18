@@ -119,7 +119,8 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
         type: 'two',
         lookDetail: false,
         isFixForm: true,
-        name: '激励单元'
+        name: '修改激励单元',
+        fromPathName: '/TwoExcitationList'
       }
     })
   }

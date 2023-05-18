@@ -21,11 +21,11 @@ function ModalpPop(props: any) {
   const [form] = Form.useForm<FormInstance>()
   const [isDisableStatus, setDisabledStatus] = useState(true)
 
-  // 创建列表
+  // 新建列表
   const createProjectItem = async (params: any) => {
     try {
       const data = await createProject(params)
-      message.success('项目创建成功')
+      message.success('项目新建成功')
       return data
     } catch (error) {
       throwErrorMessage(error, { 1005: '项目名称重复，请修改' })

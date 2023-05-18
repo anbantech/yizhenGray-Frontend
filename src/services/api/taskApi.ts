@@ -31,7 +31,7 @@ export function exportReport(id: number) {
   return request.get<any>(`/api/v1.0/instances/report/${id}`)
 }
 
-// 创建任务
+// 新建任务
 
 export function createTaskFn(params: taskParamsFn) {
   return request.post<any>('/api/v1.0/tasks/save', params)

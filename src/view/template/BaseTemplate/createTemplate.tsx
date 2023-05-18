@@ -60,7 +60,7 @@ const CreateTemplateComponent: React.FC = () => {
     chioceModalStatus(true)
   }, [chioceModalStatus, template.templateId])
 
-  // 查看/修改/创建末班
+  // 查看/修改/新建末班
   const jumpTemplate = useCallback(
     (value?: ResparamsType, editOriginalTemplate = true, readonlyBaseTemplate = false) => {
       history.push({
@@ -71,7 +71,7 @@ const CreateTemplateComponent: React.FC = () => {
           readonlyBaseTemplate,
           editOriginalTemplate,
           isDetailWeb: true,
-          from: '/templateList'
+          from: '/templateList/templateDetail'
         }
       })
     },
