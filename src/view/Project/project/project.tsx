@@ -144,10 +144,12 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
           message.success('删除成功')
         }
         if (res.data.fail_list.length > 0) {
+          CommonModleClose(false)
           message.error(`${res.data.fail_list[0]}`)
         }
       }
     } catch (error) {
+      CommonModleClose(false)
       throwErrorMessage(error, { 1009: '项目删除失败' })
     }
   }

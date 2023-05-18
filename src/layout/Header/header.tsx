@@ -172,8 +172,8 @@ function Header(props: any) {
     '/FourExcitationList/createGroupExcitation': '新建交互',
     '/OneExcitationList/createExcitation': '新建外设',
     '/FourExcitationList/Deatail/ExcitationDraw': '预览',
-    '/templateList': '模版管理',
-    '/templateList/templateDetail': '模版详情',
+    '/templateList': '模板管理',
+    '/templateList/templateDetail': '模板详情',
     '/templateList/template': `${data && data?.readonlyBaseTemplate ? '查看模板' : data && data?.editOriginalTemplate ? '修改模板' : '创建模板'}`
   }
   const history = useHistory()

@@ -118,7 +118,7 @@ export interface ResprotocolsDetails {
 
 // 8.创建模板 返回为null
 
-// 9. 模版管理
+// 9. 模板管理
 
 export interface TemplateListResponse {
   results: {

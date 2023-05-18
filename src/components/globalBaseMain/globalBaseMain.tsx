@@ -86,14 +86,20 @@ function GlobalBaseMain(props: any) {
       }
 
       if (res.data) {
+        if (res.data.success_list.length > 0) {
+          message.success(`${deleteMap[type as keyof typeof deleteMap]}成功`)
+        } else {
+          message.error(res.data.fail_list[0])
+        }
         CommonModleClose(false)
         chioceBtnLoading(false)
         history.push({
           pathname: `/${pathname}`
         })
-        message.success(`${deleteMap[type as keyof typeof deleteMap]}成功`)
       }
     } catch (error) {
+      CommonModleClose(false)
+      chioceBtnLoading(false)
       throwErrorMessage(error, { 1009: `${deleteMap[type as keyof typeof deleteMap]}失败` })
     }
   }, [CommonModleClose, history, info?.id, pathname, type])

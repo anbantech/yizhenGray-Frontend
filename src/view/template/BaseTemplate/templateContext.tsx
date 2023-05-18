@@ -42,8 +42,8 @@ type TemplateReducerAction = SetPtListAction | ClearData | InitTemplateDetail | 
  *    @param baseInfo.name
  *    @param baseInfo.description
  *    @param baseInfo.createTime
- * @param templateElements 模版管理，用于渲染模板树和传递给后端
- * @param responseTemplate 响应模版管理，用于渲染相应模板和传递给后端
+ * @param templateElements 模板管理，用于渲染模板树和传递给后端
+ * @param responseTemplate 响应模板管理，用于渲染相应模板和传递给后端
  * @param baseInfoRef 表单 ref，用于暴露 validator 接口
  * @param templateRef 表单 ref，用于暴露 validator 接口
  */
