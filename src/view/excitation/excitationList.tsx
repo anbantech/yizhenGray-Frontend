@@ -122,7 +122,7 @@ const ExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknown>>
   //  删除弹出框基本数据集合
   //   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
 
-  // 创建项目 弹出框
+  // 新建项目 弹出框
   const createProjectModal = React.useCallback(
     (value: number) => {
       const createDoubleExcitation = '/excitationList/createDoubleExcitation'

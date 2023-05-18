@@ -40,7 +40,9 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
     sort_field: 'create_time',
     sort_order: 'descend',
     case_type: '',
-    system: 'hex'
+    system: 'hex',
+    statement_coverage: '',
+    branch_coverage: ''
   }
   const [params, setParams] = useState(RequsetParams)
 

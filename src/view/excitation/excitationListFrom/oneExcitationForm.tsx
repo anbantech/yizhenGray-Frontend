@@ -42,7 +42,7 @@ interface listArray {
 
 const OneExcotationForm: React.FC = () => {
   const history = useHistory()
-  const { isFixForm, info, lookDetail } = useContext(GlobalContexted)
+  const { isFixForm, info, lookDetail, fromPathName, type, name } = useContext(GlobalContexted)
   const { Option } = Select
   const [form] = useForm()
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
@@ -86,6 +86,7 @@ const OneExcotationForm: React.FC = () => {
 
   const createOneExcitationFn = React.useCallback(async () => {
     setSpinning(true)
+    const routerInfo = { isFixForm, info, lookDetail, type, name }
     let values
     try {
       values = await form.validateFields()
@@ -114,16 +115,18 @@ const OneExcotationForm: React.FC = () => {
           result = await updatTwoExcitaionList(info.id, params)
         }
         setSpinning(false)
+        CommonModleClose(false)
         if (result.data) {
           history.push({
-            pathname: '/TwoExcitationList'
+            state: { ...routerInfo, lookDetail: true },
+            pathname: `${fromPathName}`
           })
         }
       }
     } catch (error) {
       throwErrorMessage(error, { 1009: '激励单元删除失败' })
     }
-  }, [form, history, info?.id, isFixForm])
+  }, [form, fromPathName, history, info, isFixForm, lookDetail, name, type])
 
   const cancelForm = () => {
     history.push({

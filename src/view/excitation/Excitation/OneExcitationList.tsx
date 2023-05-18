@@ -82,7 +82,7 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
   // 存储关联任务信息
   const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
 
-  // 创建项目 弹出框
+  // 新建项目 弹出框
   const createProjectModal = React.useCallback(() => {
     const createExcitation = '/OneExcitationList/createExcitation'
     history.push({
@@ -186,7 +186,8 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
         type: 'one',
         lookDetail: false,
         isFixForm: true,
-        name: '外设'
+        name: '修改外设',
+        fromPathName: '/OneExcitationList'
       }
     })
   }
@@ -282,7 +283,7 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
         <div className={styles.AnBan_header_bottom}>
           <SearchInput ref={childRef.inputRef} className={inputStyle.searchInput} placeholder='根据名称搜索外设' onChangeValue={setOperation} />
           <CreateButton
-            name='创建外设'
+            name='新建外设'
             size='large'
             type='primary'
             onClick={() => {

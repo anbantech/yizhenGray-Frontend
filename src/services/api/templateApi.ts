@@ -31,7 +31,7 @@ export function updateTemplate(params: UpdateTemplateParams) {
 }
 
 /**
- * 创建模板
+ * 新建模板
  */
 export function createTemplate(params: CreateTemplateParams) {
   return request.post<{ id: number }>('/api/v1.0/templates/save', params)

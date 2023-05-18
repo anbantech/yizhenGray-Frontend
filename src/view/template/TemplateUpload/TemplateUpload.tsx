@@ -132,7 +132,7 @@ const TemplateDialog: React.FC<TemplateDialogProps> = ({ visible, onOk, protocol
           og[index].status = 'error'
           og[index].response = `上传失败 => ${throwErrorMessage(
             error,
-            { 1005: '模板名称与已创建的模板重复', 4003: '该模板无效，请检查模板' },
+            { 1005: '模板名称与已新建的模板重复', 4003: '该模板无效，请检查模板' },
             false
           ).replace(/name/, '模板名称')}`
           return [...originalFileList]

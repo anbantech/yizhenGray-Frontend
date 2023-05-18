@@ -81,7 +81,7 @@ function LookUpDependence(props: NewTaskInstanceType) {
       setWidth({})
     }
   }, [visibility])
-  // 创建列表
+  // 新建列表
   const ListComponment = (props: any) => {
     const value = props.value as mapType
     return (
@@ -90,14 +90,14 @@ function LookUpDependence(props: NewTaskInstanceType) {
           {value.head ? <div className={styles.drawBody_concentBody_cloumnNone} /> : <div className={styles.drawBody_concentBody_cloumn} />}
           <div className={styles.rectBoxTitle}>
             {value.status === 2 ? (
-              <Tooltip title='类型:任务' placement='bottomLeft'>
+              <Tooltip title={`任务:${value.name}`} placement='bottomLeft'>
                 <div className={styles.showTestimg}>
                   <img src={testing} alt='' />
                   <span style={{ color: '#11cc66' }}>{value.name}</span>{' '}
                 </div>
               </Tooltip>
             ) : (
-              <Tooltip title={`类型:${TypeMap[value.type as keyof typeof TypeMap]}`} placement='bottomLeft'>
+              <Tooltip title={`${TypeMap[value.type as keyof typeof TypeMap]}:${value.name}`} placement='bottomLeft'>
                 <span>{value?.name}</span>
               </Tooltip>
             )}

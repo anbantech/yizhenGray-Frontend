@@ -55,7 +55,7 @@ class WebpackCleanUndependentFilesPlugin {
   }
 
   /**
-   * 创建 logger 管理器
+   * 新建 logger 管理器
    */
   createLogger() {
     const PLUGIN_NAME = '[clean-independent-files-plugin]'

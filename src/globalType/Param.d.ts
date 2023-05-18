@@ -1,6 +1,6 @@
 // 1. 获取所有源语 直接调用借口
 
-// 2. 创建项目
+// 2. 新建项目
 export interface CreateProject {
   name: string
   desc?: string
@@ -51,7 +51,7 @@ export interface ProjectDetails {
   project_id: number
 }
 
-// 5. 创建协议
+// 5. 新建协议
 
 export interface protocols {
   name: string
@@ -73,7 +73,7 @@ export interface protocolsDetails {
   protocol_id: number
 }
 
-// 8.创建模板
+// 8.新建模板
 export interface CreateTemplateParams {
   elements: any
   name: string
@@ -119,7 +119,7 @@ export interface templateDetails {
   id: number
 }
 
-// 11. 创建模板交互
+// 11. 新建模板交互
 export interface interactions {
   protocol_id: number | string
   name: string
@@ -155,7 +155,7 @@ export interface exception_list {
   page_size: number
 }
 
-// 15. 创建目标
+// 15. 新建目标
 
 export interface CreateTarget {
   name: string
@@ -186,7 +186,7 @@ export interface TargetDetials {
 
 // 18. 目标删除 直接调用接口
 
-// 19.  创建任务
+// 19.  新建任务
 export interface Createtask {
   name: string
   desc: string
@@ -334,7 +334,7 @@ export interface handlecontinueTest {
   task: number
 }
 
-// 34. 创建引擎
+// 34. 新建引擎
 
 export interface engines {
   type: string
@@ -394,7 +394,7 @@ export interface ReplieErrorMessageParams {
   used_filter?: boolean
   hour?: number
 }
-// 40 创建旁路
+// 40 新建旁路
 export interface BypassParams {
   middleware: string
   name: string

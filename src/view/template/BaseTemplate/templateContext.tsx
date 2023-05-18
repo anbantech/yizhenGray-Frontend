@@ -35,10 +35,10 @@ type TemplateReducerAction = SetPtListAction | ClearData | InitTemplateDetail | 
 
 /**
  * context 默认状态
- * @param ptList 原语列表，在显示、模板创建和模板校验等诸多功能中用到
- * @param status 模板状态，模板状态分为：创建、修改和查看
+ * @param ptList 原语列表，在显示、模板新建和模板校验等诸多功能中用到
+ * @param status 模板状态，模板状态分为：新建、修改和查看
  * @param templateId 模板ID，修改模板时需要
- * @param baseInfo 模板基础信息，包括名称、描述和创建时间
+ * @param baseInfo 模板基础信息，包括名称、描述和新建时间
  *    @param baseInfo.name
  *    @param baseInfo.description
  *    @param baseInfo.createTime
@@ -194,6 +194,7 @@ const TemplateContextProvider: React.FC<TemplateContextProviderProps> = ({ child
       fetchTemplateInfo()
     }
   })
+
   useEffect(() => {
     if (template?.isDetailWeb && template.status === 1) {
       fetchListFormApi()
@@ -202,6 +203,13 @@ const TemplateContextProvider: React.FC<TemplateContextProviderProps> = ({ child
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [templateId, template?.isDetailWeb, template.status])
 
+  useEffect(() => {
+    if (template?.isDetailWeb && template.status === 2) {
+      fetchListFormApi()
+      fetchTemplateInfo()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [template?.isDetailWeb, template.status])
   return <TemplateContext.Provider value={{ template, templateDispatch }}>{children}</TemplateContext.Provider>
 }
 
