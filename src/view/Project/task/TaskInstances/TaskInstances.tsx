@@ -37,9 +37,11 @@ const HeaderComponets: React.FC = () => {
         <div className={styles.headerBody}>
           <div className={styles.headerLeft}>
             <span className={styles.headerName}>{InstancesDetail.task_detail.name}</span>
-            <div>
+            <div className={styles.headerSubtitle}>
               <span>描述:{InstancesDetail.task_detail.desc}</span>
+              <div className={styles.cloumnLine} />
               <span>仿真节点:{InstancesDetail.task_detail.simu_instance_id}节点</span>
+              <div className={styles.cloumnLine} />
               <span>交互:{InstancesDetail.task_detail.group_name} </span>
             </div>
           </div>

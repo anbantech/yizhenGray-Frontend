@@ -62,13 +62,13 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   }
 
   // 跳转实例详情
-  const jumpLookTaskInfo = React.useCallback(() => {
-    history.push({
-      pathname: '/projects/Tasks/Detail/lookTaskDetailInfo',
-      state: { projectInfo, taskInfo, instanceInfo }
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [instanceInfo])
+  // const jumpLookTaskInfo = React.useCallback(() => {
+  //   history.push({
+  //     pathname: '/projects/Tasks/Detail/lookTaskDetailInfo',
+  //     state: { projectInfo, taskInfo, instanceInfo }
+  //   })
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [instanceInfo])
 
   // 测试降序
   const testTimeSort = (value: string) => {
@@ -152,7 +152,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
         <div className={globalStyle.AnBan_main}>
           {taskDetailInfo && (
             <>
-              <TaskDetailHead taskDetailInfo={taskDetailInfo} infoMap={props.location?.state} jumpLookTaskInfo={jumpLookTaskInfo} />
+              <TaskDetailHead taskDetailInfo={taskDetailInfo} infoMap={props.location?.state} />
               <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
               {taskDetailInfo?.status === 2 ? (
                 <DetailTestingTable params={depData} taskDetailInfo={taskDetailInfo} status={updateStatus} />

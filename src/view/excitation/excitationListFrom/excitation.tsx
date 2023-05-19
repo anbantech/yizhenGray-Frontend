@@ -168,7 +168,7 @@ const ExcitationComponents: React.FC = () => {
               required: true,
               max: 20,
               min: 2,
-              message: '外设名称为2到20个字符'
+              message: '外设名称长度为2到20个字符'
             },
             {
               validateTrigger: 'onBlur',
