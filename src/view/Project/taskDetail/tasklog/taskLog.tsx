@@ -74,6 +74,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   const [currentTypeBranch, setCurrentTypeBranch] = useState('ascend')
 
   const [currentTypeStatement, setCurrentTypeStatement] = useState('ascend')
+
   const setOperation = (value1?: any, type?: string, value2?: any) => {
     switch (type) {
       case 'page':
@@ -174,7 +175,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
 
   function BranchMenu() {
     return (
-      <Dropdown overlay={menuStatement}>
+      <Dropdown overlay={menuBranch}>
         <Space>
           分支覆盖率
           <DownOutlined />
@@ -185,7 +186,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
 
   function StatementMenu() {
     return (
-      <Dropdown overlay={menuBranch}>
+      <Dropdown overlay={menuStatement}>
         <Space>
           语句覆盖率
           <DownOutlined />
@@ -441,7 +442,6 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
       <div className={globalStyle.AnBan_PaginationsAge}>
         <PaginationsAge length={total} num={10} getParams={setOperation} pagenums={params.page} />
       </div>
-      {/* <TaskDetailModal IsModalVisible={IsModalVisible} modalClose={modalClose} concent={detailInfoRef.current} name='缺陷详情' /> */}
     </div>
   )
 }

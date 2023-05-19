@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
 import { Modal, Input, Form, Button, message, Radio } from 'antd'
 import { throwErrorMessage } from 'Src/util/message'
@@ -22,6 +22,9 @@ interface NEWTaskInstanceType {
   task_id: number
   choiceModal: () => void
   width: string
+  // eslint-disable-next-line react/require-default-props
+  data?: any
+  isDetail: number
 }
 
 type Currency = 'rmb' | 'dollar'
@@ -43,7 +46,7 @@ type SetObjDataProps = {
 type CrashObjType = Record<string, string>
 
 function NewTaskInstance(props: NEWTaskInstanceType) {
-  const { visibility, task_id, choiceModal, width } = props
+  const { visibility, task_id, choiceModal, width, isDetail, data } = props
   const [form] = Form.useForm<FormInstance>()
   const [isDisableStatus, setDisabledStatus] = useState(true)
   const [carshObj, setCrashObj] = useState<CrashObjType | Record<string, unknown>>({})
@@ -125,12 +128,23 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
     setCrashObj({ ...obj })
   }
 
+  useEffect(() => {
+    if (data) {
+      const { work_time, crash_num, crash_config } = data
+      // cause backend will auto add prefix for queue name
+      // thus remove prefix of queue name when editing
+      const formData = { work_time, crash_num }
+      form.setFieldsValue(formData)
+      setCrashObj({ ...crash_config })
+    }
+  }, [data, form])
+
   return (
     <Modal
       className={styles.formModal}
       width={width}
       visible={visibility}
-      title='新建实例'
+      title={isDetail ? '停止条件' : '新建实例'}
       onCancel={() => {
         choiceModal()
       }}
@@ -180,7 +194,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
             }
           ]}
         >
-          <Input placeholder='请输入运行时长' suffix='小时' />
+          <Input disabled={Boolean(isDetail)} placeholder='请输入运行时长' suffix='小时' />
         </Form.Item>
         <Form.Item
           label='Crash数量'
@@ -203,7 +217,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
             }
           ]}
         >
-          <Input placeholder='请输入Crash数量' suffix={<InfoTip />} />
+          <Input disabled={Boolean(isDetail)} placeholder='请输入Crash数量' suffix={<InfoTip />} />
         </Form.Item>
       </Form>
       <div className={styles.CrashTableBody}>
@@ -221,7 +235,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
               return (
                 <div className={styles.tableFooter} key={value}>
                   <div className={styles.crashTable_headerLeft}>{CrashInfoMap[+value]}</div>
-                  <Radio.Group style={{ width: '30%' }} value={carshObj[value]}>
+                  <Radio.Group style={{ width: '30%' }} value={carshObj[value]} disabled={Boolean(isDetail)}>
                     <Radio
                       value='1'
                       onClick={e => {

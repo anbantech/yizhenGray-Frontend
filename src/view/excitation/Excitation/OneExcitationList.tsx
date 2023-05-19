@@ -90,7 +90,8 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
       state: {
         type: 'one',
         isFixForm: false,
-        name: '新建外设'
+        name: '新建外设',
+        fromPathName: '/OneExcitationList'
       }
     })
   }, [history])
@@ -242,7 +243,7 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
     },
     {
       width: '15%',
-      title: '端口类别',
+      title: '端口',
       dataIndex: 'stimulus_value',
       key: 'stimulus_value'
     },

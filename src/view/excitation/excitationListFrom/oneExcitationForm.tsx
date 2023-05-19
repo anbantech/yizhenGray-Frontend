@@ -221,7 +221,7 @@ const OneExcotationForm: React.FC = () => {
               required: true,
               max: 20,
               min: 2,
-              message: '激励单元名称为2到20个字符'
+              message: '激励单元名称长度为2到20个字符'
             },
             {
               validateTrigger: 'onBlur',
@@ -238,7 +238,7 @@ const OneExcotationForm: React.FC = () => {
           <Input disabled={isFixForm && lookDetail} placeholder='请输入激励单元名称' />
         </Form.Item>
 
-        <Form.Item name='target_id' label='请选择外设' rules={[{ required: true, message: '请选择外设' }]}>
+        <Form.Item name='target_id' label='外设名称' rules={[{ required: true, message: '请选择外设' }]}>
           <Select placeholder='请选择外设' disabled={isFixForm && lookDetail}>
             {
               /**
@@ -443,13 +443,13 @@ const OneExcotationForm: React.FC = () => {
           <Input disabled={isFixForm && lookDetail} placeholder='请输入后置时延' suffix={<Tip />} />
         </Form.Item>
         <Form.Item
-          label='单激励Group描述'
+          label='激励单元描述'
           name='description'
-          rules={[{ message: '请输入单激励Group描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
+          rules={[{ message: '单激励单元描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
           <Input.TextArea
             disabled={isFixForm && lookDetail}
-            placeholder={isFixForm ? '' : '请输入单激励Group描述'}
+            placeholder={isFixForm ? '' : '请输入激励单元描述'}
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
               formatter({ count }) {

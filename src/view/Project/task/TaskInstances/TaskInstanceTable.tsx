@@ -17,6 +17,7 @@ import { throwErrorMessage } from 'Src/util/message'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import globalStyle from 'Src/view/Project/project/project.less'
 import NewTaskInstance from 'Src/components/Modal/taskModal/newTaskInstance'
+import { getTime } from 'Src/util/baseFn'
 import styles from '../taskList/task.less'
 import { InstancesContext } from '../TaskIndex'
 
@@ -71,12 +72,15 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   const { projectInfo } = props.location?.state
 
   const history = useHistory()
+
   // 控制新建实列modal
   const [visibility, setVisibility] = useState(false)
+
   // 关闭modal
   const choiceModal = () => {
     setVisibility(!visibility)
   }
+
   // 任务列表参数
   const [params, setParams] = useState<Resparams>({ ...request, task_id: InstancesDetail.task_detail.id })
 
@@ -178,7 +182,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   // 表格title
   const columns = [
     {
-      width: '10%',
+      width: '8%',
       title: '实例编号',
       dataIndex: 'num',
       key: 'num',
@@ -198,13 +202,13 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       }
     },
     {
-      width: '10%',
+      width: '8%',
       title: '设定时长',
       dataIndex: 'work_time',
       key: 'work_time'
     },
     {
-      width: '10%',
+      width: '8%',
       title: '运行时长',
       dataIndex: 'test_time',
       key: 'test_time',
@@ -214,23 +218,23 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       }
     },
     {
-      width: '10%',
+      width: '8%',
       title: '设定数量',
       dataIndex: 'crash_num',
       key: 'crash_num',
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
-        return <span>{`${row.test_time}`}</span>
+        return <span>{`${row.crash_num}`}</span>
       }
     },
     {
-      width: '10%',
+      width: '8%',
       title: '发现数量',
       dataIndex: 'error_num',
       key: 'error_num'
     },
     {
-      width: '15%',
+      width: '10%',
       // eslint-disable-next-line react/display-name
       title: () => (
         <div className={styles.statusList_boby}>
@@ -259,17 +263,17 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       }
     },
     {
-      width: '10%',
+      width: '15%',
       title: '新建时间',
       dataIndex: 'create_time',
       key: 'create_time',
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
-        return <span>{`${row.test_time}`}</span>
+        return <span>{getTime(row.create_time)}</span>
       }
     },
     {
-      width: '15%',
+      width: '13%',
 
       // eslint-disable-next-line react/display-name
       title: () => {
@@ -359,7 +363,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         name='删除实例'
         concent='是否确认删除'
       />
-      <NewTaskInstance visibility={visibility} task_id={InstancesDetail.task_detail.id} choiceModal={choiceModal} width='522px' />
+      <NewTaskInstance visibility={visibility} isDetail={0} task_id={InstancesDetail.task_detail.id} choiceModal={choiceModal} width='522px' />
     </div>
   )
 }
