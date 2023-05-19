@@ -124,8 +124,8 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         type: 'four',
         lookDetail: true,
         isFixForm: true,
-        name: '交互',
-        from: '/FourExcitationList'
+        name: '交互详情',
+        fromPathName: '/FourExcitationList'
       }
     })
   }

@@ -108,7 +108,8 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
         type: 'three',
         isFixForm: false,
         lookDetail: false,
-        name: '新建激励嵌套'
+        name: '新建激励嵌套',
+        fromPathName: '/ThreeExcitationList'
       }
     })
   }, [history])
@@ -122,7 +123,7 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
         type: 'three',
         lookDetail: true,
         isFixForm: true,
-        name: '激励嵌套',
+        name: '激励嵌套详情',
         fromPathName: '/ThreeExcitationList'
       }
     })
@@ -210,7 +211,7 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
   const cloumnMap = [
     {
       width: '20%',
-      title: '激励嵌套管理名称',
+      title: '激励嵌套名称',
       dataIndex: 'name',
       key: 'name',
       // eslint-disable-next-line react/display-name
@@ -231,7 +232,7 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
     },
     {
       width: '30%',
-      title: '激励嵌套管理描述',
+      title: '激励嵌套描述',
       dataIndex: 'desc',
       key: 'desc'
     },

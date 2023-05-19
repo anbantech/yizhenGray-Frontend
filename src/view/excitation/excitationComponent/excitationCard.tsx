@@ -162,7 +162,7 @@ const ThreeExcitationCard = (props: AllPropsType) => {
         })
       } else {
         form.setFieldsValue({
-          port: [excitarionListes.target_type === 1 ? '激励单元管理' : '激励嵌套管理', excitarionListes.name],
+          port: [excitarionListes.target_type === 1 ? '激励单元' : '激励嵌套', excitarionListes.name],
           description: excitarionListes.desc
         })
       }

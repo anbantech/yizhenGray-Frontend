@@ -13,6 +13,7 @@ import over from 'Image/overTask.svg'
 import { throwErrorMessage } from 'Src/util/message'
 import { bgTest, deleteExampleTask, rePlayTask, stopcontuine, stoppaused, stoptest } from 'Src/services/api/taskApi'
 
+import NewTaskInstance from 'Src/components/Modal/taskModal/newTaskInstance'
 import styles from '../taskDetail.less'
 import { taskDetailInfoType } from '../taskDetail'
 import { projectInfoType } from '../../task/taskList/task'
@@ -24,7 +25,7 @@ interface taskDetailType<S, T> {
 
 interface propsResTaskDetailType<T> {
   taskDetailInfo: T
-  jumpLookTaskInfo: () => void
+  // jumpLookTaskInfo: () => void
   infoMap: taskDetailType<taskDetailInfoType, projectInfoType>
 }
 
@@ -51,6 +52,11 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setSpinStatus(false)
     }
   }, [status])
+  // 控制新建实列modal
+  const [visibility, setVisibility] = React.useState(false)
+  const choiceModal = () => {
+    setVisibility(!visibility)
+  }
 
   const continueOrStop = React.useCallback(async () => {
     if (spinStatus) return
@@ -119,9 +125,9 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
     }
   }, [id, spinStatus])
 
-  const lookTaskInfo = React.useCallback(() => {
-    props.jumpLookTaskInfo()
-  }, [props])
+  // const lookTaskInfo = React.useCallback(() => {
+  //   props.jumpLookTaskInfo()
+  // }, [props])
 
   const deleteTests = React.useCallback(async (project_id, id) => {
     try {
@@ -137,7 +143,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
         <div className={styles.taskDetailHead_Main_titlelayout}>
           <span className={styles.taskDetailHead_Main_left_title}>{`${num}`}</span>
           <div style={{ marginTop: '6px' }} className={styles.taskDetailCard_Main_left_footer_detail}>
-            <span role='time' onClick={lookTaskInfo}>
+            <span role='time' onClick={choiceModal}>
               查看停止条件
             </span>
             <RightOutlined />
@@ -262,6 +268,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
           </div>
         ) : null}
       </div>
+      <NewTaskInstance visibility={visibility} isDetail={1} task_id={id} data={props.taskDetailInfo} choiceModal={choiceModal} width='522px' />
     </div>
   )
 }

@@ -92,7 +92,8 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
       state: {
         type: 'two',
         isFixForm: false,
-        name: '新建激励单元'
+        name: '新建激励单元',
+        fromPathName: '/TwoExcitationList'
       }
     })
   }, [history])
@@ -106,7 +107,8 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
         type: 'two',
         isFixForm: true,
         lookDetail: true,
-        name: '激励单元详情'
+        name: '激励单元详情',
+        fromPathName: '/TwoExcitationList'
       }
     })
   }
@@ -211,7 +213,7 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
   const cloumnMap = [
     {
       width: '15%',
-      title: '激励单元管理名称',
+      title: '激励单元名称',
       dataIndex: 'name',
       key: 'name',
       // eslint-disable-next-line react/display-name
@@ -232,7 +234,7 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
     },
     {
       width: '15%',
-      title: '激励单元管理描述',
+      title: '激励单元描述',
       dataIndex: 'desc',
       key: 'desc'
     },
