@@ -22,6 +22,7 @@ interface mapType {
   parents: any[]
   head?: boolean
   project?: any
+  uuid: number
 }
 
 const TypeMap = {
@@ -103,7 +104,7 @@ function LookUpDependence(props: NewTaskInstanceType) {
             )}
           </div>
           {value?.project ? (
-            <Tooltip title='类型:项目' placement='bottomLeft'>
+            <Tooltip title={`项目:${value.project.name}`} placement='bottomLeft'>
               <span className={styles.projectCloumnBoby}>
                 <span className={styles.projectCloumn} />
                 <span> {value.project.name}</span>
@@ -120,28 +121,28 @@ function LookUpDependence(props: NewTaskInstanceType) {
               className={styles.lookUpImageBody}
               role='time'
               onClick={() => {
-                showCharts(value.id)
+                showCharts(value.uuid)
               }}
             >
-              {meomMap(value.id) ? <div className={styles.lookUpImage} /> : <div className={styles.lookUpOpenImage} />}
+              {meomMap(value.uuid) ? <div className={styles.lookUpImage} /> : <div className={styles.lookUpOpenImage} />}
             </div>
           ) : null}
         </div>
 
-        {value?.parents && meomMap(value.id) ? (
+        {value?.parents && meomMap(value.uuid) ? (
           <div className={styles.listComponents}>
             {value?.parents.map((item: al, index: number) => {
               return (
                 <div
-                  key={item.id}
+                  key={item.uuid}
                   className={styles.listComponentsBody}
                   ref={el => {
-                    getRef(el, item.type, item.name)
+                    getRef(el, item.type, item.uuid)
                   }}
                 >
                   <ListComponment value={item} />
                   {value?.parents.length - 1 !== index ? (
-                    <div style={{ width: acl(item.name) }} className={styles.drawBody_concentBody_line} />
+                    <div style={{ width: acl(item.uuid) }} className={styles.drawBody_concentBody_line} />
                   ) : null}
                 </div>
               )

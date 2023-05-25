@@ -21,11 +21,13 @@ import { projectInfoType } from '../../task/taskList/task'
 interface taskDetailType<S, T> {
   projectInfo: T
   taskInfo: S
+  instanceInfo: any
 }
 
 interface propsResTaskDetailType<T> {
   taskDetailInfo: T
   // jumpLookTaskInfo: () => void
+  display: boolean
   infoMap: taskDetailType<taskDetailInfoType, projectInfoType>
 }
 
@@ -35,7 +37,8 @@ interface InfoType {
 
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
 function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
-  const { taskInfo, projectInfo } = props.infoMap
+  const { taskInfo, projectInfo, instanceInfo } = props.infoMap
+  const { display } = props
   const { num, start_time, end_time, status, id, project_id } = props.taskDetailInfo
   const [spinStatus, setSpinStatus] = React.useState(false)
 
@@ -44,7 +47,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
   const inScale = () => {
     history.push({
       pathname: '/projects/Tasks/Detail/Scale',
-      state: { taskInfo, projectInfo, test_Id: id, isTesting: true }
+      state: { taskInfo, projectInfo, instanceInfo, test_Id: id, isTesting: true }
     })
   }
   React.useEffect(() => {
@@ -221,7 +224,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
               beginTests()
             }}
           >
-            {[0, 1, 5, 6].includes(status) && (
+            {!display && [0, 1, 5, 6].includes(status) && (
               <>
                 <Tooltip placement='bottom' title='开始测试当前任务'>
                   <Spin spinning={spinStatus && index === 3} indicator={antIcon}>

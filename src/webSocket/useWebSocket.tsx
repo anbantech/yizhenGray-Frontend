@@ -5,6 +5,7 @@ import { useBindEventListener } from 'Src/util/Hooks/useBindEventListener'
 export const getCurretTimeString = () => `${+new Date()}`.slice(0, 10)
 
 interface InfoType {
+  [x: string]: any
   task_status: number
   task_id: number
   instance_id: number

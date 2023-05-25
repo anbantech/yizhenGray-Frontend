@@ -109,8 +109,8 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
   }
 
   const onValuesChange = (changedValues: any, allValues: any) => {
-    const bol = allValues.work_time
-    if (bol) {
+    const { work_time } = allValues
+    if (work_time >= 1 && work_time <= 48) {
       setDisabledStatus(false)
     } else {
       setDisabledStatus(true)
@@ -137,11 +137,16 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
       form.setFieldsValue(formData)
       setCrashObj({ ...crash_config })
     }
-  }, [data, form])
+    return () => {
+      if (!visibility) {
+        form.resetFields()
+      }
+    }
+  }, [data, form, visibility])
 
   return (
     <Modal
-      className={styles.formModal}
+      className={styles.formNewInstanceModal}
       width={width}
       visible={visibility}
       title={isDetail ? '停止条件' : '新建实例'}
@@ -161,7 +166,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         </Button>,
         <Button
           className={styles.btn_createCrashTable}
-          style={{ marginRight: '18px' }}
+          style={{ marginRight: '10px' }}
           key='submit'
           disabled={isDisableStatus}
           type='primary'

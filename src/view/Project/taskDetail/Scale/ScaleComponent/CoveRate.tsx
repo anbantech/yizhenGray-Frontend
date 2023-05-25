@@ -19,7 +19,7 @@ const CoveRate: React.FC<any> = forwardRef((props, ref) => {
     try {
       const res = await simulateOption({
         action: 'coverage',
-        task_id: test_id
+        instance_id: test_id
       })
       if (res.data) {
         setRegisterData(res.data)

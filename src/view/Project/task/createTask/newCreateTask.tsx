@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
-import { message } from 'antd'
 import FirstConfig from './taskConfigCompents/firstConfig'
 import styles from './newCreateTask.less'
 import { projectInfoType } from '../taskList/task'
@@ -45,7 +44,6 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
         pathname: '/projects/Tasks',
         state: { projectInfo }
       })
-      message.success('实列修改成功')
     } else {
       setBtnLoading(false)
     }

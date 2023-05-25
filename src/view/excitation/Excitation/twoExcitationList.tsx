@@ -311,7 +311,13 @@ const TwoExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
           concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
         />
       ) : null}
-      <LookUpDependence visibility={visibility as boolean} name='外设关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
+      <LookUpDependence
+        visibility={visibility as boolean}
+        name='激励单元关联信息'
+        data={dependenceInfo}
+        choiceModal={chioceModalStatus}
+        width='760px'
+      />
     </div>
   )
 }

@@ -294,7 +294,8 @@ export interface testlogs {
   branch_coverage?: string
 }
 export interface testAlllogs {
-  task_id: number
+  task_id?: number
+  instance_id?: number
   page: number
   page_size: number
   sort_field?: string
@@ -477,9 +478,10 @@ interface errorFramsPostioning {
 
 export interface simulateParams {
   action: string
-  task_id: string | number
+  task_id?: string | number
   addr?: string
   length?: string
+  instance_id?: string | number
 }
 
 export interface registerParams {
