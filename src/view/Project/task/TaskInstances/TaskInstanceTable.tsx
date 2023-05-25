@@ -21,7 +21,7 @@ import { getTime } from 'Src/util/baseFn'
 import styles from '../taskList/task.less'
 import { InstancesContext } from '../TaskIndex'
 
-const customizeRender = () => <DefaultValueTips content='暂无任务' />
+const customizeRender = () => <DefaultValueTips content='暂无实例' />
 
 const request = {
   task_id: '',
@@ -277,7 +277,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
 
       // eslint-disable-next-line react/display-name
       title: () => {
-        return <span style={{ display: 'block', width: '100%', textAlign: 'right' }}>更多操作</span>
+        return <span style={{ display: 'block', width: '100%', textAlign: 'right' }}>操作</span>
       },
       dataIndex: 'operations',
       key: 'operations',
@@ -333,7 +333,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       <div className={styles.instance_header}>
         <div className={styles.instanceListLeft}>
           <span>实例列表</span>
-          <SearchInput placeholder='根据实列编号搜索实例' className={styles.taskInput} onChangeValue={updateParams} />
+          <SearchInput placeholder='根据实例编号搜索实例' className={styles.taskInput} onChangeValue={updateParams} />
         </div>
         <CreateButton
           width='146px'

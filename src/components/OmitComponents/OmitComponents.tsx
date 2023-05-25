@@ -1,4 +1,6 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import more from 'Src/assets/image/icon_more.svg'
+import more_hover from 'Src/assets/image/icon_more_hover.svg'
 import MenuComponents from '../Menu/Menu'
 import styles from './omit.less'
 
@@ -19,6 +21,10 @@ interface MenuTypes {
 
 function OmitComponents(props: MenuTypes) {
   const { updateMenue, status, id, setData, type, data, onChange } = props
+  const [isMove, setMoveStatus] = useState(false)
+  const changeMore = () => {
+    setMoveStatus(!isMove)
+  }
   return (
     <div
       className={styles.omitCompoentsTarget}
@@ -29,12 +35,10 @@ function OmitComponents(props: MenuTypes) {
         }
         updateMenue(id)
       }}
+      onMouseEnter={changeMore}
+      onMouseLeave={changeMore}
     >
-      <div className={styles.omitRounds}>
-        <span className={styles.omitRoundsSpan} />
-        <span className={styles.omitRoundsSpan} />
-        <span className={styles.omitRoundsSpan} />
-      </div>
+      <div className={styles.omitRounds}>{isMove ? <img src={more_hover} alt='' /> : <img src={more} alt='' />}</div>
 
       {status === id ? <MenuComponents onMouseLeave={updateMenue} type={type} changeTimeType={onChange} /> : null}
     </div>

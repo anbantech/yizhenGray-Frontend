@@ -24,7 +24,7 @@ function MemoryMonitor() {
         try {
           const res = await simulateOption({
             action: 'read_memory',
-            task_id: test_id,
+            instance_id: test_id,
             addr,
             length
           })

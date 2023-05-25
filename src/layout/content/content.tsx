@@ -41,48 +41,25 @@ function content() {
         <Route path='/TwoExcitationList' exact component={TwoExcitationList} />
         <Route path='/ThreeExcitationList' exact component={ThreeExcitationList} />
         <Route path='/FourExcitationList' exact component={FourExcitationList} />
-
         <Route path='/OneExcitationList/Detail' exact component={ExcitationBase} />
-
         <Route path='/TwoExcitationList/Detail' exact component={ExcitationBase} />
-
         <Route path='/ThreeExcitationList/Detail' exact component={ExcitationBase} />
-
         <Route path='/FourExcitationList/Deatail' exact component={ExcitationBase} />
-
         <Route path='/OneExcitationList/update' exact component={ExcitationBase} />
-
         <Route path='/TwoExcitationList/update' exact component={ExcitationBase} />
-
         <Route path='/ThreeExcitationList/update' exact component={ExcitationBase} />
-
         <Route path='/FourExcitationList/update' exact component={ExcitationBase} />
-
         <Route path='/ThreeExcitationList/createDoubleExcitation' exact component={ExcitationBase} />
-
         <Route path='/FourExcitationList/createGroupExcitation' exact component={ExcitationBase} />
-
         <Route path='/TwoExcitationList/createDoubleExcitationGroup' exact component={ExcitationBase} />
-
         <Route path='/OneExcitationList/createExcitation' exact component={ExcitationBase} />
-
         <Route path='/FourExcitationList/createGroupExcitation/ExcitationDraw' exact component={ExcitationDraw} />
-
+        <Route path='/FourExcitationList/update/ExcitationDraw' exact component={ExcitationDraw} />
         <Route path='/FourExcitationList/Deatail/ExcitationDraw' exact component={ExcitationDraw} />
-
         <Route path='/templateList' exact component={TemplateList} />
         <Route path='/templateList/template' exact component={CreateTemplateWrapper} />
         <Route path='/templateList/templateDetail' exact component={CreateTemplateWrapper} />
-        {/* <Route path='/excitationList/createGroupExcitation' exact component={ExcitationBase} /> */}
-        {/* <Route path='/Arrgemnt/StepSecond' exact component={StepSecond} /> */}
-        {/* <Route path='/Arrgemnt/ChangeArrgement' exact component={ChangeArrgement} /> */}
-        {/* <Route path='/Arrgemnt/NewArrgement/responseTemplate' exact component={CreateResponseTemplateComponent} />
-        <Route path='/Arrgemnt/StepSecond/responseTemplate' exact component={CreateResponseTemplateComponent} />
-        <Route path='/Arrgemnt/NewArrgement/baseTemplate' exact component={createTemplateWrapper} />
-        <Route path='/Arrgemnt/StepSecond/baseTemplate' exact component={createTemplateWrapper} /> */}
         <Redirect from='/*' to='/' />
-        {/* <Route path='/UserLog' exact component={UserLog} />
-        <Route path='/UserList' exact component={UserList} /> */}
       </Switch>
     </div>
   )

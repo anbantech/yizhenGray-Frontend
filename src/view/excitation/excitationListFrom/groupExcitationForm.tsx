@@ -362,7 +362,7 @@ const GroupExcitationForm: React.FC = () => {
             group_data_list: result.data
           }
           history.push({
-            pathname: '/FourExcitationList/Deatail/ExcitationDraw',
+            pathname: `${isFixForm ? '/FourExcitationList/update/ExcitationDraw' : '/FourExcitationList/createGroupExcitation/ExcitationDraw'}`,
             state: {
               Data: { ...detailData, ...propsDatas, ...params1 },
               isFixForm,

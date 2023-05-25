@@ -52,6 +52,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   const [status, depCollect, depData] = useDepCollect(RequsetParams)
   const [total, logData] = UseGetTestLog(depData, updateStatus)
   const [spinning, setSpinning] = React.useState(true)
+  const [display, setDisplay] = React.useState(false)
   const updateRef = useRef<any>()
 
   const getInstanceDetail = async (value: string) => {
@@ -60,15 +61,6 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
       setTaskDetailInfo(getTaskDetails.data)
     }
   }
-
-  // 跳转实例详情
-  // const jumpLookTaskInfo = React.useCallback(() => {
-  //   history.push({
-  //     pathname: '/projects/Tasks/Detail/lookTaskDetailInfo',
-  //     state: { projectInfo, taskInfo, instanceInfo }
-  //   })
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [instanceInfo])
 
   // 测试降序
   const testTimeSort = (value: string) => {
@@ -109,6 +101,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
       if (+messageInfo.instance_id === +instanceInfo.id) {
         if (updateStatus !== messageInfo.task_status) {
           setUpdateStatus(messageInfo.task_status)
+          setDisplay(messageInfo.dispaly)
           if ([1, 4].includes(messageInfo.task_status)) {
             setSpinning(true)
           }
@@ -152,7 +145,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
         <div className={globalStyle.AnBan_main}>
           {taskDetailInfo && (
             <>
-              <TaskDetailHead taskDetailInfo={taskDetailInfo} infoMap={props.location?.state} />
+              <TaskDetailHead taskDetailInfo={taskDetailInfo} infoMap={props.location?.state} display={display} />
               <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
               {taskDetailInfo?.status === 2 ? (
                 <DetailTestingTable params={depData} taskDetailInfo={taskDetailInfo} status={updateStatus} />
