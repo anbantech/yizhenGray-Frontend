@@ -81,13 +81,14 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         if (taskInfo?.editTaskMode) {
           const result = await updateTask(taskInfo.data.id, params)
           if (result.data) {
-            message.success('实列修改成功')
+            message.success('任务修改成功')
             setModalData({ ...modalData, spinning: false, isModalVisible: false })
             cancenlForm()
           }
         } else {
           const result = await createTaskFn(params)
           if (result.data) {
+            message.success('任务创建成功')
             setModalData({ ...modalData, spinning: false })
             return result.data
           }

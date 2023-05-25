@@ -270,7 +270,7 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
       <div className={(styles.AnBan_header, style.AnBan_headerRadio)}>
         <span className={styles.AnBan_header_title}>激励嵌套管理</span>
         <div className={styles.AnBan_header_bottom}>
-          <SearchInput ref={childRef.inputRef} className={inputStyle.searchInput} placeholder='根据名称搜索交互' onChangeValue={setOperation} />
+          <SearchInput ref={childRef.inputRef} className={inputStyle.searchInput} placeholder='根据名称搜索激励嵌套' onChangeValue={setOperation} />
           <CreateButton
             name='新建激励嵌套'
             size='large'
@@ -314,7 +314,13 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
         name='删除激励嵌套'
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
       />
-      <LookUpDependence visibility={visibility as boolean} name='外设关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
+      <LookUpDependence
+        visibility={visibility as boolean}
+        name='激励嵌套关联信息'
+        data={dependenceInfo}
+        choiceModal={chioceModalStatus}
+        width='760px'
+      />
     </div>
   )
 }

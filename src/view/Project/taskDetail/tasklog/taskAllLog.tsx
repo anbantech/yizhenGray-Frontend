@@ -9,6 +9,8 @@ import { RouteComponentProps, StaticContext } from 'react-router'
 import React, { useEffect, useState } from 'react'
 import { getTime } from 'Src/util/baseFn'
 import { testAlllogs } from 'Src/globalType/Param'
+import { WarnTip } from 'Src/view/excitation/excitationComponent/Tip'
+import { CrashInfoMap } from 'Src/util/DataMap/dataMap'
 import style from 'Src/view/Project/project/project.less'
 import styles from '../taskDetailUtil/Detail.less'
 import tableStyle from '../taskDetail.less'
@@ -28,13 +30,14 @@ export interface taskDetailInfoType {
 interface taskDetailType<S, T> {
   projectInfo: T
   taskInfo: S
+  instanceInfo: any
 }
 
 const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskDetailType<taskDetailInfoType, projectInfoType>>> = props => {
   const [currentType, setCurrentType] = useState('all')
-  const { taskInfo } = props.location.state
+  const { instanceInfo } = props.location.state
   const RequsetParams = {
-    task_id: +taskInfo.task_id,
+    instance_id: +instanceInfo.id,
     page: 1,
     page_size: 10,
     sort_field: 'create_time',
@@ -53,6 +56,12 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
 
   const [total, setTotal] = React.useState(-1)
   const [logData, setLogData] = React.useState([])
+
+  const [currentTypeTime, setCurrentTypeTime] = useState('ascend')
+
+  const [currentTypeBranch, setCurrentTypeBranch] = useState('')
+
+  const [currentTypeStatement, setCurrentTypeStatement] = useState('')
 
   const changePage = (page: number, type: string, pageSize: number) => {
     setParams({ ...params, page, page_size: pageSize })
@@ -73,6 +82,19 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
     }
   }
 
+  const changeCurrentTypeBranch = (e: any) => {
+    setCurrentTypeBranch(e.key)
+    setParams({ ...RequsetParams, branch_coverage: e.key })
+  }
+  const changeTimeType = (e: any) => {
+    setCurrentTypeTime(e.key)
+    setParams({ ...RequsetParams, sort_order: e.key })
+  }
+
+  const changeStatementType = (e: any) => {
+    setCurrentTypeStatement(e.key)
+    setParams({ ...RequsetParams, statement_coverage: e.key })
+  }
   useEffect(() => {
     if (params) {
       getlog(params)
@@ -82,22 +104,93 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
   const menu = (
     <Menu selectable onClick={changeCurrentType} selectedKeys={[currentType]}>
       <Menu.Item key='' style={{ textAlign: 'center' }}>
-        全部
-      </Menu.Item>
-      <Menu.Item key={0} style={{ textAlign: 'center' }}>
-        否
+        默认
       </Menu.Item>
       <Menu.Item key={1} style={{ textAlign: 'center' }}>
         是
       </Menu.Item>
+      <Menu.Item key={0} style={{ textAlign: 'center' }}>
+        否
+      </Menu.Item>
     </Menu>
   )
-
   function IsWrongDownMenu() {
     return (
       <Dropdown overlay={menu}>
         <Space>
           异常用例
+          <DownOutlined />
+        </Space>
+      </Dropdown>
+    )
+  }
+
+  const menuBranch = (
+    <Menu selectable onClick={changeCurrentTypeBranch} selectedKeys={[currentTypeBranch]}>
+      <Menu.Item key='' style={{ textAlign: 'center' }}>
+        默认
+      </Menu.Item>
+      <Menu.Item key='ascend' style={{ textAlign: 'center' }}>
+        升序
+      </Menu.Item>
+      <Menu.Item key='descend' style={{ textAlign: 'center' }}>
+        降序
+      </Menu.Item>
+    </Menu>
+  )
+
+  const menuStatement = (
+    <Menu selectable onClick={changeStatementType} selectedKeys={[currentTypeStatement]}>
+      <Menu.Item key='' style={{ textAlign: 'center' }}>
+        默认
+      </Menu.Item>
+      <Menu.Item key='ascend' style={{ textAlign: 'center' }}>
+        升序
+      </Menu.Item>
+      <Menu.Item key='descend' style={{ textAlign: 'center' }}>
+        降序
+      </Menu.Item>
+    </Menu>
+  )
+
+  const menuTime = (
+    <Menu selectable onClick={changeTimeType} selectedKeys={[currentTypeTime]}>
+      <Menu.Item key='ascend' style={{ textAlign: 'center' }}>
+        升序
+      </Menu.Item>
+      <Menu.Item key='descend' style={{ textAlign: 'center' }}>
+        降序
+      </Menu.Item>
+    </Menu>
+  )
+
+  function BranchMenu() {
+    return (
+      <Dropdown overlay={menuBranch}>
+        <Space>
+          分支覆盖率
+          <DownOutlined />
+        </Space>
+      </Dropdown>
+    )
+  }
+
+  function StatementMenu() {
+    return (
+      <Dropdown overlay={menuStatement}>
+        <Space>
+          语句覆盖率
+          <DownOutlined />
+        </Space>
+      </Dropdown>
+    )
+  }
+
+  function TimeDownMenu() {
+    return (
+      <Dropdown overlay={menuTime}>
+        <Space>
+          发送时间
           <DownOutlined />
         </Space>
       </Dropdown>
@@ -179,11 +272,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
 
     {
       title: () => {
-        return (
-          <div>
-            <span>分支覆盖率 </span>
-          </div>
-        )
+        return <BranchMenu />
       },
       dataIndex: 'branch_coverage',
       key: 'branch_coverage',
@@ -197,11 +286,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
 
     {
       title: () => {
-        return (
-          <div>
-            <span>语句覆盖率 </span>
-          </div>
-        )
+        return <StatementMenu />
       },
       dataIndex: 'statement_coverage',
       key: 'statement_coverage',
@@ -213,7 +298,9 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       width: '10%'
     },
     {
-      title: '发现时间',
+      title: () => {
+        return <TimeDownMenu />
+      },
       dataIndex: 'update_time',
       key: 'update_time',
       ellipsis: true,
@@ -223,6 +310,33 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
         </div>
       ),
       width: '15%'
+    },
+    {
+      title: () => {
+        return (
+          <div style={{ display: 'flex' }}>
+            <span> 缺陷结果</span>
+            <WarnTip />
+          </div>
+        )
+      },
+      dataIndex: 'crash_info',
+      key: 'crash_info',
+      ellipsis: true,
+      width: '12.5%',
+      render: (text: any, record: any) => (
+        <div className={styles.dataLongInfoResult}>
+          {Object.keys(record.crash_info).map(item => {
+            return (
+              <div key={item} className={styles.crash_infoTitle}>
+                <Tooltip title={CrashInfoMap[+item]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                  <span>{CrashInfoMap[+item]}</span>
+                </Tooltip>
+              </div>
+            )
+          })}
+        </div>
+      )
     }
   ]
 

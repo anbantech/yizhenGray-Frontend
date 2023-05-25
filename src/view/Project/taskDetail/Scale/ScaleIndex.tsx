@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useEffect, useRef, useState } from 'react'
 import { Tabs, Button } from 'antd'
 import { useHistory, withRouter } from 'react-router-dom'
-import { TaskDetail } from 'Src/services/api/taskApi'
+import { instanceDetail } from 'Src/services/api/taskApi'
 import memoryWrite from 'Src/assets/Contents/memoryWrite.svg'
 import registerWrite from 'Src/assets/Contents/registerWrite.svg'
 import memoryBlue from 'Src/assets/Contents/memoryBlue.svg'
@@ -132,7 +132,8 @@ function Scale(props: any) {
 
   // 获取任务详情
   const getTaskDetail = async (value: string) => {
-    const getTaskDetails = await TaskDetail(value)
+    // eslint-disable-next-line no-undef
+    const getTaskDetails = await instanceDetail(value)
     if (getTaskDetails.data) {
       setLoopStatus(getTaskDetails?.data.status)
     }

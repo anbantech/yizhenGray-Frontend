@@ -145,6 +145,7 @@ function Header(props: any) {
     const url = `/${pathSnippets.slice(0, index + 1).join('/')}`
     return url
   })
+
   const name: any = {
     '/projects': '项目管理',
     '/projects/Tasks': '任务列表',
@@ -171,12 +172,18 @@ function Header(props: any) {
     '/ThreeExcitationList/createDoubleExcitation': '新建激励嵌套',
     '/FourExcitationList/createGroupExcitation': '新建交互',
     '/OneExcitationList/createExcitation': '新建外设',
+    '/FourExcitationList/createGroupExcitation/ExcitationDraw': '预览',
     '/FourExcitationList/Deatail/ExcitationDraw': '预览',
+    '/FourExcitationList/update/ExcitationDraw': '预览',
     '/templateList': '模板管理',
-    '/templateList/templateDetail': `${data?.editOriginalTemplate ? '修改模板' : '模版详情'}`,
-    '/templateList/template': `${data && data?.readonlyBaseTemplate ? '查看模板' : data && data?.editOriginalTemplate ? '修改模板' : '新建模板'}`
+    '/templateList/templateDetail': `${
+      !data?.editOriginalTemplate && !data?.readonlyBaseTemplate ? '新建模板' : data?.editOriginalTemplate ? '修改模板' : '模板详情'
+    }`,
+    '/templateList/template': `${data && data?.editOriginalTemplate ? '修改模板' : '新建模板'}`
   }
+
   const history = useHistory()
+
   const jumpTest = (value: any) => {
     if (pathname === `${value}`) {
       return '跳转页面处于当前页面,无需跳转'

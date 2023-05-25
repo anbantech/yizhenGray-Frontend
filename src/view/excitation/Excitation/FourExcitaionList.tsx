@@ -305,7 +305,7 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
         spinning={spinning}
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
       />
-      <LookUpDependence visibility={visibility as boolean} name='外设关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
+      <LookUpDependence visibility={visibility as boolean} name='交互关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
     </div>
   )
 }

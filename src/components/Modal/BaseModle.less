@@ -1552,7 +1552,7 @@
 }
 
 .crashTable{
-  width: 374px;
+  width: 390px;
   height: 258px;
   background: #FFFFFF;
   border: 1px solid #BFBFBF;
@@ -1635,9 +1635,15 @@
 }
 
 .taskCrashForm {
-  width: 470px;
+  width: 490px;
 }
 
+.formNewInstanceModal{
+  :global(.ant-modal-body) {
+      margin: 0;
+      padding-left: 7px;
+    }
+  }
 .btn_createCrashTable {
   box-sizing: border-box;
   width: 78px;
@@ -1652,8 +1658,15 @@
 }
 
 .btn_cancelCrashTable{
+    width: 78px;
+    height: 32px;
     border-radius: 4px;
-}
+    :global(.ant-btn) {
+      font-style: normal !important;
+      font-weight: 400 !important;
+      font-size: 14px !important;
+    }
+  }
 
 
 
