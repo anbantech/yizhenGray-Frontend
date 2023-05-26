@@ -47,6 +47,7 @@ const ExcitationComponents: React.FC = () => {
       throwErrorMessage(error, { 1009: '请稍后再试' })
     }
   }, [])
+
   const createOneExcitationFn = React.useCallback(async () => {
     setSpinning(true)
     const routerInfo = { isFixForm, info, lookDetail, type, name }
