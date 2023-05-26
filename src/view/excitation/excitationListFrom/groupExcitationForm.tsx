@@ -100,6 +100,7 @@ const Fuzzing = (props: any) => {
     oldItemArray.splice(val, 1)
     setCardArray([...oldItemArray])
   }
+
   const onChange = React.useCallback(
     (val: any, index: number) => {
       changePre2(val, index)
@@ -158,16 +159,6 @@ const GroupExcitationForm: React.FC = () => {
   const [excitationList, setExcitationList] = useState<Option[]>()
   const [stepArray, setStepArray] = useState<number[][]>([[], [], []])
 
-  // 过滤已经被使用的数据
-  // const filterUseData = (val: FilterType) => {
-  //   const res = val.filter(item => {
-  //     return item.disabled === false
-  //   })
-  //   return res
-  // }
-
-  // 过滤数组元素中的unfinend
-
   const filterUnfinedItem = (val: number[][]) => {
     const mapArray = val.map(item => {
       return item.filter(value => value !== undefined)
@@ -193,14 +184,24 @@ const GroupExcitationForm: React.FC = () => {
           children: [{}]
         }
       ]
+      let data: Option[]
       Promise.all([result1, result2])
         .then(value => {
           const result1Data = value[0].data?.results as FilterType
           const result2Data = value[1].data?.results as FilterType
-          const data = [
-            { ...pre[1], children: result2Data },
-            { ...pre[0], children: result1Data }
-          ]
+
+          if (result1Data.length >= 1 && result2Data.length >= 1) {
+            data = [
+              { ...pre[1], children: result2Data },
+              { ...pre[0], children: result1Data }
+            ]
+          } else if (result1Data.length >= 1 && result2Data.length === 0) {
+            data = [{ ...pre[0], children: result1Data }]
+          } else if (result1Data.length === 0 && result2Data.length >= 1) {
+            data = [{ ...pre[1], children: result2Data }]
+          } else {
+            data = []
+          }
           setExcitationList([...data])
           return value
         })

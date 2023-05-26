@@ -63,7 +63,7 @@ const DoubleExcitationForm: React.FC = () => {
     }
   ])
   const [data, setData] = useState<number[]>([])
-  const [cardArray, setCardArray] = React.useState([0])
+  const [cardArray, setCardArray] = React.useState([1])
   const [cardCheckStatus, setCardCheckStatus] = useState(true)
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
   const [spinning, setSpinning] = React.useState(false)
@@ -73,6 +73,7 @@ const DoubleExcitationForm: React.FC = () => {
     setVisibility(val)
   }
   const Data = GetDeatilFn(info?.id) as getAllRes
+
   const addCard = React.useCallback(() => {
     const pre = cardArray
     pre.push(cardArray.length)
@@ -142,10 +143,13 @@ const DoubleExcitationForm: React.FC = () => {
     async (request1: Resparams) => {
       try {
         const result1 = await excitationListFn(request1)
+        let data: Option[]
         Promise.all([result1])
           .then(value => {
             const result1Data = value[0].data?.results
-            const data = [{ ...excitationList[0], children: result1Data }]
+            if (result1Data) {
+              data = result1Data.length >= 1 ? [{ ...excitationList[0], children: result1Data }] : []
+            }
             setExcitationList([...data])
             return value
           })
@@ -532,7 +536,7 @@ const DoubleExcitationForm: React.FC = () => {
               excitationList={excitationList}
               onChange={onChange}
               index={index}
-              key={value}
+              key={index}
             />
           )
         })}
