@@ -121,16 +121,11 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
     setIndex(3)
     try {
       await bgTest({ instance_id: id as number })
-      return
     } catch (error) {
       setSpinStatus(false)
       message.error(error.message)
     }
   }, [id, spinStatus])
-
-  // const lookTaskInfo = React.useCallback(() => {
-  //   props.jumpLookTaskInfo()
-  // }, [props])
 
   const deleteTests = React.useCallback(async (project_id, id) => {
     try {
