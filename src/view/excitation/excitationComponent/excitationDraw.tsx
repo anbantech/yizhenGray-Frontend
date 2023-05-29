@@ -362,7 +362,7 @@ const ExcitationDraw: React.FC = () => {
 
   const updatFourWorkFn = React.useCallback(async () => {
     setSpinning(true)
-    const { isFixForm, info, fromPathName, type, name } = state
+    const { isFixForm, info, fromPathName, type } = state
     const { child_id_list } = state.child_id_list
     const params = {
       name: state.Data.name,
@@ -375,8 +375,7 @@ const ExcitationDraw: React.FC = () => {
         if (result.data) {
           setSpinning(false)
           history.push({
-            state: { isFixForm, info, type, name, lookDetail: true },
-
+            state: { isFixForm, info, type, name: '交互详情', lookDetail: true },
             pathname: fromPathName === '/FourExcitationList' ? '/FourExcitationList' : '/FourExcitationList/Deatail'
           })
         }

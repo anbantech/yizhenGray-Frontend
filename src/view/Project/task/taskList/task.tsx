@@ -3,7 +3,7 @@ import CreateButton from 'Src/components/Button/createButton'
 
 import { useEffect, useRef, useState } from 'react'
 import * as React from 'react'
-import { message } from 'antd'
+import { message, Tooltip } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
 
 import testing from 'Src/assets/Contents/Group692.svg'
@@ -229,7 +229,10 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     <div className={styles.taskLeft_list} ref={layoutRef}>
       <div className={globalStyle.AnBan_header}>
         <div className={styles.taskHeadr}>
-          <span className={styles.taskLeft_header_title}>{projectInfo?.projectName || ''}</span>
+          <Tooltip placement='bottom' title={projectInfo?.projectName || ''}>
+            <span className={styles.taskLeft_header_title}>{projectInfo?.projectName || ''}</span>
+          </Tooltip>
+
           <CreateButton width='100%' height='36px' borderRadius='4px' name='新建任务' size='small' type='primary' onClick={jumpNewCreateTask} />
         </div>
         <SearchInput className={styles.taskInput} placeholder='根据名称搜索任务' onChangeValue={updateParams} />

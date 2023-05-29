@@ -201,7 +201,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
               >
                 查看详情
               </span>
-              <OmitComponents data={row} setData={setData} id={row.id} updateMenue={setUpdateMenue} onChange={onChange} status={updateMenue} />
+              <OmitComponents data={row} setData={setData} id={row.id} updateMenueFn={setUpdateMenue} onChange={onChange} status={updateMenue} />
             </div>
           )
         }

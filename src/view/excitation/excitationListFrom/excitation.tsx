@@ -74,7 +74,7 @@ const ExcitationComponents: React.FC = () => {
         CommonModleClose(false)
         if (result.data) {
           history.push({
-            state: { ...routerInfo, lookDetail: true },
+            state: { ...routerInfo, name: '外设详情', lookDetail: true },
             pathname: `${fromPathName}`
           })
         }
