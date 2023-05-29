@@ -48,3 +48,26 @@
   flex-direction: row;
   align-items: center;
 }
+
+.overlay {
+  height: 100%;
+  :global(.ant-tooltip-inner) {
+    padding-bottom: 20px;
+    overflow-y: scroll;
+    color: #000;
+    white-space: pre;
+  }
+}
+
+.descChartMore{
+  display: inline-block;
+  width: 300px;
+  white-space: nowrap;
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.descChart{
+  color: #000;
+}
