@@ -1,5 +1,5 @@
 import * as React from 'react'
-
+import { Tooltip } from 'antd'
 import { ResTaskDetail } from 'Src/globalType/Response'
 import testing from 'Src/assets/instanceImage/img_测试中@2x.png'
 import stoping from 'Src/assets/instanceImage/img_停止中@2x.png'
@@ -38,11 +38,17 @@ const HeaderComponets: React.FC = () => {
           <div className={styles.headerLeft}>
             <span className={styles.headerName}>{InstancesDetail.task_detail.name}</span>
             <div className={styles.headerSubtitle}>
-              <span>任务描述:{InstancesDetail.task_detail.desc}</span>
+              <span>
+                <Tooltip title={InstancesDetail.task_detail.desc} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                  <span className={InstancesDetail.task_detail.desc ? styles.descChartMore : styles.descChart}>
+                    {InstancesDetail.task_detail.desc ? `任务描述 : ${InstancesDetail.task_detail.desc}` : '任务描述 : 暂无描述'}
+                  </span>
+                </Tooltip>
+              </span>
               <div className={styles.cloumnLine} />
-              <span>仿真节点:{InstancesDetail.task_detail.simu_instance_id}节点</span>
+              <span>仿真节点 : {InstancesDetail.task_detail.simu_instance_id}节点</span>
               <div className={styles.cloumnLine} />
-              <span>交互:{InstancesDetail.task_detail.group_name} </span>
+              <span>交互 : {InstancesDetail.task_detail.group_name} </span>
             </div>
           </div>
           <div className={styles.headerright}>
