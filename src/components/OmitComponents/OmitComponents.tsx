@@ -8,7 +8,7 @@ type Data = any | Record<string, any>
 
 interface MenuTypes {
   id: number
-  updateMenue: (value: number) => void
+  updateMenueFn: (value: number) => void
   status: number
   onChange: (val: string) => void
   // eslint-disable-next-line react/require-default-props
@@ -20,7 +20,7 @@ interface MenuTypes {
 }
 
 function OmitComponents(props: MenuTypes) {
-  const { updateMenue, status, id, setData, type, data, onChange } = props
+  const { updateMenueFn, status, id, setData, type, data, onChange } = props
   const [isMove, setMoveStatus] = useState(false)
   const changeMore = () => {
     setMoveStatus(!isMove)
@@ -33,14 +33,16 @@ function OmitComponents(props: MenuTypes) {
         if (data && setData) {
           setData(data)
         }
-        updateMenue(id)
+        updateMenueFn(id)
       }}
       onMouseEnter={changeMore}
-      onMouseLeave={changeMore}
+      onMouseLeave={() => {
+        changeMore()
+      }}
     >
       <div className={styles.omitRounds}>{isMove ? <img src={more_hover} alt='' /> : <img src={more} alt='' />}</div>
 
-      {status === id ? <MenuComponents onMouseLeave={updateMenue} type={type} changeTimeType={onChange} /> : null}
+      {status === id ? <MenuComponents onMouseLeave={updateMenueFn} type={type} changeTimeType={onChange} /> : null}
     </div>
   )
 }

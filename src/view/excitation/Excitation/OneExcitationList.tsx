@@ -4,7 +4,6 @@ import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import CreateButton from 'Src/components/Button/createButton'
 import Table from 'antd/lib/table'
 import ConfigProvider from 'antd/lib/config-provider'
-import { useState } from 'react'
 import * as React from 'react'
 import { message } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
@@ -58,15 +57,15 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
 
   const history = useHistory()
   // 展示菜单
-  const [updateMenue, setUpdateMenue] = useState<number>(-1)
+  const [updateMenue, setUpdateMenue] = React.useState<number>(-1)
 
   // 项目管理
-  const [excitationList, setExcitationList] = useState<ResparamsType[]>([])
+  const [excitationList, setExcitationList] = React.useState<ResparamsType[]>([])
 
   // 页码
-  const [total, setTotal] = useState<number>()
+  const [total, setTotal] = React.useState<number>()
 
-  const [spinning, setSpinning] = useState(false)
+  const [spinning, setSpinning] = React.useState(false)
   const chioceBtnLoading = (val: boolean) => {
     setSpinning(val)
   }
@@ -75,12 +74,12 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
 
   // loading加载
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = React.useState(true)
 
   // 查看关联任务
   const { visibility, chioceModalStatus, deleteVisibility, CommonModleClose } = useMenu()
   // 存储关联任务信息
-  const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
+  const [dependenceInfo, setDependenceInfo] = React.useState({ id: '', name: '', parents: [] })
 
   // 新建项目 弹出框
   const createProjectModal = React.useCallback(() => {
@@ -179,35 +178,41 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
     chioceModalStatus(true)
   }, [chioceModalStatus, updateMenue])
 
-  const jumpUpdateWeb = (item: any) => {
-    history.push({
-      pathname: '/OneExcitationList/update',
-      state: {
-        info: { id: item },
-        type: 'one',
-        lookDetail: false,
-        isFixForm: true,
-        name: '修改外设',
-        fromPathName: '/OneExcitationList'
-      }
-    })
-  }
+  const jumpUpdateWeb = React.useCallback(
+    (item: any) => {
+      history.push({
+        pathname: '/OneExcitationList/update',
+        state: {
+          info: { id: item },
+          type: 'one',
+          lookDetail: false,
+          isFixForm: true,
+          name: '修改外设',
+          fromPathName: '/OneExcitationList'
+        }
+      })
+    },
+    [history]
+  )
 
-  const onChange = (val: string) => {
-    switch (val) {
-      case '删除':
-        CommonModleClose(true)
-        break
-      case '查看关联信息':
-        getDependenceInfo()
-        break
-      case '修改':
-        jumpUpdateWeb(updateMenue)
-        break
-      default:
-        return null
-    }
-  }
+  const onChange = React.useCallback(
+    (val: string) => {
+      switch (val) {
+        case '删除':
+          CommonModleClose(true)
+          break
+        case '查看关联信息':
+          getDependenceInfo()
+          break
+        case '修改':
+          jumpUpdateWeb(updateMenue)
+          break
+        default:
+          return null
+      }
+    },
+    [CommonModleClose, getDependenceInfo, jumpUpdateWeb, updateMenue]
+  )
 
   const cloumnMap = [
     {
@@ -270,7 +275,7 @@ const OneExcitationList: React.FC<RouteComponentProps<any, StaticContext, unknow
             >
               查看详情
             </span>
-            <OmitComponents id={row.stimulus_id} updateMenue={setUpdateMenue} onChange={onChange} status={updateMenue} />
+            <OmitComponents id={row.stimulus_id} key={row.stimulus_id} updateMenueFn={setUpdateMenue} onChange={onChange} status={updateMenue} />
           </div>
         )
       }

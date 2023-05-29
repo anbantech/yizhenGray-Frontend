@@ -118,7 +118,7 @@ const OneExcotationForm: React.FC = () => {
         CommonModleClose(false)
         if (result.data) {
           history.push({
-            state: { ...routerInfo, lookDetail: true },
+            state: { ...routerInfo, name: '激励单元详情', lookDetail: true },
             pathname: `${fromPathName}`
           })
         }
