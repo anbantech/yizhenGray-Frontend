@@ -54,14 +54,14 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       dataIndex: 'msg_index',
       key: 'msg_index',
       ellipsis: true,
-      width: '10%'
+      width: '8%'
     },
     {
       title: '发送数据',
       dataIndex: 'send_data',
       key: 'send_data',
       ellipsis: true,
-      width: '12.5%',
+      width: '12%',
       render: (text: any, record: any) => (
         <p className={styles.checkDetail} key={record.id}>
           {typeof record.send_data === 'string' ? record.send_data : record.send_data[0] || ''}
@@ -73,7 +73,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       dataIndex: 'recv_data',
       key: 'recv_data',
       ellipsis: true,
-      width: '12.5%',
+      width: '10%',
       render: (text: any, record: any) => (
         <p className={styles.checkDetail} key={record.id}>
           {typeof record.recv_data === 'string' ? record.recv_data : record.recv_data[0] || ''}
@@ -96,14 +96,14 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
           {record.case_type ? '是' : '否'}
         </div>
       ),
-      width: '10%'
+      width: '11%'
     },
 
     {
       title: () => {
         return (
           <div>
-            <span>分支覆盖率 </span>
+            <span> {`分支覆盖率${params.branch_coverage === '' ? '(默认)' : params.sbranch_coverage === 'descend' ? '(降序)' : '(升序)'}`} </span>
           </div>
         )
       },
@@ -114,14 +114,17 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
           {record.branch_coverage}
         </div>
       ),
-      width: '10%'
+      width: '12%'
     },
 
     {
       title: () => {
         return (
           <div>
-            <span>语句覆盖率 </span>
+            <span>
+              {' '}
+              {`语句覆盖率${params.statement_coverage === '' ? '(默认)' : params.statement_coverage === 'descend' ? '(降序)' : '(升序)'}`}{' '}
+            </span>
           </div>
         )
       },
@@ -132,7 +135,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
           {record.statement_coverage}
         </div>
       ),
-      width: '10%'
+      width: '12%'
     },
     {
       title: () => {
