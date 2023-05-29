@@ -266,7 +266,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
                 key={item.id}
               >
                 <span>
-                  <img className={item.status !== 2 ? styles.icon : styles.iconShow} src={testing} alt='' />
+                  <img className={[2, 3, 4, 7, 8].includes(item.status) ? styles.iconShow : styles.icon} src={testing} alt='' />
                   {item.name}
                 </span>
                 <div className={styles.icon_layout}>
