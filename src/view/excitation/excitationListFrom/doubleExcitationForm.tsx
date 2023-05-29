@@ -332,7 +332,7 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input placeholder='请输入激励嵌套管理名称' disabled={isFixForm && lookDetail} />
+          <Input placeholder='请输入激励嵌套名称' disabled={isFixForm && lookDetail} />
         </Form.Item>
         <Form.Item
           label='前置时延'

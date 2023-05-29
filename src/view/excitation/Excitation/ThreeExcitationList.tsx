@@ -169,7 +169,8 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
         type: 'three',
         lookDetail: false,
         isFixForm: true,
-        name: '修改激励嵌套'
+        name: '修改激励嵌套',
+        fromPathName: '/ThreeExcitationList'
       }
     })
   }
