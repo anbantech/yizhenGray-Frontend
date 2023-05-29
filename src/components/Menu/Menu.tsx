@@ -41,7 +41,9 @@ const MenuComponents: React.FC<MenuProps> = (props: MenuProps) => {
                 className={currentType === item.title ? styles.positionMenuItems : styles.positionMenuItem}
                 key={Math.random()}
                 role='time'
-                onClick={() => {
+                onClick={(e: any) => {
+                  e.stopPropagation()
+                  onMouseLeave(-1)
                   changeCurrent(item.title)
                 }}
               >

@@ -39,7 +39,7 @@ const HeaderComponets: React.FC = () => {
             <span className={styles.headerName}>{InstancesDetail.task_detail.name}</span>
             <div className={styles.headerSubtitle}>
               <span>
-                <Tooltip title={InstancesDetail.task_detail.desc} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                <Tooltip placement='top' title={InstancesDetail.task_detail.desc}>
                   <span className={InstancesDetail.task_detail.desc ? styles.descChartMore : styles.descChart}>
                     {InstancesDetail.task_detail.desc ? `任务描述 : ${InstancesDetail.task_detail.desc}` : '任务描述 : 暂无描述'}
                   </span>

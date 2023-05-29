@@ -110,7 +110,7 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       state: {
         type: 'four',
         isFixForm: false,
-        name: '交互管理'
+        name: '新建交互'
       }
     })
   }, [history])
@@ -129,6 +129,7 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
       }
     })
   }
+
   const updateParams = (value: string) => {
     depCollect(true, { key_word: value, page: 1 })
   }
@@ -257,7 +258,7 @@ const FourExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>>
             >
               查看详情
             </span>
-            <OmitComponents id={row.sender_id} onChange={onChange} updateMenue={setUpdateMenue} status={updateMenue} />
+            <OmitComponents id={row.sender_id} onChange={onChange} updateMenueFn={setUpdateMenue} status={updateMenue} />
           </div>
         )
       }

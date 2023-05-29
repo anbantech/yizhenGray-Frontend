@@ -225,7 +225,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
               id={row.id}
               type='project'
               onChange={onChange}
-              updateMenue={setUpdateMenue}
+              updateMenueFn={setUpdateMenue}
               status={updateMenue}
             />
           </div>

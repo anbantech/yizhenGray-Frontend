@@ -40,10 +40,14 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
     setBtnLoading(true)
     const result = await childRef.firstForm?.current?.save()
     if (result) {
-      history.push({
-        pathname: '/projects/Tasks',
-        state: { projectInfo }
-      })
+      if ((result as Record<string, any>).code) {
+        setBtnLoading(false)
+      } else {
+        history.push({
+          pathname: '/projects/Tasks',
+          state: { projectInfo }
+        })
+      }
     } else {
       setBtnLoading(false)
     }

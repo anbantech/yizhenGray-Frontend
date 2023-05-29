@@ -259,7 +259,7 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
             >
               查看详情
             </span>
-            <OmitComponents id={row.sender_id} onChange={onChange} updateMenue={setUpdateMenue} status={updateMenue} />
+            <OmitComponents id={row.sender_id} onChange={onChange} updateMenueFn={setUpdateMenue} status={updateMenue} />
           </div>
         )
       }

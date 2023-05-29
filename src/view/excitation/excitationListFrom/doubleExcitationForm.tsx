@@ -198,7 +198,7 @@ const DoubleExcitationForm: React.FC = () => {
         CommonModleClose(false)
         if (result.data) {
           history.push({
-            state: { ...routerInfo, lookDetail: true },
+            state: { ...routerInfo, name: '激励嵌套详情', lookDetail: true },
             pathname: `${fromPathName}`
           })
         }
