@@ -166,7 +166,7 @@ function Scale(props: any) {
     const { loopStatus } = props
     return (
       <div className={styles.NoScaleData}>
-        {[0, 1].includes(loopStatus) ? <span>任务已结束,请返回任务详情页</span> : <span>任务处于异常暂停状态，无法查看数据，请返回任务详情页</span>}
+        {[0, 1].includes(loopStatus) ? <span>任务已结束,请返回实例详情页</span> : <span>任务处于异常暂停状态，无法查看数据，请返回任务详情页</span>}
         <Button
           className={styles.NoScaleButton}
           type='primary'

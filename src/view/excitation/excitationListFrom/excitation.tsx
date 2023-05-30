@@ -7,7 +7,6 @@ import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { getPortList, createExcitationFn_1, updateOneExcitaionList } from 'Src/services/api/excitationApi'
-import { sleep } from 'Src/util/baseFn'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from '../excitation.less'
 import { GetDeatilExcitation } from './getDataDetailFn/getDataDetailFn'
@@ -33,10 +32,13 @@ const ExcitationComponents: React.FC = () => {
   // 查看关联任务
   const CommonModleClose = (val: boolean) => {
     setVisibility(val)
+    return Promise.resolve(val)
   }
+
+  //
+
   // 端口列表
   const fetchPortList = React.useCallback(async () => {
-    //  Todo code码
     try {
       const result = await getPortList()
       if (result.data) {
@@ -48,7 +50,6 @@ const ExcitationComponents: React.FC = () => {
       throwErrorMessage(error, { 1009: '请稍后再试' })
     }
   }, [])
-
   const createOneExcitationFn = React.useCallback(async () => {
     setSpinning(true)
     const routerInfo = { isFixForm, info, lookDetail, type, name }
@@ -68,27 +69,30 @@ const ExcitationComponents: React.FC = () => {
         let result
         if (!isFixForm) {
           result = await createExcitationFn_1(params)
-          message.success('外设创建成功')
         } else {
           result = await updateOneExcitaionList(info.id, params)
-          message.success('外设修改成功')
         }
         setSpinning(false)
         CommonModleClose(false)
         if (result.data) {
+          if (isFixForm) {
+            message.success('外设修改成功')
+          } else {
+            message.success('外设创建成功')
+          }
           history.push({
             state: { ...routerInfo, name: '外设详情', lookDetail: true },
             pathname: `${fromPathName}`
           })
         }
       }
-    } catch (error) {
-      message.error(error.message)
-      await sleep(300)
+    } catch (Error) {
+      message.error(Error.message)
       setSpinning(false)
       CommonModleClose(false)
+      return Error
     }
-  }, [isFixForm, info, lookDetail, type, name, form, history, fromPathName])
+  }, [form, fromPathName, history, info, isFixForm, lookDetail, name, type])
 
   const cancelForm = () => {
     history.push({
@@ -120,8 +124,8 @@ const ExcitationComponents: React.FC = () => {
       let values
       try {
         values = await form.validateFields()
-      } catch (error) {
-        message.error(error)
+      } catch {
+        setIsDisableStatus(true)
       }
 
       setIsDisableStatus(!values)
@@ -153,6 +157,7 @@ const ExcitationComponents: React.FC = () => {
       onFieldsChange()
     }
   }, [form, info, Data, onFieldsChange])
+
   return (
     <div className={styles.baseForm}>
       <Form name='basic' className={styles.oneForm} {...layout} onValuesChange={onFieldsChange} autoComplete='off' form={form} size='large'>
@@ -235,15 +240,17 @@ const ExcitationComponents: React.FC = () => {
         </div>
       </div>
 
-      <CommonModle
-        IsModalVisible={visibility}
-        spinning={spinning}
-        deleteProjectRight={createOneExcitationFn}
-        CommonModleClose={CommonModleClose}
-        ing='修改中'
-        name='修改外设'
-        concent='修改外设信息，关联任务实例会被停止，是否确认修改？'
-      />
+      {visibility ? (
+        <CommonModle
+          IsModalVisible={visibility}
+          spinning={spinning}
+          deleteProjectRight={createOneExcitationFn}
+          CommonModleClose={CommonModleClose}
+          ing='修改中'
+          name='修改外设'
+          concent='修改外设信息，关联任务实例会被停止，是否确认修改？'
+        />
+      ) : null}
     </div>
   )
 }
