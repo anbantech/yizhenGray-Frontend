@@ -82,7 +82,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
       }
       if (work_time) {
         const res = await createInstaceItem(copyItem)
-        if (res.data) {
+        if (res.code === 0) {
           setCrashObj({})
           choiceModal()
           message.success('实例新建成功')
@@ -90,7 +90,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
       }
     } catch (error) {
       setDisabledStatus(true)
-      throwErrorMessage(error, { 1005: '新建失败' })
+      message.error('新建实例失败')
       return error
     }
   }, [carshObj, choiceModal, form, task_id])
