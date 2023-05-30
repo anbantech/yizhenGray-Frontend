@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } 
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { excitationListFn } from 'Src/services/api/excitationApi'
 import { createTaskFn, getSimulateNode, updateTask } from 'Src/services/api/taskApi'
+import { sleep } from 'Src/util/baseFn'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from './stepBaseConfig.less'
 
@@ -60,9 +61,12 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   const scrollRef = useRef(-1)
   const pageRef = useRef(0)
   // 删除弹出框函数
-  const CommonModleClose = (value: boolean) => {
-    setModalData({ ...modalData, isModalVisible: value })
-  }
+  const CommonModleClose = useCallback(
+    (value: boolean) => {
+      setModalData({ ...modalData, isModalVisible: value })
+    },
+    [modalData]
+  )
   const createOneExcitationFn = React.useCallback(async () => {
     setModalData({ ...modalData, spinning: true })
     const values = await form.validateFields()
@@ -95,10 +99,13 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         }
       }
     } catch (error) {
-      throwErrorMessage(error, { 1009: '任务删除失败' })
+      message.error(error.message)
+      await sleep(300)
+      setModalData({ ...modalData, spinning: false })
+      CommonModleClose(false)
       return error
     }
-  }, [cancenlForm, form, id, modalData, taskInfo?.data?.id, taskInfo?.editTaskMode])
+  }, [CommonModleClose, cancenlForm, form, id, modalData, taskInfo.data.id, taskInfo?.editTaskMode])
   const matchItem = React.useCallback(async () => {
     setModalData({ ...modalData, isModalVisible: true })
   }, [modalData])
@@ -111,6 +118,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     validate: () => {},
     clearInteraction: () => {}
   }))
+
   const getNode = async () => {
     try {
       const result = await getSimulateNode()
@@ -121,6 +129,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
       throwErrorMessage(error, {})
     }
   }
+
   const getExcitationList = async (value: Resparams) => {
     if (scrollRef.current === pageRef.current) return
     try {
@@ -133,7 +142,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         setExcitationList([...list])
       }
     } catch (error) {
-      throwErrorMessage(error, { 1004: '请求资源未找到' })
+      message.error(error.message)
     }
   }
 

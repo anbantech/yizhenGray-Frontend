@@ -5,6 +5,7 @@ import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import CommonButton from 'Src/components/Button/commonButton'
 import { useHistory, useLocation } from 'react-router'
 import { createGroupFn, updatFourWork } from 'Src/services/api/excitationApi'
+import { sleep } from 'Src/util/baseFn'
 import { useLatest } from 'Src/util/Hooks/useLast'
 import styles from 'Src/view/excitation/excitation.less'
 import StyleSheet from './excitationDraw.less'
@@ -357,6 +358,9 @@ const ExcitationDraw: React.FC = () => {
       }
     } catch (error) {
       message.error(error.message)
+      await sleep(300)
+      setSpinning(false)
+      CommonModleClose(false)
     }
   }
 
@@ -382,6 +386,9 @@ const ExcitationDraw: React.FC = () => {
       }
     } catch (error) {
       message.error(error.message)
+      await sleep(300)
+      setSpinning(false)
+      CommonModleClose(false)
     }
   }, [history, state])
   const goBackGroupList = async () => {

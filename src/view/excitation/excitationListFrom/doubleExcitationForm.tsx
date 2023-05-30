@@ -9,6 +9,7 @@ import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { getAllRes } from 'Src/globalType/Response'
 import { createGroup_unitFn, excitationListFn, updatThreeExcitaionList } from 'Src/services/api/excitationApi'
+import { sleep } from 'Src/util/baseFn'
 import { throwErrorMessage } from 'Src/util/message'
 
 import styles from '../excitation.less'
@@ -204,7 +205,10 @@ const DoubleExcitationForm: React.FC = () => {
         }
       }
     } catch (error) {
-      throwErrorMessage(error)
+      message.error(error.message)
+      await sleep(300)
+      setSpinning(false)
+      CommonModleClose(false)
     }
   }, [isFixForm, info, lookDetail, type, name, form, data, history, fromPathName])
 
