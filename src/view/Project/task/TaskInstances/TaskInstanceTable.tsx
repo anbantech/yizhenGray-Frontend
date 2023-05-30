@@ -68,7 +68,6 @@ export interface projectInfoType {
 
 const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<projectInfoType>>> = props => {
   const InstancesDetail = React.useContext(InstancesContext)
-
   const { projectInfo } = props.location?.state
 
   const history = useHistory()
@@ -161,18 +160,19 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
     setModalData({ ...modalData, isModalVisible: value, instances_id: id })
   }
 
-  const deleteProjectRight = async () => {
+  const deleteProjectRight = React.useCallback(async () => {
     try {
       const res = await deleteExampleTask(InstancesDetail.task_detail.id, modalData.instances_id)
       if (res.data) {
+        InstancesDetail.getDetail(InstancesDetail.task_detail.id)
         setParams({ ...params, key_word: '', page: 1 })
         setModalData({ ...modalData, isModalVisible: false })
         message.success('实例删除成功')
       }
     } catch (error) {
-      throwErrorMessage(error, { 1009: '项目删除失败' })
+      message.error(error.message)
     }
-  }
+  }, [InstancesDetail, modalData, params])
 
   // 删除弹出框函数
   const CommonModleClose = (value: boolean) => {
