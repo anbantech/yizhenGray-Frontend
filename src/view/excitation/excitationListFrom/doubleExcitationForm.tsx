@@ -411,7 +411,7 @@ const DoubleExcitationForm: React.FC = () => {
             }
           ]}
         >
-          <Input placeholder='请输入等待时间' disabled={isFixForm} suffix={<Tip />} />
+          <Input placeholder='请输入等待时间' disabled={isFixForm && lookDetail} suffix={<Tip />} />
         </Form.Item>
         <Form.Item
           label='循环次数'

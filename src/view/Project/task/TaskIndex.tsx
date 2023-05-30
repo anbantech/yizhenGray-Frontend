@@ -17,6 +17,7 @@ export interface projectInfoType {
 interface ProviederType {
   task_detail: ResTaskDetail
   setInstance: React.Dispatch<React.SetStateAction<boolean>>
+  getDetail: (id: number) => void
 }
 
 interface projectPropsType<T> {
@@ -46,7 +47,7 @@ const TaskIndex: React.FC<RouteComponentProps<any, StaticContext, projectPropsTy
 
   return (
     <div className={styles.TaskIndexBody}>
-      <InstancesContext.Provider value={{ task_detail, setInstance }}>
+      <InstancesContext.Provider value={{ task_detail, setInstance, getDetail }}>
         <TaskList checkInstances={checkInstances} />
         {isInStance && task_detail ? <TaskInstances /> : <NoTask />}
       </InstancesContext.Provider>

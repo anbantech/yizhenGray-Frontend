@@ -222,7 +222,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     getLayout()
     getTaskList({ ...params })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params])
+  }, [params, InstancesDetail?.task_detail?.status])
 
   return (
     <div className={styles.taskLeft_list} ref={layoutRef}>
