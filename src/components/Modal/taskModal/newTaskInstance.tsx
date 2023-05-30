@@ -89,6 +89,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         }
       }
     } catch (error) {
+      setCrashObj({})
       setDisabledStatus(true)
       message.error('新建实例失败')
       return error
