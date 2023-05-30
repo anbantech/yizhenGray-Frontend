@@ -8,7 +8,6 @@ import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { createExcitationFn, excitationListFn, updatTwoExcitaionList } from 'Src/services/api/excitationApi'
 import { getTemplateList } from 'Src/services/api/templateApi'
-import { sleep } from 'Src/util/common'
 import styles from '../excitation.less'
 import { Tip } from '../excitationComponent/Tip'
 import { GetDeatilFn } from './getDataDetailFn/getDataDetailFn'
@@ -127,7 +126,6 @@ const OneExcotationForm: React.FC = () => {
       }
     } catch (error) {
       message.error(error.message)
-      await sleep(300)
       setSpinning(false)
       CommonModleClose(false)
     }
@@ -162,8 +160,8 @@ const OneExcotationForm: React.FC = () => {
       let values
       try {
         values = await form.validateFields()
-      } catch (error) {
-        message.error(error)
+      } catch {
+        setIsDisableStatus(true)
       }
       setIsDisableStatus(!values)
     },
