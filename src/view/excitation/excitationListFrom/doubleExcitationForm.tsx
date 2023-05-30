@@ -192,8 +192,10 @@ const DoubleExcitationForm: React.FC = () => {
         let result
         if (!isFixForm) {
           result = await createGroup_unitFn(params)
+          message.success('激励嵌套创建成功')
         } else {
           result = await updatThreeExcitaionList(info.id, params)
+          message.success('激励嵌套修改成功')
         }
         setSpinning(false)
         CommonModleClose(false)

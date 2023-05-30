@@ -68,8 +68,10 @@ const ExcitationComponents: React.FC = () => {
         let result
         if (!isFixForm) {
           result = await createExcitationFn_1(params)
+          message.success('外设创建成功')
         } else {
           result = await updateOneExcitaionList(info.id, params)
+          message.success('外设修改成功')
         }
         setSpinning(false)
         CommonModleClose(false)

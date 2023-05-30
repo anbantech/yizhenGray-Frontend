@@ -352,6 +352,7 @@ const ExcitationDraw: React.FC = () => {
     try {
       const result = await createGroupFn(params)
       if (result.data) {
+        message.success('交互创建成功')
         history.push({
           pathname: '/FourExcitationList'
         })
@@ -377,6 +378,7 @@ const ExcitationDraw: React.FC = () => {
       const result = await updatFourWork(state.Data.sender_id, params)
       if (result.data) {
         if (result.data) {
+          message.success('交互修改成功')
           setSpinning(false)
           history.push({
             state: { isFixForm, info, type, name: '交互详情', lookDetail: true },

@@ -111,8 +111,10 @@ const OneExcotationForm: React.FC = () => {
         let result
         if (!isFixForm) {
           result = await createExcitationFn(params)
+          message.success('激励单元创建成功')
         } else {
           result = await updatTwoExcitaionList(info.id, params)
+          message.success('激励单元修改成功')
         }
         setSpinning(false)
         CommonModleClose(false)

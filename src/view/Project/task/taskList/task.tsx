@@ -155,7 +155,6 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
           message.error(res.data.fail_list[0])
         }
         setParams({ ...params, key_word: '', page: 1 })
-        message.success('任务删除成功')
       }
       setSpinning(false)
       CommonModleClose(false)
