@@ -90,8 +90,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
       }
     } catch (error) {
       setDisabledStatus(true)
-      choiceModal()
-      throwErrorMessage(error, { 1005: '新建失败' })
+      message.error('新建实列失败')
       return error
     }
   }, [carshObj, choiceModal, form, task_id])
