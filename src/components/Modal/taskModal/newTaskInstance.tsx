@@ -90,7 +90,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
       }
     } catch (error) {
       setDisabledStatus(true)
-      message.error('新建实列失败')
+      message.error('新建实例失败')
       return error
     }
   }, [carshObj, choiceModal, form, task_id])
