@@ -7,6 +7,7 @@ import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { getPortList, createExcitationFn_1, updateOneExcitaionList } from 'Src/services/api/excitationApi'
+import { sleep } from 'Src/util/baseFn'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from '../excitation.less'
 import { GetDeatilExcitation } from './getDataDetailFn/getDataDetailFn'
@@ -67,8 +68,10 @@ const ExcitationComponents: React.FC = () => {
         let result
         if (!isFixForm) {
           result = await createExcitationFn_1(params)
+          message.success('外设创建成功')
         } else {
           result = await updateOneExcitaionList(info.id, params)
+          message.success('外设修改成功')
         }
         setSpinning(false)
         CommonModleClose(false)
@@ -80,7 +83,10 @@ const ExcitationComponents: React.FC = () => {
         }
       }
     } catch (error) {
-      throwErrorMessage(error, { 1009: '外设新建失败' })
+      message.error(error.message)
+      await sleep(300)
+      setSpinning(false)
+      CommonModleClose(false)
     }
   }, [isFixForm, info, lookDetail, type, name, form, history, fromPathName])
 
