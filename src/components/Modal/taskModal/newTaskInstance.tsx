@@ -155,26 +155,47 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         choiceModal()
       }}
       footer={[
-        <Button
-          key='back'
-          className={styles.btn_cancelCrashTable}
-          onClick={() => {
-            form.resetFields()
-            choiceModal()
-          }}
-        >
-          取消
-        </Button>,
-        <Button
-          className={styles.btn_createCrashTable}
-          style={{ marginRight: '10px' }}
-          key='submit'
-          disabled={isDisableStatus}
-          type='primary'
-          onClick={() => formVali()}
-        >
-          新建
-        </Button>
+        <>
+          {!isDetail ? (
+            <div>
+              {' '}
+              <Button
+                key='back'
+                className={styles.btn_cancelCrashTable}
+                onClick={() => {
+                  form.resetFields()
+                  choiceModal()
+                }}
+              >
+                取消
+              </Button>
+              <Button
+                className={styles.btn_createCrashTable}
+                style={{ marginRight: '10px' }}
+                key='submit'
+                disabled={isDisableStatus}
+                type='primary'
+                onClick={() => formVali()}
+              >
+                新建
+              </Button>
+            </div>
+          ) : (
+            <div>
+              {' '}
+              <Button
+                key='back'
+                className={styles.btn_cancelCrashTable}
+                onClick={() => {
+                  form.resetFields()
+                  choiceModal()
+                }}
+              >
+                返回
+              </Button>
+            </div>
+          )}
+        </>
       ]}
     >
       <Form form={form} className={styles.taskCrashForm} autoComplete='off' {...layout} onValuesChange={onValuesChange}>
