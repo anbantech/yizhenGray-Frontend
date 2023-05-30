@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import detail_icon from 'Src/assets/image/icon_detail.svg'
 import delete_icon from 'Src/assets/image/icon_delete.svg'
 import info_icon from 'Src/assets/image/icon_info_circle.svg'
@@ -7,6 +7,7 @@ import styles from './Menu.less'
 interface MenuProps {
   changeTimeType: (val: string) => void
   onMouseLeave: (val: number) => void
+  setOpen: Dispatch<SetStateAction<boolean>>
   // eslint-disable-next-line react/no-unused-prop-types, react/require-default-props
   type?: string
 }
@@ -20,7 +21,7 @@ interface MenuPropsItem {
   [key: string]: string
 }
 const MenuComponents: React.FC<MenuProps> = (props: MenuProps) => {
-  const { changeTimeType, onMouseLeave, type } = props
+  const { changeTimeType, onMouseLeave, type, setOpen } = props
   const [currentType, setCurrentType] = useState('')
   const changeCurrent = (val: string) => {
     setCurrentType(val)
@@ -43,7 +44,7 @@ const MenuComponents: React.FC<MenuProps> = (props: MenuProps) => {
                 role='time'
                 onClick={(e: any) => {
                   e.stopPropagation()
-                  onMouseLeave(-1)
+                  setOpen(false)
                   changeCurrent(item.title)
                 }}
               >

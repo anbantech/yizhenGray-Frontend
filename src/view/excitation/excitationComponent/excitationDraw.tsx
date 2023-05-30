@@ -5,6 +5,7 @@ import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import CommonButton from 'Src/components/Button/commonButton'
 import { useHistory, useLocation } from 'react-router'
 import { createGroupFn, updatFourWork } from 'Src/services/api/excitationApi'
+import { sleep } from 'Src/util/baseFn'
 import { useLatest } from 'Src/util/Hooks/useLast'
 import styles from 'Src/view/excitation/excitation.less'
 import StyleSheet from './excitationDraw.less'
@@ -351,12 +352,16 @@ const ExcitationDraw: React.FC = () => {
     try {
       const result = await createGroupFn(params)
       if (result.data) {
+        message.success('交互创建成功')
         history.push({
           pathname: '/FourExcitationList'
         })
       }
     } catch (error) {
       message.error(error.message)
+      await sleep(300)
+      setSpinning(false)
+      CommonModleClose(false)
     }
   }
 
@@ -373,6 +378,7 @@ const ExcitationDraw: React.FC = () => {
       const result = await updatFourWork(state.Data.sender_id, params)
       if (result.data) {
         if (result.data) {
+          message.success('交互修改成功')
           setSpinning(false)
           history.push({
             state: { isFixForm, info, type, name: '交互详情', lookDetail: true },
@@ -382,6 +388,9 @@ const ExcitationDraw: React.FC = () => {
       }
     } catch (error) {
       message.error(error.message)
+      await sleep(300)
+      setSpinning(false)
+      CommonModleClose(false)
     }
   }, [history, state])
   const goBackGroupList = async () => {

@@ -8,7 +8,7 @@ import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { createExcitationFn, excitationListFn, updatTwoExcitaionList } from 'Src/services/api/excitationApi'
 import { getTemplateList } from 'Src/services/api/templateApi'
-import { throwErrorMessage } from 'Src/util/message'
+import { sleep } from 'Src/util/common'
 import styles from '../excitation.less'
 import { Tip } from '../excitationComponent/Tip'
 import { GetDeatilFn } from './getDataDetailFn/getDataDetailFn'
@@ -111,8 +111,10 @@ const OneExcotationForm: React.FC = () => {
         let result
         if (!isFixForm) {
           result = await createExcitationFn(params)
+          message.success('激励单元创建成功')
         } else {
           result = await updatTwoExcitaionList(info.id, params)
+          message.success('激励单元修改成功')
         }
         setSpinning(false)
         CommonModleClose(false)
@@ -124,7 +126,10 @@ const OneExcotationForm: React.FC = () => {
         }
       }
     } catch (error) {
-      throwErrorMessage(error, { 1009: '激励单元删除失败' })
+      message.error(error.message)
+      await sleep(300)
+      setSpinning(false)
+      CommonModleClose(false)
     }
   }, [form, fromPathName, history, info, isFixForm, lookDetail, name, type])
 

@@ -22,6 +22,7 @@ interface MenuTypes {
 function OmitComponents(props: MenuTypes) {
   const { updateMenueFn, status, id, setData, type, data, onChange } = props
   const [isMove, setMoveStatus] = useState(false)
+  const [open, setOpen] = useState(false)
   const changeMore = () => {
     setMoveStatus(!isMove)
   }
@@ -34,6 +35,7 @@ function OmitComponents(props: MenuTypes) {
           setData(data)
         }
         updateMenueFn(id)
+        setOpen(true)
       }}
       onMouseEnter={changeMore}
       onMouseLeave={() => {
@@ -42,7 +44,7 @@ function OmitComponents(props: MenuTypes) {
     >
       <div className={styles.omitRounds}>{isMove ? <img src={more_hover} alt='' /> : <img src={more} alt='' />}</div>
 
-      {status === id ? <MenuComponents onMouseLeave={updateMenueFn} type={type} changeTimeType={onChange} /> : null}
+      {status === id && open ? <MenuComponents setOpen={setOpen} onMouseLeave={updateMenueFn} type={type} changeTimeType={onChange} /> : null}
     </div>
   )
 }

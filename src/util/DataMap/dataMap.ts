@@ -10,8 +10,8 @@ export const statusList = [
   { lable: '准备中', value: 5 },
   // { lable: '待测试', value: 6 },
   { lable: '停止中', value: 7 },
-  { lable: '重放中', value: 8 },
-  { lable: '重放暂停', value: 9 }
+  { lable: '重放中', value: 8 }
+  // { lable: '重放暂停', value: 9 }
   // { lable: '离线', value: 5 },
 ]
 
@@ -76,7 +76,7 @@ export const CrashInfoMap: CrashInfoType = {
   0xe201: 'Malloc分配失败 ',
   0xe202: 'Calloc分配失败',
   0xe203: 'Realloc分配失败',
-  0xe301: '除零错误',
+  // 0xe301: '除零错误',
   0xe302: '无符号整形溢出',
   0xe303: '非法数据',
   0xe402: '非法指令',
@@ -91,6 +91,6 @@ export const CrashInfoMap: CrashInfoType = {
   // 0xef03: '隐式无符号整形截取',
   0xe204: '双重释放',
   0xe205: '未释放重分配',
-  0xe206: '内存泄露',
+  // 0xe206: '内存泄露',
   0xe40f: '程序跑飞'
 }
