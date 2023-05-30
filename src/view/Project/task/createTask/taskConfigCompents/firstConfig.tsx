@@ -105,7 +105,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
       CommonModleClose(false)
       return error
     }
-  }, [CommonModleClose, cancenlForm, form, id, modalData, taskInfo.data.id, taskInfo?.editTaskMode])
+  }, [CommonModleClose, cancenlForm, form, id, modalData, taskInfo?.data?.id, taskInfo?.editTaskMode])
   const matchItem = React.useCallback(async () => {
     setModalData({ ...modalData, isModalVisible: true })
   }, [modalData])
