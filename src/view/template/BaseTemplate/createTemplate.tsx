@@ -86,6 +86,9 @@ const CreateTemplateComponent: React.FC = () => {
         if (res.data.success_list.length > 0) {
           chioceBtnLoading(false)
           message.success('删除成功')
+          history.push({
+            pathname: '/templateList'
+          })
         } else {
           message.error(res.data.fail_list[0])
         }
@@ -95,7 +98,7 @@ const CreateTemplateComponent: React.FC = () => {
       changeCommonDialogStatus(false)
       throwErrorMessage(error, { 1009: '模板删除失败' })
     }
-  }, [changeCommonDialogStatus, template.templateId])
+  }, [changeCommonDialogStatus, history, template.templateId])
   const nameRenderFn = () => {
     return (
       <div className={styles.headerBody}>

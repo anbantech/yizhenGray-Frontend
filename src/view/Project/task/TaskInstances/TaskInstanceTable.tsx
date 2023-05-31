@@ -326,7 +326,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
 
   useEffect(() => {
     getTaskInstancesList(params, InstancesDetail.task_detail.id)
-  }, [params, visibility, InstancesDetail?.task_detail.id])
+  }, [params, visibility, InstancesDetail?.task_detail?.id, InstancesDetail?.task_detail?.status])
 
   return (
     <div className={globalStyle.AnBan_main}>
