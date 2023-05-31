@@ -300,11 +300,11 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
           <div className={styles.crashTable_header}>
             <span className={styles.crashTable_headerLeft}> 缺陷类型 </span>
             <div className={styles.crashTable_headerRight}>
-              <Checkbox indeterminate={indeterminateCrash} onChange={onCheckAllChangeCrash} checked={checkAllCrash}>
+              <Checkbox indeterminate={indeterminateCrash} disabled={Boolean(isDetail)} onChange={onCheckAllChangeCrash} checked={checkAllCrash}>
                 Crash
               </Checkbox>
 
-              <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
+              <Checkbox indeterminate={indeterminate} disabled={Boolean(isDetail)} onChange={onCheckAllChange} checked={checkAll}>
                 Warn
               </Checkbox>
             </div>
