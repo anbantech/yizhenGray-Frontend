@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
-import { Modal, Input, Form, Button, message, Radio } from 'antd'
+import { Button, Checkbox, Form, Input, message, Modal } from 'antd'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { throwErrorMessage } from 'Src/util/message'
 import { InfoTip } from 'Src/view/excitation/excitationComponent/Tip'
 import { createTaskInstance } from 'Src/services/api/taskApi'
@@ -49,6 +50,11 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
   const { visibility, task_id, choiceModal, width, isDetail, data } = props
   const [form] = Form.useForm<FormInstance>()
   const [isDisableStatus, setDisabledStatus] = useState(true)
+
+  const [indeterminate, setIndeterminate] = useState(false)
+  const [checkAll, setCheckAll] = useState(false)
+  const [indeterminateCrash, setIndeterminateCrash] = useState(false)
+  const [checkAllCrash, setCheckAllCrash] = useState(false)
   const [carshObj, setCrashObj] = useState<CrashObjType | Record<string, unknown>>({})
   const filterData = (value: CrashObjType | Record<string, unknown>) => {
     const oldVal = value
@@ -62,13 +68,13 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
   // 新建列表
   const createInstaceItem = async (params: any) => {
     try {
-      const data = await createTaskInstance(params)
-      return data
+      return await createTaskInstance(params)
     } catch (error) {
       throwErrorMessage(error, { 1005: '实例新建失败' })
       return error
     }
   }
+
   // 校验表单 且 完成列表刷新  关闭表单
   const validateForm = useCallback(async () => {
     try {
@@ -95,6 +101,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
       return error
     }
   }, [carshObj, choiceModal, form, task_id])
+
   const formVali = () => {
     setDisabledStatus(true)
     validateForm()
@@ -122,11 +129,51 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
     e.stopPropagation()
     const obj = carshObj
     if (obj[value] === e.target.value) {
-      obj[value] = undefined
+      delete obj[value]
     } else {
       obj[value] = e.target.value
     }
+    const ObjArray = Object.values(obj)
+    const isEqual = ObjArray.every((val, i, arr) => val === arr[0])
+    const isEqual1 = ObjArray.some(val => val === '1')
+    const isEqual2 = ObjArray.some(val => val === '0')
+    setCheckAllCrash(isEqual && ObjArray[0] === '1' && Object.keys(obj).length === Object.keys(CrashInfoMap).length)
+    setCheckAll(isEqual && ObjArray[0] === '0' && Object.keys(obj).length === Object.keys(CrashInfoMap).length)
+    setIndeterminateCrash(isEqual1)
+    setIndeterminate(isEqual2)
     setCrashObj({ ...obj })
+  }
+
+  const setKindOfType = (type: string, isChecked: boolean) => {
+    const objData: Record<string, string> = {}
+    Object.keys(CrashInfoMap).forEach((item: string) => {
+      if (type === 'Crash') {
+        objData[item] = '1'
+      } else {
+        objData[item] = '0'
+      }
+    })
+    setCrashObj(isChecked ? { ...objData } : {})
+  }
+
+  const onCheckAllChange = (e: CheckboxChangeEvent) => {
+    setKindOfType('Warn', e.target.checked)
+    setIndeterminate(false)
+    if (e.target.checked) {
+      setCheckAllCrash(false)
+      setIndeterminateCrash(false)
+    }
+    setCheckAll(e.target.checked)
+  }
+
+  const onCheckAllChangeCrash = (e: CheckboxChangeEvent) => {
+    setKindOfType('Crash', e.target.checked)
+    setIndeterminateCrash(false)
+    if (e.target.checked) {
+      setCheckAll(false)
+      setIndeterminate(false)
+    }
+    setCheckAllCrash(e.target.checked)
   }
 
   useEffect(() => {
@@ -253,8 +300,16 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
           <div className={styles.crashTable_header}>
             <span className={styles.crashTable_headerLeft}> 缺陷类型 </span>
             <div className={styles.crashTable_headerRight}>
-              <span> Crash </span>
-              <span> Warn </span>
+              <div className={styles.Checkbox1}>
+                <Checkbox indeterminate={indeterminateCrash} disabled={Boolean(isDetail)} onChange={onCheckAllChangeCrash} checked={checkAllCrash}>
+                  Crash
+                </Checkbox>
+              </div>
+              <div className={styles.Checkbox2}>
+                <Checkbox indeterminate={indeterminate} disabled={Boolean(isDetail)} onChange={onCheckAllChange} checked={checkAll}>
+                  Warn
+                </Checkbox>
+              </div>
             </div>
           </div>
           <div className={styles.tableFooterList}>
@@ -262,23 +317,23 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
               return (
                 <div className={styles.tableFooter} key={value}>
                   <div className={styles.crashTable_headerLeft}>{CrashInfoMap[+value]}</div>
-                  <Radio.Group style={{ width: '30%' }} value={carshObj[value]} disabled={Boolean(isDetail)}>
-                    <Radio
+                  <Checkbox.Group style={{ width: '42%' }} value={carshObj[value] as string[]} disabled={Boolean(isDetail)}>
+                    <Checkbox
                       value='1'
                       onClick={e => {
                         handleCancel(e, value)
                       }}
                       className={styles.leftCheckbox}
-                      style={{ lineHeight: '39px', width: '56px' }}
+                      style={{ lineHeight: '39px', width: '75px', paddingLeft: '4px' }}
                     />
-                    <Radio
+                    <Checkbox
                       value='0'
                       onClick={e => {
                         handleCancel(e, value)
                       }}
-                      style={{ lineHeight: '39px', width: '52px', margin: '0 auto' }}
+                      style={{ lineHeight: '39px', marginLeft: '8px' }}
                     />
-                  </Radio.Group>
+                  </Checkbox.Group>
                 </div>
               )
             })}
