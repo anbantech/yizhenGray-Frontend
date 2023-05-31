@@ -1579,24 +1579,27 @@
 
 .crashTable_headerRight{
   display: flex;
-  width: 30%;
+  width: 180px;
 }
 
-.crashTable_headerRight>span:nth-child(1){
+.Checkbox1{
   display: inline-block;
-  width: 50%;
+  padding-left: 12px;
+  width: 75px;
   text-align: center;
   line-height: 39px;
 }
-.crashTable_headerRight>span:nth-child(2) {
+.Checkbox2 {
   display: inline-block;
-  text-align: center;
+  text-align: right;
+  padding-left: 15px;
   line-height: 39px;
-  width: 50%;
+  width: 75px;  
 }
 
 .tableFooterList{
   display: flex;
+  padding-left: 4px;
   flex-direction: column;
   height: 220px;
   overflow-y: scroll;
@@ -1608,9 +1611,9 @@
   :global(.ant-radio-inner){
     border-radius: 0 !important;
   }
-  :global(.ant-radio){
-    margin: 0 auto !important;
-  }
+  // :global(.ant-radio){
+  //   margin-left:10px !important;
+  // }
   :global(.ant-radio-wrapper){
     margin-right: 0 !important;
   }

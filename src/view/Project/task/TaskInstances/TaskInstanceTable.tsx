@@ -204,8 +204,8 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
     {
       width: '8%',
       title: '设定时长',
-      dataIndex: 'work_time',
-      key: 'work_time'
+      dataIndex: 'work_time_str',
+      key: 'work_time_str'
     },
     {
       width: '8%',
@@ -326,7 +326,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
 
   useEffect(() => {
     getTaskInstancesList(params, InstancesDetail.task_detail.id)
-  }, [params, visibility, InstancesDetail?.task_detail.id])
+  }, [params, visibility, InstancesDetail?.task_detail?.id, InstancesDetail?.task_detail?.status])
 
   return (
     <div className={globalStyle.AnBan_main}>
