@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
-import { Button, Checkbox, Form, Input, message, Modal, Radio } from 'antd'
+import { Button, Checkbox, Form, Input, message, Modal } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { throwErrorMessage } from 'Src/util/message'
 import { InfoTip } from 'Src/view/excitation/excitationComponent/Tip'
@@ -300,13 +300,16 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
           <div className={styles.crashTable_header}>
             <span className={styles.crashTable_headerLeft}> 缺陷类型 </span>
             <div className={styles.crashTable_headerRight}>
-              <Checkbox indeterminate={indeterminateCrash} disabled={Boolean(isDetail)} onChange={onCheckAllChangeCrash} checked={checkAllCrash}>
-                Crash
-              </Checkbox>
-
-              <Checkbox indeterminate={indeterminate} disabled={Boolean(isDetail)} onChange={onCheckAllChange} checked={checkAll}>
-                Warn
-              </Checkbox>
+              <div className={styles.Checkbox1}>
+                <Checkbox indeterminate={indeterminateCrash} disabled={Boolean(isDetail)} onChange={onCheckAllChangeCrash} checked={checkAllCrash}>
+                  Crash
+                </Checkbox>
+              </div>
+              <div className={styles.Checkbox2}>
+                <Checkbox indeterminate={indeterminate} disabled={Boolean(isDetail)} onChange={onCheckAllChange} checked={checkAll}>
+                  Warn
+                </Checkbox>
+              </div>
             </div>
           </div>
           <div className={styles.tableFooterList}>
@@ -314,8 +317,8 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
               return (
                 <div className={styles.tableFooter} key={value}>
                   <div className={styles.crashTable_headerLeft}>{CrashInfoMap[+value]}</div>
-                  <Radio.Group style={{ width: '42%' }} value={carshObj[value]} disabled={Boolean(isDetail)}>
-                    <Radio
+                  <Checkbox.Group style={{ width: '42%' }} value={carshObj[value] as string[]} disabled={Boolean(isDetail)}>
+                    <Checkbox
                       value='1'
                       onClick={e => {
                         handleCancel(e, value)
@@ -323,14 +326,14 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
                       className={styles.leftCheckbox}
                       style={{ lineHeight: '39px', width: '75px', paddingLeft: '4px' }}
                     />
-                    <Radio
+                    <Checkbox
                       value='0'
                       onClick={e => {
                         handleCancel(e, value)
                       }}
                       style={{ lineHeight: '39px', marginLeft: '8px' }}
                     />
-                  </Radio.Group>
+                  </Checkbox.Group>
                 </div>
               )
             })}

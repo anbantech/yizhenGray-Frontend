@@ -204,8 +204,8 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
     {
       width: '8%',
       title: '设定时长',
-      dataIndex: 'work_time',
-      key: 'work_time'
+      dataIndex: 'work_time_str',
+      key: 'work_time_str'
     },
     {
       width: '8%',
