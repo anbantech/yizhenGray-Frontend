@@ -49,12 +49,12 @@ interface propsFn {
 }
 const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   const { onChange, id, taskInfo, cancenlForm } = props
+
   const [form] = useForm()
   const { Option } = Select
   const [params, setParams] = useState<Resparams>(request)
   // 弹窗
   const [modalData, setModalData] = useState({ spinning: false, isModalVisible: false })
-
   //  删除弹出框
   const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
   const [nodeList, setNodeList] = useState<number[]>([])
@@ -67,6 +67,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     },
     [modalData]
   )
+
   const createOneExcitationFn = React.useCallback(async () => {
     setModalData({ ...modalData, spinning: true })
     const values = await form.validateFields()
@@ -106,6 +107,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
       return error
     }
   }, [CommonModleClose, cancenlForm, form, id, modalData, taskInfo?.data?.id, taskInfo?.editTaskMode])
+
   const matchItem = React.useCallback(async () => {
     setModalData({ ...modalData, isModalVisible: true })
   }, [modalData])
@@ -148,7 +150,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
 
   const onScrollData = (e: React.UIEvent) => {
     const target = e.target as HTMLLIElement
-    if (target.scrollTop + target.offsetHeight >= target.scrollHeight) {
+    if (Math.ceil(target.scrollTop) + target.offsetHeight >= target.scrollHeight) {
       setParams((pre: Resparams) => {
         return { ...pre, page: pre.page + 1 }
       })
@@ -191,10 +193,11 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     getExcitationList(params)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params])
+
   useEffect(() => {
     getNode()
     if (taskInfo.data) {
-      const { name, desc, project_id, sender_id, simu_instance_id, beat_unit } = taskInfo.data as any
+      const { name, desc, project_id, sender_id, simu_instance_id, beat_unit, group_name } = taskInfo.data as any
       const formData = {
         name,
         description: desc,
@@ -203,6 +206,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         beat_unit,
         simu_instance_id
       }
+      getExcitationList({ ...params, key_word: group_name })
       form.setFieldsValue(formData)
       onFieldsChange()
     }
@@ -285,7 +289,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
                */
               excitationList?.map((rate: any) => {
                 return (
-                  <Option key={rate.sender_id} disabled={rate.disabled} value={rate.sender_id}>
+                  <Option key={rate.sender_id} label={rate.name} disabled={rate.disabled} value={rate.sender_id}>
                     {rate.name}
                   </Option>
                 )

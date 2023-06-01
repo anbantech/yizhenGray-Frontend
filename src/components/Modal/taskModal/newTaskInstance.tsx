@@ -188,6 +188,8 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
     return () => {
       if (!visibility) {
         form.resetFields()
+        setCheckAll(false)
+        setCheckAllCrash(false)
       }
     }
   }, [data, form, visibility])

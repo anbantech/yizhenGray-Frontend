@@ -269,7 +269,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
           }
           return null
         case 1:
-          if (status === 8 && replayId === item.id) {
+          if ((status === 8 && replayId === item.id) || item.status === 1) {
             return styles.footerError
           }
           return styles.footerDouble

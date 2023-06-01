@@ -94,7 +94,9 @@ function LookUpDependence(props: NewTaskInstanceType) {
               <Tooltip title={`任务:${value.name}`} placement='bottomLeft'>
                 <div className={styles.showTestimg}>
                   <img src={testing} alt='' />
-                  <span style={{ color: '#11cc66' }}>{value.name}</span>{' '}
+                  <span style={{ color: '#11cc66' }} className={styles.GREENTitle}>
+                    {value.name}
+                  </span>{' '}
                 </div>
               </Tooltip>
             ) : (
