@@ -50,12 +50,12 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
   const { visibility, task_id, choiceModal, width, isDetail, data } = props
   const [form] = Form.useForm<FormInstance>()
   const [isDisableStatus, setDisabledStatus] = useState(true)
-
   const [indeterminate, setIndeterminate] = useState(false)
   const [checkAll, setCheckAll] = useState(false)
   const [indeterminateCrash, setIndeterminateCrash] = useState(false)
   const [checkAllCrash, setCheckAllCrash] = useState(false)
   const [carshObj, setCrashObj] = useState<CrashObjType | Record<string, unknown>>({})
+
   const filterData = (value: CrashObjType | Record<string, unknown>) => {
     const oldVal = value
     Object.keys(oldVal).forEach(item => {
@@ -96,6 +96,8 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
       }
     } catch (error) {
       setCrashObj({})
+      setCheckAll(false)
+      setCheckAllCrash(false)
       setDisabledStatus(true)
       message.error('新建实例失败')
       return error
@@ -188,6 +190,8 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
     return () => {
       if (!visibility) {
         form.resetFields()
+        setCheckAll(false)
+        setCheckAllCrash(false)
       }
     }
   }, [data, form, visibility])
