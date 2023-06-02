@@ -69,7 +69,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
 
   const [currentType, setCurrentType] = useState('')
 
-  const [currentTypeTime, setCurrentTypeTime] = useState('ascend')
+  const [currentTypeTime, setCurrentTypeTime] = useState('descend')
 
   const [currentTypeBranch, setCurrentTypeBranch] = useState('')
 
