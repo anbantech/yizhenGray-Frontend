@@ -50,7 +50,6 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
   const { visibility, task_id, choiceModal, width, isDetail, data } = props
   const [form] = Form.useForm<FormInstance>()
   const [isDisableStatus, setDisabledStatus] = useState(true)
-
   const [indeterminate, setIndeterminate] = useState(false)
   const [checkAll, setCheckAll] = useState(false)
   const [indeterminateCrash, setIndeterminateCrash] = useState(false)
@@ -96,6 +95,8 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
       }
     } catch (error) {
       setCrashObj({})
+      setCheckAll(false)
+      setCheckAllCrash(false)
       setDisabledStatus(true)
       message.error('新建实例失败')
       return error
