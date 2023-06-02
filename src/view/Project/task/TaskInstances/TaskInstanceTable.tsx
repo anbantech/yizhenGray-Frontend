@@ -325,7 +325,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   }
 
   useEffect(() => {
-    setParams({ ...params, page: 1, page_size: 10 })
+    setParams({ ...params, key_word: '', page: 1, page_size: 10, status: null, sort_field: 'create_time', sort_order: 'descend' })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [InstancesDetail?.task_detail?.id])
   useEffect(() => {
