@@ -157,7 +157,7 @@ const ThreeExcitationCard = (props: AllPropsType) => {
       const excitarionListes = formData[index] || formData
       if (type === 'three') {
         form.setFieldsValue({
-          port: ['激励单元管理', excitarionListes.name],
+          port: ['激励单元', excitarionListes.name],
           description: excitarionListes.desc
         })
       } else {

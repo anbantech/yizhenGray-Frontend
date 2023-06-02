@@ -57,7 +57,7 @@ const DoubleExcitationForm: React.FC = () => {
   const [excitationList, setExcitationList] = useState<Option[]>([
     {
       sender_id: '0',
-      name: '激励单元管理',
+      name: '激励单元',
       disabled: false,
       children: []
     }
