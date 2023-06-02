@@ -325,6 +325,10 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   }
 
   useEffect(() => {
+    setParams({ ...params, page: 1, page_size: 10 })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [InstancesDetail?.task_detail?.id])
+  useEffect(() => {
     getTaskInstancesList(params, InstancesDetail.task_detail.id)
   }, [params, visibility, InstancesDetail?.task_detail?.id, InstancesDetail?.task_detail?.status])
 
