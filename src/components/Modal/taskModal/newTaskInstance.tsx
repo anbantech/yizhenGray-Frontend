@@ -55,6 +55,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
   const [indeterminateCrash, setIndeterminateCrash] = useState(false)
   const [checkAllCrash, setCheckAllCrash] = useState(false)
   const [carshObj, setCrashObj] = useState<CrashObjType | Record<string, unknown>>({})
+
   const filterData = (value: CrashObjType | Record<string, unknown>) => {
     const oldVal = value
     Object.keys(oldVal).forEach(item => {

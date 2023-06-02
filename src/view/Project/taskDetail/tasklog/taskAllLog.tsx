@@ -84,17 +84,19 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
 
   const changeCurrentTypeBranch = (e: any) => {
     setCurrentTypeBranch(e.key)
-    setParams({ ...RequsetParams, branch_coverage: e.key })
+    setParams({ ...params, branch_coverage: e.key })
   }
+
   const changeTimeType = (e: any) => {
     setCurrentTypeTime(e.key)
-    setParams({ ...RequsetParams, sort_order: e.key })
+    setParams({ ...params, sort_order: e.key })
   }
 
   const changeStatementType = (e: any) => {
     setCurrentTypeStatement(e.key)
-    setParams({ ...RequsetParams, statement_coverage: e.key })
+    setParams({ ...params, statement_coverage: e.key })
   }
+
   useEffect(() => {
     if (params) {
       getlog(params)
@@ -114,6 +116,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       </Menu.Item>
     </Menu>
   )
+
   function IsWrongDownMenu() {
     return (
       <Dropdown overlay={menu}>
