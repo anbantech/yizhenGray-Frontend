@@ -57,7 +57,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
   const [total, setTotal] = React.useState(-1)
   const [logData, setLogData] = React.useState([])
 
-  const [currentTypeTime, setCurrentTypeTime] = useState('ascend')
+  const [currentTypeTime, setCurrentTypeTime] = useState('descend')
 
   const [currentTypeBranch, setCurrentTypeBranch] = useState('')
 
