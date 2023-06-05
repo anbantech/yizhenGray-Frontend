@@ -248,7 +248,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
         </ConfigProvider>
       </div>
       <div className={styles.AnBan_PaginationsAge}>
-        <PaginationsAge length={total} num={10} getParams={changePage} pagenums={params.page} />
+        <PaginationsAge length={total} num={params.page_size} getParams={changePage} pagenums={params.page} />
       </div>
       <ModalpPop
         visible={modalData.isModalVisible}

@@ -440,7 +440,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
         </div>
       </div>
       <div className={globalStyle.AnBan_PaginationsAge}>
-        <PaginationsAge length={total} num={10} getParams={setOperation} pagenums={params.page} />
+        {params && <PaginationsAge length={total} num={params.page_size} getParams={setOperation} pagenums={params.page} />}
       </div>
     </div>
   )
