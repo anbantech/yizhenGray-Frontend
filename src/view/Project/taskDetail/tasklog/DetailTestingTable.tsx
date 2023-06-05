@@ -103,7 +103,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       title: () => {
         return (
           <div>
-            <span> {`分支覆盖率${params.branch_coverage === '' ? '(默认)' : params.sbranch_coverage === 'descend' ? '(降序)' : '(升序)'}`} </span>
+            <span> {`分支覆盖率增幅${params.branch_coverage === '' ? '(默认)' : params.sbranch_coverage === 'descend' ? '(降序)' : '(升序)'}`} </span>
           </div>
         )
       },
@@ -123,7 +123,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
           <div>
             <span>
               {' '}
-              {`语句覆盖率${params.statement_coverage === '' ? '(默认)' : params.statement_coverage === 'descend' ? '(降序)' : '(升序)'}`}{' '}
+              {`语句覆盖率增幅${params.statement_coverage === '' ? '(默认)' : params.statement_coverage === 'descend' ? '(降序)' : '(升序)'}`}{' '}
             </span>
           </div>
         )

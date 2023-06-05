@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import zhCN from 'antd/lib/locale/zh_CN'
 import { Pagination, ConfigProvider } from 'antd'
 import 'antd/dist/antd.css'
@@ -13,14 +13,19 @@ function PaginationsAge(props: any) {
       getParams(page, 'page', pageSize)
     }
   }
-
+  const [nums, setNums] = useState()
+  useEffect(() => {
+    if (num) {
+      setNums(num)
+    }
+  }, [num])
   return (
     <>
       {length > 0 ? (
         <div className={styles.pagePosition}>
           <ConfigProvider locale={zhCN}>
             <Pagination
-              defaultPageSize={num}
+              pageSize={nums}
               total={length}
               pageSizeOptions={[10, 20]}
               showQuickJumper

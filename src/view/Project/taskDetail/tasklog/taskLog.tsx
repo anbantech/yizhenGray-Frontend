@@ -177,7 +177,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     return (
       <Dropdown overlay={menuBranch}>
         <Space>
-          分支覆盖率
+          分支覆盖率增幅
           <DownOutlined />
         </Space>
       </Dropdown>
@@ -188,7 +188,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     return (
       <Dropdown overlay={menuStatement}>
         <Space>
-          语句覆盖率
+          语句覆盖率增幅
           <DownOutlined />
         </Space>
       </Dropdown>

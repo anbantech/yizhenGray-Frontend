@@ -80,6 +80,8 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
     setVisibility(!visibility)
   }
 
+  const inputRef = React.useRef<any>()
+
   // 任务列表参数
   const [params, setParams] = useState<Resparams>({ ...request, task_id: InstancesDetail.task_detail.id })
 
@@ -310,8 +312,8 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   ]
 
   // 获取实列列表
-  const getTaskInstancesList = async (value: Resparams, id: number) => {
-    const val = { ...value, task_id: id }
+  const getTaskInstancesList = async (value: Resparams) => {
+    const val = { ...value }
     try {
       const listResult = await taskTest(val)
       if (listResult.data) {
@@ -325,19 +327,30 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   }
 
   useEffect(() => {
-    setParams({ ...params, key_word: '', page: 1, page_size: 10, status: null, sort_field: 'create_time', sort_order: 'descend' })
+    setParams({
+      ...params,
+      key_word: '',
+      page: 1,
+      page_size: 10,
+      status: null,
+      sort_field: 'create_time',
+      sort_order: 'descend',
+      task_id: InstancesDetail?.task_detail?.id
+    })
+    inputRef.current?.save()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [InstancesDetail?.task_detail?.id])
+  }, [InstancesDetail?.task_detail?.id, visibility, InstancesDetail?.task_detail?.status])
   useEffect(() => {
-    getTaskInstancesList(params, InstancesDetail.task_detail.id)
-  }, [params, visibility, InstancesDetail?.task_detail?.id, InstancesDetail?.task_detail?.status])
+    getTaskInstancesList(params)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params])
 
   return (
     <div className={globalStyle.AnBan_main}>
       <div className={styles.instance_header}>
         <div className={styles.instanceListLeft}>
           <span>实例列表</span>
-          <SearchInput placeholder='根据实例编号搜索实例' className={styles.taskInput} onChangeValue={updateParams} />
+          <SearchInput ref={inputRef} placeholder='根据实例编号搜索实例' className={styles.taskInput} onChangeValue={updateParams} />
         </div>
         <CreateButton
           width='146px'
@@ -357,7 +370,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         </ConfigProvider>
       </div>
       <div className={globalStyle.AnBan_PaginationsAge}>
-        <PaginationsAge length={total} num={10} getParams={changePage} pagenums={params.page} />
+        <PaginationsAge length={total} num={params.page_size} getParams={changePage} pagenums={params.page} />
       </div>
       <CommonModle
         IsModalVisible={modalData.isModalVisible}
