@@ -13,7 +13,7 @@ function PaginationsAge(props: any) {
       getParams(page, 'page', pageSize)
     }
   }
-  const [nums, setNums] = useState()
+  const [nums, setNums] = useState(10)
   useEffect(() => {
     if (num) {
       setNums(num)
