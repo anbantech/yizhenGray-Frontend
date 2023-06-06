@@ -353,7 +353,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
         <Table rowKey={(record: any) => `${record.id}_${new Date()}`} pagination={false} dataSource={logData} columns={columns as any} bordered />
       </div>
       <div className={style.AnBan_PaginationsAge}>
-        <PaginationsAge length={total} num={10} getParams={changePage} pagenums={params.page} />
+        <PaginationsAge length={total} num={params.page_size} getParams={changePage} pagenums={params.page} />
       </div>
     </div>
   )
