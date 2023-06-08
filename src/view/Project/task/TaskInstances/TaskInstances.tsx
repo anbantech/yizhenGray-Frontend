@@ -46,7 +46,7 @@ const HeaderComponets: React.FC = () => {
                 </Tooltip>
               </span>
               <div className={styles.cloumnLine} />
-              <span>仿真节点 : {InstancesDetail.task_detail.simu_instance_id}节点</span>
+              <span>仿真节点 : {InstancesDetail.task_detail.simu_instance_id} </span>
               <div className={styles.cloumnLine} />
               <span>交互 : {InstancesDetail.task_detail.group_name} </span>
             </div>
