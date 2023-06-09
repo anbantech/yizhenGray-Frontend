@@ -72,6 +72,7 @@ const DoubleExcitationForm: React.FC = () => {
   const CommonModleClose = (val: boolean) => {
     setVisibility(val)
   }
+
   const Data = GetDeatilFn(info?.id) as getAllRes
 
   const addCard = React.useCallback(() => {

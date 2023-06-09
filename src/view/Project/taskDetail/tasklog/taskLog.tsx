@@ -344,7 +344,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                             return (
                               <div className={styles.dataShowItem} key={`${send_data}_${Math.random()}`}>
                                 <Tooltip title={send_data} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
-                                  <span className={styles.dataLongInfo}>{send_data || '无'}</span>
+                                  <span className={item.send_data ? styles.dataLongInfo : styles.noneDatalog}>{send_data}</span>
                                 </Tooltip>
                                 <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(send_data)}>
                                   <img src={errorFrameCopy} alt='' />
@@ -357,11 +357,13 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     <div>
                       <div className={styles.dataInfoContainer}>
                         <Tooltip title={item.recv_data[0]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
-                          <span className={styles.dataLongInfo}>{item.recv_data[0] || '无'}</span>
+                          <span className={item.recv_data[0] ? styles.dataLongInfo : styles.noneDatalog}>{item.recv_data[0]}</span>
                         </Tooltip>
-                        <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(item.recv_data[0])}>
-                          <img src={errorFrameCopy} alt='' />
-                        </span>
+                        {item.recv_data[0] && (
+                          <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(item.recv_data[0])}>
+                            <img src={errorFrameCopy} alt='' />
+                          </span>
+                        )}
                       </div>
                       <div style={{ display: currentOpenId === item.id ? 'block' : 'none' }} className={styles.dataShowContainer}>
                         {item.recv_data.length > 1 &&
@@ -369,7 +371,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                             return (
                               <div className={styles.dataShowItem} key={`${recv_data}_${Math.random()}`}>
                                 <Tooltip title={recv_data} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
-                                  <span className={styles.dataLongInfo}>{recv_data || '无'}</span>
+                                  <span className={item.recv_data ? styles.dataLongInfo : styles.noneDatalog}>{recv_data}</span>
                                 </Tooltip>
                                 <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(recv_data)}>
                                   <img src={errorFrameCopy} alt='' />

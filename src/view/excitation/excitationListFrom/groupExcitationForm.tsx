@@ -264,7 +264,7 @@ const GroupExcitationForm: React.FC = () => {
           excitationList={excitationList}
           type={type}
           info={info}
-          lookDetail={+true}
+          lookDetail={lookDetail}
           current={current}
           isFixForm={isFixForm}
           Data={detailData}
@@ -301,7 +301,7 @@ const GroupExcitationForm: React.FC = () => {
           current={current}
           isFixForm={isFixForm}
           Data={detailData}
-          lookDetail={+true}
+          lookDetail={lookDetail}
           deleteCard={deleteCard}
           changePre2={changePre}
         />
@@ -421,6 +421,7 @@ const GroupExcitationForm: React.FC = () => {
     },
     [form, idMap]
   )
+
   React.useEffect(() => {
     if (detailData || propsDatas) {
       initData(detailData || propsDatas, isFixForm)

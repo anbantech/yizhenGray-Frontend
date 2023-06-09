@@ -6,7 +6,7 @@ import { useHistory } from 'react-router'
 import CommonButton from 'Src/components/Button/commonButton'
 import { GlobalContexted } from 'Src/components/globalBaseMain/globalBaseMain'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
-import { createExcitationFn, excitationListFn, updatTwoExcitaionList } from 'Src/services/api/excitationApi'
+import { createExcitationFn, getPortList, updatTwoExcitaionList } from 'Src/services/api/excitationApi'
 import { getTemplateList } from 'Src/services/api/templateApi'
 import styles from '../excitation.less'
 import { Tip } from '../excitationComponent/Tip'
@@ -25,18 +25,18 @@ const templateListRequest = {
   sort_order: 'descend'
 }
 
-const oneRequest = {
-  target_type: '0',
-  key_word: '',
-  status: null,
-  page: 1,
-  page_size: 999,
-  sort_field: 'create_time',
-  sort_order: 'descend'
-}
+// const oneRequest = {
+//   target_type: '0',
+//   key_word: '',
+//   status: null,
+//   page: 1,
+//   page_size: 999,
+//   sort_field: 'create_time',
+//   sort_order: 'descend'
+// }
 
 interface listArray {
-  [propName: string]: string | number
+  [propName: string]: string
 }
 
 const OneExcotationForm: React.FC = () => {
@@ -48,7 +48,7 @@ const OneExcotationForm: React.FC = () => {
   const [templateList, setTemplateList] = React.useState<any[]>()
   const [spinning, setSpinning] = React.useState(false)
   const [visibility, setVisibility] = React.useState(false)
-  const [portList, setPortList] = React.useState<listArray[]>([])
+  const [portList, setPortList] = React.useState<string[]>([])
   const Data = GetDeatilFn(info?.id)
 
   const CommonModleClose = (val: boolean) => {
@@ -68,14 +68,16 @@ const OneExcotationForm: React.FC = () => {
       message.error(error.message)
     }
   }, [])
+
   // 端口列表
   const fetchPortList = React.useCallback(async () => {
     //  Todo code码
     try {
-      const result = await excitationListFn(oneRequest)
+      const result = await getPortList()
       if (result.data) {
         const results = result.data
-        setPortList(results.results)
+
+        setPortList(results)
       }
       return result
     } catch (error) {
@@ -96,7 +98,7 @@ const OneExcotationForm: React.FC = () => {
       if (values) {
         const params = {
           name: values.name,
-          target_id: values.target_id,
+          peripheral: values.stimulus_name,
           template_id: +values.template_id,
           gu_cnt1: +values.gu_cnt1,
           gu_cnt0: +values.gu_cnt0,
@@ -183,11 +185,11 @@ const OneExcotationForm: React.FC = () => {
   }, [])
   React.useEffect(() => {
     if (Data) {
-      const { name, desc, target_id, template_id, align_delay_1, gu_cnt0, gu_cnt1, gu_w1, gu_w0, align_delay_0, align_delay_2 } = Data as any
+      const { name, desc, stimulus_name, template_id, align_delay_1, gu_cnt0, gu_cnt1, gu_w1, gu_w0, align_delay_0, align_delay_2 } = Data as any
       const formData = {
         name,
         description: desc,
-        target_id,
+        stimulus_name,
         template_id,
         gu_cnt0,
         gu_cnt1,
@@ -241,7 +243,7 @@ const OneExcotationForm: React.FC = () => {
           <Input disabled={isFixForm && lookDetail} placeholder='请输入激励单元名称' />
         </Form.Item>
 
-        <Form.Item name='target_id' label='外设名称' rules={[{ required: true, message: '请选择外设' }]}>
+        <Form.Item name='stimulus_name' label='外设名称' rules={[{ required: true, message: '请选择外设' }]}>
           <Select placeholder='请选择外设' disabled={isFixForm && lookDetail}>
             {
               /**
@@ -249,8 +251,8 @@ const OneExcotationForm: React.FC = () => {
                */
               portList?.map(rate => {
                 return (
-                  <Option key={rate.stimulus} disabled={rate.disable} value={rate.stimulus_id}>
-                    {rate.stimulus_name}
+                  <Option key={rate} value={rate}>
+                    {rate}
                   </Option>
                 )
               })

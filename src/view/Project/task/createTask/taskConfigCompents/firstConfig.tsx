@@ -52,6 +52,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
 
   const [form] = useForm()
   const { Option } = Select
+  const charRef = useRef(false)
   const [params, setParams] = useState<Resparams>(request)
   // 弹窗
   const [modalData, setModalData] = useState({ spinning: false, isModalVisible: false })
@@ -132,16 +133,21 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     }
   }
 
+  const onSearch = useCallback((val: string) => {
+    setParams({ ...request, key_word: val })
+    charRef.current = true
+  }, [])
+
   const getExcitationList = async (value: Resparams) => {
     if (scrollRef.current === pageRef.current) return
     try {
       const result = await excitationListFn(value)
       if (result.data !== null && result.data !== undefined) {
         scrollRef.current = result.data.total
-        const res = result.data.results
-        const list = [...excitationList, ...res]
-        pageRef.current = list.length
-        setExcitationList([...list])
+        const list = excitationList.concat(result.data.results)
+        const uniquePersons = [...new Set(list.map(p => JSON.stringify(p)))].map(p => JSON.parse(p))
+        pageRef.current = uniquePersons.length
+        setExcitationList([...uniquePersons])
       }
     } catch (error) {
       message.error(error.message)
@@ -279,6 +285,9 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         <Form.Item label='交互' name='sender_id' validateFirst validateTrigger={['onBlur']} rules={[{ required: true, message: '请选择交互' }]}>
           <Select
             placeholder='请选择交互'
+            showSearch
+            onSearch={onSearch}
+            optionFilterProp='children'
             onPopupScroll={e => {
               onScrollData(e)
             }}

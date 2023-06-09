@@ -48,7 +48,7 @@ const TreeNodeLeaf: React.FC<TreeNodeLeafProps> = ({ id, ptName, ptType, ptDesc,
                 <Radio.Group
                   className={styles.tree_radio}
                   onChange={e => tdListDiapatch({ type: 'configNode', index: id, config: { attr: 'ptValue', value: e.target.value } })}
-                  value={ptValue || null}
+                  value={ptValue || 'false'}
                 >
                   <Radio value='true'>TRUE</Radio>
                   <Radio value='false'>FALSE</Radio>
