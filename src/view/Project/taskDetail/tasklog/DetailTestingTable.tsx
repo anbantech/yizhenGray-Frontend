@@ -75,9 +75,11 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       ellipsis: true,
       width: '10%',
       render: (text: any, record: any) => (
-        <p className={styles.checkDetail} key={record.id}>
-          {typeof record.recv_data === 'string' ? record.recv_data : record.recv_data[0] || ''}
-        </p>
+        <div key={record.id} className={styles.recv_datalog}>
+          <p className={record.recv_data ? styles.checkDetail : styles.noneDatalog} key={record.id}>
+            {typeof record.recv_data === 'string' ? record.recv_data : record.recv_data[0] || '-'}
+          </p>
+        </div>
       )
     },
     {

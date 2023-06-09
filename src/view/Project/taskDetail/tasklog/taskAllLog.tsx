@@ -250,7 +250,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
               return (
                 <div key={`${Math.random()}`}>
                   <Tooltip overlayClassName={tableStyle.overlay} color='#ffffff' title={item} placement='bottomLeft'>
-                    <span className={styles.casetitles}>{item}</span>
+                    <span className={item ? styles.casetitles : styles.noneDatalog}>{item}</span>
                   </Tooltip>
                 </div>
               )

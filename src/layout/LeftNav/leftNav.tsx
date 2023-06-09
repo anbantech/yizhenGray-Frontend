@@ -50,7 +50,7 @@ const routerList: SideBarRoute[] = [
     name: '配置项',
     children: [
       { name: '模板管理', path: 'templateList' },
-      { name: '外设管理', path: 'OneExcitationList' },
+      // { name: '外设管理', path: 'OneExcitationList' },
       { name: '激励单元管理', path: 'TwoExcitationList' },
       { name: '激励嵌套管理', path: 'ThreeExcitationList' },
       { name: '交互管理', path: 'FourExcitationList' }
