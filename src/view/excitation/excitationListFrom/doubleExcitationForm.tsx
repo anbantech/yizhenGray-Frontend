@@ -342,6 +342,7 @@ const DoubleExcitationForm: React.FC = () => {
         <Form.Item
           label='前置时延'
           name='align_delay_0'
+          initialValue={0}
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -391,6 +392,7 @@ const DoubleExcitationForm: React.FC = () => {
         <Form.Item
           label='等待时间'
           name='gu_w0'
+          initialValue={0}
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -466,6 +468,7 @@ const DoubleExcitationForm: React.FC = () => {
           label='中间时延'
           name='align_delay_1'
           validateFirst
+          initialValue={0}
           validateTrigger={['onBlur']}
           rules={[
             {
@@ -490,6 +493,7 @@ const DoubleExcitationForm: React.FC = () => {
           label='后置时延'
           name='align_delay_2'
           validateFirst
+          initialValue={0}
           validateTrigger={['onBlur']}
           rules={[
             {

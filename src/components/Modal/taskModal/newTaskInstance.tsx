@@ -299,7 +299,17 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         </Form.Item>
       </Form>
       <div className={styles.CrashTableBody}>
-        <span style={{ paddingLeft: '25px' }}> 缺陷类型 :</span>
+        <span> 内置缺陷 </span>
+        <span style={{ padding: '0px 8px 0px 10px' }}> : </span>
+        <div className={styles.crashDes}>
+          <span>
+            堆栈溢出、RAM区向上溢出、RAM区向下溢出、FLASH区向上溢出、FLASH区向下溢出、ROM区向上溢出、ROM区向下溢出、读取保护区域、写入保护区域、代码区破坏错误、非法指令、程序跑飞
+          </span>
+        </div>
+      </div>
+      <div className={styles.CrashTableBody}>
+        <span> 缺陷类型 </span>
+        <span style={{ padding: '0px 8px 0px 10px' }}> : </span>
         <div className={styles.crashTable}>
           <div className={styles.crashTable_header}>
             <span className={styles.crashTable_headerLeft}> 缺陷类型 </span>

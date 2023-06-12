@@ -86,7 +86,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       title: () => {
         return (
           <div>
-            <span> {`异常用例${params.case_type === '' ? '(全部)' : params.case_type === '0' ? '(否)' : '(是)'}`} </span>
+            <span> 异常用例</span>
           </div>
         )
       },
@@ -105,7 +105,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       title: () => {
         return (
           <div>
-            <span> {`分支覆盖率增幅${params.branch_coverage === '' ? '(默认)' : params.sbranch_coverage === 'descend' ? '(降序)' : '(升序)'}`} </span>
+            <span> 分支覆盖率增幅 </span>
           </div>
         )
       },
@@ -123,10 +123,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       title: () => {
         return (
           <div>
-            <span>
-              {' '}
-              {`语句覆盖率增幅${params.statement_coverage === '' ? '(默认)' : params.statement_coverage === 'descend' ? '(降序)' : '(升序)'}`}{' '}
-            </span>
+            <span>语句覆盖率增幅</span>
           </div>
         )
       },
@@ -143,7 +140,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       title: () => {
         return (
           <div>
-            <span> {`发送时间${params.sort_order === 'descend' ? '(降序)' : '(升序)'}`} </span>
+            <span> 发送时间</span>
           </div>
         )
       },

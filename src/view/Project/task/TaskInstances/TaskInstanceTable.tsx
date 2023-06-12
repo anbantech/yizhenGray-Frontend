@@ -381,7 +381,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         concent='是否确认删除'
       />
       {visibility ? (
-        <NewTaskInstance visibility={visibility} isDetail={0} task_id={InstancesDetail.task_detail.id} choiceModal={choiceModal} width='522px' />
+        <NewTaskInstance visibility={visibility} isDetail={0} task_id={InstancesDetail.task_detail.id} choiceModal={choiceModal} width='532px' />
       ) : null}
     </div>
   )
