@@ -85,6 +85,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
 
   //
   const [spinning, setSpinning] = useState(false)
+
   // 新建任务
   const jumpNewCreateTask = () => {
     history.push({

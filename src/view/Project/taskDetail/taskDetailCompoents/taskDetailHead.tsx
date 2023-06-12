@@ -28,6 +28,8 @@ interface propsResTaskDetailType<T> {
   taskDetailInfo: T
   // jumpLookTaskInfo: () => void
   display: boolean
+  depCollect: any
+  RequsetParams: Record<string, any>
   infoMap: taskDetailType<taskDetailInfoType, projectInfoType>
 }
 
@@ -38,7 +40,7 @@ interface InfoType {
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
 function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
   const { taskInfo, projectInfo, instanceInfo } = props.infoMap
-  const { display } = props
+  const { display, depCollect, RequsetParams } = props
   const { num, start_time, end_time, status, id, project_id } = props.taskDetailInfo
   const [spinStatus, setSpinStatus] = React.useState(false)
 
@@ -78,6 +80,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       // 继续任务
       setIndex(5)
       setSpinStatus(true)
+      depCollect(RequsetParams)
       try {
         await stopcontuine({ instance_id: id })
         return
@@ -86,6 +89,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
         message.error(error.message)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, spinStatus, status])
 
   const beginOrOver = React.useCallback(async () => {
@@ -189,25 +193,23 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
               beginOrOver()
             }}
           >
-            {
-              [2, 3, 4, 9].includes(status) && (
-                <>
-                  <Spin spinning={spinStatus && index === 1} indicator={antIcon}>
-                    <img className={styles.ImageSize} src={over} alt='stopCourse' />
+            {[2, 3, 4, 9].includes(status) ? (
+              <>
+                <Spin spinning={spinStatus && index === 1} indicator={antIcon}>
+                  <img className={styles.ImageSize} src={over} alt='stopCourse' />
+                </Spin>
+                <span>结束任务</span>
+              </>
+            ) : [0, 1].includes(status) ? (
+              <>
+                <Tooltip placement='bottom' title='重新测试当前任务（重新发送已经测试过的用例）'>
+                  <Spin spinning={spinStatus && index === 2} indicator={antIcon}>
+                    <img className={styles.ImageSize} src={Begin} alt='beginCourse' />
                   </Spin>
-                  <span>结束任务</span>
-                </>
-              )
-              // ) : [0, 1].includes(status) ? (
-              //   <>
-              //     <Tooltip placement='bottom' title='重新测试当前任务（重新发送已经测试过的用例）'>
-              //       <Spin spinning={spinStatus && index === 2} indicator={antIcon}>
-              //         <img className={styles.ImageSize} src={Begin} alt='beginCourse' />
-              //       </Spin>
-              //     </Tooltip>
-              //     <span>重测任务</span>
-              //   </>
-            }
+                </Tooltip>
+                <span>重测任务</span>
+              </>
+            ) : null}
           </div>
         )}
         {!display && [5].includes(status) && (

@@ -96,6 +96,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   const checked = (value: string) => {
     depCollect(true, { system: value, page: 1 })
   }
+
   const getMessageStatus = React.useCallback(() => {
     if (messageInfo && messageInfo.instance_id) {
       if (+messageInfo.instance_id === +instanceInfo.id) {
@@ -145,7 +146,13 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
         <div className={globalStyle.AnBan_main}>
           {taskDetailInfo && (
             <>
-              <TaskDetailHead taskDetailInfo={taskDetailInfo} infoMap={props.location?.state} display={display} />
+              <TaskDetailHead
+                taskDetailInfo={taskDetailInfo}
+                infoMap={props.location?.state}
+                depCollect={depCollect}
+                display={display}
+                RequsetParams={RequsetParams}
+              />
               <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
               {taskDetailInfo?.status === 2 ? (
                 <DetailTestingTable params={depData} taskDetailInfo={taskDetailInfo} status={updateStatus} />

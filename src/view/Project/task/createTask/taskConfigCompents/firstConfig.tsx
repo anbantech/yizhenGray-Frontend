@@ -1,10 +1,12 @@
-import { Form, Input, message, Select } from 'antd'
+import { Divider, Form, Input, message, Select, Space } from 'antd'
+import { useHistory } from 'react-router'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { excitationListFn } from 'Src/services/api/excitationApi'
 import { createTaskFn, getSimulateNode, updateTask } from 'Src/services/api/taskApi'
 import { sleep } from 'Src/util/baseFn'
+import addImage from 'Src/assets/Contents/icon_add.svg'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from './stepBaseConfig.less'
 
@@ -52,6 +54,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
 
   const [form] = useForm()
   const { Option } = Select
+  const history = useHistory()
   const charRef = useRef(false)
   const [params, setParams] = useState<Resparams>(request)
   // 弹窗
@@ -218,6 +221,19 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, taskInfo.data])
+
+  // 新建任务
+  const jumpNewCreateTask = () => {
+    const createGroupExcitation = '/FourExcitationList/createGroupExcitation'
+    history.push({
+      pathname: `${createGroupExcitation}`,
+      state: {
+        type: 'four',
+        isFixForm: false,
+        name: '新建交互'
+      }
+    })
+  }
   return (
     <div className={styles.stepBaseMain}>
       <Form name='basic' className={styles.stepBaseMain_Form} {...layout} onValuesChange={onFieldsChange} autoComplete='off' form={form} size='large'>
@@ -291,6 +307,22 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
             onPopupScroll={e => {
               onScrollData(e)
             }}
+            dropdownRender={menu => (
+              <>
+                {menu}
+                <Divider style={{ margin: '8px 0' }} />
+                <Space style={{ padding: '0 8px 4px' }}>
+                  <div className={styles.selectRender} role='time' onClick={jumpNewCreateTask}>
+                    <img src={addImage} alt='' />
+                    <span>新建交互</span>
+                  </div>
+                  {/* <Input placeholder='Please enter item' ref={inputRef} value={name} onChange={onNameChange} />
+                  <Button type='text' icon={<PlusOutlined />} onClick={addItem}>
+                    Add item
+                  </Button> */}
+                </Space>
+              </>
+            )}
           >
             {
               /**

@@ -278,6 +278,7 @@ const OneExcotationForm: React.FC = () => {
         <Form.Item
           label='前置时延'
           name='align_delay_0'
+          initialValue={0}
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -328,6 +329,7 @@ const OneExcotationForm: React.FC = () => {
           label='等待时间'
           name='gu_w0'
           validateFirst
+          initialValue={0}
           validateTrigger={['onBlur']}
           rules={[
             {
@@ -401,6 +403,7 @@ const OneExcotationForm: React.FC = () => {
 
         <Form.Item
           label='中间时延'
+          initialValue={0}
           name='align_delay_1'
           validateFirst
           validateTrigger={['onBlur']}
@@ -428,6 +431,7 @@ const OneExcotationForm: React.FC = () => {
           name='align_delay_2'
           validateFirst
           validateTrigger={['onBlur']}
+          initialValue={0}
           rules={[
             {
               required: true,
