@@ -10,8 +10,8 @@ export const statusList = [
   { lable: '准备中', value: 5 },
   // { lable: '待测试', value: 6 },
   { lable: '停止中', value: 7 },
-  { lable: '重放中', value: 8 }
-  // { lable: '重放暂停', value: 9 }
+  { lable: '重放中', value: 8 },
+  { lable: '重放暂停', value: 9 }
   // { lable: '离线', value: 5 },
 ]
 

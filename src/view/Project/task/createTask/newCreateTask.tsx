@@ -14,6 +14,7 @@ interface taskInfoType {
 interface taskPropsType<T> {
   taskInfo: T
   projectInfo: projectInfoType
+  fromDataTask: any
 }
 export interface StepRef {
   save: () => void
@@ -34,7 +35,7 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
   }
   const [isDisableStatus, setIsDisableStatus] = React.useState<boolean>(true)
 
-  const { taskInfo, projectInfo } = props.location?.state
+  const { taskInfo, projectInfo, fromDataTask } = props.location?.state
   const [btnLoading, setBtnLoading] = useState(false)
   const createForm = async () => {
     setBtnLoading(true)
@@ -69,7 +70,15 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
         <span className={styles.taskMain_title}>{taskInfo?.editTaskMode ? '修改任务' : '新建任务'}</span>
       </div>
       <div className={styles.taskMain_boby}>
-        <FirstConfig ref={childRef.firstForm} taskInfo={taskInfo} id={projectInfo.projectId} onChange={onChange} cancenlForm={cancenlForm} />
+        <FirstConfig
+          ref={childRef.firstForm}
+          taskInfo={taskInfo}
+          fromDataTask={fromDataTask}
+          projectInfo={projectInfo}
+          id={projectInfo.projectId}
+          onChange={onChange}
+          cancenlForm={cancenlForm}
+        />
       </div>
       <div className={styles.taskMain_footer}>
         <div className={styles.taskMain_footerConcent}>

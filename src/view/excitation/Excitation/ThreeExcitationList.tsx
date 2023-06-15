@@ -296,14 +296,6 @@ const ThreeExcitation: React.FC<RouteComponentProps<any, StaticContext, unknown>
       <div className={styles.AnBan_PaginationsAge}>
         <PaginationsAge length={total} num={depData.page_size} getParams={setOperation} pagenums={depData.page} />
       </div>
-      {/* <ExcitationModal
-        visible={modalData.isModalVisible}
-        hideModal={cancel}
-        projectInfo={excitationInfo}
-        fixTitle={modalData.fixTitle}
-        id={modalData.excitationId}
-        width={480}
-      /> */}
       <CommonModle
         IsModalVisible={deleteVisibility}
         deleteProjectRight={() => {

@@ -342,6 +342,19 @@ const ExcitationDraw: React.FC = () => {
   const CommonModleClose = (val: boolean) => {
     setVisibility(val)
   }
+  const goBackHistory = useCallback(() => {
+    if (state?.fromDataLoaction) {
+      const { taskInfo, fromDataTask, projectInfo, from } = state?.fromDataLoaction
+      history.push({
+        pathname: `${from}`,
+        state: {
+          taskInfo,
+          projectInfo,
+          fromDataTask
+        }
+      })
+    }
+  }, [history, state?.fromDataLoaction])
   const createOneExcitationFn = async () => {
     const { child_id_list } = state.child_id_list
     const params = {
@@ -353,9 +366,13 @@ const ExcitationDraw: React.FC = () => {
       const result = await createGroupFn(params)
       if (result.data) {
         message.success('交互创建成功')
-        history.push({
-          pathname: '/FourExcitationList'
-        })
+        if (state?.fromDataLoaction) {
+          goBackHistory()
+        } else {
+          history.push({
+            pathname: '/FourExcitationList'
+          })
+        }
       }
     } catch (error) {
       message.error(error.message)
@@ -364,7 +381,11 @@ const ExcitationDraw: React.FC = () => {
       CommonModleClose(false)
     }
   }
-
+  const goBack = () => {
+    history.push({
+      pathname: '/FourExcitationList'
+    })
+  }
   const updatFourWorkFn = React.useCallback(async () => {
     setSpinning(true)
     const { isFixForm, info, fromPathName, type } = state
@@ -441,34 +462,46 @@ const ExcitationDraw: React.FC = () => {
       </div>
       <div className={StyleSheet.footer}>
         <div className={StyleSheet.footerConcent}>
-          {current > 0 && (
+          {state?.fromDataLoaction?.from && (
             <CommonButton
               buttonStyle={styles.stepButton}
-              name='上一步'
+              name='取消'
               type='default'
               onClick={() => {
-                prev()
+                goBack()
               }}
             />
           )}
-          {current < steps.length - 1 && (
-            <CommonButton
-              buttonStyle={styles.stepButton}
-              name='下一步'
-              type='default'
-              onClick={() => {
-                next()
-              }}
-            />
-          )}
-          {current === steps.length - 1 && (
-            <CommonButton
-              buttonStyle={styles.stepButton}
-              name={state?.lookDetail ? '返回' : state?.isFixForm ? '修改' : '新建'}
-              type='default'
-              onClick={state?.lookDetail ? goBackGroupList : state?.isFixForm ? oepenModal : createOneExcitationFn}
-            />
-          )}
+          <div className={StyleSheet.footerConcentRight}>
+            {current > 0 && (
+              <CommonButton
+                buttonStyle={styles.stepButton}
+                name='上一步'
+                type='default'
+                onClick={() => {
+                  prev()
+                }}
+              />
+            )}
+            {current < steps.length - 1 && (
+              <CommonButton
+                buttonStyle={styles.stepButton}
+                name='下一步'
+                type='default'
+                onClick={() => {
+                  next()
+                }}
+              />
+            )}
+            {current === steps.length - 1 && (
+              <CommonButton
+                buttonStyle={styles.stepButton}
+                name={state?.lookDetail ? '返回' : state?.isFixForm ? '修改' : '新建'}
+                type='default'
+                onClick={state?.lookDetail ? goBackGroupList : state?.isFixForm ? oepenModal : createOneExcitationFn}
+              />
+            )}
+          </div>
         </div>
       </div>
       <CommonModle
