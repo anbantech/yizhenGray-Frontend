@@ -150,7 +150,7 @@ const Fuzzing = (props: any) => {
 }
 
 const GroupExcitationForm: React.FC = () => {
-  const { isFixForm, info, type, name, lookDetail, propsDatas } = useContext(GlobalContexted)
+  const { isFixForm, info, type, name, lookDetail, fromDataTask, propsDatas, from, projectInfo, taskInfo } = useContext(GlobalContexted)
   const { Step } = Steps
   const history = useHistory()
   const [form] = useForm()
@@ -371,7 +371,8 @@ const GroupExcitationForm: React.FC = () => {
               type,
               name,
               lookDetail,
-              child_id_list: params2
+              child_id_list: params2,
+              fromDataLoaction: from ? { taskInfo, projectInfo, from, fromDataTask } : null
             }
           })
         }
@@ -379,7 +380,7 @@ const GroupExcitationForm: React.FC = () => {
     } catch (error) {
       throwErrorMessage(error, { 1009: '项目删除失败' })
     }
-  }, [form, stepArray, history, detailData, propsDatas, isFixForm, info, type, name, lookDetail])
+  }, [form, stepArray, history, isFixForm, detailData, propsDatas, fromDataTask, info, type, name, lookDetail, from, taskInfo, projectInfo])
 
   const isFixFormDrawView = () => {
     history.push({
@@ -428,6 +429,12 @@ const GroupExcitationForm: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detailData, propsDatas, isFixForm])
+
+  const goBack = () => {
+    history.push({
+      pathname: '/FourExcitationList'
+    })
+  }
   return (
     <div className={styles.baseBody}>
       <div className={styles.baseForm}>
@@ -498,29 +505,41 @@ const GroupExcitationForm: React.FC = () => {
         <div style={{ width: '100% ' }}>{steps[current].content}</div>
         <div className={styles.excitaion_footer}>
           <div className={styles.excitaion_footer_footerConcent}>
-            {current > 0 && (
+            {from && (
               <CommonButton
                 buttonStyle={styles.stepButton}
-                name='上一步'
+                name='取消'
                 type='default'
                 onClick={() => {
-                  prev()
+                  goBack()
                 }}
               />
             )}
-            {current < steps.length - 1 && (
-              <CommonButton
-                buttonStyle={styles.active_button}
-                name='下一步'
-                type='default'
-                onClick={() => {
-                  next()
-                }}
-              />
-            )}
-            {current === steps.length - 1 && (
-              <CommonButton buttonStyle={styles.active_button} name='预览' type='default' onClick={lookDetail ? isFixFormDrawView : viewDraw} />
-            )}
+            <div className={styles.excitaion_footer_footerConcentRight}>
+              {current > 0 && (
+                <CommonButton
+                  buttonStyle={styles.stepButton}
+                  name='上一步'
+                  type='default'
+                  onClick={() => {
+                    prev()
+                  }}
+                />
+              )}
+              {current < steps.length - 1 && (
+                <CommonButton
+                  buttonStyle={styles.active_button}
+                  name='下一步'
+                  type='default'
+                  onClick={() => {
+                    next()
+                  }}
+                />
+              )}
+              {current === steps.length - 1 && (
+                <CommonButton buttonStyle={styles.active_button} name='预览' type='default' onClick={lookDetail ? isFixFormDrawView : viewDraw} />
+              )}
+            </div>
           </div>
         </div>
       </div>

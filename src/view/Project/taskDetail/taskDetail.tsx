@@ -64,21 +64,20 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
 
   // 测试降序
   const testTimeSort = (value: string) => {
-    depCollect(true, { sort_order: value, page: 1 })
+    depCollect(true, { sort_order: value, page: 1, case_type: '', statement_coverage: '', branch_coverage: '' })
   }
 
   // 筛选异常用例
   const caseSort = (value: string) => {
     depCollect(true, { case_type: value, page: 1 })
   }
-
   //
   const statementSort = (value: string) => {
-    depCollect(true, { statement_coverage: value, page: 1 })
+    depCollect(true, { sort_order: 'descend', statement_coverage: value, branch_coverage: '', page: 1 })
   }
 
   const branchSort = (value: string) => {
-    depCollect(true, { branch_coverage: value, page: 1 })
+    depCollect(true, { sort_order: 'descend', branch_coverage: value, statement_coverage: '', page: 1 })
   }
   // 跳转日志
   const lookLog = React.useCallback(() => {

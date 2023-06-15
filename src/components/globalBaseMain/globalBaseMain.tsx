@@ -16,6 +16,10 @@ interface ContextProps {
   propsDatas?: any
   lookDetail: boolean
   fromPathName: string
+  from: string
+  projectInfo: any
+  taskInfo: any
+  fromDataTask: any
 }
 
 const routerMap = {
@@ -32,7 +36,7 @@ const deleteMap = {
 }
 export const GlobalContexted = React.createContext<ContextProps>(null!)
 function GlobalBaseMain(props: any) {
-  const { name, type, isFixForm, info, Data, lookDetail, fromPathName } = props
+  const { name, type, isFixForm, info, Data, lookDetail, fromPathName, fromDataTask, from, projectInfo, taskInfo } = props
   const history = useHistory()
   const pathname = useLocation()?.pathname.split('/')[1]
   // 存储关联任务信息
@@ -106,7 +110,9 @@ function GlobalBaseMain(props: any) {
     }
   }, [CommonModleClose, history, info?.id, pathname, type])
   return (
-    <GlobalContexted.Provider value={{ type, isFixForm, lookDetail, fromPathName, name, info, propsDatas: Data }}>
+    <GlobalContexted.Provider
+      value={{ type, isFixForm, lookDetail, fromDataTask, fromPathName, from, projectInfo, taskInfo, name, info, propsDatas: Data }}
+    >
       <div className={styles.taskMain}>
         <div className={styles.taskMain_header}>
           <span className={styles.taskMain_title}>{name}</span>

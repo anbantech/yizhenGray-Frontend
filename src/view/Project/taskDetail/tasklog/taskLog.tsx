@@ -6,6 +6,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { getTime } from 'Src/util/baseFn'
 import { WarnTip } from 'Src/view/excitation/excitationComponent/Tip'
 import { copyText } from 'Src/util/common'
+import SortIconComponent from 'Src/components/SortIcon/sortIcon'
 import NoData from 'Src/view/404/NoData/NoData'
 import { rePlayTask } from 'Src/services/api/taskApi'
 import errorFrameCopy from 'Src/assets/image/errorFrameCopy.svg'
@@ -54,6 +55,7 @@ interface DataType {
   update_time: string
   update_user: string
   msg_index: number
+  sent_cnt: number
   statement_coverage: string
   branch_coverage: string
 }
@@ -68,28 +70,25 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   const [replayId, setReplayId] = useState<number>(-1)
 
   const [currentType, setCurrentType] = useState('')
-
-  const [currentTypeTime, setCurrentTypeTime] = useState('descend')
-
-  const [currentTypeBranch, setCurrentTypeBranch] = useState('')
-
-  const [currentTypeStatement, setCurrentTypeStatement] = useState('')
-
+  const [isType, setType] = useState('time')
   const setOperation = (value1?: any, type?: string, value2?: any) => {
     switch (type) {
       case 'page':
         changePage(value1, value2)
         break
       case 'time':
+        setType(type as string)
         testTimeSort(value1)
         break
       case 'case_type':
         caseSort(value1)
         break
       case 'Statement':
+        setType(type as string)
         StatementSort(value1)
         break
       case 'Branch':
+        setType(type as string)
         BranchSort(value1)
         break
       default:
@@ -100,20 +99,6 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   const changeCurrentType = (e: any) => {
     setCurrentType(e.key)
     setOperation(e.key, 'case_type')
-  }
-  const changeTimeType = (e: any) => {
-    setCurrentTypeTime(e.key)
-    setOperation(e.key, 'time')
-  }
-
-  const changeCurrentTypeBranch = (e: any) => {
-    setCurrentTypeBranch(e.key)
-    setOperation(e.key, 'Branch')
-  }
-
-  const changeStatementType = (e: any) => {
-    setCurrentTypeStatement(e.key)
-    setOperation(e.key, 'Statement')
   }
 
   const statusMemo = useMemo(() => {
@@ -134,83 +119,11 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     </Menu>
   )
 
-  const menuBranch = (
-    <Menu selectable onClick={changeCurrentTypeBranch} selectedKeys={[currentTypeBranch]}>
-      <Menu.Item key='' style={{ textAlign: 'center' }}>
-        默认
-      </Menu.Item>
-      <Menu.Item key='ascend' style={{ textAlign: 'center' }}>
-        升序
-      </Menu.Item>
-      <Menu.Item key='descend' style={{ textAlign: 'center' }}>
-        降序
-      </Menu.Item>
-    </Menu>
-  )
-
-  const menuStatement = (
-    <Menu selectable onClick={changeStatementType} selectedKeys={[currentTypeStatement]}>
-      <Menu.Item key='' style={{ textAlign: 'center' }}>
-        默认
-      </Menu.Item>
-      <Menu.Item key='ascend' style={{ textAlign: 'center' }}>
-        升序
-      </Menu.Item>
-      <Menu.Item key='descend' style={{ textAlign: 'center' }}>
-        降序
-      </Menu.Item>
-    </Menu>
-  )
-
-  const menuTime = (
-    <Menu selectable onClick={changeTimeType} selectedKeys={[currentTypeTime]}>
-      <Menu.Item key='ascend' style={{ textAlign: 'center' }}>
-        升序
-      </Menu.Item>
-      <Menu.Item key='descend' style={{ textAlign: 'center' }}>
-        降序
-      </Menu.Item>
-    </Menu>
-  )
-
-  function BranchMenu() {
-    return (
-      <Dropdown overlay={menuBranch}>
-        <Space>
-          分支覆盖率增幅
-          <DownOutlined />
-        </Space>
-      </Dropdown>
-    )
-  }
-
-  function StatementMenu() {
-    return (
-      <Dropdown overlay={menuStatement}>
-        <Space>
-          语句覆盖率增幅
-          <DownOutlined />
-        </Space>
-      </Dropdown>
-    )
-  }
-
   function IsWrongDownMenu() {
     return (
       <Dropdown overlay={menu}>
         <Space>
           异常用例
-          <DownOutlined />
-        </Space>
-      </Dropdown>
-    )
-  }
-
-  function TimeDownMenu() {
-    return (
-      <Dropdown overlay={menuTime}>
-        <Space>
-          发送时间
           <DownOutlined />
         </Space>
       </Dropdown>
@@ -261,7 +174,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     (item: any) => {
       switch (item.case_type) {
         case 0:
-          if (status === 8 && replayId === item.id) {
+          if ((status === 8 && replayId === item.id) || item.status === 1) {
             return styles.footerError
           }
           if (Object.keys(item.crash_info)[0] && !item.case_type) {
@@ -279,6 +192,16 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     },
     [status, replayId]
   )
+
+  const Tips = (props: Record<string, string>) => {
+    const { title, val } = props
+    return (
+      <div>
+        <span>{title}</span>
+        <span> {val} </span>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.tableList}>
@@ -301,13 +224,13 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
             <IsWrongDownMenu />
           </div>
           <div className={styles.Header_Main}>
-            <TimeDownMenu />
+            <SortIconComponent title='发送时间' key='2' onChange={setOperation} type='time' isType={isType} />
           </div>
           <div className={styles.Header_Main}>
-            <BranchMenu />
+            <SortIconComponent title='分支覆盖率增幅' key='3' onChange={setOperation} type='Branch' isType={isType} />
           </div>
           <div className={styles.Header_Main}>
-            <StatementMenu />
+            <SortIconComponent title='语句覆盖率增幅' key='4' onChange={setOperation} type='Statement' isType={isType} />
           </div>
           <div style={{ textAlign: 'left' }} className={styles.Header_Main}>
             <span>缺陷结果</span>
@@ -331,7 +254,11 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     </Tooltip>
                     <div>
                       <div className={styles.dataInfoContainer}>
-                        <Tooltip title={item.send_data[0]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                        <Tooltip
+                          title={<Tips val={item.send_data[0]} title={item.sent_cnt === 0 ? '未发送 : ' : '已发送 : '} />}
+                          placement='bottom'
+                          overlayClassName={styles.overlay}
+                        >
                           <span className={styles.dataLongInfo}>{item.send_data[0] || '无'}</span>
                         </Tooltip>
                         <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(item.send_data[0])}>
@@ -340,10 +267,14 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                       </div>
                       <div style={{ display: currentOpenId === item.id ? 'block' : 'none' }} className={styles.dataShowContainer}>
                         {item.send_data.length > 1 &&
-                          item.send_data.slice(1).map((send_data: string) => {
+                          item.send_data.slice(1).map((send_data: string, index: number) => {
                             return (
                               <div className={styles.dataShowItem} key={`${send_data}_${Math.random()}`}>
-                                <Tooltip title={send_data} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                                <Tooltip
+                                  title={<Tips val={send_data} title={item.sent_cnt - 1 > index ? '已发送 : ' : '未发送 : '} />}
+                                  placement='bottom'
+                                  overlayClassName={styles.overlay}
+                                >
                                   <span className={item.send_data ? styles.dataLongInfo : styles.noneDatalog}>{send_data}</span>
                                 </Tooltip>
                                 <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(send_data)}>
@@ -356,7 +287,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     </div>
                     <div>
                       <div className={styles.dataInfoContainer}>
-                        <Tooltip title={item.recv_data[0]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                        <Tooltip title={item.recv_data[0]} placement='bottom' overlayClassName={styles.overlay}>
                           <span className={item.recv_data[0] ? styles.dataLongInfo : styles.noneDatalog}>{item.recv_data[0]}</span>
                         </Tooltip>
                         {item.recv_data[0] && (
@@ -370,7 +301,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                           item.recv_data.slice(1).map((recv_data: string) => {
                             return (
                               <div className={styles.dataShowItem} key={`${recv_data}_${Math.random()}`}>
-                                <Tooltip title={recv_data} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                                <Tooltip title={recv_data} placement='bottom' overlayClassName={styles.overlay}>
                                   <span className={item.recv_data ? styles.dataLongInfo : styles.noneDatalog}>{recv_data}</span>
                                 </Tooltip>
                                 <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(recv_data)}>

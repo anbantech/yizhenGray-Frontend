@@ -48,9 +48,11 @@ interface propsFn {
   id: number
   taskInfo: any
   cancenlForm: () => void
+  projectInfo: any
+  fromDataTask: any
 }
 const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
-  const { onChange, id, taskInfo, cancenlForm } = props
+  const { onChange, id, taskInfo, cancenlForm, projectInfo, fromDataTask } = props
 
   const [form] = useForm()
   const { Option } = Select
@@ -205,8 +207,9 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
 
   useEffect(() => {
     getNode()
-    if (taskInfo.data) {
-      const { name, desc, project_id, sender_id, simu_instance_id, beat_unit, group_name } = taskInfo.data as any
+    const val = fromDataTask && fromDataTask?.isRight ? fromDataTask?.values : taskInfo.data
+    if (val) {
+      const { name, desc, project_id, sender_id, simu_instance_id, beat_unit, group_name } = val
       const formData = {
         name,
         description: desc,
@@ -220,20 +223,26 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
       onFieldsChange()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form, taskInfo.data])
+  }, [form, taskInfo.data, fromDataTask])
 
   // 新建任务
-  const jumpNewCreateTask = () => {
+  const jumpNewCreateTask = async () => {
+    const values = await form.getFieldsValue()
     const createGroupExcitation = '/FourExcitationList/createGroupExcitation'
     history.push({
       pathname: `${createGroupExcitation}`,
       state: {
+        projectInfo,
+        taskInfo,
         type: 'four',
         isFixForm: false,
-        name: '新建交互'
+        name: '新建交互',
+        from: '/projects/Tasks/createTask',
+        fromDataTask: { values, isRight: true }
       }
     })
   }
+
   return (
     <div className={styles.stepBaseMain}>
       <Form name='basic' className={styles.stepBaseMain_Form} {...layout} onValuesChange={onFieldsChange} autoComplete='off' form={form} size='large'>
@@ -308,20 +317,22 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
               onScrollData(e)
             }}
             dropdownRender={menu => (
-              <>
+              <div>
                 {menu}
                 <Divider style={{ margin: '8px 0' }} />
                 <Space style={{ padding: '0 8px 4px' }}>
-                  <div className={styles.selectRender} role='time' onClick={jumpNewCreateTask}>
+                  <div
+                    className={styles.selectRender}
+                    role='time'
+                    onClick={() => {
+                      jumpNewCreateTask()
+                    }}
+                  >
                     <img src={addImage} alt='' />
                     <span>新建交互</span>
                   </div>
-                  {/* <Input placeholder='Please enter item' ref={inputRef} value={name} onChange={onNameChange} />
-                  <Button type='text' icon={<PlusOutlined />} onClick={addItem}>
-                    Add item
-                  </Button> */}
                 </Space>
-              </>
+              </div>
             )}
           >
             {
