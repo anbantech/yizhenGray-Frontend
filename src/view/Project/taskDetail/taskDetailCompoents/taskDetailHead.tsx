@@ -131,14 +131,6 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
     }
   }, [id, spinStatus])
 
-  // const deleteTests = React.useCallback(async (project_id, id) => {
-  //   try {
-  //     return await deleteExampleTask(project_id, id)
-  //   } catch (error) {
-  //     throwErrorMessage(error)
-  //   }
-  // }, [])
-
   return (
     <div className={styles.taskDetailHead_Main}>
       <div className={styles.taskDetailHead_Main_left}>
@@ -171,6 +163,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             </div>
           </Link>
         )}
+
         {[2, 3, 8, 9].includes(status) && (
           <div
             className={styles.ImageContioner}
@@ -238,6 +231,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             )}
           </div>
         )}
+
         {[2, 3, 4].includes(status) && (
           <div
             className={styles.ImageContioner}
@@ -259,6 +253,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
             <span>{[2, 8].includes(status) ? '暂停任务' : '继续任务'}</span>
           </div>
         )}
+
         {/* {[-1].includes(status) ? (
           <div
             className={styles.ImageContioner}
