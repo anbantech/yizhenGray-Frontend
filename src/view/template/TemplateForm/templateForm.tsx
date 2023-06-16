@@ -37,7 +37,7 @@ const layout: LayoutType = {
 const nameValidator: ValidatorRule['validator'] = (_, value, callback) => {
   const reg = /^[\w\u4E00-\u9FA5]+$/
   if (!reg.test(value)) {
-    callback('模板名称由数字、字母组成')
+    callback('模板名称由中文、字母、数字、下划线组成')
   }
   callback()
 }
