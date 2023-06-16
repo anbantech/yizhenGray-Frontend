@@ -428,7 +428,7 @@ const transformItem2TreeNode = (item: Primitive, element?: any) => {
     id: generateUUID(),
     nodeType: (item.attrs && item.attrs.length > 0 ? 'root' : 'leaf') as NodeTypes,
     ptName,
-    ptValue: element && ptName in element ? stringfyEscapeCharacter(element[ptName] as string) : null,
+    ptValue: element && ptName in element ? stringfyEscapeCharacter(element[ptName] as string) : ptName === 'fuzzable' ? 'false' : null,
     ptDesc: item.desc,
     ptType: item.attrs && item.attrs.length > 0 ? null : item.type,
     rules: item.attrs && item.attrs.length > 0 ? null : { required: item.required, enum: JSON.parse(item.value_enum), useEnumAsDefault: false },
