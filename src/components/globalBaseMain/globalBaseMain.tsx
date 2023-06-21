@@ -34,6 +34,12 @@ const deleteMap = {
   three: '激励嵌套删除',
   four: '交互删除'
 }
+const dependceMap = {
+  two: '激励单元关联信息',
+  three: '激励嵌套关联信息',
+  four: '交互关联信息'
+}
+
 export const GlobalContexted = React.createContext<ContextProps>(null!)
 function GlobalBaseMain(props: any) {
   const { name, type, isFixForm, info, Data, lookDetail, fromPathName, fromDataTask, from, projectInfo, taskInfo } = props
@@ -163,7 +169,13 @@ function GlobalBaseMain(props: any) {
           concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
         />
       ) : null}
-      <LookUpDependence visibility={visibility as boolean} name='外设关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
+      <LookUpDependence
+        visibility={visibility as boolean}
+        name={dependceMap[type as keyof typeof dependceMap]}
+        data={dependenceInfo}
+        choiceModal={chioceModalStatus}
+        width='760px'
+      />
     </GlobalContexted.Provider>
   )
 }
