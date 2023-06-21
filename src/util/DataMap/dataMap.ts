@@ -63,23 +63,23 @@ export const statusMap = {
 }
 type CrashInfoType = Record<number, string>
 export const CrashInfoMap: CrashInfoType = {
-  0xe101: '堆栈溢出',
-  0xe102: 'RAM区向下溢出',
-  0xe103: 'RAM区向上溢出',
-  0xe104: 'FLASH区向下溢出',
-  0xe105: 'FLASH区向上溢出',
-  0xe106: 'ROM区向下溢出',
-  0xe107: 'ROM区向上溢出',
-  0xe108: '读取保护区域 ',
-  0xe109: '写入保护区域 ',
-  0xe10a: '代码区破坏错误 ',
+  // 0xe101: '堆栈溢出',
+  // 0xe102: 'RAM区向下溢出',
+  // 0xe103: 'RAM区向上溢出',
+  // 0xe104: 'FLASH区向下溢出',
+  // 0xe105: 'FLASH区向上溢出',
+  // 0xe106: 'ROM区向下溢出',
+  // 0xe107: 'ROM区向上溢出',
+  // 0xe108: '读取保护区域 ',
+  // 0xe109: '写入保护区域 ',
+  // 0xe10a: '代码区破坏错误 ',
   0xe201: 'Malloc分配失败 ',
   0xe202: 'Calloc分配失败',
   0xe203: 'Realloc分配失败',
   // 0xe301: '除零错误',
   0xe302: '无符号整型溢出',
   0xe303: '非法数据',
-  0xe402: '非法指令',
+  // 0xe402: '非法指令',
   0xe304: '浮点数溢出',
   0xe305: '定点数溢出',
   0xe401: '中断嵌套',
@@ -90,7 +90,7 @@ export const CrashInfoMap: CrashInfoType = {
   // 0xef02: '隐式整型截取',
   // 0xef03: '隐式无符号整型截取',
   0xe204: '双重释放',
-  0xe205: '未释放重分配',
+  0xe205: '未释放重分配'
   // 0xe206: '内存泄露',
-  0xe40f: '程序跑飞'
+  // 0xe40f: '程序跑飞'
 }
