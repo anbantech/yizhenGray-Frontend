@@ -100,7 +100,24 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       ),
       width: '11%'
     },
-
+    {
+      title: () => {
+        return (
+          <div>
+            <span> 发送时间</span>
+          </div>
+        )
+      },
+      dataIndex: 'update_time',
+      key: 'update_time',
+      ellipsis: true,
+      render: (text: any, record: any) => (
+        <div className={styles.checkDetail} key={record.id}>
+          {getTime(record.update_time)}
+        </div>
+      ),
+      width: '15%'
+    },
     {
       title: () => {
         return (
@@ -136,24 +153,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       ),
       width: '12%'
     },
-    {
-      title: () => {
-        return (
-          <div>
-            <span> 发送时间</span>
-          </div>
-        )
-      },
-      dataIndex: 'update_time',
-      key: 'update_time',
-      ellipsis: true,
-      render: (text: any, record: any) => (
-        <div className={styles.checkDetail} key={record.id}>
-          {getTime(record.update_time)}
-        </div>
-      ),
-      width: '15%'
-    },
+
     {
       title: () => {
         return (
