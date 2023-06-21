@@ -92,7 +92,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
     try {
       const res = await API.removeTemplate({ templates: [updateMenue] })
       if (res.data) {
-        setParams(params => ({ ...params, key_word: '', page: 1 }))
+        setParams(params => ({ ...params, page: 1 }))
         if (res.data.success_list.length > 0) {
           chioceBtnLoading(false)
           message.success('删除成功')

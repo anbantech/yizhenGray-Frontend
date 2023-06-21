@@ -11,7 +11,7 @@ import SortIconComponent from 'Src/components/SortIcon/sortIcon'
 import { getTime } from 'Src/util/baseFn'
 import { testAlllogs } from 'Src/globalType/Param'
 import { WarnTip } from 'Src/view/excitation/excitationComponent/Tip'
-import { CrashInfoMap } from 'Src/util/DataMap/dataMap'
+import { CrashInfoMapLog } from 'Src/util/DataMap/dataMap'
 import style from 'Src/view/Project/project/project.less'
 import styles from '../taskDetailUtil/Detail.less'
 import tableStyle from '../taskDetail.less'
@@ -281,8 +281,8 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
           {Object.keys(record.crash_info).map(item => {
             return (
               <div key={item} className={styles.crash_infoTitle}>
-                <Tooltip title={CrashInfoMap[+item]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
-                  <span>{CrashInfoMap[+item]}</span>
+                <Tooltip title={CrashInfoMapLog[+item]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                  <span>{CrashInfoMapLog[+item]}</span>
                 </Tooltip>
               </div>
             )

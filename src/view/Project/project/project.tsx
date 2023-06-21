@@ -138,7 +138,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
     try {
       const res = await removeProject(modalData.projectId)
       if (res.data) {
-        setParams({ ...params, key_word: '', page: 1 })
+        setParams({ ...params, page: 1 })
         setCommonModleStatus(false)
         if (res.data.success_list.length > 0) {
           message.success('删除成功')
