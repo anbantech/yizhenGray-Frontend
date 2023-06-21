@@ -42,4 +42,14 @@ const InfoTip = () => {
     </div>
   )
 }
-export { Tip, StepTip, WarnTip, InfoTip }
+
+const CrashTip = () => {
+  return (
+    <div className={StyleSheet.crashInfoTip}>
+      <Tooltip title='所有易复内置缺陷，默认为crash类型' placement='bottom'>
+        <QuestionCircleOutlined style={{ fontSize: '15px' }} />
+      </Tooltip>
+    </div>
+  )
+}
+export { Tip, StepTip, WarnTip, InfoTip, CrashTip }
