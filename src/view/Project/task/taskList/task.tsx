@@ -155,7 +155,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
         } else {
           message.error(res.data.fail_list[0])
         }
-        setParams({ ...params, key_word: '', page: 1 })
+        setParams({ ...params, page: 1 })
       }
       setSpinning(false)
       CommonModleClose(false)

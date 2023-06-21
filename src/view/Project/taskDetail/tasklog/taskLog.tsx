@@ -11,7 +11,7 @@ import NoData from 'Src/view/404/NoData/NoData'
 import { rePlayTask } from 'Src/services/api/taskApi'
 import errorFrameCopy from 'Src/assets/image/errorFrameCopy.svg'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
-import { CrashInfoMap } from 'Utils/DataMap/dataMap'
+import { CrashInfoMapLog } from 'Utils/DataMap/dataMap'
 import styles from '../taskDetailUtil/Detail.less'
 
 import { taskDetailInfoType } from '../taskDetail'
@@ -321,8 +321,8 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                         {Object.keys(item.crash_info).map(item => {
                           return (
                             <div key={item} className={styles.crash_infoTitle}>
-                              <Tooltip title={CrashInfoMap[+item]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
-                                <span>{CrashInfoMap[+item]}</span>
+                              <Tooltip title={CrashInfoMapLog[+item]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                                <span>{CrashInfoMapLog[+item]}</span>
                               </Tooltip>
                             </div>
                           )

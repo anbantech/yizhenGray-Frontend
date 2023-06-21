@@ -5,7 +5,7 @@ import React, { useCallback, useEffect } from 'react'
 import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import { WarnTip } from 'Src/view/excitation/excitationComponent/Tip'
 import { getTestingLog } from 'Src/services/api/taskApi'
-import { CrashInfoMap } from 'Utils/DataMap/dataMap'
+import { CrashInfoMapLog } from 'Utils/DataMap/dataMap'
 import { getTime } from 'Src/util/baseFn'
 import { throwErrorMessage } from 'Src/util/message'
 import { ResTaskDetail } from 'Src/globalType/Response'
@@ -172,8 +172,8 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
           {Object.keys(record.crash_info).map(item => {
             return (
               <div key={item} className={styles.crash_infoTitle}>
-                <Tooltip title={CrashInfoMap[+item]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
-                  <span>{CrashInfoMap[+item]}</span>
+                <Tooltip title={CrashInfoMapLog[+item]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                  <span>{CrashInfoMapLog[+item]}</span>
                 </Tooltip>
               </div>
             )
