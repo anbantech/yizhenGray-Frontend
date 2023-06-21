@@ -3,7 +3,7 @@ import 'antd/dist/antd.css'
 import { Button, Checkbox, Form, Input, message, Modal } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { throwErrorMessage } from 'Src/util/message'
-import { InfoTip } from 'Src/view/excitation/excitationComponent/Tip'
+import { CrashTip, InfoTip } from 'Src/view/excitation/excitationComponent/Tip'
 import { createTaskInstance } from 'Src/services/api/taskApi'
 import { CrashInfoMap } from 'Src/util/DataMap/dataMap'
 import styles from '../BaseModle.less'
@@ -303,8 +303,9 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         <span style={{ padding: '0px 8px 0px 10px' }}> : </span>
         <div className={styles.crashDes}>
           <span>
-            堆栈溢出、RAM区向上溢出、RAM区向下溢出、FLASH区向上溢出、FLASH区向下溢出、ROM区向上溢出、ROM区向下溢出、读取保护区域、写入保护区域、代码区破坏错误、非法指令、程序跑飞
+            FLASH区向上溢出、FLASH区向下溢出、RAM区向上溢出、RAM区向下溢出、ROM区向上溢出、ROM区向下溢出、写入保护区域、非法指令、程序跑飞、读取保护区域、堆栈溢出、代码区破坏错误
           </span>
+          <CrashTip />
         </div>
       </div>
       <div className={styles.CrashTableBody}>
