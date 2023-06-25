@@ -68,7 +68,23 @@ function MemoryMonitor() {
     <div className={styles.memoryMonitor}>
       <div className={styles.memoryMonitorOptions}>
         <Form className={styles.form_wrappers} autoComplete='off' layout='inline' form={form} size='large'>
-          <Form.Item name='addr' label='内存起始地址(HEX)' rules={[{ required: true, min: 8, max: 8, message: '请输入八位16进制数' }]}>
+          <Form.Item
+            name='addr'
+            label='内存起始地址(HEX)'
+            rules={[
+              { required: true, min: 8, max: 8, message: '请输入八位16进制数' },
+              {
+                validateTrigger: 'onBlur',
+                validator(_, value) {
+                  const reg = /^#?([\da-f]{6}|[\da-f]{3})$/i
+                  if (reg.test(value)) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('参数不符合16进制要求'))
+                }
+              }
+            ]}
+          >
             <Input style={{ width: 236, height: 32 }} />
           </Form.Item>
           <Form.Item
@@ -82,9 +98,14 @@ function MemoryMonitor() {
                 validateTrigger: 'onBlur',
                 validator(_, value) {
                   const number = Number.parseInt(value, 16)
+                  const reg = /^#?([\da-f]{6}|[\da-f]{3})$/i
                   if (number > 8168) {
                     return Promise.reject(new Error('内存过大，请重新输入'))
                   }
+                  if (reg) {
+                    return Promise.reject(new Error('参数不符合16进制要求'))
+                  }
+
                   return Promise.resolve()
                 }
               }

@@ -53,7 +53,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
     })
   }
   React.useEffect(() => {
-    if ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9].includes(status)) {
+    if (status) {
       setSpinStatus(false)
     }
   }, [status])
@@ -71,7 +71,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setIndex(4)
       try {
         await stoppaused({ instance_id: id })
-        return
+        return setSpinStatus(false)
       } catch (error) {
         setSpinStatus(false)
         message.error(error.message)
@@ -83,7 +83,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       depCollect(RequsetParams)
       try {
         await stopcontuine({ instance_id: id })
-        return
+        return setSpinStatus(false)
       } catch (error) {
         setSpinStatus(false)
         message.error(error.message)
@@ -100,7 +100,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setSpinStatus(true)
       try {
         await stoptest({ instance_id: id })
-        return
+        return setSpinStatus(false)
       } catch (error) {
         message.error(error.message)
         setSpinStatus(false)
@@ -111,7 +111,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setIndex(2)
       try {
         await rePlayTask({ instance_id: id })
-        return
+        return setSpinStatus(false)
       } catch (error) {
         setSpinStatus(false)
         message.error(error.message)
@@ -125,6 +125,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
     setIndex(3)
     try {
       await bgTest({ instance_id: id as number })
+      setSpinStatus(false)
     } catch (error) {
       setSpinStatus(false)
       message.error(error.message)
