@@ -43,11 +43,11 @@ function SortIconComponent(props: SortIconComponentProps) {
   }, [isType, type, status])
 
   useEffect(() => {
-    if (type === 'time') {
+    if (type === 'time' && isType === 'time') {
       setDown('descend')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isType])
   return (
     <div className={styles.sortBody} role='button' tabIndex={0} onClick={defaultFn}>
       <span className={up || down ? styles.titleActive : styles.title}> {title} </span>

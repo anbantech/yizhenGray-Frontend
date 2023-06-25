@@ -218,7 +218,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
           </div>
         )}
 
-        {!display && [5, 0].includes(status) && (
+        {!display && [5, 0, 1].includes(status) && (
           <div
             role='button'
             className={styles.ImageContioner}
@@ -227,7 +227,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
               beginTests()
             }}
           >
-            {[5, 0].includes(status) && (
+            {[5, 0, 1].includes(status) && (
               <>
                 <Tooltip placement='bottom' title='开始测试当前任务'>
                   <Spin spinning={spinStatus && index === 3} indicator={antIcon}>
