@@ -194,16 +194,19 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       width: '12.5%',
       render: (text: any, record: any) => (
         <div className={styles.recv_data} key={record.id}>
-          {record.recv_data &&
+          {record.recv_data ? (
             record.recv_data?.map((item: string) => {
               return (
                 <div key={`${Math.random()}`}>
                   <Tooltip overlayClassName={tableStyle.overlay} color='#ffffff' title={item} placement='bottomLeft'>
-                    <span className={item ? styles.casetitles : styles.noneDatalog}>{item}</span>
+                    {item}
                   </Tooltip>
                 </div>
               )
-            })}
+            })
+          ) : (
+            <span className={styles.noneDatalog} />
+          )}
         </div>
       )
     },
