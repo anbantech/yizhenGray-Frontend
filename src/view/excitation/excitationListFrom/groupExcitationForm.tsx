@@ -432,7 +432,8 @@ const GroupExcitationForm: React.FC = () => {
 
   const goBack = () => {
     history.push({
-      pathname: '/FourExcitationList'
+      pathname: '/projects/Tasks/createTask',
+      state: { projectInfo, taskInfo, fromDataTask }
     })
   }
   return (

@@ -382,9 +382,13 @@ const ExcitationDraw: React.FC = () => {
     }
   }
   const goBack = () => {
-    history.push({
-      pathname: '/FourExcitationList'
-    })
+    if (state?.fromDataLoaction) {
+      const { taskInfo, fromDataTask, projectInfo } = state?.fromDataLoaction
+      history.push({
+        pathname: '/projects/Tasks/createTask',
+        state: { projectInfo, taskInfo, fromDataTask }
+      })
+    }
   }
   const updatFourWorkFn = React.useCallback(async () => {
     setSpinning(true)
