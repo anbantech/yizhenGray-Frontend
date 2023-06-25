@@ -325,7 +325,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                         {Object.keys(item.crash_info).map(item => {
                           return (
                             <div key={item} className={styles.crash_infoTitle}>
-                              <Tooltip title={CrashInfoMapLog[+item]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                              <Tooltip title={CrashInfoMapLog[+item]} placement='bottom' overlayClassName={styles.overlay}>
                                 <span>{CrashInfoMapLog[+item]}</span>
                               </Tooltip>
                             </div>
