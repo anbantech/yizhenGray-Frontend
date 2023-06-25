@@ -2,7 +2,7 @@ import { DownOutlined } from '@ant-design/icons'
 import { Dropdown, Menu, message, Space, Tooltip } from 'antd'
 import { useHistory } from 'react-router'
 import globalStyle from 'Src/view/Project/project/project.less'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { getTime } from 'Src/util/baseFn'
 import { WarnTip } from 'Src/view/excitation/excitationComponent/Tip'
 import { copyText } from 'Src/util/common'
@@ -202,6 +202,10 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
       </div>
     )
   }
+
+  useEffect(() => {
+    setType('time')
+  }, [status])
 
   return (
     <div className={styles.tableList}>
