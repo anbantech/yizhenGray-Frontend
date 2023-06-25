@@ -65,13 +65,13 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
 
   const continueOrStop = React.useCallback(async () => {
     if (spinStatus) return
-    depCollect(true, { ...RequsetParams })
     if ([2].includes(status)) {
       // 停止任务  通过任务ID
       setSpinStatus(true)
       setIndex(4)
       try {
         await stoppaused({ instance_id: id })
+        depCollect(true, { ...RequsetParams })
         return setSpinStatus(false)
       } catch (error) {
         setSpinStatus(false)
@@ -83,6 +83,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setSpinStatus(true)
       try {
         await stopcontuine({ instance_id: id })
+        depCollect(true, { ...RequsetParams })
         return setSpinStatus(false)
       } catch (error) {
         setSpinStatus(false)
@@ -94,13 +95,13 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
 
   const beginOrOver = React.useCallback(async () => {
     if (spinStatus) return
-    depCollect(true, { ...RequsetParams })
     if ([2, 3, 4, 8, 9].includes(status)) {
       setIndex(1)
       // 停止任务  通过任务ID
       setSpinStatus(true)
       try {
         await stoptest({ instance_id: id })
+        depCollect(true, { ...RequsetParams })
         return setSpinStatus(false)
       } catch (error) {
         message.error(error.message)
@@ -112,6 +113,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setIndex(2)
       try {
         await rePlayTask({ instance_id: id })
+        depCollect(true, { ...RequsetParams })
         return setSpinStatus(false)
       } catch (error) {
         setSpinStatus(false)
@@ -122,11 +124,11 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
 
   const beginTests = React.useCallback(async () => {
     if (spinStatus) return
-    depCollect(true, { ...RequsetParams })
     setSpinStatus(true)
     setIndex(3)
     try {
       await bgTest({ instance_id: id as number })
+      depCollect(true, { ...RequsetParams })
       setSpinStatus(false)
     } catch (error) {
       setSpinStatus(false)
