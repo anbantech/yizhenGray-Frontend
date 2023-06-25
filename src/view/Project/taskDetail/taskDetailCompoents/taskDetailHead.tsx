@@ -65,6 +65,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
 
   const continueOrStop = React.useCallback(async () => {
     if (spinStatus) return
+    depCollect(true, { ...RequsetParams })
     if ([2].includes(status)) {
       // 停止任务  通过任务ID
       setSpinStatus(true)
@@ -80,7 +81,6 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       // 继续任务
       setIndex(5)
       setSpinStatus(true)
-      depCollect(RequsetParams)
       try {
         await stopcontuine({ instance_id: id })
         return setSpinStatus(false)
@@ -94,6 +94,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
 
   const beginOrOver = React.useCallback(async () => {
     if (spinStatus) return
+    depCollect(true, { ...RequsetParams })
     if ([2, 3, 4, 8, 9].includes(status)) {
       setIndex(1)
       // 停止任务  通过任务ID
@@ -117,10 +118,11 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
         message.error(error.message)
       }
     }
-  }, [id, spinStatus, status])
+  }, [RequsetParams, depCollect, id, spinStatus, status])
 
   const beginTests = React.useCallback(async () => {
     if (spinStatus) return
+    depCollect(true, { ...RequsetParams })
     setSpinStatus(true)
     setIndex(3)
     try {
@@ -130,7 +132,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       setSpinStatus(false)
       message.error(error.message)
     }
-  }, [id, spinStatus])
+  }, [RequsetParams, depCollect, id, spinStatus])
 
   return (
     <div className={styles.taskDetailHead_Main}>
