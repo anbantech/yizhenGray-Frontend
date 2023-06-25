@@ -5,11 +5,13 @@ interface SortIconComponentProps {
   title: string
   type: string
   isType: string
+  // eslint-disable-next-line react/require-default-props
+  status?: number
   onChange: (value1?: any, type?: string) => void
 }
 
 function SortIconComponent(props: SortIconComponentProps) {
-  const { title, onChange, type, isType } = props
+  const { title, onChange, type, status, isType } = props
   const [down, setDown] = useState('')
   const [up, setUp] = useState('')
   const [titleActiveBol, setTitle] = useState(false)
@@ -38,7 +40,7 @@ function SortIconComponent(props: SortIconComponentProps) {
       setDown('')
       setUp('')
     }
-  }, [isType, type])
+  }, [isType, type, status])
 
   useEffect(() => {
     if (type === 'time') {
