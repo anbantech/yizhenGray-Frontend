@@ -147,11 +147,16 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
         <div className={styles.taskDetailHead_Main_left_footer}>
           <span>
             {' '}
-            {[0, 1].includes(status)
-              ? `开始时间 : ${getTime(start_time)} | 结束时间 : ${getTime(end_time)}`
-              : [2, 3, 4].includes(status)
-              ? `开始时间 : ${getTime(start_time)}`
-              : null}{' '}
+            {[0, 1].includes(status) ? (
+              <span>
+                {' '}
+                开始时间 : {getTime(start_time)}
+                <span className={styles.cloumnLine}> </span>
+                <span> 结束时间 : {getTime(end_time)}</span>
+              </span>
+            ) : [2, 3, 4].includes(status) ? (
+              `开始时间 : ${getTime(start_time)}`
+            ) : null}{' '}
           </span>
         </div>
       </div>

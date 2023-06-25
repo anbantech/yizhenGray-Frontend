@@ -71,7 +71,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   const caseSort = (value: string) => {
     depCollect(true, { case_type: value, page: 1 })
   }
-  //
+
   const statementSort = (value: string) => {
     depCollect(true, { sort_order: 'descend', statement_coverage: value, branch_coverage: '', page: 1 })
   }
@@ -154,7 +154,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
               />
               <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
               {taskDetailInfo?.status === 2 ? (
-                <DetailTestingTable params={depData} taskDetailInfo={taskDetailInfo} status={updateStatus} />
+                <DetailTestingTable params={RequsetParams} taskDetailInfo={taskDetailInfo} status={updateStatus} />
               ) : (
                 <DetailTestedTable
                   system={depData.system}
