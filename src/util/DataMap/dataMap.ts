@@ -52,10 +52,10 @@ export const statusMap = {
     label: '重放中',
     color: styles.roundStatusReplay
   },
-  9: {
-    label: '重放暂停',
-    color: styles.roundStatusReplay
-  },
+  // 9: {
+  //   label: '重放暂停',
+  //   color: styles.roundStatusReplay
+  // },
   10: {
     label: '未知',
     color: styles.roundStatusBlue
