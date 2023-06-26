@@ -42,6 +42,7 @@ interface propsType {
 }
 
 interface DataType {
+  status: number
   case_content: string
   case_type: number
   crash_info: string
@@ -259,7 +260,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     <div>
                       <div className={styles.dataInfoContainer}>
                         <Tooltip
-                          title={<Tips val={item.send_data[0]} title={item.sent_cnt === 0 ? '未发送 : ' : '已发送 : '} />}
+                          title={<Tips val={item.send_data[0]} title={item.sent_cnt === 0 && item.status === 1 ? '未发送 : ' : '已发送 : '} />}
                           placement='bottom'
                           overlayClassName={styles.overlay}
                         >
@@ -275,7 +276,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                             return (
                               <div className={styles.dataShowItem} key={`${send_data}_${Math.random()}`}>
                                 <Tooltip
-                                  title={<Tips val={send_data} title={item.sent_cnt - 1 > index ? '已发送 : ' : '未发送 : '} />}
+                                  title={<Tips val={send_data} title={item.sent_cnt - 1 > index && item.status === 1 ? '已发送 : ' : '未发送 : '} />}
                                   placement='bottom'
                                   overlayClassName={styles.overlay}
                                 >
