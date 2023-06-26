@@ -260,7 +260,18 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     <div>
                       <div className={styles.dataInfoContainer}>
                         <Tooltip
-                          title={<Tips val={item.send_data[0]} title={item.sent_cnt === 0 && item.status === 1 ? '未发送 : ' : '已发送 : '} />}
+                          title={
+                            <Tips
+                              val={item.send_data[0]}
+                              title={
+                                item.case_type === 0 && item.sent_cnt === 0
+                                  ? '已发送'
+                                  : item.case_type === 1 && item.sent_cnt !== 0
+                                  ? '已发送'
+                                  : '未发送'
+                              }
+                            />
+                          }
                           placement='bottom'
                           overlayClassName={styles.overlay}
                         >
@@ -276,11 +287,22 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                             return (
                               <div className={styles.dataShowItem} key={`${send_data}_${Math.random()}`}>
                                 <Tooltip
-                                  title={<Tips val={send_data} title={item.sent_cnt - 1 > index && item.status === 1 ? '已发送 : ' : '未发送 : '} />}
+                                  title={
+                                    <Tips
+                                      val={send_data}
+                                      title={
+                                        item.case_type === 0 && item.sent_cnt === 0
+                                          ? '已发送 : '
+                                          : item.sent_cnt - 1 > index
+                                          ? '已发送 : '
+                                          : '未发送 : '
+                                      }
+                                    />
+                                  }
                                   placement='bottom'
                                   overlayClassName={styles.overlay}
                                 >
-                                  <span className={item.send_data ? styles.dataLongInfo : styles.noneDatalog}>{send_data}</span>
+                                  <span> - </span>
                                 </Tooltip>
                                 <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(send_data)}>
                                   <img src={errorFrameCopy} alt='' />
@@ -293,7 +315,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     <div>
                       <div className={styles.dataInfoContainer}>
                         <Tooltip title={item.recv_data[0]} placement='bottom' overlayClassName={styles.overlay}>
-                          <span className={item.recv_data[0] ? styles.dataLongInfo : styles.noneDatalog}>{item.recv_data[0]}</span>
+                          <span>{item.recv_data[0] || '-'}</span>
                         </Tooltip>
                         {item.recv_data[0] && (
                           <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(item.recv_data[0])}>
@@ -307,7 +329,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                             return (
                               <div className={styles.dataShowItem} key={`${recv_data}_${Math.random()}`}>
                                 <Tooltip title={recv_data} placement='bottom' overlayClassName={styles.overlay}>
-                                  <span className={item.recv_data ? styles.dataLongInfo : styles.noneDatalog}>{recv_data}</span>
+                                  <span>{recv_data || '-'}</span>
                                 </Tooltip>
                                 <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(recv_data)}>
                                   <img src={errorFrameCopy} alt='' />

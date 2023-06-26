@@ -174,7 +174,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
                   <Tooltip
                     overlayClassName={tableStyle.overlay}
                     color='#ffffff'
-                    title={<Tips val={item} title={record.sent_cnt - 1 > index && record.status === 1 ? '已发送 : ' : '未发送 : '} />}
+                    title={<Tips val={item} title={record.sent_cnt - 1 > index || record.sent_cnt === 0 ? '已发送 : ' : '未发送 : '} />}
                     placement='bottomLeft'
                   >
                     <span className={styles.casetitles}>{item}</span>
@@ -205,7 +205,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
               )
             })
           ) : (
-            <span className={styles.noneDatalog} />
+            <span> - </span>
           )}
         </div>
       )
