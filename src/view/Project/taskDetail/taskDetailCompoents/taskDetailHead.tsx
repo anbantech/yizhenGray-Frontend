@@ -64,75 +64,76 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
   }
 
   const continueOrStop = React.useCallback(async () => {
+    setSpinStatus(true)
     if (spinStatus) return
+    let res
     if ([2].includes(status)) {
       // 停止任务  通过任务ID
-      setSpinStatus(true)
       setIndex(4)
       try {
-        await stoppaused({ instance_id: id })
-        depCollect(true, { ...RequsetParams })
-        return setSpinStatus(false)
+        res = await stoppaused({ instance_id: id })
       } catch (error) {
-        setSpinStatus(false)
         message.error(error.message)
+        setSpinStatus(false)
       }
     } else {
       // 继续任务
       setIndex(5)
-      setSpinStatus(true)
       try {
-        await stopcontuine({ instance_id: id })
-        depCollect(true, { ...RequsetParams })
-        return setSpinStatus(false)
+        res = await stopcontuine({ instance_id: id })
       } catch (error) {
-        setSpinStatus(false)
         message.error(error.message)
+        setSpinStatus(false)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, spinStatus, status])
+    if (res) {
+      depCollect(true, { ...RequsetParams })
+      setSpinStatus(false)
+    }
+  }, [RequsetParams, depCollect, id, spinStatus, status])
 
   const beginOrOver = React.useCallback(async () => {
+    setSpinStatus(true)
     if (spinStatus) return
+    let res
     if ([2, 3, 4, 8, 9].includes(status)) {
       setIndex(1)
-      // 停止任务  通过任务ID
-      setSpinStatus(true)
       try {
-        await stoptest({ instance_id: id })
-        depCollect(true, { ...RequsetParams })
-        return setSpinStatus(false)
+        res = await stoptest({ instance_id: id })
       } catch (error) {
         message.error(error.message)
         setSpinStatus(false)
       }
     }
     if (status === 0 || status === 1) {
-      setSpinStatus(true)
       setIndex(2)
       try {
-        await rePlayTask({ instance_id: id })
-        depCollect(true, { ...RequsetParams })
-        return setSpinStatus(false)
+        res = await rePlayTask({ instance_id: id })
       } catch (error) {
-        setSpinStatus(false)
         message.error(error.message)
+        setSpinStatus(false)
       }
+    }
+    if (res) {
+      depCollect(true, { ...RequsetParams })
+      setSpinStatus(false)
     }
   }, [RequsetParams, depCollect, id, spinStatus, status])
 
   const beginTests = React.useCallback(async () => {
-    if (spinStatus) return
     setSpinStatus(true)
+    if (spinStatus) return
     setIndex(3)
+    let res
     try {
-      await bgTest({ instance_id: id as number })
+      res = await bgTest({ instance_id: id as number })
+    } catch (error) {
+      message.error(error.message)
+      setSpinStatus(false)
+    }
+    if (res) {
       depCollect(true, { ...RequsetParams })
       setSpinStatus(false)
-    } catch (error) {
-      setSpinStatus(false)
-      message.error(error.message)
     }
   }, [RequsetParams, depCollect, id, spinStatus])
 
@@ -220,7 +221,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
           </div>
         )}
 
-        {!display && [5, 0, 1].includes(status) && (
+        {!display && [0, 1, 5].includes(status) && (
           <div
             role='button'
             className={styles.ImageContioner}
@@ -229,7 +230,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
               beginTests()
             }}
           >
-            {[5, 0, 1].includes(status) && (
+            {[0, 1, 5].includes(status) && (
               <>
                 <Tooltip placement='bottom' title='开始测试当前任务'>
                   <Spin spinning={spinStatus && index === 3} indicator={antIcon}>
