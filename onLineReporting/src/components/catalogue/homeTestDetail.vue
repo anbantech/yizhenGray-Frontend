@@ -24,7 +24,13 @@
             header-cell-class-name="statisticsTableCell">
             <el-table-column prop="time" label="时间" width="200%">
             </el-table-column>
-            <el-table-column prop="frames" label="异常情况描述"> </el-table-column>
+            <el-table-column prop="frames" label="异常情况描述" > 
+                   <template slot-scope="scope">
+            	      <div v-for = "(item,index) in scope.row.frames" :key = 'index'>   
+                       {{ item }}
+                     </div>
+                   </template> 
+            </el-table-column>
         </el-table>
         <!-- <span class="title">累计测试详情</span>
         <el-table :data="tableData" style="width: 100%; margin-top: 12px" border
