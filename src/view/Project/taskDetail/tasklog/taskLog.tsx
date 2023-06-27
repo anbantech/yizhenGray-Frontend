@@ -331,9 +331,9 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                                 <Tooltip title={recv_data} placement='bottom' overlayClassName={styles.overlay}>
                                   <span>{recv_data || '-'}</span>
                                 </Tooltip>
-                                <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(recv_data)}>
+                                {/* <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(recv_data)}>
                                   <img src={errorFrameCopy} alt='' />
-                                </span>
+                                </span> */}
                               </div>
                             )
                           })}
