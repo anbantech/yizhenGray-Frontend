@@ -1,6 +1,6 @@
 import React from 'react'
 import { getTime } from 'Src/util/baseFn'
-import { CrashInfoMap } from 'Src/util/DataMap/dataMap'
+import { CrashInfoMapLog } from 'Src/util/DataMap/dataMap'
 
 import TaskStyles from 'Src/view/Project/task/createTask/newCreateTask.less'
 import styles from '../BaseModle.less'
@@ -30,7 +30,7 @@ function TaskDetailModal(props: any) {
                       <span className={styles.detailLeft} style={{ paddingRight: '10px' }}>
                         缺陷结果 :{' '}
                       </span>{' '}
-                      <span> {CrashInfoMap[+item]}</span>
+                      <span> {CrashInfoMapLog[+item]}</span>
                     </div>
                     <div className={styles.pc}>
                       <span className={styles.detailLeft} style={{ paddingRight: '10px' }}>

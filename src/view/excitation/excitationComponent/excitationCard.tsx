@@ -19,6 +19,7 @@ interface AllPropsType {
   lookDetail: boolean
   formData: any
   type: string
+  step: string
   onChange: (value: any, index: number) => void
   index: number
   deleteCard: (index: number) => void
@@ -31,12 +32,13 @@ interface propsType {
   isFixForm: boolean
   excitationList: any
   lookDetail: boolean
-
   index: number
   // eslint-disable-next-line react/require-default-props
   idArray?: number
   // eslint-disable-next-line react/require-default-props
   formData?: any
+  // eslint-disable-next-line react/require-default-props
+  step?: any
   onChange: (value: any, index: number) => void
   deleteCard: (index: number) => void
 }
@@ -125,7 +127,9 @@ interface Option {
 
 const ThreeExcitationCard = (props: AllPropsType) => {
   const [form] = useForm()
-  const { excitationList, deleteCard, onChange, type, stepArray, index, isFixForm, formData, lookDetail } = props
+
+  const { excitationList, step, deleteCard, onChange, type, stepArray, index, isFixForm, formData, lookDetail } = props
+
   const [desc, setDesc] = useState('')
   const clearValue = (val: undefined, index: number) => {
     onChange(undefined, index)
@@ -187,7 +191,7 @@ const ThreeExcitationCard = (props: AllPropsType) => {
           <Cascader
             disabled={lookDetail}
             placeholder='选择配置'
-            allowClear={false}
+            allowClear={step !== 'fuzzing'}
             fieldNames={{ label: 'name', value: 'sender_id' }}
             options={excitationList}
             onChange={onSelect}
@@ -204,13 +208,14 @@ ThreeExcitationCard.displayName = 'ThreeExcitationCard'
 const ThreeExcitationCardCompoent = React.memo(ThreeExcitationCard)
 
 const ExcitationCardMemo: React.FC<propsType> = (props: propsType) => {
-  const { index, excitationList, stepArray, type, lookDetail, deleteCard, idArray, formData, onChange, isFixForm } = props
+  const { index, step, excitationList, stepArray, type, lookDetail, deleteCard, idArray, formData, onChange, isFixForm } = props
   const Data = GetDeatilFn(idArray)
   return (
     <div className={styles.card_main}>
       <ThreeExcitationCardCompoent
         key={index}
         index={index}
+        step={step}
         stepArray={stepArray}
         deleteCard={deleteCard}
         lookDetail={lookDetail}
