@@ -86,7 +86,7 @@ const ChartComponents = () => {
 }
 
 const Fuzzing = (props: any) => {
-  const { type, isFixForm, stepArray, changePre2, excitationList, current, lookDetail, deleteCard } = props
+  const { type, step, isFixForm, stepArray, changePre2, excitationList, current, lookDetail, deleteCard } = props
   const [cardArray, setCardArray] = React.useState([0])
   const addCard = React.useCallback(() => {
     const pre = cardArray
@@ -132,6 +132,7 @@ const Fuzzing = (props: any) => {
                 lookDetail={lookDetail}
                 key={index}
                 index={index}
+                step={step}
               />
             )
           })}
@@ -261,6 +262,7 @@ const GroupExcitationForm: React.FC = () => {
       content: (
         <Fuzzing
           stepArray={stepArray[0]}
+          step='setUp'
           excitationList={excitationList}
           type={type}
           info={info}
@@ -278,6 +280,7 @@ const GroupExcitationForm: React.FC = () => {
       content: (
         <Fuzzing
           stepArray={stepArray[1]}
+          step='fuzzing'
           excitationList={excitationList}
           type={type}
           lookDetail={lookDetail}
@@ -298,6 +301,7 @@ const GroupExcitationForm: React.FC = () => {
           excitationList={excitationList}
           type={type}
           info={info}
+          step='tearDown'
           current={current}
           isFixForm={isFixForm}
           Data={detailData}
