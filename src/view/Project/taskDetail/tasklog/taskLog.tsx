@@ -302,7 +302,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                                   placement='bottom'
                                   overlayClassName={styles.overlay}
                                 >
-                                  <span> {send_data || '无'} </span>
+                                  <span className={styles.dataLongInfo}> {send_data || '无'} </span>
                                 </Tooltip>
                                 <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(send_data)}>
                                   <img src={errorFrameCopy} alt='' />
