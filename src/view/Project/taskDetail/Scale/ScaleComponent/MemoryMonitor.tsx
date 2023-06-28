@@ -98,7 +98,7 @@ function MemoryMonitor() {
                 validateTrigger: 'onBlur',
                 validator(_, value) {
                   const number = Number.parseInt(value, 16)
-                  const reg = /^#?([\da-f]{6}|[\da-f]{3})$/i
+                  const reg = /^#?([\da-f]{8})$/i
                   if (number > 8168) {
                     return Promise.reject(new Error('内存过大，请重新输入'))
                   }
