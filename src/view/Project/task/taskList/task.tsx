@@ -197,10 +197,6 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     [InstancesDetail, keepCheckTask, modalData.taskId]
   )
 
-  const getLayout = () => {
-    setHeight(layoutRef.current.clientHeight)
-  }
-
   // 跳转修改任务
   const fixTask = (item: any) => {
     history.push({
@@ -220,10 +216,34 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   }, [params, modalData?.taskId])
 
   useEffect(() => {
-    getLayout()
     getTaskList({ ...params })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, InstancesDetail?.task_detail?.status])
+
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        const { height } = entry.contentRect
+        let num = 700
+        if (height >= 1940 && height >= 2300) {
+          num = height * 0.8
+        } else if (height >= 1400 && height <= 1940) {
+          num = height * 0.5
+        } else {
+          num = height * 0.2
+        }
+        setHeight(height - Math.ceil(num as number))
+      }
+    })
+
+    if (layoutRef.current) {
+      resizeObserver.observe(layoutRef.current)
+    }
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [])
 
   return (
     <div className={styles.taskLeft_list} ref={layoutRef}>
@@ -242,7 +262,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
           dataLength={taskLists.length}
           next={loadMoreData}
           hasMore={hasMoreData}
-          height={height - 214}
+          height={height}
           loader={
             <p style={{ textAlign: 'center' }}>
               <div className={styles.listLine} />
@@ -256,7 +276,6 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
             </p>
           }
         >
-          {/* <div className={styles.concentBody}> */}
           {taskLists.map((item: any) => {
             return (
               <div
