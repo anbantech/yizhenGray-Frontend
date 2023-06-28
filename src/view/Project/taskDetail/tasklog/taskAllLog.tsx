@@ -174,7 +174,12 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
                   <Tooltip
                     overlayClassName={tableStyle.overlay}
                     color='#ffffff'
-                    title={<Tips val={item} title={record.sent_cnt - 1 >= index || record.caset_ype === 0 ? '已发送 : ' : '未发送 : '} />}
+                    title={
+                      <Tips
+                        val={item}
+                        title={(record.sent_cnt - 1 >= index && record.case_type === 1) || record.case_type === 0 ? '已发送 : ' : '未发送 : '}
+                      />
+                    }
                     placement='bottomLeft'
                   >
                     <span className={styles.casetitles}>{item}</span>
