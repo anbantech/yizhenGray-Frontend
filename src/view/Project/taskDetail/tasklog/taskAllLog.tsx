@@ -60,7 +60,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
 
   const changeCurrentType = (e: any) => {
     setCurrentType(e.key)
-    setParams({ ...params, case_type: e.key })
+    setParams({ ...params, page: 1, case_type: e.key })
   }
 
   const [total, setTotal] = React.useState(-1)
