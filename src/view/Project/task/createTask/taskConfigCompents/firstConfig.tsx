@@ -1,4 +1,4 @@
-import { Divider, Form, Input, message, Select, Space } from 'antd'
+import { Divider, Form, Input, List, message, Select, Space } from 'antd'
 import { useHistory } from 'react-router'
 import { useForm } from 'antd/lib/form/Form'
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
@@ -143,21 +143,26 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     charRef.current = true
   }, [])
 
-  const getExcitationList = async (value: Resparams) => {
+  const getExcitationList = useCallback(async (value: Resparams) => {
     if (scrollRef.current === pageRef.current) return
     try {
       const result = await excitationListFn(value)
       if (result.data !== null && result.data !== undefined) {
         scrollRef.current = result.data.total
-        const list = excitationList.concat(result.data.results)
-        const uniquePersons = [...new Set(list.map(p => JSON.stringify(p)))].map(p => JSON.parse(p))
-        pageRef.current = uniquePersons.length
-        setExcitationList([...uniquePersons])
+        setExcitationList((pre: projectInfoType[]) => {
+          if (result.data?.results) {
+            const list = pre.concat(result.data.results)
+            const uniquePersons = [...new Set(list.map(p => JSON.stringify(p)))].map(p => JSON.parse(p))
+            pageRef.current = list.length
+            return uniquePersons as projectInfoType[]
+          }
+          return []
+        })
       }
     } catch (error) {
       message.error(error.message)
     }
-  }
+  }, [])
 
   const onScrollData = (e: React.UIEvent) => {
     const target = e.target as HTMLLIElement
@@ -218,8 +223,8 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         beat_unit,
         simu_instance_id
       }
-      getExcitationList({ ...params, key_word: group_name })
       form.setFieldsValue(formData)
+      getExcitationList({ ...params, key_word: group_name })
       onFieldsChange()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

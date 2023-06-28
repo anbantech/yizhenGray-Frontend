@@ -174,7 +174,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
                   <Tooltip
                     overlayClassName={tableStyle.overlay}
                     color='#ffffff'
-                    title={<Tips val={item} title={record.sent_cnt - 1 > index || record.sent_cnt === 0 ? '已发送 : ' : '未发送 : '} />}
+                    title={<Tips val={item} title={record.sent_cnt - 1 >= index || record.caset_ype === 0 ? '已发送 : ' : '未发送 : '} />}
                     placement='bottomLeft'
                   >
                     <span className={styles.casetitles}>{item}</span>
@@ -198,7 +198,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
             record.recv_data?.map((item: string) => {
               return (
                 <div key={`${Math.random()}`}>
-                  <Tooltip overlayClassName={tableStyle.overlay} color='#ffffff' title={item} placement='bottomLeft'>
+                  <Tooltip overlayClassName={tableStyle.overlay} title={item} placement='bottomLeft'>
                     {item}
                   </Tooltip>
                 </div>
