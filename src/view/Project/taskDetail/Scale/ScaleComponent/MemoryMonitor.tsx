@@ -76,7 +76,7 @@ function MemoryMonitor() {
               {
                 validateTrigger: 'onBlur',
                 validator(_, value) {
-                  const reg = /^#?([\da-f]{6}|[\da-f]{3})$/i
+                  const reg = /^#?([\da-f]{8})$/i
                   if (reg.test(value)) {
                     return Promise.resolve()
                   }
@@ -102,11 +102,10 @@ function MemoryMonitor() {
                   if (number > 8168) {
                     return Promise.reject(new Error('内存过大，请重新输入'))
                   }
-                  if (reg) {
-                    return Promise.reject(new Error('参数不符合16进制要求'))
+                  if (reg.test(value)) {
+                    return Promise.resolve()
                   }
-
-                  return Promise.resolve()
+                  return Promise.reject(new Error('参数不符合16进制要求'))
                 }
               }
             ]}
