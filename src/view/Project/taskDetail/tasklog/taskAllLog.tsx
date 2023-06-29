@@ -287,9 +287,10 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       render: (text: any, record: any) => (
         <div className={styles.dataLongInfoResult}>
           {Object.keys(record.crash_info).map(item => {
+            console.log(item)
             return (
               <div key={item} className={styles.crash_infoTitle}>
-                <Tooltip title={CrashInfoMapLog[+item]} placement='bottom' color='#ffffff' overlayClassName={styles.overlay}>
+                <Tooltip title={CrashInfoMapLog[+item]} placement='bottom' overlayClassName={styles.overlay}>
                   <span>{CrashInfoMapLog[+item]}</span>
                 </Tooltip>
               </div>
