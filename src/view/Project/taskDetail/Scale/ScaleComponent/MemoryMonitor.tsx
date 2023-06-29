@@ -71,12 +71,18 @@ function MemoryMonitor() {
           <Form.Item
             name='addr'
             label='内存起始地址(HEX)'
+            validateFirst
+            validateTrigger={['onBlur']}
             rules={[
               { required: true, min: 8, max: 8, message: '请输入八位16进制数' },
               {
                 validateTrigger: 'onBlur',
                 validator(_, value) {
                   const reg = /^#?([\da-f]{8})$/i
+                  const number = Number.parseInt(value, 16)
+                  if (number > 8168) {
+                    return Promise.reject(new Error('内存过大，请重新输入'))
+                  }
                   if (reg.test(value)) {
                     return Promise.resolve()
                   }
@@ -97,8 +103,8 @@ function MemoryMonitor() {
               {
                 validateTrigger: 'onBlur',
                 validator(_, value) {
-                  const number = Number.parseInt(value, 16)
                   const reg = /^#?([\da-f]{8})$/i
+                  const number = Number.parseInt(value, 16)
                   if (number > 8168) {
                     return Promise.reject(new Error('内存过大，请重新输入'))
                   }
