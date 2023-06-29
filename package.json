@@ -143,7 +143,8 @@
     "react-router-dom": "^5.2.0",
     "react-sizeme": "^3.0.2",
     "save": "^2.5.0",
-    "socket.io-client": "^4.1.2"
+    "socket.io-client": "^4.1.2",
+    "zustand": "^4.3.8"
   },
   "repository": "https://github.com/anbantech/yizhen-frontend.git",
   "license": "MIT"
