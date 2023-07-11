@@ -583,3 +583,9 @@ export interface UpdateOneExcitaionListParams {
   is_enable: boolean
   stimulus_value: string
 }
+
+export interface ExcitationListParams {
+  name: string
+  desc?: string
+  child_id_list: Record<string, any>[][]
+}

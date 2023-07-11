@@ -7,20 +7,11 @@ import ac_items from 'Image/ac_items.svg'
 import ac_configImage from 'Image/ac_config.svg'
 import Arge from 'Image/Arge.svg'
 import ac_Arge from 'Image/ac_Arge.svg'
-import sidebarLogo from 'Image/yifu_logo.svg'
 import { useHistory, withRouter } from 'react-router-dom'
 import { UpOutlined } from '@ant-design/icons'
 import { GlobalContext } from 'Src/globalContext/globalContext'
-import { ifNeedShowLogo } from 'Src/index'
-import styles from './leftNav.less'
 
-const Logo: React.FC = () => {
-  return ifNeedShowLogo ? (
-    <img src={sidebarLogo} alt='logo' style={{ padding: '20px 0 20px 32px', marginBottom: '12px' }} />
-  ) : (
-    <div style={{ marginBottom: '5px', width: '110px', height: '5px' }} />
-  )
-}
+import styles from './leftNav.less'
 
 interface SideBarRoute {
   activeImageURL?: string
@@ -47,15 +38,21 @@ const routerList: SideBarRoute[] = [
   {
     inactiveImageURL: Arge,
     activeImageURL: ac_Arge,
-    name: '配置项',
-    children: [
-      { name: '模板管理', path: 'templateList' },
-      // { name: '外设管理', path: 'OneExcitationList' },
-      { name: '激励单元管理', path: 'TwoExcitationList' },
-      { name: '激励嵌套管理', path: 'ThreeExcitationList' },
-      { name: '交互管理', path: 'FourExcitationList' }
-    ]
+    name: '激励配置',
+    path: 'Excitataions'
   },
+  // {
+  //   inactiveImageURL: Arge,
+  //   activeImageURL: ac_Arge,
+  //   name: '配置项',
+  //   children: [
+  //     { name: '模板管理', path: 'templateList' },
+  //     { name: '外设管理', path: 'OneExcitationList' },
+  //     { name: '激励单元管理', path: 'TwoExcitationList' },
+  //     { name: '激励嵌套管理', path: 'ThreeExcitationList' },
+  //     { name: '交互管理', path: 'FourExcitationList' }
+  //   ]
+  // },
   {
     inactiveImageURL: configImage,
     activeImageURL: ac_configImage,
@@ -206,11 +203,10 @@ const SideBar: React.FC<{ routerList: SideBarRoute[] }> = ({ routerList }) => {
 const LeftNav: React.FC = () => {
   return (
     <div className={styles.sideNav}>
-      <Logo />
       <SideBar routerList={routerList} />
       {process.env.NODE_ENV === 'development' && (
         <div style={{ position: 'absolute', bottom: '0', margin: '0px 24px' }}>
-          <p>版本：{process.env.VERSION}</p>
+          <p>版本：{process.env.VERSION?.slice(0, 17)}</p>
           <p>HASH：{process.env.COMMITHASH?.slice(0, 8)}</p>
           <p>分支：{process.env.BRANCH}</p>
         </div>

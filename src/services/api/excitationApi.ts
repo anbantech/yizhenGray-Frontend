@@ -7,7 +7,8 @@ import {
   groupParams,
   excitation_1Params,
   dataStructureParams,
-  UpdateOneExcitaionListParams
+  UpdateOneExcitaionListParams,
+  ExcitationListParams
 } from 'Src/globalType/Param'
 import { ResExcitationList, ResCreExcitationList, getAllRes, excitationRes, checkoutDataStructureRes } from 'Src/globalType/Response'
 
@@ -107,4 +108,19 @@ export function deleteneExcitaionList(id: string) {
 
 export function deleteneExcitaionListMore(id: string) {
   return request.delete<any>('/api/v1.0/temp_and_sti/remove', { params: { senders: id } })
+}
+// v1.3版本激励删除 更新 创建
+// 删除 激励
+export function deleteExcitationSignal(id: string) {
+  return request.put<any>('/api/v1.0/temp_and_sti/sender/remove', { params: { senders: id } })
+}
+
+// 创建激励
+export function createExcitationList(params: ExcitationListParams) {
+  return request.post('/api/v1.0/temp_and_sti/interaction/save', params)
+}
+
+// 更新激励
+export function updateExcitationList(id: number, params: any) {
+  return request.put<any>(`/api/v1.0/temp_and_sti/interaction/update/${id}`, params)
 }

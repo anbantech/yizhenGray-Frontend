@@ -14,7 +14,7 @@ import Head from './layout/Header/header'
 import LeftNav from './layout/LeftNav/leftNav'
 import Contents from './layout/content/content'
 
-const { Header, Sider, Content } = Layout
+const { Header, Content } = Layout
 
 function Main() {
   const firstEnter = JSON.parse(sessionStorage.getItem('fe') || 'true')
@@ -33,13 +33,11 @@ function Main() {
         <FirstFrameChart />
       ) : (
         <Layout style={{ overflow: 'hidden', minHeight: '100vh' }}>
-          <Sider width={240} className={styles.site_layout_sub_leftNav_background}>
+          <Header className={styles.site_layout_sub_header_background}>
+            <Head />
+          </Header>
+          <Layout className={styles.layout_bottom}>
             <LeftNav />
-          </Sider>
-          <Layout className={styles.site_layout_wrapper}>
-            <Header className={styles.site_layout_sub_header_background}>
-              <Head />
-            </Header>
             <Content>
               <Contents />
             </Content>
@@ -61,15 +59,15 @@ const App: React.FC<RouteComponentProps<any, any, any>> = props => {
   }, [props.location])
   const RouterMap = new Set([
     '/projects',
-    '/Exception',
-    '/excitationList/createExcitation/ExcitationDraw',
-    '/UserLog',
-    '/OneExcitationList',
-    '/TwoExcitationList',
-    '/ThreeExcitationList',
-    '/FourExcitationList',
-    '/UserList',
-    '/templateList'
+    '/Excitataions'
+    // '/excitationList/createExcitation/ExcitationDraw',
+    // '/UserLog',
+    // '/OneExcitationList',
+    // '/TwoExcitationList',
+    // '/ThreeExcitationList',
+    // '/FourExcitationList',
+    // '/UserList',
+    // '/templateList'
   ])
   const tokenID = window.localStorage.getItem('access_token')
   return (
