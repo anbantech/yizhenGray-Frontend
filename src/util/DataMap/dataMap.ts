@@ -11,7 +11,7 @@ export const statusList = [
   // { lable: '待测试', value: 6 },
   { lable: '停止中', value: 7 },
   { lable: '重放中', value: 8 }
-  // { lable: '重放暂停', value: 9 }
+  // { lable: '重放暂停', value: 9 }a
   // { lable: '离线', value: 5 },
 ]
 
@@ -126,4 +126,15 @@ export const CrashInfoMapLog: CrashInfoType = {
   0xe205: '未释放重分配',
   0xe206: '内存泄露',
   0xe40f: '程序跑飞'
+}
+
+export const IntMap = {
+  8: 'fixed_8',
+  16: 'fixed_16',
+  32: 'fixed_32',
+  64: 'fixed_64'
+}
+
+export const StringMap = {
+  string: 'unfixed'
 }

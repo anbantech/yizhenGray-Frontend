@@ -5,6 +5,8 @@ import { Breadcrumb, Dropdown, Menu, Space, Modal, Form, Input, message, Button 
 import { useHistory, withRouter } from 'react-router-dom'
 import { GlobalContext } from 'Src/globalContext/globalContext'
 import { logout as logoutService, resetPassword } from 'Src/services/api/loginApi'
+import { ifNeedShowLogo } from 'Src/index'
+import sidebarLogo from 'Image/yifu_logo.svg'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from './header.less'
 
@@ -12,6 +14,10 @@ interface ResetPasswordDialogProps {
   visible: boolean
   onOk?: (...args: any[]) => void
   onCancel?: (...args: any[]) => void
+}
+
+const Logo: React.FC = () => {
+  return <div className={styles.headerLogo}>{ifNeedShowLogo && <img src={sidebarLogo} alt='logo' style={{ paddingLeft: '28px' }} />}</div>
 }
 
 const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({ visible, onOk, onCancel }) => {
@@ -155,31 +161,31 @@ function Header(props: any) {
     '/projects/Tasks/Detail/lookTaskDetailInfo': '实例信息',
     '/projects/Tasks/Detail/TaskLog': '日志',
     '/projects/Tasks/Detail/Scale': '动态监控',
-    '/projects/Tasks/Detail/ScaleDetail': '缺陷详情',
-    '/OneExcitationList': '外设管理',
-    '/TwoExcitationList': '激励单元管理',
-    '/ThreeExcitationList': '激励嵌套管理',
-    '/FourExcitationList': '交互管理',
-    '/OneExcitationList/Detail': '外设详情',
-    '/TwoExcitationList/Detail': '激励单元详情',
-    '/ThreeExcitationList/Detail': '激励嵌套详情',
-    '/FourExcitationList/Deatail': '交互详情',
-    '/OneExcitationList/update': '修改外设',
-    '/TwoExcitationList/update': '修改激励单元',
-    '/ThreeExcitationList/update': '修改激励嵌套',
-    '/FourExcitationList/update': '修改交互',
-    '/TwoExcitationList/createDoubleExcitationGroup': '新建激励单元',
-    '/ThreeExcitationList/createDoubleExcitation': '新建激励嵌套',
-    '/FourExcitationList/createGroupExcitation': '新建交互',
-    '/OneExcitationList/createExcitation': '新建外设',
-    '/FourExcitationList/createGroupExcitation/ExcitationDraw': '预览',
-    '/FourExcitationList/Deatail/ExcitationDraw': '预览',
-    '/FourExcitationList/update/ExcitationDraw': '预览',
-    '/templateList': '模板管理',
-    '/templateList/templateDetail': `${
-      !data?.editOriginalTemplate && !data?.readonlyBaseTemplate ? '新建模板' : data?.editOriginalTemplate ? '修改模板' : '模板详情'
-    }`,
-    '/templateList/template': `${data && data?.editOriginalTemplate ? '修改模板' : '新建模板'}`
+    '/projects/Tasks/Detail/ScaleDetail': '缺陷详情'
+    // '/OneExcitationList': '外设管理',
+    // '/TwoExcitationList': '激励单元管理',
+    // '/ThreeExcitationList': '激励嵌套管理',
+    // '/FourExcitationList': '交互管理',
+    // '/OneExcitationList/Detail': '外设详情',
+    // '/TwoExcitationList/Detail': '激励单元详情',
+    // '/ThreeExcitationList/Detail': '激励嵌套详情',
+    // '/FourExcitationList/Deatail': '交互详情',
+    // '/OneExcitationList/update': '修改外设',
+    // '/TwoExcitationList/update': '修改激励单元',
+    // '/ThreeExcitationList/update': '修改激励嵌套',
+    // '/FourExcitationList/update': '修改交互',
+    // '/TwoExcitationList/createDoubleExcitationGroup': '新建激励单元',
+    // '/ThreeExcitationList/createDoubleExcitation': '新建激励嵌套',
+    // '/FourExcitationList/createGroupExcitation': '新建交互',
+    // '/OneExcitationList/createExcitation': '新建外设',
+    // '/FourExcitationList/createGroupExcitation/ExcitationDraw': '预览',
+    // '/FourExcitationList/Deatail/ExcitationDraw': '预览',
+    // '/FourExcitationList/update/ExcitationDraw': '预览',
+    // '/templateList': '模板管理',
+    // '/templateList/templateDetail': `${
+    //  // !data?.editOriginalTemplate && !data?.readonlyBaseTemplate ? '新建模板' : data?.editOriginalTemplate ? '修改模板' : '模板详情'
+    // }`,
+    // '/templateList/template': `${data && data?.editOriginalTemplate ? '修改模板' : '新建模板'}`
   }
 
   const history = useHistory()
@@ -235,34 +241,37 @@ function Header(props: any) {
 
   return (
     <div className={styles.Header}>
-      <div className={styles.HeaderBread}>
-        <Breadcrumb>
-          {extraBreadcrumbItems.map((item: string, index: number) => {
-            return (
-              <Breadcrumb.Item key={item}>
-                <span style={{ cursor: 'pointer' }} role='button' tabIndex={index} onClick={() => jumpTest(item)}>
-                  {name[item]}
-                </span>
-              </Breadcrumb.Item>
-            )
-          })}
-        </Breadcrumb>
-      </div>
-      {!!username && (
-        <div className={styles.HeaderUser}>
-          <Dropdown overlay={menu} placement='bottomRight' trigger={['click']} onVisibleChange={onDropdownMenuVisibleChange}>
-            <Space style={{ cursor: 'pointer' }}>
-              <span>{username}</span>
-              <DownOutlined style={isRotate ? { transform: 'rotate(180deg)', transition: 'all 0.5s ease 0s' } : {}} />
-            </Space>
-          </Dropdown>
+      <Logo />
+      <div className={styles.HeaderRight_Layout}>
+        <div className={styles.HeaderBread}>
+          <Breadcrumb>
+            {extraBreadcrumbItems.map((item: string, index: number) => {
+              return (
+                <Breadcrumb.Item key={item}>
+                  <span style={{ cursor: 'pointer' }} role='button' tabIndex={index} onClick={() => jumpTest(item)}>
+                    {name[item]}
+                  </span>
+                </Breadcrumb.Item>
+              )
+            })}
+          </Breadcrumb>
         </div>
-      )}
-      <ResetPasswordDialog
-        visible={resetPasswordDialogVisible}
-        onCancel={() => setResetPasswordDialogVisible(false)}
-        onOk={() => setResetPasswordDialogVisible(false)}
-      />
+        {!!username && (
+          <div className={styles.HeaderUser}>
+            <Dropdown overlay={menu} placement='bottomRight' trigger={['click']} onVisibleChange={onDropdownMenuVisibleChange}>
+              <Space style={{ cursor: 'pointer' }}>
+                <span>{username}</span>
+                <DownOutlined style={isRotate ? { transform: 'rotate(180deg)', transition: 'all 0.5s ease 0s' } : {}} />
+              </Space>
+            </Dropdown>
+          </div>
+        )}
+        <ResetPasswordDialog
+          visible={resetPasswordDialogVisible}
+          onCancel={() => setResetPasswordDialogVisible(false)}
+          onOk={() => setResetPasswordDialogVisible(false)}
+        />
+      </div>
     </div>
   )
 }

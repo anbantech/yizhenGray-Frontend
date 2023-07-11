@@ -3,16 +3,19 @@ import 'antd/dist/antd.css'
 import { Modal, Input, Form, Button, message } from 'antd'
 import { throwErrorMessage } from 'Src/util/message'
 import { createExcitationListFn, updateExcitation } from 'Src/services/api/excitationApi'
+import TextArea from 'antd/lib/input/TextArea'
 import styles from '../BaseModle.less'
 
 interface FormInstance {
   name: string
   port: string
 }
+
 const layout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 16 }
 }
+
 function ExcitationModal(props: any) {
   const { visible, width, hideModal, fixTitle, id, projectInfo } = props
   const [form] = Form.useForm<FormInstance>()
@@ -115,53 +118,41 @@ function ExcitationModal(props: any) {
       ]}
     >
       <>
-        <Form form={form} autoComplete='off' {...layout} onValuesChange={onValuesChange}>
+        <Form form={form} className={styles.projectForm} autoComplete='off' {...layout} onValuesChange={onValuesChange}>
           <Form.Item
             name='name'
-            label='激励ID'
             validateFirst
+            label='项目名称'
             validateTrigger={['onBlur']}
             rules={[
-              { required: true, message: '请输入激励ID' },
-              { type: 'string', min: 2, max: 20, message: '激励ID长度为2到20个字符' },
+              { required: true, message: '请输入项目名称' },
+              { type: 'string', min: 2, max: 20, message: '项目名称长度为2到20个字符' },
               {
                 validateTrigger: 'onBlur',
                 validator(_, value) {
-                  const reg = /^[\dA-Za-z]+$/
+                  const reg = /^[\w\u4E00-\u9FA5]+$/
                   if (reg.test(value)) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('激励ID由数字、字母组成'))
+                  return Promise.reject(new Error('项目名称由汉字、数字、字母和下划线组成'))
                 }
               }
             ]}
           >
-            <Input placeholder='请输入激励ID' />
+            <Input placeholder='请输入激励发送列表名称' />
           </Form.Item>
-          <Form.Item
-            name='port'
-            label='激励端点名称'
-            validateFirst
-            validateTrigger={['onBlur']}
-            rules={[
-              { required: true, message: '请输入激励端点名称' },
-              { type: 'string', min: 2, max: 20, message: '激励端点名称2到20个字符' },
-              {
-                validateTrigger: 'onBlur',
-                validator(_, value) {
-                  const reg = /^[\dA-Za-z]+$/
-                  if (reg.test(value)) {
-                    return Promise.resolve()
-                  }
-                  return Promise.reject(new Error('激励端点名称由数字、字母组成'))
+          <Form.Item name='desc' label='描述' rules={[{ type: 'string', max: 50, message: '字数不能超过50个' }]}>
+            <TextArea
+              placeholder='请添加针对激励发送列表的相关描述'
+              autoSize={{ minRows: 4, maxRows: 5 }}
+              showCount={{
+                formatter({ count }) {
+                  return `${count}/50`
                 }
-              }
-            ]}
-          >
-            <Input placeholder='请输入激励端点名称' />
+              }}
+            />
           </Form.Item>
         </Form>
-        <div className={styles.exection_line} />
       </>
     </Modal>
   )
