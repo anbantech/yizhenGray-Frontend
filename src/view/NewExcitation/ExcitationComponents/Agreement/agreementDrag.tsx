@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useDrag, useDragLayer, XYCoord, DndProvider } from 'react-dnd'
 import { HTML5Backend, getEmptyImage } from 'react-dnd-html5-backend'
 import { generateUUID } from 'Src/util/common'

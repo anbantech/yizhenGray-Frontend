@@ -1,16 +1,17 @@
-import * as React from 'react'
-import ExcitationList from './ExcitationDragList'
+import React from 'react'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import ExcitationList from './ExcitationDrag/ExcitationDragList'
 import StyleSheet from './excitationDraw.less'
+import ExcitationDrop from './ExcitationDrop/ExcitationDrop'
 
 function ExcitationDraw() {
   return (
-    <div className={StyleSheet.excitationList_body}>
-      <div>header</div>
-      <div> line</div>
-      <div>
-        <div> 搜索框</div>
+    <div className={StyleSheet.Draw}>
+      <DndProvider backend={HTML5Backend}>
+        <ExcitationDrop />
         <ExcitationList />
-      </div>
+      </DndProvider>
     </div>
   )
 }
