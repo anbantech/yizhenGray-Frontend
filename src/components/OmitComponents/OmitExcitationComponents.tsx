@@ -1,4 +1,4 @@
-import React, { Dispatch, forwardRef, memo, SetStateAction, useEffect, useImperativeHandle, useState } from 'react'
+import React, { Dispatch, forwardRef, memo, SetStateAction, useImperativeHandle, useState } from 'react'
 import more from 'Src/assets/image/icon_more.svg'
 import more_hover from 'Src/assets/image/icon_more_hover.svg'
 import MenuComponents from '../Menu/Menu'
@@ -9,7 +9,7 @@ type Data = any | Record<string, any>
 interface MenuTypes {
   id: number
   updateMenueFn: (value: number) => void
-  status: number
+
   onChange: (val: string) => void
   // eslint-disable-next-line react/require-default-props
   data?: Data
@@ -33,8 +33,10 @@ const MemoOmitComponentsforwardRef = forwardRef(function MemoOmitComponents(prop
     },
     []
   )
+
   return (
     <div
+      key={id}
       style={{ cursor: 'pointer' }}
       className={styles.omitCompoentsTarget}
       role='time'

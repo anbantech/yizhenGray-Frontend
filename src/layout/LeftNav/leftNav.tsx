@@ -66,7 +66,7 @@ const routerList: SideBarRoute[] = [
   }
 ]
 
-const SideBar: React.FC<{ routerList: SideBarRoute[] }> = ({ routerList }) => {
+const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ routerList, isClose }) => {
   const history = useHistory()
   const { config } = useContext(GlobalContext)
   const {
@@ -167,25 +167,39 @@ const SideBar: React.FC<{ routerList: SideBarRoute[] }> = ({ routerList }) => {
     findRouter(routerList, routerPath)
     setRouterList2Render(routerList)
   }, [extendRouterList, history.location.pathname])
+  const styleMemoFn = useCallback(
+    (router: any) => {
+      if (isClose) {
+        return router.isActive ? styles.active : styles.sideNav_content
+      }
+      return router.isActive ? styles.activeClose : styles.closeSideNav_content
+    },
+    [isClose]
+  )
 
+  const styleImageFn = useCallback(() => {
+    return isClose ? styles.sideNav_img : styles.sideNav_imgClose
+  }, [isClose])
   const generateRouterListJsx = useCallback(
     (routerList: Required<SideBarRouteExtension>[]) => {
       return routerList.map(router => {
         return (
           <div key={router.name} className={styles.Menu}>
             <div
-              className={router.isActive ? styles.active : styles.sideNav_content}
+              className={styleMemoFn(router)}
               style={router.isSubItem ? { paddingLeft: '64px' } : {}}
               role='button'
               tabIndex={0}
               onClick={() => switchRouter(router)}
             >
               {!!router.activeImageURL && (
-                <img className={styles.sideNav_img} src={router.isActive ? router.activeImageURL : router.inactiveImageURL} alt={router.name} />
+                <img className={styleImageFn()} src={router.isActive ? router.activeImageURL : router.inactiveImageURL} alt={router.name} />
               )}
-              <span className={styles.sideNav_chart}>
-                {router.name} {router.name === '异常信息' && +count > 0 && <span className={styles.errorMessageCue} />}
-              </span>
+              {isClose && (
+                <span className={styles.sideNav_chart}>
+                  {router.name} {router.name === '异常信息' && +count > 0 && <span className={styles.errorMessageCue} />}
+                </span>
+              )}
               {router.children.length > 0 && <UpOutlined className={router.isOpen ? styles.isRotate : styles.isNoRotate} />}
             </div>
             {router.children.length > 0 && router.isOpen && generateRouterListJsx(router.children as Required<SideBarRouteExtension>[])}
@@ -193,7 +207,7 @@ const SideBar: React.FC<{ routerList: SideBarRoute[] }> = ({ routerList }) => {
         )
       })
     },
-    [count, switchRouter]
+    [styleMemoFn, styleImageFn, isClose, count, switchRouter]
   )
 
   return <>{generateRouterListJsx(routerList2Render)}</>
@@ -201,15 +215,33 @@ const SideBar: React.FC<{ routerList: SideBarRoute[] }> = ({ routerList }) => {
 
 // 侧边栏
 const LeftNav: React.FC = () => {
+  const [isClose, setClose] = useState(true)
   return (
-    <div className={styles.sideNav}>
-      <SideBar routerList={routerList} />
-      {process.env.NODE_ENV === 'development' && (
+    <div className={isClose ? styles.sideNav : styles.sideCloseNav}>
+      <SideBar routerList={routerList} isClose={isClose} />
+      {isClose && process.env.NODE_ENV === 'development' && (
         <div style={{ position: 'absolute', bottom: '0', margin: '0px 24px' }}>
           <p>版本：{process.env.VERSION?.slice(0, 17)}</p>
           <p>HASH：{process.env.COMMITHASH?.slice(0, 8)}</p>
           <p>分支：{process.env.BRANCH}</p>
         </div>
+      )}
+      {isClose ? (
+        <div
+          role='time'
+          className={styles.openPositionimg}
+          onClick={() => {
+            setClose(!isClose)
+          }}
+        />
+      ) : (
+        <div
+          role='time'
+          className={styles.closePositionimg}
+          onClick={() => {
+            setClose(!isClose)
+          }}
+        />
       )}
     </div>
   )
