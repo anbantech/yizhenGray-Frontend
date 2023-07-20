@@ -1,136 +1,104 @@
-import React, { useEffect } from 'react'
-import { useDrag, useDragLayer, XYCoord, DndProvider } from 'react-dnd'
-import { HTML5Backend, getEmptyImage } from 'react-dnd-html5-backend'
+import React from 'react'
+import { useDrag, DragPreviewImage } from 'react-dnd'
+import IntPng from 'Src/assets/drag/Int.svg'
+import IntArrayPng from 'Src/assets/drag/intArray.svg'
+import StringPng from 'Src/assets/drag/string.svg'
 import { generateUUID } from 'Src/util/common'
-import { Cmps } from './agreementCompoents'
-
+import { ArgeementDropListStore, DragableDragingStatusStore } from '../../ExcitaionStore/ExcitaionStore'
 import styles from './agreementCompoents.less'
-import { ComponentsArray } from './agreementsMap'
+import { ComponentsArray } from './agreementCompoents'
 
 interface DragCmps {
   type: string
-  keys: string
-  title: string
-  imgTitleSrc: string
-  deleteImg: string
-  buttonStyle: React.CSSProperties
-  Components: ({ imgTitleSrc, type, deleteImg }: Cmps) => JSX.Element | null
+  id: number
+  Components: any
 }
 
-const layerStyles: React.CSSProperties = {
-  position: 'fixed',
-  pointerEvents: 'none',
-  zIndex: 100,
-  left: 0,
-  top: 0
+const preViewImg = {
+  IntArrayComponents: IntArrayPng,
+
+  IntComponents: IntPng,
+
+  StringComponents: StringPng
 }
 
-function snapToGrid(x: number, y: number): [number, number] {
-  const snappedX = Math.round(x / 32) * 32
-  const snappedY = Math.round(y / 32) * 32
-  return [snappedX, snappedY]
+const preViewTitle = {
+  IntArrayComponents: '整数数组',
+
+  IntComponents: '整数',
+
+  StringComponents: '字符串'
 }
 
-function getItemStyles(initialOffset: XYCoord | null, currentOffset: XYCoord | null, isSnapToGrid: boolean) {
-  if (!initialOffset || !currentOffset) {
-    return {
-      display: 'none'
-    }
-  }
-
-  let { x, y } = currentOffset
-
-  if (isSnapToGrid) {
-    x -= initialOffset.x
-    y -= initialOffset.y
-    ;[x, y] = snapToGrid(x, y)
-    x += initialOffset.x
-    y += initialOffset.y
-  }
-
-  const transform = `translate(${x}px, ${y}px)`
-  return {
-    transform,
-    WebkitTransform: transform
-  }
+const StyleMap = {
+  StringComponents: { width: '74px', height: '26px', borderRadius: '4px', cursor: 'move' },
+  IntComponents: { width: '60px', height: '26px', borderRadius: '4px', cursor: 'move' },
+  IntArrayComponents: { width: '88px', height: '26px', borderRadius: '4px', cursor: 'move' }
 }
 
-const CustomDragLayer = (props: any) => {
-  const { itemType, isDragging, item, initialOffset, currentOffset } = useDragLayer(monitor => ({
-    itemType: monitor.getItemType(),
-    isDragging: monitor.isDragging(),
-    item: monitor.getItem(),
-    currentOffset: monitor.getSourceClientOffset(),
-    initialOffset: monitor.getInitialSourceClientOffset()
-  }))
-  if (!isDragging) {
-    return null
-  }
+type ItemType = { item: DragCmps }
 
-  return (
-    <div>
-      {isDragging && (
-        <div style={layerStyles}>
-          <div style={getItemStyles(initialOffset, currentOffset, props.snapToGrid)}>
-            {item && <item.Components imgTitleSrc={item.imgTitleSrc} deleteImg={item.deleteImg} type={itemType} />}
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
-
-const Draggable = ({ keys, type, buttonStyle, deleteImg, imgTitleSrc, title, Components }: DragCmps) => {
-  const [{ isDragging }, drag, preview] = useDrag(() => ({
-    type,
-    item: { Components, deleteImg, imgTitleSrc },
-    collect: monitor => {
-      const isDragging = monitor.isDragging()
-      return {
-        isDragging
+const Draggable = ({ item }: ItemType) => {
+  const DragingBeforeRef = React.useRef<any>()
+  const DropList = ArgeementDropListStore(state => state.DropList)
+  const setLeftList = ArgeementDropListStore(state => state.setLeftList)
+  const LeftDragIndexFn = ArgeementDropListStore(state => state.LeftDragIndexFn)
+  const setDragableStatus = DragableDragingStatusStore(state => state.setDragableStatus)
+  const [{ isDragging }, drag, preview] = useDrag(
+    () => ({
+      type: 'DragDropItem',
+      item() {
+        DragingBeforeRef.current = JSON.parse(JSON.stringify(DropList))
+        const useless = DropList.find((item: any) => item.id === -1)
+        // 拖拽开始时，向 cardList 数据源中插入一个占位的元素，如果占位元素已经存在，不再重复插入
+        if (!useless) {
+          setLeftList([...DropList, { ...item, id: -1, keys: generateUUID() }])
+        }
+        setDragableStatus(true)
+        const Item = { ...item, keys: generateUUID() }
+        return Item
+      },
+      collect: monitor => {
+        const isDragging = monitor.isDragging()
+        return {
+          isDragging
+        }
+      },
+      end(item, monitor) {
+        const uselessIndex = LeftDragIndexFn()
+        const dropCardListCopy = DropList
+        if (monitor.didDrop()) {
+          dropCardListCopy.splice(uselessIndex, 1, item)
+          setLeftList([...dropCardListCopy])
+          DragingBeforeRef.current = []
+        } else {
+          dropCardListCopy.splice(uselessIndex, 1)
+          setLeftList([...DragingBeforeRef?.current])
+        }
+        setDragableStatus(false)
       }
-    }
-  }))
-  useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: true }) // 隐藏拖拽dom
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    }),
+    [DropList, setDragableStatus]
+  )
   return (
-    <div
-      ref={drag}
-      key={keys}
-      style={{ opacity: isDragging ? 0 : 1, height: isDragging ? 0 : '', position: 'relative', ...buttonStyle }}
-      className={styles.dragButton}
-    >
-      <div className={styles.dragImage} />
-      <span>{title} </span>
-    </div>
+    <>
+      <DragPreviewImage connect={preview} src={preViewImg[item.type as keyof typeof preViewImg]} />
+      <div ref={drag} style={{ opacity: isDragging ? 0.4 : 1, ...StyleMap[item.type as keyof typeof StyleMap] }} className={styles.dragButton}>
+        <div className={styles.dragImage} />
+        <span>{preViewTitle[item.type as keyof typeof preViewTitle]} </span>
+      </div>
+    </>
   )
 }
 
 function AgreementDrag() {
   return (
-    <DndProvider backend={HTML5Backend}>
-      {/* 在这里放置你的应用组件 */}
-      <div className={styles.agreeFooter}>
-        <span> 新增协议数据: </span>
-        {ComponentsArray.map(item => {
-          return (
-            <Draggable
-              key={generateUUID()}
-              keys={item.key}
-              type={item.type}
-              imgTitleSrc={item.imgTitleSrc}
-              deleteImg={item.deleteImg}
-              Components={item.Components}
-              title={item.title}
-              buttonStyle={item.ButtonStyle}
-            />
-          )
-        })}
-        <CustomDragLayer />
-      </div>
-    </DndProvider>
+    <div className={styles.agreeFooter}>
+      <span> 新增协议数据: </span>
+      {ComponentsArray?.map(item => {
+        return <Draggable key={`${new Date()}${Math.random()}`} item={item} />
+      })}
+    </div>
   )
 }
 

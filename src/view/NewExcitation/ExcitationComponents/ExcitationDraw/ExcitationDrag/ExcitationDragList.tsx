@@ -5,13 +5,11 @@ import ExcitationDrag from './ExcitationDrag'
 import ExcitationDragHeader from './ExcitationDragHeader'
 import StyleSheet from '../excitationDraw.less'
 import BtnCompoents from './ExcitationDragHeaderBtn'
-
-// const Line = () => {
-//   return <div className={StyleSheet.line} />
-// }
+import NewExcitationMoadl from '../../Agreement/createModal'
 
 function ExcitationList() {
   const [isClose, setClose] = React.useState(true)
+  const [visibility, setVisibility] = React.useState(true)
   return (
     <div className={isClose ? StyleSheet.rightList : StyleSheet.rightListClose}>
       {isClose && (
@@ -40,6 +38,8 @@ function ExcitationList() {
           }}
         />
       )}
+
+      <NewExcitationMoadl visibility={visibility} />
     </div>
   )
 }

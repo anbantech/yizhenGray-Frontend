@@ -52,4 +52,15 @@ const CrashTip = () => {
     </div>
   )
 }
-export { Tip, StepTip, WarnTip, InfoTip, CrashTip }
+
+const DropTip = () => {
+  return (
+    <div>
+      <Tooltip title='单位为节拍，一个节拍默认为200ms' placement='bottom'>
+        <QuestionCircleOutlined style={{ fontSize: '16px', color: '#CCCCCC', marginLeft: '16px' }} />
+      </Tooltip>
+    </div>
+  )
+}
+
+export { Tip, StepTip, WarnTip, InfoTip, CrashTip, DropTip }

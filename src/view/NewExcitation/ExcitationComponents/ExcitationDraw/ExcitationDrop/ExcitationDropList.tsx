@@ -1,9 +1,10 @@
 // import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { Checkbox } from 'antd'
 import * as React from 'react'
 import { DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd'
 import dragImg from 'Src/assets/drag/icon_drag.png'
-import { generateUUID } from 'Src/util/common'
 import { DragableDragingStatusStore, LeftDropListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import withScrolling from 'react-dnd-scrolling'
 import styles from 'Src/view/Project/task/taskList/task.less'
 import StyleSheet from '../excitationDraw.less'
 
@@ -27,22 +28,20 @@ interface ItemType {
 }
 
 const DropableMemo = ({ index, item, moveCardHandler, sender_id }: any) => {
+  const DropList = LeftDropListStore(state => state.DropList)
   const ref = React.useRef<HTMLDivElement>(null)
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
-      item() {
-        return {
-          index,
-          sender_id
-        }
+      item: {
+        index,
+        sender_id
       },
       collect: monitor => ({
         isDragging: monitor.isDragging()
-      }),
-      end: () => {}
+      })
     }),
-    [sender_id, index]
+    [sender_id, index, DropList]
   )
 
   const [{ handlerId }, drop] = useDrop({
@@ -101,8 +100,10 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id }: any) => {
        * 如果拖拽的组件为 Card，则将 hoverIndex 赋值给 item 的 index 属性
        */
 
-      // eslint-disable-next-line no-param-reassign
-      item.index = hoverIndex
+      if (item.index !== undefined) {
+        // eslint-disable-next-line no-param-reassign
+        item.index = hoverIndex
+      }
     }
   })
 
@@ -112,11 +113,11 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id }: any) => {
       ref={ref}
       data-handler-id={handlerId}
       className={StyleSheet.excitationItemDrop}
-      style={{ opacity: item.isItemDragging || isDragging ? 0.4 : 1, cursor: 'move' }}
+      style={{ opacity: isDragging || item.isItemDragging ? 0.4 : 1, cursor: 'move' }}
     >
       <div className={StyleSheet.excitationItemDrop_left}>
         <img className={StyleSheet.img_Body} src={dragImg} alt='' />
-        {/* <Checkbox value={item.sender_id} /> */}
+        <Checkbox />
       </div>
       <div className={StyleSheet.excitationItemDrop_right}>
         <span className={StyleSheet.excitationChart}>{index}</span>
@@ -124,7 +125,7 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id }: any) => {
         <span className={StyleSheet.excitationChart}>{item.peripheral}</span>
         <span className={StyleSheet.excitationChart}>{item.gu_cnt0}</span>
         <span className={StyleSheet.excitationChart}>{item.gu_w0}</span>
-        <div>
+        <div style={{ paddingRight: '16px' }}>
           <div role='time' className={styles.taskListLeft_detailImg} onClick={() => {}} />
         </div>
       </div>
@@ -133,14 +134,13 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id }: any) => {
 }
 
 const Dropable = React.memo(DropableMemo)
-
+const ScrollingComponent = withScrolling('div')
 function ExcitationDropList() {
   const [, drop] = useDrop(() => ({
     accept: 'DragDropItem'
   }))
   const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
-
   const dragableDragingStatus = DragableDragingStatusStore(state => state.dragableDragingStatus)
   const moveCardHandler = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
@@ -157,22 +157,23 @@ function ExcitationDropList() {
     },
     [DropList, dragableDragingStatus, setLeftList]
   )
-
   return (
-    <div ref={drop} className={StyleSheet.dropList_List}>
-      {DropList?.map((item: ItemType, index: number) => {
-        return (
-          <Dropable
-            sender_id={item.sender_id}
-            key={`${generateUUID()}`}
-            isDragableDraging={dragableDragingStatus}
-            moveCardHandler={moveCardHandler}
-            index={index}
-            item={item}
-          />
-        )
-      })}
-    </div>
+    <ScrollingComponent className={StyleSheet.dropList_ListScroll}>
+      <div ref={drop} className={StyleSheet.dropList_List}>
+        {DropList?.map((item: ItemType, index: number) => {
+          return (
+            <Dropable
+              sender_id={item.sender_id}
+              key={`Drop${index}`}
+              isDragableDraging={dragableDragingStatus}
+              moveCardHandler={moveCardHandler}
+              index={index}
+              item={item}
+            />
+          )
+        })}
+      </div>
+    </ScrollingComponent>
   )
 }
 const MemoExcitationList = React.memo(ExcitationDropList)

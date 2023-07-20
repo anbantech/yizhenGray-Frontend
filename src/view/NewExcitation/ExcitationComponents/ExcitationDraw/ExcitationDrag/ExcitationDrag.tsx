@@ -10,7 +10,7 @@ type DragableType = { id: number; name: string; keys: number }
 
 type ChildRefType = { closeMenu: () => void } | null
 // 拖拽列表的item
-const Dragable = React.memo(({ name, sender_id, item }: any) => {
+const Dragable = ({ name, sender_id, item }: any) => {
   // 展示菜单
 
   const DropList = LeftDropListStore(state => state.DropList)
@@ -18,8 +18,7 @@ const Dragable = React.memo(({ name, sender_id, item }: any) => {
   const LeftDragIndexFn = LeftDropListStore(state => state.LeftDragIndexFn)
   const setDragableStatus = DragableDragingStatusStore(state => state.setDragableStatus)
 
-  const [updateMenue, setUpdateMenue] = React.useState<number>(-1)
-
+  const [, setUpdateMenue] = React.useState<number>(-1)
   // 定义 ref
   const ref = React.useRef<ChildRefType>(null!)
 
@@ -39,39 +38,35 @@ const Dragable = React.memo(({ name, sender_id, item }: any) => {
     }
   }
 
-  const [{ isDragging }, drag] = useDrag({
-    type: 'DragDropItem',
-    item() {
-      const useless = DropList.find((item: any) => item.sender_id === -1)
-      // 拖拽开始时，向 cardList 数据源中插入一个占位的元素，如果占位元素已经存在，不再重复插入
-      if (!useless) {
-        setLeftList([...DropList, { ...item, sender_id: -1, isItemDragging: true }])
+  const [{ isDragging }, drag] = useDrag(
+    () => ({
+      type: 'DragDropItem',
+      item() {
+        const useless = DropList.find((item: any) => item.sender_id === -1)
+        // 拖拽开始时，向 cardList 数据源中插入一个占位的元素，如果占位元素已经存在，不再重复插入
+        if (!useless) {
+          setLeftList([{ ...item, sender_id: -1, isItemDragging: true }, ...DropList])
+        }
+        setDragableStatus(true)
+        return item
+      },
+      collect: monitor => ({
+        isDragging: monitor.isDragging()
+      }),
+      end: (item, monitor: DragSourceMonitor) => {
+        const uselessIndex = LeftDragIndexFn()
+        const dropCardListCopy = DropList
+        if (monitor.didDrop()) {
+          dropCardListCopy.splice(uselessIndex, 1, item)
+        } else {
+          dropCardListCopy.splice(uselessIndex, 1)
+        }
+        setLeftList([...dropCardListCopy])
+        setDragableStatus(false)
       }
-      setDragableStatus(true)
-      return item
-    },
-    collect: monitor => ({
-      isDragging: monitor.isDragging()
     }),
-
-    end: (item, monitor: DragSourceMonitor) => {
-      const uselessIndex = LeftDragIndexFn()
-      const dropCardListCopy = DropList
-      /**
-       * 拖拽结束时，判断是否将拖拽元素放入了目标接收组件中
-       *  1、如果是，则使用真正传入的 box 元素代替占位元素
-       *  2、如果否，则将占位元素删除
-       */
-      if (monitor.didDrop()) {
-        dropCardListCopy.splice(uselessIndex, 1, item)
-      } else {
-        dropCardListCopy.splice(uselessIndex, 1)
-      }
-      setDragableStatus(false)
-      setLeftList([...dropCardListCopy])
-    }
-  })
-
+    [DropList, setDragableStatus]
+  )
   return (
     <div
       ref={drag}
@@ -100,11 +95,12 @@ const Dragable = React.memo(({ name, sender_id, item }: any) => {
       <OmitExcitationComponents id={sender_id} ref={ref} onChange={onChange} updateMenueFn={setUpdateMenue} />
     </div>
   )
-})
+}
 
+const DragableMemo = React.memo(Dragable)
 // 拖拽区
 function ExcitationDrag() {
-  const rightDragList = RightDragListStore((state: RightStateType) => state.DragList)
+  const rightDragList = RightDragListStore(state => state.DragList)
 
   // const onChange = (checkedValues: CheckboxValueType[]) => {
   //   console.log('2')
@@ -112,8 +108,8 @@ function ExcitationDrag() {
   return (
     <div>
       <Checkbox.Group style={{ width: '100%' }}>
-        {rightDragList?.map(item => {
-          return <Dragable id={item.sender_id} name={item.name} item={item} key={item.sender_id} />
+        {rightDragList?.map((item: any) => {
+          return <DragableMemo id={item.sender_id} name={item.name} item={item} key={item.sender_id} />
         })}
       </Checkbox.Group>
     </div>
