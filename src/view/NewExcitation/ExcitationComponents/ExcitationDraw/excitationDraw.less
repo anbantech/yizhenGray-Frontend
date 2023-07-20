@@ -1,6 +1,6 @@
 .Draw{
    display: flex;
-   justify-content: space-between;
+   justify-content: flex-end;
    width: 100%
 }
 
@@ -60,6 +60,7 @@
     height: 36px;
     padding: 0 16px;
     display: flex;
+    background-color: #fff;
     align-items: center;
     border-bottom: 1px solid #F0F0F0;
 }
@@ -70,9 +71,12 @@
 
 .excitaionDrop_Body{
     display: flex;
+    flex: 1;
     flex-direction: column;
+    padding: 16px;
     width:calc(100% - 240px);
-    background-color: #Ffffff;
+    background-color: #F7F9FA;
+
 }
 
 .dropList_HeaderCheckBoxRight{
@@ -83,11 +87,12 @@
 
 .dropList_List{
     width: 100%;
-    padding-right: 16px;
-    display: flex;
-    flex-direction: column;
 }
 
+.dropList_ListScroll{
+    height: 480px;
+    overflow-y: scroll;
+}
 .dropList_HeaderCheckBoxRight >span:nth-child(1){
     display: block;
     flex:0.1;
@@ -126,6 +131,8 @@
    width: 100%;
    height: 48px;
    display: flex;
+   background-color:#fff ;
+   border-bottom: 1px solid #E9E9E9;
    align-items: center;
 }
 
@@ -263,4 +270,58 @@
     width: 208px;
     border-bottom: 1px solid #E9E9E9;
     margin: 12px ;      
+}
+
+.listLine{
+    width: 100%;
+    border-bottom: 1px solid #E9E9E9;
+    margin-bottom: 16px;
+}
+
+.sendListTitle{
+    color: #333;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 8px;
+}
+
+.numberInput{
+    width: 64px;
+    :global(.ant-input-number-handler-wrap){
+       opacity:1 !important;
+       transition:none;
+    }
+    :global(.ant-input-number-input){
+      height: 26px !important;
+    }
+}
+
+.DropHeader{
+   width: 100%;
+   display: flex;
+   flex-direction: column;
+   padding-bottom: 18px;
+}
+
+.headerDesc{
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px;
+    color: #666;
+}
+
+.editConcent{
+    display: flex;
+    height: 26px;
+    align-items: center;
+}
+
+.cloumnLine {
+    width: 1px;
+    height: 14px;
+    background-color:#E9E9E9;
+    margin:0 16px;
 }

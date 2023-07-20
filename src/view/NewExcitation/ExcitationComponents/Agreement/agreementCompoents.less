@@ -1,17 +1,301 @@
 .cloumnBody{
+  width: 100%;
+  height: 38px;
   display: flex;
+  background-color: #fff;
 }
 
+.cloumnBodyHeader{
+  width: 88px;
+  display: flex;
+  align-items: center;
+  border-top: 0.5px solid #E9E9E9;
+  border-left: 1px solid #E9E9E9;
+  border-right: 0.5px solid #E9E9E9;
+  border-bottom: 0.5px solid #E9E9E9;
+  background-color: #F7F9FA;
+  padding-left: 8px;
+}
+
+.cloumnIntBodyHeader {
+  width: 88px;
+  display: flex;
+  align-items: center;
+  border-top: 0.5px solid #E9E9E9;
+  border-left: 1px solid #E9E9E9;
+  border-right: 0.5px solid #E9E9E9;
+  border-bottom: 0.5px solid #E9E9E9;
+  background-color: #F7F9FA;
+  padding-left: 8px;
+}
+
+.StringInput {
+  width: 100px;
+  overflow: hidden;
+  height: 38px !important; 
+  line-height: 37px !important;
+  box-shadow: none !important;
+  border-radius: 0px !important;
+}
+
+.IntInput {
+  width: 100px;
+  overflow: hidden;
+  height: 38px !important; 
+  line-height: 38px !important;
+  box-shadow: none !important;
+  border-radius: 0px !important;
+}
+
+.StringInputValue {
+  width: 327px;
+  height: 38px !important;
+  border-top: 0.5px solid #E9E9E9 !important;
+  border-left: 0.5px solid #E9E9E9 !important;
+  border-right: 0.5px solid #E9E9E9 !important;
+  border-bottom: 0.5px solid #E9E9E9 !important;
+  height: 38px !important;
+  line-height: 38px !important;
+  border-radius: 0px !important;
+}
+
+.cloumnBodyHeader {
+  width: 88px;
+  display: flex;
+  align-items: center;
+  background-color: #F7F9FA;
+  padding-left: 8px;
+}
+
+.StringForm{
+  position: relative;
+    display: flex;
+  :global(.ant-form-item){
+    margin-right: 0px !important;
+  }
+  :global(.ant-form-item-explain){
+    position: absolute;
+    right: -70px;
+    top:-57px;
+    width: 190px;
+    height: 50px;
+    z-index: 99999;
+    background: #fff;
+    padding: 5px 0px 5px 5px;
+    border-radius: 2px;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    box-shadow: 0px 5px 12px 4px rgba(0, 0, 0, 0.09), 0px 3px 6px 0px rgba(0, 0, 0, 0.12), 0px 1px 2px -2px rgba(0, 0, 0, 0.16);
+  }
+  :global(.ant-form-item-explain::before) {
+      display: block;
+      content: "";
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 10px solid #fff;
+      z-index: 99999;
+      position: absolute;
+      bottom: -10px;
+      left: 20px;
+    }
+   :global(.ant-input){
+      border: 0.5px solid #E9E9E9 ;
+   }
+}
+
+
+.IntArrayForm {
+  position: relative;
+  display: flex;
+  :global(.ant-form-item) {
+    margin-right: 0px !important;
+  }
+
+  :global(.ant-form-item-explain) {
+    position: absolute;
+    right: -140px;
+    top: -57px;
+    width: 190px;
+    height: 50px;
+    z-index: 99999;
+    vertical-align: middle;
+    background: #fff;
+    padding: 5px 0px 5px 5px;
+    border-radius: 2px;
+    font-size: 14px;
+    font-style: normal;
+    line-height: 20px;
+    font-weight: 400;
+    box-shadow: 0px 5px 12px 4px rgba(0, 0, 0, 0.09), 0px 3px 6px 0px rgba(0, 0, 0, 0.12), 0px 1px 2px -2px rgba(0, 0, 0, 0.16);
+  }
+
+  :global(.ant-form-item-explain::before) {
+    display: block;
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 10px solid #fff;
+    z-index: 99999;
+    position: absolute;
+    bottom: -10px;
+    left: 20px;
+  }
+
+  :global(.ant-form-item) {
+    border-style: none !important;
+    box-shadow: none !important;
+  }
+
+   :global(.ant-input){
+      border: 0.5px solid #E9E9E9;
+   }
+}
+
+.StringSelect{
+  width: 85px !important;
+  :global(.ant-select-selector){
+     overflow: hidden;
+     border-top: 0.5px solid #E9E9E9 !important;
+     border-left: 0.5px solid #E9E9E9 !important;
+     border-right: 0.5px solid #E9E9E9 !important;
+     border-bottom: 0.5px solid #E9E9E9 !important;
+     border-radius: 0px !important;
+     box-shadow:none !important;
+     height: 38px !important;
+     line-height: 38px !important;
+     padding: 0px 8px !important;
+   }
+   :global(.ant-select-selection-item,){
+     line-height: 38px !important;
+   }
+   :global(.ant-select-arrow){
+     margin-top: -5px !important;
+   }
+}
+
+.IntSelect{
+  width: 48px !important; 
+  :global(.ant-select-selector) {
+      overflow: hidden;
+      border-top: 0.5px solid #E9E9E9 !important;
+      border-left: 0.5px solid #E9E9E9 !important;
+      border-right: 0.5px solid #E9E9E9 !important;
+      border-bottom: 0.5px solid #E9E9E9 !important;
+      border-radius: 0px !important;
+      box-shadow: none !important;
+      height: 38px !important;
+      line-height: 38px !important;
+      padding: 0px 4px !important;
+    }
+   :global(.ant-select-selection-item, ) {
+      line-height: 38px !important;
+    }
+    :global(.ant-select-arrow) {
+       margin-top: -5px !important;
+     }
+}
+
+
+.IntArrayInputValue{
+   width: 86px;
+   height: 38px !important;
+   border-top: 0.5px solid #E9E9E9 !important;
+   border-left: 0.5px solid #E9E9E9 !important;
+   border-right: 0.5px solid #E9E9E9 !important;
+   border-bottom: 0.5px solid #E9E9E9 !important;
+   height: 38px !important;
+   line-height: 38px !important;
+  border-radius: 0px !important;
+}
+
+
+.IntArrayInput{
+   width: 49px;
+   height: 38px !important;
+   line-height: 38px !important;
+   border-top: 0.5px solid #E9E9E9 !important;
+   border-left: 0.5px solid #E9E9E9 !important;
+   border-right: 0.5px solid #E9E9E9 !important;
+   border-bottom: 0.5px solid #E9E9E9 !important;
+   border-radius: 0px !important; 
+}
+
+.IntInputValue {
+  width: 207px;
+  height: 38px !important;
+  border-top: 0.5px solid #E9E9E9 !important;
+  border-left: 0.5px solid #E9E9E9 !important;
+  border-right: 0.5px solid #E9E9E9 !important;
+  border-bottom: 0.5px solid #E9E9E9 !important;
+  height: 38px !important;
+  line-height: 38px !important;
+  border-radius: 0px !important;
+}
+
+
+.initValue{
+  width: 56px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-top: 0.5px solid #E9E9E9 !important;
+  border-left: 0.5px solid #E9E9E9 !important;
+  border-right: 0.5px solid #E9E9E9 !important;
+  border-bottom: 0.5px solid #E9E9E9 !important;
+  height: 38px !important;
+  justify-content: center;
+  background-color: #F7F9FA;
+}
+
+
+.FourCharts {
+  width: 72px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-top: 0.5px solid #E9E9E9 !important;
+  border-left: 0.5px solid #E9E9E9 !important;
+  border-right: 0.5px solid #E9E9E9 !important;
+  border-bottom: 0.5px solid #E9E9E9 !important;
+  height: 38px !important;
+  justify-content: center;
+  background-color: #F7F9FA; 
+  background-color: #F7F9FA;
+}
+
+.cloumnBodyCharts{
+  display: flex;
+  justify-content: center;
+  width: 60px;
+  color: #333;
+  text-align: center;
+  font-family: Source Han Sans CN;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.CloumnLine{
+  width: 1px;
+  height: 100%;
+  background-color: #E9E9E9; 
+}
 // 协议数据底部
 
 .agreeFooter{
-  width: 500px;
+  width: 100%;
   display: flex;
   background-color: #FFFFFF;
   align-items: center;
-  justify-content: space-between;
+  margin-top: 20px;
   height: 38px;
-  border: 1px solid #E9E9E9
+  border-top-style: 1px solid #E9E9E9
 }
 
 
@@ -24,7 +308,8 @@
   line-height: 22px;
   letter-spacing: 0px;
   color: #333333;
-  background-color: #E9E9E9;
+  border: 1px solid #E9E9E9;
+  background-color: #fff;
 }
 
 
@@ -37,6 +322,7 @@
   line-height: 22px;
   letter-spacing: 0px;
   color: #FFFFFF;
+  border: 1px solid #E9E9E9;
   background-color: #4880FF;
   .dragImage {
       width: 12px;
@@ -56,3 +342,121 @@
   background-image: url('../../../../assets/drag/black.svg');
   background-repeat: no-repeat;
 }
+
+.agreementDragDrop{
+  width: 672px;
+  height: 342px;
+  background: #F7F9FA;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.agreementDrop{
+  width: 100%;
+  height: 331px;
+}
+
+.cloumnBody:first-child{
+  border-top: 0.5px solid #E9E9E9;
+}
+
+.cloumnBody:last-child {
+  border-bottom: 0.5px solid #E9E9E9;
+}
+
+.imgStyle{
+  width: 16px;
+  height: 38px;
+  border-top: 0.5px solid #E9E9E9 !important;
+  border-left: 0.5px solid #E9E9E9 !important;
+  border-right: 0.5px solid #E9E9E9 !important;
+  border-bottom: 0.5px solid #E9E9E9 !important;
+  background: #F7F9FA;
+  background-size: 13px 15px;
+  background-position: 1px;
+  background-repeat: no-repeat;
+  background-image: url('../../../../assets/drag/icon_delete.svg');
+}
+
+.imgStyle:hover {
+  width: 16px;
+  height: 38px;
+  border-top: 0.5px solid #E9E9E9 !important;
+  border-left: 0.5px solid #E9E9E9 !important;
+  border-right: 0.5px solid #E9E9E9 !important;
+  border-bottom: 0.5px solid #E9E9E9 !important;
+  border-right-style: none !important;
+  background: #F7F9FA;
+  background-size: 13px 15px;
+  background-position: 1px;
+  background-repeat: no-repeat;
+  background-image: url('../../../../assets/drag/icon_delete_blue.svg');
+
+}
+
+
+.excitaionModal{
+   :global(.ant-modal-header){
+    display: flex;
+    align-items: center;
+    height: 36px !important;
+    border-radius:none ;
+   }
+
+   :global(.ant-modal-body) {
+      height: 516px;
+    }
+
+   :global(.ant-modal-header){
+    display: flex;
+    align-items: center;
+    height: 36px !important;
+    border-radius: 0px !important;
+    }
+
+   :global(.ant-modal-close) {
+    right:14px
+   }
+
+   :global(.ant-modal-close-x){
+     width: 16px ;
+     height:16px ;
+     line-height: 36px;
+   }
+   :global(.ant-modal-footer) {
+      height: 56px;
+      line-height: 36px;
+    }
+}
+
+    .excitationModalBody{
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+ .headerForm{
+     display: flex; 
+     height: 88px;
+     justify-content: space-between;
+     :global(.ant-form-item-label){
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 22px;
+     }
+  }
+
+ .commonItem{
+    width:232px  !important;
+    height:32px !important;
+    border-radius: 2px;
+ }
+
+.commonItems {
+    width: 260px !important;
+    height: 32px !important;
+    border-radius: 2px;
+}
+

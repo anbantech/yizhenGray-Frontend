@@ -1,11 +1,10 @@
-type RightAction = {
-  setRightList: (item: ItemState) => void
-}
-
 interface RightStateType {
   DragList: Record<string, any>[]
 }
 
+type RightAction = {
+  setRightList: (item: ItemState) => void
+}
 type ItemState = Record<string, any>[]
 
 type LeftAction = {
@@ -15,6 +14,34 @@ type LeftAction = {
 
 interface LeftActionState {
   DropList: ListType[] | []
+  inputValue: {
+    gu_cnt0: number
+    gu_w0: number
+  }
+}
+
+interface CmpsOnly {
+  imgTitleSrc: string
+  deleteImg: string
+}
+
+type Type = { type: string }
+
+export type Cmps = Type & CmpsOnly
+interface DragCmps {
+  type: string
+  id: number
+  keys: string
+  Components: any
+}
+
+type ArgeementAction = {
+  setLeftList: (item: DragCmps[]) => void
+  LeftDragIndexFn: () => number
+}
+
+interface ArgeementActionState {
+  DropList: DragCmps[]
 }
 
 type ItemListState = ListType[]
