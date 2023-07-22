@@ -587,5 +587,5 @@ export interface UpdateOneExcitaionListParams {
 export interface ExcitationListParams {
   name: string
   desc?: string
-  child_id_list: Record<string, any>[][]
+  child_id_list?: Record<string, any>[][]
 }

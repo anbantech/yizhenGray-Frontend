@@ -41,7 +41,10 @@
     margin-left: 20px;
     border-bottom: 1px solid #E9E9E9;
 }
-
+.dragList_HeaderList {
+    width: 208px;
+    margin-left: 20px;
+}
 
 .img_Body{
     width: 16px;
@@ -56,7 +59,7 @@
 }
 
 .dropList_Header{
-    width: 100%;
+    width: calc(100% - 4px);
     height: 36px;
     padding: 0 16px;
     display: flex;
@@ -74,9 +77,9 @@
     flex: 1;
     flex-direction: column;
     padding: 16px;
+    position: relative;
     width:calc(100% - 240px);
     background-color: #F7F9FA;
-
 }
 
 .dropList_HeaderCheckBoxRight{
@@ -87,10 +90,11 @@
 
 .dropList_List{
     width: 100%;
+    overflow-x:hidden;
 }
 
 .dropList_ListScroll{
-    height: 480px;
+    height: 400px;
     overflow-y: scroll;
 }
 .dropList_HeaderCheckBoxRight >span:nth-child(1){
@@ -139,6 +143,7 @@
 .excitationItemDrop_left{
     width: 48px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
 }
 
@@ -253,7 +258,7 @@
 .ExictationInput {
     padding: 12px 12px 15px 16px; 
     :global(.ant-input-affix-wrapper) {
-        width: 100%;
+        width: 208px !important;
         height: 36px;
         border-radius: 4px;
         padding: 0px 11px !important;
@@ -265,7 +270,21 @@
     }
 }
 
+.ExictationInputLeft {
+    padding: 12px 16px 15px 16px;
 
+    :global(.ant-input-affix-wrapper) {
+        width: 100%;
+        height: 36px;
+        border-radius: 4px;
+        padding: 0px 11px !important;
+        background-color: #f1f3f4;
+    }
+
+    :global(.ant-input) {
+        background-color: #f1f3f4;
+    }
+}
 .line {
     width: 208px;
     border-bottom: 1px solid #E9E9E9;
@@ -324,4 +343,64 @@
     height: 14px;
     background-color:#E9E9E9;
     margin:0 16px;
+}
+
+
+.No{
+    width: 100%;
+    display: flex;
+    padding-top: 100px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chartNo{
+    display: inline-block;
+    margin-top: 20px;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.imageNo{
+    width: 180px;
+    height: 140px;
+}
+
+
+.DelCompoents{
+    width: calc(100% - 35px);
+    height: 36px;
+    background-color: #fff;
+    border-radius: 4px;
+    position: absolute;
+    bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.DelCompoentsCharts{
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 22px;
+    color: #333;
+    padding-left: 16px;
+}
+
+.DelCompoentsBtn{
+    width: 100px;
+    border-radius: 0px 4px 4px 0px;
+    background-color:#4880FF; 
+    color: #FFF;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    height: 36px;
+    text-align: center;
+    line-height: 36px;
+    cursor: pointer;
 }

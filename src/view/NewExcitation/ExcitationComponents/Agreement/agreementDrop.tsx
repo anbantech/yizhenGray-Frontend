@@ -29,7 +29,7 @@ function AgreementDrop() {
   return (
     <div ref={drop} className={styles.agreementDrop}>
       {DropList?.map((item, index: number) => {
-        return <item.Components index={index} key={item.keys} Item={item} moveCardHandler={moveCardHandler} />
+        return <item.Components ref={() => {}} index={index} key={item.keys} Item={item} moveCardHandler={moveCardHandler} />
       })}
     </div>
   )

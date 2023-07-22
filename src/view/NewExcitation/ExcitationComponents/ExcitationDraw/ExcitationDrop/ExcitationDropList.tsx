@@ -3,7 +3,8 @@ import { Checkbox } from 'antd'
 import * as React from 'react'
 import { DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd'
 import dragImg from 'Src/assets/drag/icon_drag.png'
-import { DragableDragingStatusStore, LeftDropListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import { checkListStore, DragableDragingStatusStore, LeftDropListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import withScrolling from 'react-dnd-scrolling'
 import styles from 'Src/view/Project/task/taskList/task.less'
 import StyleSheet from '../excitationDraw.less'
@@ -14,6 +15,8 @@ interface PorpsType<T> {
   index: number
   sender_id: string
   item: T
+  DropList: ItemType[]
+  DeleteCheckItem: (index: number) => void
 }
 
 type FindType = { index: number; card: ItemType[] }
@@ -24,11 +27,11 @@ interface ItemType {
   peripheral: string
   gu_cnt0: number
   gu_w0: number
+  keys: string
   isItemDragging?: boolean
 }
 
-const DropableMemo = ({ index, item, moveCardHandler, sender_id }: any) => {
-  const DropList = LeftDropListStore(state => state.DropList)
+const DropableMemo = ({ index, item, moveCardHandler, sender_id, DropList, DeleteCheckItem }: any) => {
   const ref = React.useRef<HTMLDivElement>(null)
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -108,6 +111,7 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id }: any) => {
   })
 
   drag(drop(ref))
+
   return (
     <div
       ref={ref}
@@ -117,7 +121,7 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id }: any) => {
     >
       <div className={StyleSheet.excitationItemDrop_left}>
         <img className={StyleSheet.img_Body} src={dragImg} alt='' />
-        <Checkbox />
+        <Checkbox value={item.keys} />
       </div>
       <div className={StyleSheet.excitationItemDrop_right}>
         <span className={StyleSheet.excitationChart}>{index}</span>
@@ -126,7 +130,13 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id }: any) => {
         <span className={StyleSheet.excitationChart}>{item.gu_cnt0}</span>
         <span className={StyleSheet.excitationChart}>{item.gu_w0}</span>
         <div style={{ paddingRight: '16px' }}>
-          <div role='time' className={styles.taskListLeft_detailImg} onClick={() => {}} />
+          <div
+            role='time'
+            className={styles.taskListLeft_detailImg}
+            onClick={() => {
+              DeleteCheckItem(index)
+            }}
+          />
         </div>
       </div>
     </div>
@@ -139,6 +149,9 @@ function ExcitationDropList() {
   const [, drop] = useDrop(() => ({
     accept: 'DragDropItem'
   }))
+
+  const { checkAllList, checkAllSenderIdList, setCheckAll, setIndeterminate } = checkListStore()
+  // 列表元素
   const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
   const dragableDragingStatus = DragableDragingStatusStore(state => state.dragableDragingStatus)
@@ -157,21 +170,47 @@ function ExcitationDropList() {
     },
     [DropList, dragableDragingStatus, setLeftList]
   )
+
+  const onChange = React.useCallback(
+    (checkedValues: CheckboxValueType[]) => {
+      checkAllSenderIdList([...checkedValues])
+      setCheckAll(checkedValues.length === DropList.length)
+      setIndeterminate(!!checkedValues.length && checkedValues.length < DropList.length)
+    },
+    [DropList.length, checkAllSenderIdList, setCheckAll, setIndeterminate]
+  )
+
+  const DeleteCheckItem = React.useCallback(
+    index => {
+      const copyList = DropList
+      const checkAllListCopy = checkAllList
+      copyList.splice(index, 1)
+      checkAllListCopy.splice(index, 1)
+      setLeftList([...copyList])
+      checkAllSenderIdList([...checkAllListCopy])
+    },
+    [DropList, checkAllList, checkAllSenderIdList, setLeftList]
+  )
+
   return (
     <ScrollingComponent className={StyleSheet.dropList_ListScroll}>
       <div ref={drop} className={StyleSheet.dropList_List}>
-        {DropList?.map((item: ItemType, index: number) => {
-          return (
-            <Dropable
-              sender_id={item.sender_id}
-              key={`Drop${index}`}
-              isDragableDraging={dragableDragingStatus}
-              moveCardHandler={moveCardHandler}
-              index={index}
-              item={item}
-            />
-          )
-        })}
+        <Checkbox.Group style={{ width: '100%' }} onChange={onChange} value={checkAllList}>
+          {DropList?.map((item: any, index: number) => {
+            return (
+              <Dropable
+                sender_id={item.sender_id}
+                key={item.keys}
+                DropList={DropList}
+                isDragableDraging={dragableDragingStatus}
+                moveCardHandler={moveCardHandler}
+                index={index}
+                DeleteCheckItem={DeleteCheckItem}
+                item={item}
+              />
+            )
+          })}
+        </Checkbox.Group>
       </div>
     </ScrollingComponent>
   )

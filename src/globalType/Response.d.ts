@@ -59,6 +59,23 @@ export interface ResExcitationList {
   total: number
 }
 
+export interface ResExcitationListNew {
+  results: {
+    sender_id: number
+    id: number
+    name: string
+    port: string
+    status: number
+    create_time: string
+    update_time: string
+    create_user: string
+    update_user: string
+  }[]
+  page_count: number
+  page_no: number
+  total: number
+}
+
 export interface ResCreExcitationList {
   results: {
     id: number
