@@ -25,6 +25,7 @@ const request = {
 }
 interface projectInfoType {
   id: number
+  sender_id: number
   name: string
   port: string
   status: number | null

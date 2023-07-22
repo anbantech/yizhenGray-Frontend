@@ -1,16 +1,25 @@
-import create from 'zustand'
+import { CheckboxValueType } from 'antd/lib/checkbox/Group'
+import { create } from 'zustand'
 import {
   ArgeementAction,
   ArgeementActionState,
   DragableStatusAction,
   DragableStatuState,
   DragCmps,
+  ExcitationListState,
+  ExcitationListStateFn,
+  GlobalStatusType,
   ItemListState,
   ItemState,
   LeftAction,
   LeftActionState,
+  ListAllItemFn,
+  ListFn,
+  ListFnStateValue,
   RightAction,
-  RightStateType
+  RightStateType,
+  sendList,
+  UpdateStatusFn
 } from './ExcitationStoreParams'
 
 const useModalExcitationStore = create((set: any) => ({
@@ -25,20 +34,7 @@ const useExicitationId = create((set: any) => ({
 }))
 
 const RightDragListStore = create<RightStateType & RightAction>(set => ({
-  DragList: [
-    { sender_id: 1, target_type: '3', name: 'Yj1', peripheral: '1', gu_cnt0: 1, gu_w0: 2 },
-    { sender_id: 2, target_type: '3', name: 'Yj2', peripheral: '2', gu_cnt0: 1, gu_w0: 2 },
-    { sender_id: 3, target_type: '3', name: 'Yj3', peripheral: '3', gu_cnt0: 1, gu_w0: 2 },
-    { sender_id: 4, target_type: '3', name: 'Yj4', peripheral: '1', gu_cnt0: 1, gu_w0: 2 },
-    { sender_id: 5, target_type: '3', name: 'Yj5', peripheral: '2', gu_cnt0: 1, gu_w0: 2 },
-    { sender_id: 6, target_type: '3', name: 'Yj6', peripheral: '3', gu_cnt0: 1, gu_w0: 2 },
-    { sender_id: 7, target_type: '3', name: 'Yj7', peripheral: '1', gu_cnt0: 1, gu_w0: 2 },
-    { sender_id: 8, target_type: '3', name: 'Yj8', peripheral: '2', gu_cnt0: 1, gu_w0: 2 },
-    { sender_id: 9, target_type: '3', name: 'Yj9', peripheral: '3', gu_cnt0: 1, gu_w0: 2 },
-    { sender_id: 10, target_type: '3', name: 'Yj10', peripheral: '1', gu_cnt0: 1, gu_w0: 2 },
-    { sender_id: 11, target_type: '3', name: 'Yj11', peripheral: '2', gu_cnt0: 1, gu_w0: 2 },
-    { sender_id: 12, target_type: '3', name: 'Yj12', peripheral: '3', gu_cnt0: 1, gu_w0: 2 }
-  ],
+  DragList: [],
   setRightList: (item: ItemState) => {
     set(() => ({
       DragList: item
@@ -80,6 +76,7 @@ const ArgeementDropListStore = create<ArgeementAction & ArgeementActionState>((s
       DropList: [...item]
     }))
   },
+
   LeftDragIndexFn: () => {
     const { DropList } = get()
     const uselessIndex = DropList.findIndex((item: any) => item.id === -1)
@@ -87,4 +84,97 @@ const ArgeementDropListStore = create<ArgeementAction & ArgeementActionState>((s
   }
 }))
 
-export { useExicitationId, useModalExcitationStore, DragableDragingStatusStore, RightDragListStore, LeftDropListStore, ArgeementDropListStore }
+const sendExcitaionListStore = create<sendList & ListFn>(set => ({
+  sender_id: -1,
+  checkList: (id: number) => {
+    set(() => ({
+      sender_id: id
+    }))
+  },
+  detailData: {},
+  setDetailData: state => set({ detailData: state })
+}))
+
+const useRequestStore = create<ExcitationListStateFn & ExcitationListState>((set, get) => ({
+  params: {
+    target_type: '1',
+    key_word: '',
+    status: null,
+    page: 1,
+    page_size: 10,
+    sort_field: 'create_time',
+    sort_order: 'descend'
+  },
+
+  hasMoreData: true,
+  setHasMore: (val: boolean) => {
+    set(() => ({
+      hasMoreData: val
+    }))
+  },
+
+  setPage: (val: number) => {
+    const { params } = get()
+    set(() => ({
+      params: { ...params, page_size: val }
+    }))
+  },
+
+  setKeyWord: (value: string) => {
+    const { params } = get()
+    set(() => ({
+      params: { ...params, key_word: value }
+    }))
+  },
+
+  loadMoreData: () => {
+    const { params } = get()
+    const newPage = params.page_size + 10
+    set(() => ({
+      params: { ...params, page_size: newPage }
+    }))
+  }
+}))
+
+const checkListStore = create<ListAllItemFn & ListFnStateValue>(set => ({
+  checkAllList: [],
+  indeterminate: false,
+  all: false,
+  checkAllSenderIdList: (listValue: CheckboxValueType[]) => {
+    set(() => ({
+      checkAllList: [...listValue]
+    }))
+  },
+  setIndeterminate: (val: boolean) => {
+    set(() => ({
+      indeterminate: val
+    }))
+  },
+  setCheckAll: (val: boolean) => {
+    set(() => ({
+      all: val
+    }))
+  }
+}))
+
+const GlobalStatusStore = create<UpdateStatusFn & GlobalStatusType>(set => ({
+  updateStatus: false,
+  setUpdateStatus: (val: boolean) => {
+    set(() => ({
+      updateStatus: !val
+    }))
+  }
+}))
+
+export {
+  useExicitationId,
+  useModalExcitationStore,
+  DragableDragingStatusStore,
+  sendExcitaionListStore,
+  RightDragListStore,
+  LeftDropListStore,
+  ArgeementDropListStore,
+  useRequestStore,
+  checkListStore,
+  GlobalStatusStore
+}

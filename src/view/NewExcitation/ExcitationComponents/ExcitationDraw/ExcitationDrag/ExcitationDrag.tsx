@@ -1,13 +1,21 @@
 import Checkbox from 'antd/lib/checkbox'
 import * as React from 'react'
 import { DragSourceMonitor, useDrag } from 'react-dnd'
-import { LeftDropListStore, RightDragListStore, DragableDragingStatusStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import {
+  LeftDropListStore,
+  RightDragListStore,
+  DragableDragingStatusStore,
+  useRequestStore
+} from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import dragImg from 'Src/assets/drag/icon_drag.png'
 import OmitExcitationComponents from 'Src/components/OmitComponents/OmitExcitationComponents'
+import styles from 'Src/view/Project/task/taskList/task.less'
+import { generateUUID } from 'Src/util/common'
+import InfiniteScroll from 'react-infinite-scroll-component'
 import StyleSheet from '../excitationDraw.less'
 
 type DragableType = { id: number; name: string; keys: number }
-
+type Props = { height: number }
 type ChildRefType = { closeMenu: () => void } | null
 // 拖拽列表的item
 const Dragable = ({ name, sender_id, item }: any) => {
@@ -45,15 +53,16 @@ const Dragable = ({ name, sender_id, item }: any) => {
         const useless = DropList.find((item: any) => item.sender_id === -1)
         // 拖拽开始时，向 cardList 数据源中插入一个占位的元素，如果占位元素已经存在，不再重复插入
         if (!useless) {
-          setLeftList([{ ...item, sender_id: -1, isItemDragging: true }, ...DropList])
+          setLeftList([{ ...item, sender_id: -1, keys: generateUUID(), isItemDragging: true }, ...DropList])
         }
         setDragableStatus(true)
-        return item
+        const Item = { ...item, keys: generateUUID() }
+        return Item
       },
       collect: monitor => ({
         isDragging: monitor.isDragging()
       }),
-      end: (item, monitor: DragSourceMonitor) => {
+      end: (item: any, monitor: DragSourceMonitor) => {
         const uselessIndex = LeftDragIndexFn()
         const dropCardListCopy = DropList
         if (monitor.didDrop()) {
@@ -99,19 +108,33 @@ const Dragable = ({ name, sender_id, item }: any) => {
 
 const DragableMemo = React.memo(Dragable)
 // 拖拽区
-function ExcitationDrag() {
+function ExcitationDrag({ height }: Props) {
   const rightDragList = RightDragListStore(state => state.DragList)
-
-  // const onChange = (checkedValues: CheckboxValueType[]) => {
-  //   console.log('2')
-  // }
+  const { hasMoreData, loadMoreData } = useRequestStore()
   return (
-    <div>
-      <Checkbox.Group style={{ width: '100%' }}>
+    <div className={StyleSheet.LISTScroll}>
+      <InfiniteScroll
+        dataLength={rightDragList.length}
+        next={loadMoreData}
+        hasMore={hasMoreData}
+        height={height}
+        loader={
+          <p style={{ textAlign: 'center', marginTop: '12px', marginLeft: '20px', width: '208px' }}>
+            <div className={styles.listLine} />
+            <div className={styles.concentList}>内容已经加载完毕</div>
+          </p>
+        }
+        endMessage={
+          <p style={{ textAlign: 'center', marginTop: '12px', marginLeft: '20px', width: '208px' }}>
+            {/* <div className={styles.listLine} /> */}
+            <div className={styles.concentList}>内容已经加载完毕</div>
+          </p>
+        }
+      >
         {rightDragList?.map((item: any) => {
           return <DragableMemo id={item.sender_id} name={item.name} item={item} key={item.sender_id} />
         })}
-      </Checkbox.Group>
+      </InfiniteScroll>
     </div>
   )
 }

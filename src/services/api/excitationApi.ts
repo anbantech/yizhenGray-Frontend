@@ -10,13 +10,13 @@ import {
   UpdateOneExcitaionListParams,
   ExcitationListParams
 } from 'Src/globalType/Param'
-import { ResExcitationList, ResCreExcitationList, getAllRes, excitationRes, checkoutDataStructureRes } from 'Src/globalType/Response'
+import { ResCreExcitationList, getAllRes, excitationRes, checkoutDataStructureRes, ResExcitationListNew } from 'Src/globalType/Response'
 
 export function createExcitationListFn(params: createExcitation) {
   return request.post<ResCreExcitationList>('/api/v1.0/stimulus/save', params)
 }
 export function excitationListFn(params: ExcitationList) {
-  return request.get<ResExcitationList>('/api/v1.0/temp_and_sti/query', { params })
+  return request.get<ResExcitationListNew>('/api/v1.0/temp_and_sti/sender/query', { params })
 }
 
 export function removeExcitation(id: number | string) {
@@ -107,7 +107,7 @@ export function deleteneExcitaionList(id: string) {
 }
 
 export function deleteneExcitaionListMore(id: string) {
-  return request.delete<any>('/api/v1.0/temp_and_sti/remove', { params: { senders: id } })
+  return request.delete<any>('/api/v1.0/temp_and_sti/sender/remove', { params: { senders: id } })
 }
 // v1.3版本激励删除 更新 创建
 // 删除 激励
@@ -123,4 +123,8 @@ export function createExcitationList(params: ExcitationListParams) {
 // 更新激励
 export function updateExcitationList(id: number, params: any) {
   return request.put<any>(`/api/v1.0/temp_and_sti/interaction/update/${id}`, params)
+}
+
+export function getExcitaionDeatilFn(id: number) {
+  return request.get<any>(`/api/v1.0/temp_and_sti/sender/get/${id}`)
 }

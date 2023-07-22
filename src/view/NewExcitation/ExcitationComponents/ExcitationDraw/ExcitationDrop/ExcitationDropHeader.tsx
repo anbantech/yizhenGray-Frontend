@@ -1,18 +1,20 @@
 import { InputNumber } from 'antd'
 import * as React from 'react'
 import { DropTip } from 'Src/view/excitation/excitationComponent/Tip'
+import { sendExcitaionListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import StyleSheet from '../excitationDraw.less'
 
 const CloumnLine = () => {
   return <div className={StyleSheet.cloumnLine} />
 }
-function DropHeader() {
-  const a = 1
+function DropHeaderMemo() {
+  const detailData = sendExcitaionListStore(state => state.detailData)
+  const { name, desc } = detailData
   return (
     <div className={StyleSheet.DropHeader}>
-      <span className={StyleSheet.sendListTitle}>列表1</span>
+      <span className={StyleSheet.sendListTitle}>{name}</span>
       <div className={StyleSheet.editConcent}>
-        <span className={StyleSheet.headerDesc}> 描述: {a} </span>
+        <span className={StyleSheet.headerDesc}> 描述: {desc} </span>
         <CloumnLine />
         <div className={StyleSheet.inputEdit}>
           <span className={StyleSheet.headerDesc} style={{ marginRight: '12px' }}>
@@ -33,4 +35,5 @@ function DropHeader() {
   )
 }
 
+const DropHeader = React.memo(DropHeaderMemo)
 export default DropHeader

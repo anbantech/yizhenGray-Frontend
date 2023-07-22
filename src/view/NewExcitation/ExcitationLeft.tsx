@@ -3,28 +3,57 @@ import CreateButton from 'Src/components/Button/createButton'
 import { useEffect, useRef, useState } from 'react'
 import * as React from 'react'
 import { RouteComponentProps, StaticContext, withRouter } from 'react-router'
-
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import styles from 'Src/view/Project/task/taskList/task.less'
+import { deleteneExcitaionListMore, excitationListFn, lookUpDependenceUnit } from 'Src/services/api/excitationApi'
+import { throwErrorMessage } from 'Src/util/message'
+import ExcitationModal from 'Src/components/Modal/excitationModal/excitationModal'
+import LookUpDependence from 'Src/components/Modal/taskModal/lookUpDependence'
+import useMenu from 'Src/util/Hooks/useMenu'
+import { message } from 'antd'
+import Leftstyles from './NewExcitation.less'
 import StyleSheet from './ExcitationComponents/ExcitationDraw/excitationDraw.less'
-import taskStyles from '../Project/task/taskList/task.less'
-import styles from './NewExcitation.less'
+import { GlobalStatusStore, sendExcitaionListStore } from './ExcitaionStore/ExcitaionStore'
 
-const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = props => {
+const request = {
+  target_type: '3',
+  key_word: '',
+  status: null,
+  page: 1,
+  page_size: 10,
+  sort_field: 'create_time',
+  sort_order: 'descend'
+}
+
+interface Resparams {
+  target_type: number | string
+  key_word?: string
+  status?: null | number
+  page: number
+  page_size: number
+  sort_field?: string
+  sort_order?: string
+}
+type ResparamsType = Record<string, any>
+
+const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = () => {
   const layoutRef = useRef<any>()
 
+  const { sender_id, checkList } = sendExcitaionListStore()
+  const { updateStatus } = GlobalStatusStore()
+  const [params, setParams] = useState<Resparams>({ ...request })
   // 任务列表参数
-  const [params, setParams] = useState<Resparams>({})
+  const [excitationList, setExcitationList] = useState<ResparamsType[]>([])
   // 动态设置虚拟列表高度
   const [height, setHeight] = useState(700)
   // 项目管理
-  const [taskLists, setTaskList] = useState<any>([])
 
   // 数据是否还有更多
   const [hasMoreData, setHasMore] = useState(true)
 
   // 弹窗
-  const [modalData, setModalData] = useState({ taskId: '', fixTitle: false, isModalVisible: false })
+  const [modalData, setModalData] = useState({ fixTitle: false, isModalVisible: false, excitationInfo: {} })
 
   //  删除弹出框
   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
@@ -33,11 +62,13 @@ const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = props 
   const [spinning, setSpinning] = useState(false)
 
   // 新建任务
-  const createNewExcitationList = () => {}
+  const createNewExcitationList = () => {
+    setModalData({ ...modalData, fixTitle: false, isModalVisible: true })
+  }
 
   // 更新参数获取列表
   const updateParams = (value: string) => {
-    setTaskList([])
+    setExcitationList([])
     setParams({ ...params, key_word: value, page: 1 })
   }
 
@@ -52,15 +83,78 @@ const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = props 
     setCommonModleStatus(value)
   }
 
-  const deleteExcitation = () => {}
+  const deleteExcitation = React.useCallback(async () => {
+    setSpinning(true)
+    try {
+      const res = await deleteneExcitaionListMore(`${sender_id}`)
+      checkList(-1)
+      if (res.data) {
+        if (res.code === 0) {
+          setExcitationList([])
+          message.success('删除成功')
+        } else {
+          message.error(res.message)
+        }
+        setParams({ ...params, page: 1 })
+      }
+      setSpinning(false)
+      CommonModleClose(false)
+    } catch (error) {
+      CommonModleClose(false)
+      throwErrorMessage(error, { 1009: '删除失败' })
+    }
+  }, [sender_id, checkList, params])
+
+  const keepCheckTask = React.useCallback(
+    (id: number) => {
+      if (id) {
+        checkList(id)
+      }
+    },
+    [checkList]
+  )
 
   // 获取激励列表
-  const getExcitationList = React.useCallback(async () => {}, [])
+  const getExcitationList = React.useCallback(
+    async value => {
+      try {
+        const result = await excitationListFn(value)
+        if (result.data) {
+          const newList = [...result.data.results]
+          if (newList.length === 0) {
+            // InstancesDetail.setInstance(false)
+            setHasMore(false)
+            return false
+          }
+          if (sender_id !== -1) {
+            keepCheckTask(sender_id)
+          } else {
+            keepCheckTask(newList[0].sender_id)
+          }
+
+          if (newList.length === result.data.total) {
+            setHasMore(false)
+          }
+          setExcitationList([...newList])
+          // InstancesDetail.setInstance(true)
+        }
+      } catch (error) {
+        throwErrorMessage(error, { 1004: '请求资源未找到' })
+      }
+    },
+    [keepCheckTask, sender_id]
+  )
 
   // 跳转修改任务
-  const fixTask = () => {}
+  const fixExcitation = (item: Record<string, any>) => {
+    const Item = { ...modalData, fixTitle: true, isModalVisible: true, excitationInfo: item }
+    setModalData({ ...Item })
+  }
 
-  useEffect(() => {}, [])
+  useEffect(() => {
+    getExcitationList({ ...params })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params, updateStatus])
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver(entries => {
@@ -87,8 +181,28 @@ const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = props 
     }
   }, [])
 
+  // 控制弹出框消失隐藏
+  const cancel = (e: boolean) => {
+    setModalData({ ...modalData, fixTitle: false, isModalVisible: e })
+  }
+
+  const { visibility, chioceModalStatus } = useMenu()
+  // 存储关联任务信息
+  const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
+  // 获取依赖信息
+  const getDependenceInfo = React.useCallback(
+    async (id: number) => {
+      const res = await lookUpDependenceUnit(id)
+      if (res.data) {
+        setDependenceInfo(res.data)
+      }
+      chioceModalStatus(true)
+    },
+    [chioceModalStatus]
+  )
+
   return (
-    <div className={styles.excitationLeftBoby} ref={layoutRef}>
+    <div className={Leftstyles.excitationLeftBoby} ref={layoutRef}>
       <div className={StyleSheet.btn_header}>
         <CreateButton
           width='100%'
@@ -100,37 +214,59 @@ const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = props 
           onClick={createNewExcitationList}
         />
       </div>
-      <SearchInput className={StyleSheet.ExictationInput} placeholder='根据名称搜索激励' onChangeValue={() => {}} />
-      <div className={taskStyles.concentBody}>
+      <SearchInput className={StyleSheet.ExictationInputLeft} placeholder='根据名称搜索激励' onChangeValue={updateParams} />
+
+      <div className={styles.concentBody}>
         <InfiniteScroll
-          dataLength={taskLists.length}
+          dataLength={excitationList.length}
           next={loadMoreData}
           hasMore={hasMoreData}
           height={height}
           loader={
             <p style={{ textAlign: 'center' }}>
-              <div className={taskStyles.listLine} />
-              <div className={taskStyles.concentList}>内容已经加载完毕</div>
+              <div className={styles.listLine} />
+              <div className={styles.concentList}>内容已经加载完毕</div>
             </p>
           }
           endMessage={
             <p style={{ textAlign: 'center' }}>
-              <div className={taskStyles.listLine} />
-              <div className={taskStyles.concentList}>内容已经加载完毕</div>
+              <div className={styles.listLine} />
+              <div className={styles.concentList}>内容已经加载完毕</div>
             </p>
           }
         >
-          {taskLists.map((item: any) => {
+          {excitationList.map((item: any) => {
             return (
-              <div tabIndex={item.id} role='button' onClick={() => {}} key={item.id}>
+              <div
+                tabIndex={item.sender_id}
+                role='button'
+                className={sender_id === item.sender_id ? Leftstyles.itemActive : Leftstyles.item}
+                onClick={() => {
+                  checkList(item.sender_id)
+                }}
+                key={item.sender_id}
+              >
                 <span>{item.name}</span>
-                <div className={styles.icon_layout}>
-                  <div role='time' onClick={() => {}} className={styles.taskListLeft_editImg} />
+                <div className={Leftstyles.icon_layout}>
+                  <div
+                    role='time'
+                    onClick={() => {
+                      fixExcitation(item)
+                    }}
+                    className={styles.taskListLeft_editImg}
+                  />
                   <div
                     role='time'
                     className={styles.taskListLeft_detailImg}
                     onClick={() => {
                       CommonModleClose(true)
+                    }}
+                  />
+                  <div
+                    role='time'
+                    className={styles.taskListLeft_linkInfo}
+                    onClick={() => {
+                      getDependenceInfo(item.sender_id)
                     }}
                   />
                 </div>
@@ -139,15 +275,34 @@ const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = props 
           })}
         </InfiniteScroll>
       </div>
-      <CommonModle
-        IsModalVisible={CommonModleStatus}
-        spinning={spinning}
-        deleteProjectRight={deleteExcitation}
-        CommonModleClose={CommonModleClose}
-        ing='删除中'
-        name='删除激励发送列表'
-        concent='是否确认删除？'
-      />
+      {sender_id && (
+        <>
+          <CommonModle
+            IsModalVisible={CommonModleStatus}
+            spinning={spinning}
+            deleteProjectRight={deleteExcitation}
+            CommonModleClose={CommonModleClose}
+            ing='删除中'
+            name='删除激励发送列表'
+            concent='是否确认删除？'
+          />
+          <ExcitationModal
+            visible={modalData.isModalVisible}
+            hideModal={cancel}
+            excitationInfo={modalData.excitationInfo}
+            fixTitle={modalData.fixTitle}
+            sender_id={sender_id}
+            width={480}
+          />
+          <LookUpDependence
+            visibility={visibility as boolean}
+            name='激励发送列表关联信息'
+            data={dependenceInfo}
+            choiceModal={chioceModalStatus}
+            width='760px'
+          />
+        </>
+      )}
     </div>
   )
 }

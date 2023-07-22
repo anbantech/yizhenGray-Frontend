@@ -11,7 +11,6 @@ function ExcitationIndex() {
       <div className={StyleSheet.excitationListBody}>
         <ExcitationLeft />
         <ExcitationDraw />
-        {/* <AgreementIndex /> */}
       </div>
     </DndProvider>
   )

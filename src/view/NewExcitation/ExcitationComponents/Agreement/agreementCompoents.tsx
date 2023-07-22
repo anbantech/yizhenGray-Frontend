@@ -1,4 +1,4 @@
-import { Form, Input, InputNumber, Select } from 'antd'
+import { Form, FormInstance, Input, Select, Tooltip } from 'antd'
 import * as React from 'react'
 import { DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd'
 import dragImg from 'Src/assets/drag/icon_drag.png'
@@ -31,6 +31,52 @@ interface PriceValue {
 interface PriceInputProps {
   value?: PriceValue
   onChange?: (value: PriceValue) => void
+  onBlur?: (value: PriceValue) => void
+}
+
+interface PriceValue {
+  count?: number
+}
+
+interface PriceInputProps {
+  value?: PriceValue
+  onChange?: (value: PriceValue) => void
+}
+
+const CountInput: React.FC<PriceInputProps> = ({ value = {}, onChange }) => {
+  const [number, setNumber] = React.useState(10)
+  const triggerChange = (changedValue: { count?: number }) => {
+    onChange?.({ ...changedValue })
+  }
+
+  const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newNumber = Number.parseInt(e.target.value || '0', 10)
+    if (Number.isNaN(number)) {
+      return
+    }
+    if (!('number' in value)) {
+      setNumber(newNumber)
+    }
+    triggerChange({ count: newNumber })
+  }
+  const onNumberBlur = (e: any) => {
+    const newNumber = Number.parseInt(e.target.value || '10', 10)
+    if (newNumber >= 255) {
+      setNumber(255)
+      onChange?.({ count: 255 })
+    }
+
+    if (newNumber === 0) {
+      setNumber(1)
+      onChange?.({ count: 1 })
+    }
+  }
+
+  return (
+    <Tooltip trigger={['focus']} title={number} placement='topLeft' overlayClassName='numeric-input'>
+      <Input type='text' value={value.count || number} onChange={onNumberChange} onBlur={onNumberBlur} className={styles.IntArrayInput} />
+    </Tooltip>
+  )
 }
 
 const StringComponents = ({ index, Item, moveCardHandler }: DropCmps) => {
@@ -346,11 +392,12 @@ interface IntArrayFormInstance {
 }
 
 const IntArrayCompoents = ({ index, Item, moveCardHandler }: DropCmps) => {
-  const [form] = Form.useForm<IntArrayFormInstance>()
+  const [form] = Form.useForm<FormInstance>()
   const DropList = ArgeementDropListStore(state => state.DropList)
   const ref = React.useRef<HTMLDivElement>(null)
   const [val, setValue] = React.useState('232')
   const [isDragItem, setCanDrag] = React.useState(true)
+
   const onToggleForbidDrag = React.useCallback(() => {
     setCanDrag(false)
     return Promise.reject(new Error('数据段名称由汉字、数字、字母和下划线组成'))
@@ -360,6 +407,7 @@ const IntArrayCompoents = ({ index, Item, moveCardHandler }: DropCmps) => {
     setCanDrag(true)
     return Promise.resolve()
   }, [setCanDrag])
+
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
@@ -438,16 +486,19 @@ const IntArrayCompoents = ({ index, Item, moveCardHandler }: DropCmps) => {
     }
   })
 
-  drag(drop(ref))
-  console.log('3')
-  const onValuesChange = (val, allValue) => {
-    console.log(allValue)
+  const checkPrice = (_: any, value: { count: number }) => {
+    if (value.count <= 255 || value.count > 1) {
+      return Promise.resolve()
+    }
+    return Promise.reject()
   }
 
-  const shouldUpdate = (prevValue, curValue: any) => {
-    console.log(prevValue, curValue)
-    return false
+  const onValuesChange = (value: any, allValues: any) => {
+    console.log(allValues)
   }
+
+  drag(drop(ref))
+
   return (
     <div
       className={styles.cloumnBody}
@@ -461,7 +512,17 @@ const IntArrayCompoents = ({ index, Item, moveCardHandler }: DropCmps) => {
         <span className={styles.cloumnBodyCharts}>整数数组 </span>
       </div>
 
-      <Form form={form} name='IntArrayCompoents' className={styles.StringForm} onValuesChange={onValuesChange}>
+      <Form
+        form={form}
+        name='IntArrayCompoents'
+        onValuesChange={onValuesChange}
+        className={styles.StringForm}
+        initialValues={{
+          count: {
+            count: 0
+          }
+        }}
+      >
         <Form.Item
           name='name'
           validateFirst
@@ -488,15 +549,8 @@ const IntArrayCompoents = ({ index, Item, moveCardHandler }: DropCmps) => {
           元素个数
         </div>
 
-        <Form.Item
-          name='count'
-          className={styles.IntArrayForm}
-          validateFirst
-          validateTrigger={['onChange']}
-          rules={[{ required: true, message: '请输入数据段名称' }]}
-          shouldUpdate={shouldUpdate}
-        >
-          <InputNumber bordered={false} className={styles.IntArrayInput} />
+        <Form.Item name='count' className={styles.IntArrayForm} rules={[{ validator: checkPrice }]}>
+          <CountInput />
         </Form.Item>
 
         <div className={styles.FourCharts} style={{ height: '37px' }}>
