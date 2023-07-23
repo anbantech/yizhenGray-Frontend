@@ -9,6 +9,7 @@ import { sleep } from 'Src/util/baseFn'
 import addImage from 'Src/assets/Contents/icon_add.svg'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from './stepBaseConfig.less'
+import TaskExcitaionModal from './taskExcitation'
 
 const layout = {
   labelCol: { span: 4 },
@@ -58,6 +59,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   const [form] = useForm()
   const { Option } = Select
   const history = useHistory()
+  const [open, setOpen] = useState(false)
   const charRef = useRef(false)
   const [params, setParams] = useState<Resparams>(request)
   // 弹窗
@@ -235,18 +237,19 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   const jumpNewCreateTask = async () => {
     const values = await form.getFieldsValue()
     const createGroupExcitation = '/FourExcitationList/createGroupExcitation'
-    history.push({
-      pathname: `${createGroupExcitation}`,
-      state: {
-        projectInfo,
-        taskInfo,
-        type: 'four',
-        isFixForm: false,
-        name: '新建交互',
-        from: '/projects/Tasks/createTask',
-        fromDataTask: { values, isRight: true }
-      }
-    })
+    setOpen(true)
+    // history.push({
+    //   pathname: `${createGroupExcitation}`,
+    //   state: {
+    //     projectInfo,
+    //     taskInfo,
+    //     type: 'four',
+    //     isFixForm: false,
+    //     name: '新建交互',
+    //     from: '/projects/Tasks/createTask',
+    //     fromDataTask: { values, isRight: true }
+    //   }
+    // })
   }
 
   return (
@@ -380,6 +383,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         name='修改任务'
         concent='修改除名称、描述以外的配置项，会停止关联任务，并清空关联任务的测试数据，是否确认修改？'
       />
+      <TaskExcitaionModal open={open} />
     </div>
   )
 })
