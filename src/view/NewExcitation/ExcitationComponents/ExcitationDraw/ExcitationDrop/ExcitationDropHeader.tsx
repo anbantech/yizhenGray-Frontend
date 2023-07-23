@@ -1,8 +1,8 @@
-import { Input, InputNumber, Tooltip } from 'antd'
+import { Input, Tooltip } from 'antd'
 import * as React from 'react'
 import { DropTip } from 'Src/view/excitation/excitationComponent/Tip'
 import InputNumberSuffixMemo from 'Src/components/inputNumbersuffix/inputNumberSuffix'
-import { sendExcitaionListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import { LeftDropListStore, sendExcitaionListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import StyleSheet from '../excitationDraw.less'
 
 const CloumnLine = () => {
@@ -10,15 +10,33 @@ const CloumnLine = () => {
 }
 function DropHeaderMemo() {
   const detailData = sendExcitaionListStore(state => state.detailData)
+  const gu_cnt0 = LeftDropListStore(state => state.gu_cnt0)
+  const gu_w0 = LeftDropListStore(state => state.gu_w0)
+  const setValue = LeftDropListStore(state => state.setValue)
   const { name, desc } = detailData
-  const [Gu_time, setGu_time] = React.useState(1)
-  const onChangeGu_time = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const onChangeGu_time = (type: string, e: React.ChangeEvent<HTMLInputElement>) => {
     const newNumber = Number.parseInt(e.target.value || '0', 10)
     if (Number.isNaN(newNumber)) {
       return
     }
-    setGu_time(newNumber)
+
+    setValue(type, newNumber)
   }
+
+  const onMax = React.useCallback(
+    (type: string) => {
+      if (type === 'gu_cnt0') {
+        const newValue = Number(gu_cnt0) > 20 ? 20 : gu_cnt0
+        setValue(type, newValue)
+      }
+      if (type === 'gu_w0') {
+        const newValue = Number(gu_w0) > 100 ? 100 : gu_w0
+        setValue(type, newValue)
+      }
+    },
+    [gu_cnt0, gu_w0, setValue]
+  )
   return (
     <div className={StyleSheet.DropHeader}>
       <span className={StyleSheet.sendListTitle}>{name}</span>
@@ -29,18 +47,37 @@ function DropHeaderMemo() {
           <span className={StyleSheet.headerDesc} style={{ marginRight: '12px' }}>
             发送次数:
           </span>
-          <Tooltip trigger={['focus']} title={Gu_time} placement='topLeft' overlayClassName='numeric-input'>
-            <Input className={StyleSheet.numberInput} maxLength={5} value={Gu_time} onChange={onChangeGu_time} suffix={<InputNumberSuffixMemo />} />
-          </Tooltip>
+
+          <Input
+            className={StyleSheet.numberInput}
+            value={gu_cnt0}
+            onBlur={() => {
+              onMax('gu_cnt0')
+            }}
+            onChange={e => {
+              onChangeGu_time('gu_cnt0', e)
+            }}
+            suffix={<InputNumberSuffixMemo type='gu_cnt0' />}
+          />
         </div>
         <CloumnLine />
         <div className={StyleSheet.inputEdit} style={{ display: 'flex', alignItems: 'center' }}>
           <span className={StyleSheet.headerDesc} style={{ marginRight: '12px' }}>
             发送间隔:
           </span>
-          <Tooltip trigger={['focus']} title={Gu_time} placement='topLeft' overlayClassName='numeric-input'>
-            <Input className={StyleSheet.numberInput} maxLength={5} min={1} max={10} suffix={<InputNumberSuffixMemo />} />
-          </Tooltip>
+
+          <Input
+            className={StyleSheet.numberInput}
+            onChange={e => {
+              onChangeGu_time('gu_w0', e)
+            }}
+            onBlur={() => {
+              onMax('gu_w0')
+            }}
+            value={gu_w0}
+            suffix={<InputNumberSuffixMemo type='gu_w0' />}
+          />
+
           <DropTip />
         </div>
       </div>

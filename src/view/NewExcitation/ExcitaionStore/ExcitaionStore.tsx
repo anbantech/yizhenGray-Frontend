@@ -43,11 +43,9 @@ const RightDragListStore = create<RightStateType & RightAction>(set => ({
 }))
 
 const LeftDropListStore = create<LeftAction & LeftActionState>((set, get) => ({
-  inputValue: {
-    gu_cnt0: 1,
-    gu_w0: 1
-  },
   DropList: [],
+  gu_cnt0: 1,
+  gu_w0: 0,
   setLeftList: (item: ItemListState) => {
     set(() => ({
       DropList: [...item]
@@ -57,6 +55,42 @@ const LeftDropListStore = create<LeftAction & LeftActionState>((set, get) => ({
     const { DropList } = get()
     const uselessIndex = DropList.findIndex((item: any) => item.sender_id === -1)
     return uselessIndex
+  },
+  increase: (type: string) => {
+    if (type === 'gu_cnt0') {
+      set(state => ({
+        gu_cnt0: state.gu_cnt0 < 20 ? state.gu_cnt0 + 1 : 20
+      }))
+    }
+    if (type === 'gu_w0') {
+      set(state => ({
+        gu_w0: state.gu_w0 < 100 ? state.gu_w0 + 1 : 100
+      }))
+    }
+  },
+  decrease: (type: string) => {
+    if (type === 'gu_cnt0') {
+      set(state => ({
+        gu_cnt0: state.gu_cnt0 > 1 ? state.gu_cnt0 - 1 : 1
+      }))
+    }
+    if (type === 'gu_w0') {
+      set(state => ({
+        gu_w0: state.gu_w0 > 0 ? state.gu_w0 - 1 : 0
+      }))
+    }
+  },
+  setValue: (type: string, val: number) => {
+    if (type === 'gu_cnt0') {
+      set(() => ({
+        gu_cnt0: val
+      }))
+    }
+    if (type === 'gu_w0') {
+      set(() => ({
+        gu_w0: val
+      }))
+    }
   }
 }))
 
@@ -123,7 +157,7 @@ const useRequestStore = create<ExcitationListStateFn & ExcitationListState>((set
   setKeyWord: (value: string) => {
     const { params } = get()
     set(() => ({
-      params: { ...params, key_word: value }
+      params: { ...params, key_word: value, page: 1 }
     }))
   },
 

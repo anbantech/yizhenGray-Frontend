@@ -50,6 +50,11 @@ function ExcitationList() {
 
   // 动态设置虚拟列表高度
   const [height, setHeight] = React.useState(700)
+
+  const updateParams = (value: string) => {
+    setRightList([])
+    setKeyWord(value)
+  }
   React.useEffect(() => {
     const resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
@@ -79,7 +84,7 @@ function ExcitationList() {
       {isClose && (
         <>
           <BtnCompoents />
-          <SearchInput className={StyleSheet.ExictationInput} placeholder='根据名称搜索激励' onChangeValue={() => {}} />
+          <SearchInput className={StyleSheet.ExictationInput} placeholder='根据名称搜索激励' onChangeValue={updateParams} />
           {DragList?.length > 0 && <ExcitationDragHeader />}
           {/* 列表拖拽 */}
           <ExcitationDrag height={height} />

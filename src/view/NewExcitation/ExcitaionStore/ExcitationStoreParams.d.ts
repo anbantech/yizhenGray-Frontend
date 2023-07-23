@@ -11,14 +11,15 @@ type ItemState = Record<string, any>[]
 type LeftAction = {
   setLeftList: (item: ItemListState) => void
   LeftDragIndexFn: () => number
+  increase: (type: string) => void
+  decrease: (type: string) => void
+  setValue: (type: string, val: number) => void
 }
 
 interface LeftActionState {
   DropList: ListType[] | []
-  inputValue: {
-    gu_cnt0: number
-    gu_w0: number
-  }
+  gu_cnt0: number
+  gu_w0: number
 }
 
 interface CmpsOnly {
