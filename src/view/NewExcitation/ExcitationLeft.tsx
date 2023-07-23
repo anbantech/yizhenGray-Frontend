@@ -223,13 +223,13 @@ const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = () => 
           hasMore={hasMoreData}
           height={height}
           loader={
-            <p style={{ textAlign: 'center' }}>
+            <p style={{ textAlign: 'center', width: '216px' }}>
               <div className={styles.listLine} />
               <div className={styles.concentList}>内容已经加载完毕</div>
             </p>
           }
           endMessage={
-            <p style={{ textAlign: 'center' }}>
+            <p style={{ textAlign: 'center', width: '216px' }}>
               <div className={styles.listLine} />
               <div className={styles.concentList}>内容已经加载完毕</div>
             </p>
