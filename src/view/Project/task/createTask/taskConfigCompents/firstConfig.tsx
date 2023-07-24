@@ -10,6 +10,8 @@ import addImage from 'Src/assets/Contents/icon_add.svg'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from './stepBaseConfig.less'
 import TaskExcitaionModal from './taskExcitation'
+import { generateUUID } from 'Src/util/common'
+import stepStore from './sendListStore'
 
 const layout = {
   labelCol: { span: 4 },
@@ -59,7 +61,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   const [form] = useForm()
   const { Option } = Select
   const history = useHistory()
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const charRef = useRef(false)
   const [params, setParams] = useState<Resparams>(request)
   // 弹窗
@@ -233,6 +235,10 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, taskInfo.data, fromDataTask])
 
+  // 关闭弹窗
+  const cancel = () => {
+    setOpen(false)
+  }
   // 新建任务
   const jumpNewCreateTask = async () => {
     const values = await form.getFieldsValue()
@@ -252,8 +258,11 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     // })
   }
 
+  const getContainer = () => {
+    return document.querySelector('#myContainer') // 替换为你想要绑定的 DOM 元素的选择器
+  }
   return (
-    <div className={styles.stepBaseMain}>
+    <div className={styles.stepBaseMain} id='myContainer'>
       <Form name='basic' className={styles.stepBaseMain_Form} {...layout} onValuesChange={onFieldsChange} autoComplete='off' form={form} size='large'>
         <Form.Item
           label='任务名称'
@@ -383,7 +392,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         name='修改任务'
         concent='修改除名称、描述以外的配置项，会停止关联任务，并清空关联任务的测试数据，是否确认修改？'
       />
-      <TaskExcitaionModal open={open} />
+      {open && <TaskExcitaionModal open={open} cancel={cancel} getContainer={getContainer} />}
     </div>
   )
 })
