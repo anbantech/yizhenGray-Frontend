@@ -1,4 +1,4 @@
-import { Input, Tooltip } from 'antd'
+import { Input } from 'antd'
 import * as React from 'react'
 import { DropTip } from 'Src/view/excitation/excitationComponent/Tip'
 import InputNumberSuffixMemo from 'Src/components/inputNumbersuffix/inputNumberSuffix'
