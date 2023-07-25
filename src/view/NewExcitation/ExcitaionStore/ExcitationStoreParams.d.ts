@@ -14,12 +14,16 @@ type LeftAction = {
   increase: (type: string) => void
   decrease: (type: string) => void
   setValue: (type: string, val: number) => void
+  setBtnStatus: (val: boolean) => void
 }
 
 interface LeftActionState {
   DropList: ListType[] | []
   gu_cnt0: number
   gu_w0: number
+  name: string
+  desc: string
+  btnStatus: boolean
 }
 
 interface CmpsOnly {

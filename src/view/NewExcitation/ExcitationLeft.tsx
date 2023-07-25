@@ -14,7 +14,7 @@ import useMenu from 'Src/util/Hooks/useMenu'
 import { message } from 'antd'
 import Leftstyles from './NewExcitation.less'
 import StyleSheet from './ExcitationComponents/ExcitationDraw/excitationDraw.less'
-import { GlobalStatusStore, sendExcitaionListStore } from './ExcitaionStore/ExcitaionStore'
+import { GlobalStatusStore, LeftDropListStore } from './ExcitaionStore/ExcitaionStore'
 
 const request = {
   target_type: '3',
@@ -40,7 +40,7 @@ type ResparamsType = Record<string, any>
 const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = () => {
   const layoutRef = useRef<any>()
 
-  const { sender_id, checkList } = sendExcitaionListStore()
+  const { sender_id, checkList } = LeftDropListStore()
   const { updateStatus } = GlobalStatusStore()
   const [params, setParams] = useState<Resparams>({ ...request })
   // 任务列表参数

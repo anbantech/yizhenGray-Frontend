@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { checkListStore, LeftDropListStore, sendExcitaionListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import { checkListStore, GlobalStatusStore, LeftDropListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import img_empty from 'Src/assets/drag/img_empty@2x.png'
 import { message } from 'antd'
 import { getExcitaionDeatilFn } from 'Src/services/api/excitationApi'
@@ -36,9 +36,10 @@ const DeleteCompoent = ({ number, DeleteCheckItem }: { number: number; DeleteChe
 const DeleteCompoentMemo = React.memo(DeleteCompoent)
 
 function ExcitationDropMemo() {
+  const { updateStatus } = GlobalStatusStore()
   const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
-  const { sender_id, setDetailData } = sendExcitaionListStore()
+  const { sender_id, setDetailData } = LeftDropListStore()
   // 筛选逻辑
   const { checkAllList, checkAllSenderIdList, setIndeterminate, setCheckAll } = checkListStore()
 
@@ -69,7 +70,7 @@ function ExcitationDropMemo() {
     if (sender_id !== -1) {
       getExcitaionDeatilFunction(sender_id)
     }
-  }, [getExcitaionDeatilFunction, sender_id])
+  }, [getExcitaionDeatilFunction, sender_id, updateStatus])
   return (
     <div className={StyleSheet.excitaionDrop_Body}>
       <DropHeader />

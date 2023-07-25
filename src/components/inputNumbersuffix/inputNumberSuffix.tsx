@@ -6,19 +6,21 @@ type porpsType = { type: string }
 function InputNumberSuffixMemo({ type }: porpsType) {
   const increase = LeftDropListStore(state => state.increase)
   const decrease = LeftDropListStore(state => state.decrease)
-
+  const setBtnStatus = LeftDropListStore(state => state.setBtnStatus)
   const operationUpFn = React.useCallback(
     (type: string) => {
       increase(type)
+      setBtnStatus(false)
     },
-    [increase]
+    [increase, setBtnStatus]
   )
 
   const operationDownFn = React.useCallback(
     (type: string) => {
       decrease(type)
+      setBtnStatus(false)
     },
-    [decrease]
+    [decrease, setBtnStatus]
   )
   return (
     <div className={StyleSheet.inputNumberSuffix}>
