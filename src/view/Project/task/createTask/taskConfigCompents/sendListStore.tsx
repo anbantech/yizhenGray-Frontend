@@ -14,7 +14,9 @@ interface ListState {
   excitationList: any
   gu_cnt0: number
   gu_w0: number
+  checkList: any[]
   setExcitation: (val: any) => void
+  setCheckList: (val: any) => void
   increase: (type: string) => void
   decrease: (type: string) => void
   setValue: (type: string, val: number) => void
@@ -28,6 +30,7 @@ const stepStore = create<ListState>(set => ({
   excitationList: [],
   gu_cnt0: 1,
   gu_w0: 0,
+  checkList: [],
   setCurrent: () =>
     set(state => ({
       current: state.current + 1
@@ -89,12 +92,20 @@ const stepStore = create<ListState>(set => ({
       }))
     }
   },
+  setCheckList: (val: any[]) => {
+    set(() => ({
+      checkList: val
+    }))
+  },
   deleteEverything: () =>
     set({
       current: 0,
       baseInfo: { name: '', desc: '' },
       btnStatus: true,
-      excitationList: []
+      excitationList: [],
+      checkList: [],
+      gu_cnt0: 1,
+      gu_w0: 0
     })
 }))
 

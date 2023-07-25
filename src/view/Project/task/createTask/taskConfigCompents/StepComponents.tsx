@@ -1,17 +1,22 @@
 import { Checkbox, Form, Input, Steps } from 'antd'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
-import { DndProvider, DropTargetMonitor, useDrag, useDrop } from 'react-dnd'
+import { useHistory, withRouter } from 'react-router'
+import { DndProvider, DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import React, { useEffect, useState } from 'react'
+import img_empty from 'Src/assets/drag/img_empty@2x.png'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { excitationListFn } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/common'
 import dragImg from 'Src/assets/drag/icon_drag.png'
 import { useRequestStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import { DropTip } from 'Src/view/excitation/excitationComponent/Tip'
-import InputNumberSuffixMemo from 'Src/components/inputNumbersuffix/inputNumberSuffix'
+import InputNumberSuffixModal from 'Src/components/inputNumbersuffix/inputNumberModal'
+import styles from 'Src/view/Project/task/taskList/task.less'
 import stepStore from './sendListStore'
+
 import StyleSheetOther from '../../../../NewExcitation/ExcitationComponents/ExcitationDraw/excitationDraw.less'
+
 import StyleSheet from './stepBaseConfig.less'
 
 const layout = {
@@ -83,8 +88,31 @@ const OneSteps = () => {
   )
 }
 
+const Ementy = () => {
+  const history = useHistory()
+  const deleteEverything = stepStore(state => state.deleteEverything)
+  const JumpExcitationList = () => {
+    deleteEverything()
+    history.push({
+      pathname: '/Excitataions'
+    })
+  }
+  return (
+    <div className={StyleSheet.noStyles}>
+      <img className={StyleSheet.noImg} src={img_empty} alt='' />
+      <span className={StyleSheet.chartNoList}> 暂无数据</span>
+      <div className={StyleSheet.noTaskBtn} role='time' onClick={JumpExcitationList}>
+        点击跳转至激励配置页
+      </div>
+    </div>
+  )
+}
+
 const TwoSteps = () => {
+  const excitationList = stepStore(state => state.excitationList)
+  const current = stepStore(state => state.current)
   const [List, setList] = useState<Record<string, any>>([])
+  const [checkListItem, setListMemo] = useState<any[]>([])
   const CheckboxGroup = Checkbox.Group
   const { params, setHasMore, hasMoreData, loadMoreData } = useRequestStore()
   const setExcitation = stepStore(state => state.setExcitation)
@@ -112,54 +140,70 @@ const TwoSteps = () => {
     [setHasMore]
   )
 
+  const GetCheckList = React.useCallback(() => {
+    const list = excitationList.map((item: any) => {
+      return item.sender_id
+    })
+    setListMemo([...list])
+  }, [excitationList])
+
+  React.useEffect(() => {
+    GetCheckList()
+  }, [excitationList, current, GetCheckList])
+
   React.useEffect(() => {
     getExcitationList(params)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params])
-
   const onChange = (list: CheckboxValueType[]) => {
     const listArray = list
+    setListMemo(list)
     const array = List.filter((item: any) => {
       return listArray.includes(Number(item.sender_id))
     })
     setExcitation([...array])
   }
+
   return (
     <div className={StyleSheet.twoSteps}>
       <span className={StyleSheet.StepTitle}>激励列表</span>
-      <div id='scrollableDiv' className={StyleSheet.scrollDiv} style={{ height: 208 }}>
-        <CheckboxGroup onChange={onChange} style={{ width: '100%' }}>
-          <InfiniteScroll
-            dataLength={List.length}
-            next={loadMoreData}
-            hasMore={hasMoreData}
-            scrollableTarget='scrollableDiv'
-            loader={
-              <p style={{ textAlign: 'center', marginTop: '10px' }}>
-                {/* <div className={styles.listLine} /> */}
-                <div>内容已经加载完毕</div>
-              </p>
-            }
-            endMessage={
-              <p style={{ textAlign: 'center', marginTop: '10px' }}>
-                {/* <div className={styles.listLine} /> */}
-                <div>内容已经加载完毕</div>
-              </p>
-            }
-          >
-            {List?.map((item: any) => {
-              return (
-                <div key={`${item.sender_id}`} className={StyleSheet.StepItem}>
-                  <span>{item.name}</span>
-                  <div className={StyleSheet.checkBoxBody}>
-                    <Checkbox value={item.sender_id} />
+      {List.length > 0 ? (
+        <div id='scrollableDiv' className={StyleSheet.scrollDiv} style={{ height: 208 }}>
+          <CheckboxGroup onChange={onChange} style={{ width: '100%' }} value={checkListItem}>
+            <InfiniteScroll
+              dataLength={List.length}
+              next={loadMoreData}
+              hasMore={hasMoreData}
+              scrollableTarget='scrollableDiv'
+              loader={
+                <p style={{ textAlign: 'center', marginTop: '10px' }}>
+                  {/* <div className={styles.listLine} /> */}
+                  <div>内容已经加载完毕</div>
+                </p>
+              }
+              endMessage={
+                <p style={{ textAlign: 'center', marginTop: '10px' }}>
+                  {/* <div className={styles.listLine} /> */}
+                  <div>内容已经加载完毕</div>
+                </p>
+              }
+            >
+              {List?.map((item: any) => {
+                return (
+                  <div key={`${item.sender_id}`} className={StyleSheet.StepItem}>
+                    <span>{item.name}</span>
+                    <div className={StyleSheet.checkBoxBody}>
+                      <Checkbox value={item.sender_id} />
+                    </div>
                   </div>
-                </div>
-              )
-            })}
-          </InfiniteScroll>
-        </CheckboxGroup>
-      </div>
+                )
+              })}
+            </InfiniteScroll>
+          </CheckboxGroup>
+        </div>
+      ) : (
+        <Ementy />
+      )}
     </div>
   )
 }
@@ -252,15 +296,27 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id, DropList, Delet
       className={StyleSheet.excitationItemDrop}
       style={{ opacity: isDragging || item.isItemDragging ? 0.4 : 1, cursor: 'move' }}
     >
-      <div className={StyleSheet.excitationItemDrop_left}>
+      <div className={StyleSheet.excitationItemDrop_List}>
         <img className={StyleSheet.img_Body} src={dragImg} alt='' />
-        <Checkbox value={item.keys} />
       </div>
-      <div>
-        <span>{index}</span>
-        <span>{item.name}</span>
-        <div style={{ paddingRight: '16px' }}>
-          <div role='time' onClick={() => {}} />
+      <div className={StyleSheet.excitationItemDrop_ListCheckbox}>
+        <Checkbox value={item.sender_id} />
+      </div>
+      <div className={StyleSheet.excitationItemDrop_ListRight}>
+        <div className={StyleSheet.excitationItemDrop_ListIndex}>
+          <span>{index}</span>
+        </div>
+        <div className={StyleSheet.excitationItemDrop_ListName}>
+          <span>{item.name}</span>
+        </div>
+        <div className={StyleSheet.excitationItemDrop_Img}>
+          <div
+            role='time'
+            className={styles.taskListLeft_detailImg}
+            onClick={() => {
+              DeleteCheckItem(item.sender_id)
+            }}
+          />
         </div>
       </div>
     </div>
@@ -269,21 +325,40 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id, DropList, Delet
 
 const Dropable = React.memo(DropableMemo)
 
+const DeleteCompoent = ({ number, DeleteCheckItem }: { number: number; DeleteCheckItem: () => void }) => {
+  return (
+    <div className={StyleSheet.DelCompoents}>
+      <div role='time' className={StyleSheet.bottomBtn} onClick={DeleteCheckItem}>
+        批量删除
+      </div>
+      <span className={StyleSheet.DelCompoentsCharts}>{`已选 ${number} 项`}</span>
+    </div>
+  )
+}
+const DeleteCompoentMemo = React.memo(DeleteCompoent)
+
 const ThreeSteps = () => {
   const excitationList = stepStore(state => state.excitationList)
-
+  const CheckboxGroup = Checkbox.Group
   const [, drop] = useDrop(() => ({
     accept: 'DragDropItem'
   }))
   const gu_cnt0 = stepStore(state => state.gu_cnt0)
   const gu_w0 = stepStore(state => state.gu_w0)
+  const setCheckList = stepStore(state => state.setCheckList)
   const setValue = stepStore(state => state.setValue)
+  const checkList = stepStore(state => state.checkList)
+  const setExcitation = stepStore(state => state.setExcitation)
+
+  const checkListMemo = React.useMemo(() => {
+    return checkList.length
+  }, [checkList])
+
   const onChangeGu_time = (type: string, e: React.ChangeEvent<HTMLInputElement>) => {
     const newNumber = Number.parseInt(e.target.value || '0', 10)
     if (Number.isNaN(newNumber)) {
       return
     }
-
     setValue(type, newNumber)
   }
 
@@ -305,64 +380,67 @@ const ThreeSteps = () => {
     (dragIndex: number, hoverIndex: number) => {
       const dropCardListCopy = excitationList
       dropCardListCopy.splice(dragIndex, 1, ...dropCardListCopy.splice(hoverIndex, 1, dropCardListCopy[dragIndex]))
-      // setLeftList([...dropCardListCopy])
+      setExcitation([...dropCardListCopy])
     },
-    [excitationList]
+    [excitationList, setExcitation]
   )
 
-  const DeleteCheckItem = React.useCallback(
-    index => {
-      const copyList = excitationList
-    },
-    [excitationList]
-  )
+  const DeleteCheckItem = React.useCallback(() => {
+    const copyList = excitationList.filter((item: any) => !checkList.includes(item.sender_id))
+    setExcitation([...copyList])
+    setCheckList([])
+  }, [checkList, excitationList, setCheckList, setExcitation])
+
+  const onChange = (list: any[]) => {
+    setCheckList([...list])
+  }
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className={StyleSheet.twoSteps}>
-        <div className={StyleSheet.ThreeStepTitle}>
-          <span className={StyleSheet.StepTitle}>激励列表</span>
-          <div style={{ display: 'flex', width: '400px', alignItems: 'center' }}>
-            <div className={StyleSheetOther.inputEdit} style={{ display: 'flex', alignItems: 'center' }}>
-              <span className={StyleSheetOther.headerDesc} style={{ marginRight: '8px', display: 'flex', width: 65 }}>
-                发送次数:
-              </span>
-              <Input
-                className={StyleSheetOther.numberInput}
-                value={gu_cnt0}
-                onBlur={() => {
-                  onMax('gu_cnt0')
-                }}
-                onChange={e => {
-                  onChangeGu_time('gu_cnt0', e)
-                }}
-                suffix={<InputNumberSuffixMemo type='gu_cnt0' />}
-              />
-            </div>
-            <CloumnLine />
-            <div className={StyleSheetOther.inputEdit} style={{ display: 'flex', alignItems: 'center' }}>
-              <span className={StyleSheetOther.headerDesc} style={{ marginRight: '8px', display: 'flex', width: 65 }}>
-                发送间隔:
-              </span>
+    <div className={StyleSheet.twoSteps}>
+      <div className={StyleSheet.ThreeStepTitle}>
+        <span className={StyleSheet.StepTitleHeader}>激励列表</span>
+        <div style={{ display: 'flex', width: '400px', alignItems: 'center' }}>
+          <div className={StyleSheetOther.inputEdit} style={{ display: 'flex', alignItems: 'center' }}>
+            <span className={StyleSheetOther.headerDesc} style={{ marginRight: '8px', display: 'flex', width: 65 }}>
+              发送次数:
+            </span>
+            <Input
+              className={StyleSheetOther.numberInput}
+              value={gu_cnt0}
+              onBlur={() => {
+                onMax('gu_cnt0')
+              }}
+              onChange={e => {
+                onChangeGu_time('gu_cnt0', e)
+              }}
+              suffix={<InputNumberSuffixModal type='gu_cnt0' />}
+            />
+          </div>
+          <CloumnLine />
+          <div className={StyleSheetOther.inputEdit} style={{ display: 'flex', alignItems: 'center' }}>
+            <span className={StyleSheetOther.headerDesc} style={{ marginRight: '8px', display: 'flex', width: 65 }}>
+              发送间隔:
+            </span>
 
-              <Input
-                className={StyleSheetOther.numberInput}
-                onChange={e => {
-                  onChangeGu_time('gu_w0', e)
-                }}
-                onBlur={() => {
-                  onMax('gu_w0')
-                }}
-                value={gu_w0}
-                suffix={<InputNumberSuffixMemo type='gu_w0' />}
-              />
+            <Input
+              className={StyleSheetOther.numberInput}
+              onChange={e => {
+                onChangeGu_time('gu_w0', e)
+              }}
+              onBlur={() => {
+                onMax('gu_w0')
+              }}
+              value={gu_w0}
+              suffix={<InputNumberSuffixModal type='gu_w0' />}
+            />
 
-              <DropTip />
-            </div>
+            <DropTip />
           </div>
         </div>
+      </div>
 
-        <div className={StyleSheet.scrollDiv} style={{ height: 208 }} ref={drop}>
+      <div className={StyleSheet.scrollDiv} style={{ height: 208 }} ref={drop}>
+        <CheckboxGroup onChange={onChange} style={{ width: '100%' }}>
           {excitationList?.map((item: any, index: number) => {
             return (
               <Dropable
@@ -376,9 +454,10 @@ const ThreeSteps = () => {
               />
             )
           })}
-        </div>
+        </CheckboxGroup>
       </div>
-    </DndProvider>
+      {checkListMemo > 0 && <DeleteCompoentMemo number={checkListMemo} DeleteCheckItem={DeleteCheckItem} />}
+    </div>
   )
 }
 
@@ -402,17 +481,19 @@ function StepComponents() {
 
   return (
     <div>
-      <div className={StyleSheet.stepHeader}>
-        <Steps current={current}>
-          {steps.map(item => (
-            <Step key={item.title} title={item.title} />
-          ))}
-        </Steps>
-      </div>
+      <DndProvider backend={HTML5Backend}>
+        <div className={StyleSheet.stepHeader}>
+          <Steps current={current}>
+            {steps.map(item => (
+              <Step key={item.title} title={item.title} />
+            ))}
+          </Steps>
+        </div>
 
-      <div className={StyleSheet.concent}>{steps[current].content}</div>
+        <div className={StyleSheet.concent}>{steps[current].content}</div>
+      </DndProvider>
     </div>
   )
 }
 
-export default StepComponents
+export default withRouter(StepComponents)
