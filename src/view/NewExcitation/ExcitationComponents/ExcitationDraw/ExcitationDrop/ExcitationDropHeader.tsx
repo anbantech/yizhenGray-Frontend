@@ -1,19 +1,19 @@
-import { Input } from 'antd'
+import { Button, Input, message } from 'antd'
 import * as React from 'react'
 import { DropTip } from 'Src/view/excitation/excitationComponent/Tip'
 import InputNumberSuffixMemo from 'Src/components/inputNumbersuffix/inputNumberSuffix'
-import { LeftDropListStore, sendExcitaionListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import { LeftDropListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import { updateExcitationList } from 'Src/services/api/excitationApi'
 import StyleSheet from '../excitationDraw.less'
 
 const CloumnLine = () => {
   return <div className={StyleSheet.cloumnLine} />
 }
 function DropHeaderMemo() {
-  const detailData = sendExcitaionListStore(state => state.detailData)
-  const gu_cnt0 = LeftDropListStore(state => state.gu_cnt0)
-  const gu_w0 = LeftDropListStore(state => state.gu_w0)
   const setValue = LeftDropListStore(state => state.setValue)
-  const { name, desc } = detailData
+  const setBtnStatus = LeftDropListStore(state => state.setBtnStatus)
+  const DropList = LeftDropListStore(state => state.DropList)
+  const { name, desc, gu_cnt0, gu_w0, btnStatus, sender_id } = LeftDropListStore()
 
   const onChangeGu_time = (type: string, e: React.ChangeEvent<HTMLInputElement>) => {
     const newNumber = Number.parseInt(e.target.value || '0', 10)
@@ -22,6 +22,7 @@ function DropHeaderMemo() {
     }
 
     setValue(type, newNumber)
+    setBtnStatus(false)
   }
 
   const onMax = React.useCallback(
@@ -34,11 +35,31 @@ function DropHeaderMemo() {
         const newValue = Number(gu_w0) > 100 ? 100 : gu_w0
         setValue(type, newValue)
       }
+      setBtnStatus(false)
     },
-    [gu_cnt0, gu_w0, setValue]
+    [gu_cnt0, gu_w0, setBtnStatus, setValue]
   )
+
+  const BtnStatus = React.useMemo(() => {
+    return DropList.length !== 0 && !btnStatus
+  }, [DropList.length, btnStatus])
+
+  const saveConfig = React.useCallback(async () => {
+    const listArray = DropList.map((item: any) => {
+      return item.sender_id
+    })
+    const child_id_list = [[], [...listArray], []]
+    const params = { name, gu_cnt0, gu_w0, desc: desc ? desc.trim() : '', child_id_list }
+    const res = await updateExcitationList(sender_id, params)
+    if (res.code === 0) {
+      message.success('创建成功')
+    }
+  }, [DropList, desc, gu_cnt0, gu_w0, name, sender_id])
   return (
     <div className={StyleSheet.DropHeader}>
+      <Button disabled={!BtnStatus} onClick={saveConfig} className={StyleSheet.saveBtn}>
+        保存配置
+      </Button>
       <span className={StyleSheet.sendListTitle}>{name}</span>
       <div className={StyleSheet.editConcent}>
         <span className={StyleSheet.headerDesc}> 描述: {desc} </span>

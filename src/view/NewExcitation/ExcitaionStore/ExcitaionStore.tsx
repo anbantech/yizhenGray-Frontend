@@ -42,13 +42,23 @@ const RightDragListStore = create<RightStateType & RightAction>(set => ({
   }
 }))
 
-const LeftDropListStore = create<LeftAction & LeftActionState>((set, get) => ({
+const LeftDropListStore = create<LeftAction & sendList & ListFn & LeftActionState>((set, get) => ({
   DropList: [],
   gu_cnt0: 1,
+  name: '',
+  desc: '',
   gu_w0: 0,
+  sender_id: -1,
+  detailData: {},
+  btnStatus: true,
   setLeftList: (item: ItemListState) => {
     set(() => ({
       DropList: [...item]
+    }))
+  },
+  setBtnStatus: (val: boolean) => {
+    set(() => ({
+      btnStatus: val
     }))
   },
   LeftDragIndexFn: () => {
@@ -91,7 +101,26 @@ const LeftDropListStore = create<LeftAction & LeftActionState>((set, get) => ({
         gu_w0: val
       }))
     }
-  }
+  },
+  setDestoryEverything: () => {
+    set(() => ({
+      DropList: [],
+      gu_cnt0: 1,
+      name: '',
+      desc: '',
+      gu_w0: 0,
+      sender_id: -1,
+      detailData: {},
+      btnStatus: true
+    }))
+  },
+  checkList: (id: number) => {
+    set(() => ({
+      sender_id: id
+    }))
+  },
+  setDetailData: state =>
+    set({ detailData: state, name: state.name, desc: state.desc, gu_cnt0: state.gu_cnt0, gu_w0: state.gu_w0, DropList: state.group_data_list[1] })
 }))
 
 const DragableDragingStatusStore = create<DragableStatuState & DragableStatusAction>(set => ({
@@ -116,17 +145,6 @@ const ArgeementDropListStore = create<ArgeementAction & ArgeementActionState>((s
     const uselessIndex = DropList.findIndex((item: any) => item.id === -1)
     return uselessIndex
   }
-}))
-
-const sendExcitaionListStore = create<sendList & ListFn>(set => ({
-  sender_id: -1,
-  checkList: (id: number) => {
-    set(() => ({
-      sender_id: id
-    }))
-  },
-  detailData: {},
-  setDetailData: state => set({ detailData: state })
 }))
 
 const useRequestStore = create<ExcitationListStateFn & ExcitationListState>((set, get) => ({
@@ -195,7 +213,7 @@ const GlobalStatusStore = create<UpdateStatusFn & GlobalStatusType>(set => ({
   updateStatus: false,
   setUpdateStatus: (val: boolean) => {
     set(() => ({
-      updateStatus: !val
+      updateStatus: val
     }))
   }
 }))
@@ -204,7 +222,6 @@ export {
   useExicitationId,
   useModalExcitationStore,
   DragableDragingStatusStore,
-  sendExcitaionListStore,
   RightDragListStore,
   LeftDropListStore,
   ArgeementDropListStore,

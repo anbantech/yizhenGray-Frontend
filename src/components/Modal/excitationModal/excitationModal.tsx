@@ -52,7 +52,7 @@ function ExcitationModal(props: any) {
       .then(res => {
         if (res.code !== 1005) {
           hideModal(false)
-          setUpdateStatus(updateStatus)
+          setUpdateStatus(!updateStatus)
           form.resetFields()
         }
         return res
