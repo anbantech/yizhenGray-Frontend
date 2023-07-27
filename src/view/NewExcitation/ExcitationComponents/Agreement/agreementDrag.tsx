@@ -32,7 +32,7 @@ const preViewTitle = {
 
 const StyleMap = {
   StringComponents: { width: '74px', height: '26px', borderRadius: '4px', cursor: 'move' },
-  IntComponents: { width: '60px', height: '26px', borderRadius: '4px', cursor: 'move' },
+  IntComponents: { width: '60px', height: '26px', borderRadius: '4px', margin: '0px 6px', cursor: 'move' },
   IntArrayComponents: { width: '88px', height: '26px', borderRadius: '4px', cursor: 'move' }
 }
 
@@ -48,7 +48,6 @@ const Draggable = ({ item }: ItemType) => {
     () => ({
       type: 'DragDropItem',
       item() {
-        DragingBeforeRef.current = JSON.parse(JSON.stringify(DropList))
         const useless = DropList.find((item: any) => item.id === -1)
         // 拖拽开始时，向 cardList 数据源中插入一个占位的元素，如果占位元素已经存在，不再重复插入
         if (!useless) {
@@ -73,7 +72,7 @@ const Draggable = ({ item }: ItemType) => {
           DragingBeforeRef.current = []
         } else {
           dropCardListCopy.splice(uselessIndex, 1)
-          setLeftList([...DragingBeforeRef?.current])
+          setLeftList([...dropCardListCopy])
         }
         setDragableStatus(false)
       }

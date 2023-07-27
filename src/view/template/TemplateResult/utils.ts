@@ -2,13 +2,13 @@
 import { warn } from 'Utils/common'
 import JSZip from 'jszip'
 import API from 'Src/services/api'
+import { message } from 'antd'
 import { rcFile } from 'Src/view/template/TemplateUpload/TemplateUpload'
 import { checkVersion } from 'Utils/env'
 import { shouldHaveChildrenBlockNameList, blockNameList } from '../DragSFC/ItemTypes'
 import { DefaultResponseTemplateListType } from '../ResponseTemplate/createResponseTemplate'
 import { TreeNode } from './templateResult'
 import { Primitive } from '../PrimitiveList/primitiveList'
-import { TEMPLATE_VERSION } from '../BaseTemplate/templateContext'
 
 interface PrimitiveElement {
   elements?: PrimitiveElement[]
@@ -654,37 +654,29 @@ const templateDataLoader = {
    * 单模板导出
    * 导出单个 json 文件
    */
-  async singleExporter(templateId: number, name: string) {
+  async singleExporter(sender_id: number) {
     if (!browserDownload.ifHasDownloadAPI) {
       warn(true, '您的浏览器不支持下载方法，请更新您的浏览器到最新版本')
       return
     }
     const exportJson = {}
+    let name
     try {
-      const res = await API.getTemplate(`${templateId}`, { type: 'user_defined' })
+      const res = await API.getExcitaionDeatilFn(sender_id)
       if (res.data) {
-        // const defaultRules = {
-        //   condition: '',
-        //   alg: '',
-        //   rule: ''
-        // }
-        // res.data.expected_template.elements.flat().forEach(ele => {
-        //   Object.assign(ele, {
-        //     rules: Object.keys(ele.rules).length > 0 ? ele.rules : defaultRules
-        //   })
-        // })
         Object.assign(exportJson, {
           name: res.data.name,
-          description: res.data.desc,
-          elements: res.data.elements,
-          // expected_elements: res.data.expected_template.elements,
-          // parser: res.data.expected_template.parser,
-          exportTime: new Date(),
-          version: TEMPLATE_VERSION
+          gu_cnt0: res.data.gu_cnt0,
+          gu_w0: res.data.gu_w0,
+          peripheral: res.data.peripheral,
+          template: res.data.template,
+          exportTime: new Date()
         })
+        // eslint-disable-next-line prefer-destructuring
+        name = res.data.name
       }
     } catch {
-      warn(false, '拉取模板管理失败')
+      return message.error('激励导出失败')
     }
     const blob = new Blob([JSON.stringify(exportJson, null, 2) as string])
     browserDownload.createFrontendDownloadAction(`${name}.json`, blob)
@@ -693,12 +685,7 @@ const templateDataLoader = {
    * 多模板导出
    * 导出包含多个 json 文件的 zip 文件
    */
-  async exporter(
-    templateIdList: number[],
-    name: string,
-    callback?: (current: number, all: number) => void,
-    getTemplate?: (id: number, error: any) => void
-  ) {
+  async exporter(templateIdList: number[], name: string, callback?: (current: number, all: number) => void) {
     if (!browserDownload.ifHasDownloadAPI) {
       warn(true, '您的浏览器不支持下载方法，请更新您的浏览器到最新版本')
       return
@@ -707,25 +694,22 @@ const templateDataLoader = {
     let current = 0
     const zipInstance = new JSZip()
     // eslint-disable-next-line no-restricted-syntax
-    for (const templateId of templateIdList) {
+    for (const sender_id of templateIdList) {
       const exportJson = {} as any
       try {
-        // eslint-disable-next-line no-await-in-loop
-        const res = await API.getTemplate(`${templateId}`, { type: 'user_defined' })
+        const res = await API.getExcitaionDeatilFn(sender_id)
         if (res.data) {
           Object.assign(exportJson, {
-            id: res.data.id,
             name: res.data.name,
-            description: res.data.desc,
-            elements: res.data.elements,
-            expected_elements: res.data.expected_template.elements,
-            parser: res.data.expected_template.parser,
-            exportTime: new Date(),
-            version: TEMPLATE_VERSION
+            gu_cnt0: res.data.gu_cnt0,
+            gu_w0: res.data.gu_w0,
+            peripheral: res.data.peripheral,
+            template: res.data.template,
+            exportTime: new Date()
           })
         }
-      } catch (error) {
-        getTemplate?.(templateId, error)
+      } catch {
+        return message.error('激励导出失败')
       }
       // console.log(Object.hasOwnProperty.call(exportJson, 'name'), exportJson)
       // if fetch template detail fail, skip this template

@@ -6,7 +6,9 @@ import { checkListStore, LeftDropListStore } from 'Src/view/NewExcitation/Excita
 import StyleSheet from '../excitationDraw.less'
 
 function ExcitationDropHeader() {
-  const { checkAllSenderIdList, indeterminate, setIndeterminate, all, setCheckAll } = checkListStore()
+  const indeterminate = checkListStore(state => state.indeterminate)
+  const all = checkListStore(state => state.all)
+  const { checkAllSenderIdList, setIndeterminate, setCheckAll } = checkListStore()
   const DropList = LeftDropListStore(state => state.DropList)
   const checkItem = React.useCallback(() => {
     return DropList.map((item: any) => item.keys)

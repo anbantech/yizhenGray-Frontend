@@ -7,44 +7,25 @@ import {
   DragableDragingStatusStore,
   useRequestStore
 } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import { Tooltip } from 'antd'
 import dragImg from 'Src/assets/drag/icon_drag.png'
-import OmitExcitationComponents from 'Src/components/OmitComponents/OmitExcitationComponents'
+import OmitExcitation from 'Src/components/OmitComponents/OpenMenu'
 import styles from 'Src/view/Project/task/taskList/task.less'
+import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import { generateUUID } from 'Src/util/common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import StyleSheet from '../excitationDraw.less'
 
-type DragableType = { id: number; name: string; keys: number }
-type Props = { height: number }
-type ChildRefType = { closeMenu: () => void } | null
-// 拖拽列表的item
-const Dragable = ({ name, sender_id, item }: any) => {
-  // 展示菜单
+type DragableType = { sender_id: number; name: string; item: Record<string, any>; onChange: (val: string, id: number) => void }
+type Props = { height: number; onChange: (val: string, id: number) => void }
 
+// 拖拽列表的item
+const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
   const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
   const LeftDragIndexFn = LeftDropListStore(state => state.LeftDragIndexFn)
   const setDragableStatus = DragableDragingStatusStore(state => state.setDragableStatus)
-
-  const [, setUpdateMenue] = React.useState<number>(-1)
-  // 定义 ref
-  const ref = React.useRef<ChildRefType>(null!)
-
-  const onChange = (val: string) => {
-    switch (val) {
-      case '删除':
-        // CommonModleClose(true)
-        break
-      case '查看关联信息':
-        // getDependenceInfo()
-        break
-      case '修改':
-        // jumpUpdateWeb(updateMenue)
-        break
-      default:
-        return null
-    }
-  }
+  const setBtnStatus = LeftDropListStore(state => state.setBtnStatus)
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -67,6 +48,7 @@ const Dragable = ({ name, sender_id, item }: any) => {
         const dropCardListCopy = DropList
         if (monitor.didDrop()) {
           dropCardListCopy.splice(uselessIndex, 1, item)
+          setBtnStatus(false)
         } else {
           dropCardListCopy.splice(uselessIndex, 1)
         }
@@ -76,41 +58,50 @@ const Dragable = ({ name, sender_id, item }: any) => {
     }),
     [DropList, setDragableStatus]
   )
+  const myRef = React.useRef<any>()
   return (
     <div
       ref={drag}
       role='time'
       style={{ opacity: isDragging ? 0.5 : 1, cursor: 'move' }}
       onMouseLeave={() => {
-        setUpdateMenue(-1)
-        ref.current?.closeMenu()
+        myRef.current?.closeMenu()
       }}
       className={StyleSheet.excitationItem}
     >
-      <div
-        role='time'
-        onMouseDown={() => {
-          setUpdateMenue(-1)
-          ref.current?.closeMenu()
-        }}
-      >
+      <div style={{ display: 'flex', alignItems: 'center' }}>
         <img className={StyleSheet.img_Body} src={dragImg} alt='' />
         <Checkbox value={sender_id} />
+
         <span className={StyleSheet.dragItem_name} style={{ marginRight: '6px' }}>
-          {' '}
-          {name}
+          <Tooltip placement='bottom' title={name}>
+            {' '}
+            {name}
+          </Tooltip>
         </span>
       </div>
-      <OmitExcitationComponents id={sender_id} ref={ref} onChange={onChange} updateMenueFn={setUpdateMenue} />
+      <OmitExcitation ref={myRef} onChange={onChange} id={sender_id} />
     </div>
   )
 }
 
 const DragableMemo = React.memo(Dragable)
 // 拖拽区
-function ExcitationDrag({ height }: Props) {
+function ExcitationDrag({ height, onChange }: Props) {
   const rightDragList = RightDragListStore(state => state.DragList)
+  const checkAllList = RightDragListStore(state => state.checkAllList)
+  const { checkAllSenderIdList, setIndeterminate, setCheckAll } = RightDragListStore()
   const { hasMoreData, loadMoreData } = useRequestStore()
+
+  const onChanges = React.useCallback(
+    (checkedValues: CheckboxValueType[]) => {
+      checkAllSenderIdList([...checkedValues])
+      setCheckAll(checkedValues.length === rightDragList.length)
+      setIndeterminate(!!checkedValues.length && checkedValues.length < rightDragList.length)
+    },
+    [checkAllSenderIdList, rightDragList.length, setCheckAll, setIndeterminate]
+  )
+
   return (
     <div className={StyleSheet.LISTScroll}>
       <InfiniteScroll
@@ -126,14 +117,15 @@ function ExcitationDrag({ height }: Props) {
         }
         endMessage={
           <p style={{ textAlign: 'center', marginTop: '12px', marginLeft: '20px', width: '208px' }}>
-            {/* <div className={styles.listLine} /> */}
             <div className={styles.concentList}>内容已经加载完毕</div>
           </p>
         }
       >
-        {rightDragList?.map((item: any) => {
-          return <DragableMemo id={item.sender_id} name={item.name} item={item} key={item.sender_id} />
-        })}
+        <Checkbox.Group style={{ width: '100%' }} onChange={onChanges} value={checkAllList}>
+          {rightDragList?.map((item: any) => {
+            return <DragableMemo sender_id={item.sender_id} onChange={onChange} name={item.name} item={item} key={item.sender_id} />
+          })}
+        </Checkbox.Group>
       </InfiniteScroll>
     </div>
   )

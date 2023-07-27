@@ -385,7 +385,22 @@ const ThreeSteps = () => {
     [excitationList, setExcitation]
   )
 
-  const DeleteCheckItem = React.useCallback(() => {
+  const DeleteCheckItem = React.useCallback(
+    (val: number) => {
+      const DropListFilter = excitationList.filter((item: any) => {
+        return val !== item.sender_id
+      })
+      const CheckListFilter = checkList.filter((item: any) => {
+        return val !== item
+      })
+      // const copyList = excitationList.filter((item: any) => !checkList.includes(item.sender_id))
+      setExcitation([...DropListFilter])
+      setCheckList([...CheckListFilter])
+    },
+    [checkList, excitationList, setCheckList, setExcitation]
+  )
+
+  const DeleteAllCheckItem = React.useCallback(() => {
     const copyList = excitationList.filter((item: any) => !checkList.includes(item.sender_id))
     setExcitation([...copyList])
     setCheckList([])
@@ -456,7 +471,7 @@ const ThreeSteps = () => {
           })}
         </CheckboxGroup>
       </div>
-      {checkListMemo > 0 && <DeleteCompoentMemo number={checkListMemo} DeleteCheckItem={DeleteCheckItem} />}
+      {checkListMemo > 0 && <DeleteCompoentMemo number={checkListMemo} DeleteCheckItem={DeleteAllCheckItem} />}
     </div>
   )
 }

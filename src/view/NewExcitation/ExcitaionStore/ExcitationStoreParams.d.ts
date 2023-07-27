@@ -11,6 +11,7 @@ type ItemState = Record<string, any>[]
 type LeftAction = {
   setLeftList: (item: ItemListState) => void
   LeftDragIndexFn: () => number
+  setDestoryEverything: () => void
   increase: (type: string) => void
   decrease: (type: string) => void
   setValue: (type: string, val: number) => void
@@ -44,13 +45,21 @@ interface DragCmps {
 type ArgeementAction = {
   setLeftList: (item: DragCmps[]) => void
   LeftDragIndexFn: () => number
+  increase: (type: string) => void
+  decrease: (type: string) => void
+  setValue: (type: string, val: number) => void
+  setDropListRef: (ref: any, index: number) => void
+  destoryEveryItem: () => void
 }
 
 interface ArgeementActionState {
   DropList: DragCmps[]
+  gu_cnt0: number
+  gu_w0: number
+  DropListRef: any[]
 }
 
-type ItemListState = ListType[]
+type ItemListState = ListType[] | any[]
 
 type ListType = {
   sender_id: number
