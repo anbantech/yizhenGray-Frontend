@@ -1,5 +1,4 @@
-// import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import { Checkbox } from 'antd'
+import { Checkbox, Tooltip } from 'antd'
 import * as React from 'react'
 import { DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd'
 import dragImg from 'Src/assets/drag/icon_drag.png'
@@ -33,6 +32,7 @@ interface ItemType {
 
 const DropableMemo = ({ index, item, moveCardHandler, sender_id, DropList, DeleteCheckItem }: any) => {
   const ref = React.useRef<HTMLDivElement>(null)
+  const setBtnStatus = LeftDropListStore(state => state.setBtnStatus)
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
@@ -42,7 +42,12 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id, DropList, Delet
       },
       collect: monitor => ({
         isDragging: monitor.isDragging()
-      })
+      }),
+      end(draggedItem, monitor) {
+        if (monitor.didDrop()) {
+          setBtnStatus(false)
+        }
+      }
     }),
     [sender_id, index, DropList]
   )
@@ -125,7 +130,9 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id, DropList, Delet
       </div>
       <div className={StyleSheet.excitationItemDrop_right}>
         <span className={StyleSheet.excitationChart}>{index}</span>
-        <span className={StyleSheet.excitationChart}>{item.name}</span>
+        <Tooltip placement='bottom' title={item.name}>
+          <span className={StyleSheet.excitationChart}>{item.name}</span>
+        </Tooltip>
         <span className={StyleSheet.excitationChart}>{item.peripheral}</span>
         <span className={StyleSheet.excitationChart}>{item.gu_cnt0}</span>
         <span className={StyleSheet.excitationChart}>{item.gu_w0}</span>
@@ -134,7 +141,7 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id, DropList, Delet
             role='time'
             className={styles.taskListLeft_detailImg}
             onClick={() => {
-              DeleteCheckItem(index)
+              DeleteCheckItem(item.keys)
             }}
           />
         </div>
@@ -149,11 +156,10 @@ function ExcitationDropList() {
   const [, drop] = useDrop(() => ({
     accept: 'DragDropItem'
   }))
-
-  const { checkAllList, checkAllSenderIdList, setCheckAll, setIndeterminate } = checkListStore()
+  const checkAllList = checkListStore(state => state.checkAllList)
+  const { checkAllSenderIdList, setCheckAll, setIndeterminate } = checkListStore()
   // 列表元素
   const DropList = LeftDropListStore(state => state.DropList)
-  const setBtnStatus = LeftDropListStore(state => state.setBtnStatus)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
   const dragableDragingStatus = DragableDragingStatusStore(state => state.dragableDragingStatus)
   const moveCardHandler = React.useCallback(
@@ -168,9 +174,8 @@ function ExcitationDropList() {
         dropCardListCopy.splice(dragIndex, 1, ...dropCardListCopy.splice(hoverIndex, 1, dropCardListCopy[dragIndex]))
         setLeftList([...dropCardListCopy])
       }
-      setBtnStatus(false)
     },
-    [DropList, dragableDragingStatus, setBtnStatus, setLeftList]
+    [DropList, dragableDragingStatus, setLeftList]
   )
 
   const onChange = React.useCallback(
@@ -179,19 +184,28 @@ function ExcitationDropList() {
       setCheckAll(checkedValues.length === DropList.length)
       setIndeterminate(!!checkedValues.length && checkedValues.length < DropList.length)
     },
-    [DropList.length, checkAllSenderIdList, setCheckAll, setIndeterminate]
+    [DropList, checkAllSenderIdList, setCheckAll, setIndeterminate]
   )
 
   const DeleteCheckItem = React.useCallback(
-    index => {
-      const copyList = DropList
-      const checkAllListCopy = checkAllList
-      copyList.splice(index, 1)
-      checkAllListCopy.splice(index, 1)
-      setLeftList([...copyList])
-      checkAllSenderIdList([...checkAllListCopy])
+    (val: string) => {
+      const DropListFilter = DropList.filter((item: any) => {
+        return val !== item.keys
+      })
+      const CheckListFilter = checkAllList.filter((item: any) => {
+        return val !== item
+      })
+      checkAllSenderIdList([...CheckListFilter])
+      setLeftList([...DropListFilter])
+
+      if (DropListFilter.length === 0) {
+        setCheckAll(false)
+      } else {
+        setCheckAll(CheckListFilter.length === DropListFilter.length)
+      }
+      setIndeterminate(!!CheckListFilter.length && CheckListFilter.length < DropListFilter.length)
     },
-    [DropList, checkAllList, checkAllSenderIdList, setLeftList]
+    [DropList, checkAllList, checkAllSenderIdList, setCheckAll, setIndeterminate, setLeftList]
   )
 
   return (

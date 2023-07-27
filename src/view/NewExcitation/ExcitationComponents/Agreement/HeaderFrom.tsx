@@ -1,89 +1,20 @@
-import { Form, Input, InputNumber, message, Select } from 'antd'
+import { Form, Input, message, Select } from 'antd'
 import * as React from 'react'
+import NewInputNumberSuffixModal from 'Src/components/inputNumbersuffix/newExcitationModal'
 import { getPortList } from 'Src/services/api/excitationApi'
+import { ArgeementDropListStore } from '../../ExcitaionStore/ExcitaionStore'
 import styles from './agreementCompoents.less'
 
-const { Option } = Select
-
-type Currency = 'rmb'
 interface PriceValue {
   count?: number
 }
 
-interface PriceInputProps {
-  value?: PriceValue
-  onChange?: (value: PriceValue) => void
-}
-
-const CountInput: React.FC<PriceInputProps> = ({ value = {}, onChange }) => {
-  const [number, setNumber] = React.useState(0)
-  const triggerChange = (changedValue: { count?: number }) => {
-    onChange?.({ ...changedValue })
-  }
-
-  const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newNumber = Number.parseInt(e.target.value || '0', 10)
-    if (Number.isNaN(number)) {
-      return
-    }
-    if (!('number' in value)) {
-      setNumber(newNumber)
-    }
-    triggerChange({ count: newNumber })
-  }
-
-  return (
-    <span>
-      <Input type='text' value={value.count || number} onChange={onNumberChange} style={{ width: 100 }} className={styles.commonItems} />
-    </span>
-  )
-}
-
-const TimeInput: React.FC<PriceInputProps> = ({ value = {}, onChange }) => {
-  const [number, setNumber] = React.useState(0)
-  const triggerChange = (changedValue: { count?: number }) => {
-    onChange?.({ ...changedValue })
-  }
-
-  const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newNumber = Number.parseInt(e.target.value || '0', 10)
-    if (Number.isNaN(number)) {
-      return
-    }
-    if (!('number' in value)) {
-      setNumber(newNumber)
-    }
-    triggerChange({ count: newNumber })
-  }
-
-  return (
-    <span>
-      <Input type='text' value={value.count || number} onChange={onNumberChange} style={{ width: 100 }} className={styles.commonItems} />
-    </span>
-  )
-}
-
-interface PriceValue {
-  count?: number
-}
-
-interface PriceInputProps {
-  value?: PriceValue
-  onChange?: (value: PriceValue) => void
-}
-
-function HeaderForm() {
-  const [form] = Form.useForm()
+const HeadForm = React.forwardRef((props, myRef) => {
+  const [form] = Form.useForm<any>()
   const { Option } = Select
-  const [valueCount, setValueCount] = React.useState(20)
-  const [valueTime, setValueTime] = React.useState(200)
   const [portList, setPortList] = React.useState<string[]>([])
+  const { gu_cnt0, gu_w0, setValue } = ArgeementDropListStore()
 
-  const checkPrice = (_: any, value: { count: number }) => {
-    if (value.count > 0) {
-      return Promise.resolve()
-    }
-  }
   // 端口列表
   const fetchPortList = React.useCallback(async () => {
     //  Todo code码
@@ -99,38 +30,92 @@ function HeaderForm() {
       message.error(error.message)
     }
   }, [])
+
+  const validateForm = React.useCallback(async () => {
+    const value = await form.validateFields()
+    return value
+  }, [form])
+
+  React.useImperativeHandle(myRef, () => ({
+    save: () => {
+      return form.getFieldsValue()
+    },
+    delete: () => {},
+    validate: () => {
+      return validateForm()
+    },
+    clearInteraction: () => {}
+  }))
+
   React.useEffect(() => {
     fetchPortList()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const onchangeTime = async () => {
-    const res = await form.getFieldsValue()
-    // console.log(res)
+  const onChangeGu_time = (type: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const newNumber = Number.parseInt(e.target.value || '0', 10)
+    if (Number.isNaN(newNumber)) {
+      return
+    }
+    setValue(type, newNumber)
   }
+
+  const onMax = React.useCallback(
+    (type: string) => {
+      if (type === 'gu_cnt0') {
+        const newValue = Number(gu_cnt0) > 20 ? 20 : gu_cnt0
+        setValue(type, newValue)
+      }
+      if (type === 'gu_w0') {
+        const newValue = Number(gu_w0) > 100 ? 100 : gu_w0
+        setValue(type, newValue)
+      }
+    },
+    [gu_cnt0, gu_w0, setValue]
+  )
+
+  React.useEffect(() => {
+    form.setFieldsValue({ gu_w0, gu_cnt0 })
+  }, [gu_w0, gu_cnt0, form])
+
   return (
     <>
-      <Form
-        form={form}
-        name='horizontal_login'
-        layout='inline'
-        className={styles.headerForm}
-        initialValues={{
-          gu_cent0: {
-            count: 20
-          },
-          gu_w0: {
-            count: 100
-          }
-        }}
-      >
-        <Form.Item name='name' label='名称' rules={[{ required: true, message: 'Please input your username!' }]}>
+      <Form form={form} name='horizontal_login' layout='inline' className={styles.headerForm}>
+        <Form.Item
+          name='name'
+          label='名称'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[
+            { required: true, message: '请输入激励名称' },
+            { type: 'string', min: 2, max: 20, message: '激励名称长度为2到20个字符' },
+            {
+              validateTrigger: 'onBlur',
+              validator(_, value) {
+                const reg = /^[\w\u4E00-\u9FA5]+$/
+                if (reg.test(value)) {
+                  return Promise.resolve()
+                }
+                return Promise.reject(new Error('请输入激励名称'))
+              }
+            }
+          ]}
+        >
           <Input placeholder='请输入激励名称' className={styles.commonItem} />
         </Form.Item>
-        <Form.Item name='gu_cent0' label='发送次数' rules={[{ validator: checkPrice }]}>
-          <TimeInput />
+        <Form.Item name='gu_cnt0' label='发送次数' rules={[{ required: true }]}>
+          <Input
+            className={styles.commonItems}
+            onBlur={() => {
+              onMax('gu_cnt0')
+            }}
+            onChange={e => {
+              onChangeGu_time('gu_cnt0', e)
+            }}
+            suffix={<NewInputNumberSuffixModal type='gu_cnt0' />}
+          />
         </Form.Item>
-        <Form.Item name='username' label='外设' rules={[{ required: true, message: 'Please input your username!' }]}>
+        <Form.Item name='peripheral' label='外设' rules={[{ required: true, message: '请选择外设' }]}>
           <Select placeholder='请选择外设' className={styles.commonItem}>
             {
               /**
@@ -147,15 +132,24 @@ function HeaderForm() {
           </Select>
         </Form.Item>
 
-        <Form.Item name='gu_w0' label='发送间隔' rules={[{ validator: checkPrice }]}>
-          <CountInput />
+        <Form.Item name='gu_w0' label='发送间隔' rules={[{ required: true }]}>
+          <Input
+            className={styles.commonItems}
+            onChange={e => {
+              onChangeGu_time('gu_w0', e)
+            }}
+            onBlur={() => {
+              onMax('gu_w0')
+            }}
+            suffix={<NewInputNumberSuffixModal type='gu_w0' />}
+          />
         </Form.Item>
       </Form>
-      <div onClick={onchangeTime} role='time'>
-        12312
-      </div>
     </>
   )
-}
+})
 
-export default HeaderForm
+HeadForm.displayName = 'HeadForm'
+const HeaderFormRef = React.memo(HeadForm)
+
+export default HeaderFormRef

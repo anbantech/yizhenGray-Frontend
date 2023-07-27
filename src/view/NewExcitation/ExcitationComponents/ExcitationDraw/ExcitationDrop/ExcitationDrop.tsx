@@ -41,8 +41,8 @@ function ExcitationDropMemo() {
   const setLeftList = LeftDropListStore(state => state.setLeftList)
   const { sender_id, setDetailData } = LeftDropListStore()
   // 筛选逻辑
-  const { checkAllList, checkAllSenderIdList, setIndeterminate, setCheckAll } = checkListStore()
-
+  const { checkAllSenderIdList, setIndeterminate, setCheckAll } = checkListStore()
+  const checkAllList = checkListStore(state => state.checkAllList)
   const DeleteCheckItem = React.useCallback(() => {
     const copyList = DropList.filter(item => !checkAllList.includes(item.keys))
     setLeftList([...copyList])
@@ -52,14 +52,18 @@ function ExcitationDropMemo() {
   }, [DropList, checkAllList, checkAllSenderIdList, setLeftList, setCheckAll, setIndeterminate])
 
   const LengthMemo = useMemo(() => {
-    return checkAllList.length > 0
+    return checkAllList.length
   }, [checkAllList])
+
   // 页面更新
   const getExcitaionDeatilFunction = React.useCallback(
     async (id: number) => {
       try {
         const res = await getExcitaionDeatilFn(id)
-        setDetailData(res.data)
+        if (res.data) {
+          // const keysList = res.data.map((item: any) => item.keys)
+          setDetailData(res.data)
+        }
       } catch (error) {
         message.error(error.message)
       }
@@ -78,7 +82,7 @@ function ExcitationDropMemo() {
       <span className={StyleSheet.sendListTitle}>发送列表</span>
       <MemoExcitationListHeader />
       {DropList.length > 0 ? <ExcitationDropList /> : <NoTask />}
-      {LengthMemo ? <DeleteCompoentMemo number={checkAllList.length} DeleteCheckItem={DeleteCheckItem} /> : null}
+      {LengthMemo ? <DeleteCompoentMemo number={LengthMemo} DeleteCheckItem={DeleteCheckItem} /> : null}
     </div>
   )
 }

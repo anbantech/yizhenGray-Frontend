@@ -33,8 +33,26 @@ const useExicitationId = create((set: any) => ({
   setId: () => set((state: any) => ({ id: state.id }))
 }))
 
-const RightDragListStore = create<RightStateType & RightAction>(set => ({
+const RightDragListStore = create<RightStateType & RightAction & ListAllItemFn & ListFnStateValue>(set => ({
   DragList: [],
+  checkAllList: [],
+  indeterminate: false,
+  all: false,
+  checkAllSenderIdList: (listValue: CheckboxValueType[]) => {
+    set(() => ({
+      checkAllList: listValue
+    }))
+  },
+  setIndeterminate: (val: boolean) => {
+    set(() => ({
+      indeterminate: val
+    }))
+  },
+  setCheckAll: (val: boolean) => {
+    set(() => ({
+      all: val
+    }))
+  },
   setRightList: (item: ItemState) => {
     set(() => ({
       DragList: item
@@ -45,9 +63,9 @@ const RightDragListStore = create<RightStateType & RightAction>(set => ({
 const LeftDropListStore = create<LeftAction & sendList & ListFn & LeftActionState>((set, get) => ({
   DropList: [],
   gu_cnt0: 1,
+  gu_w0: 0,
   name: '',
   desc: '',
-  gu_w0: 0,
   sender_id: -1,
   detailData: {},
   btnStatus: true,
@@ -134,16 +152,70 @@ const DragableDragingStatusStore = create<DragableStatuState & DragableStatusAct
 
 const ArgeementDropListStore = create<ArgeementAction & ArgeementActionState>((set, get) => ({
   DropList: [],
+  gu_cnt0: 1,
+  gu_w0: 0,
+  DropListRef: [],
   setLeftList: (item: DragCmps[]) => {
     set(() => ({
       DropList: [...item]
     }))
   },
-
   LeftDragIndexFn: () => {
     const { DropList } = get()
     const uselessIndex = DropList.findIndex((item: any) => item.id === -1)
     return uselessIndex
+  },
+  increase: (type: string) => {
+    if (type === 'gu_cnt0') {
+      set(state => ({
+        gu_cnt0: state.gu_cnt0 < 20 ? state.gu_cnt0 + 1 : 20
+      }))
+    }
+    if (type === 'gu_w0') {
+      set(state => ({
+        gu_w0: state.gu_w0 < 100 ? state.gu_w0 + 1 : 100
+      }))
+    }
+  },
+  decrease: (type: string) => {
+    if (type === 'gu_cnt0') {
+      set(state => ({
+        gu_cnt0: state.gu_cnt0 > 1 ? state.gu_cnt0 - 1 : 1
+      }))
+    }
+    if (type === 'gu_w0') {
+      set(state => ({
+        gu_w0: state.gu_w0 > 0 ? state.gu_w0 - 1 : 0
+      }))
+    }
+  },
+  setValue: (type: string, val: number) => {
+    if (type === 'gu_cnt0') {
+      set(() => ({
+        gu_cnt0: val
+      }))
+    }
+    if (type === 'gu_w0') {
+      set(() => ({
+        gu_w0: val
+      }))
+    }
+  },
+  setDropListRef: (ref: any, index: number) => {
+    const { DropListRef } = get()
+    const DropListRefCopy = DropListRef
+    DropListRefCopy[index] = ref
+    set(() => ({
+      DropListRef: DropListRefCopy
+    }))
+  },
+  destoryEveryItem: () => {
+    set(() => ({
+      DropList: [],
+      gu_cnt0: 1,
+      gu_w0: 0,
+      DropListRef: []
+    }))
   }
 }))
 
@@ -153,7 +225,7 @@ const useRequestStore = create<ExcitationListStateFn & ExcitationListState>((set
     key_word: '',
     status: null,
     page: 1,
-    page_size: 10,
+    page_size: 20,
     sort_field: 'create_time',
     sort_order: 'descend'
   },
@@ -168,7 +240,7 @@ const useRequestStore = create<ExcitationListStateFn & ExcitationListState>((set
   setPage: (val: number) => {
     const { params } = get()
     set(() => ({
-      params: { ...params, page_size: val }
+      params: { ...params, page: val }
     }))
   },
 
@@ -194,7 +266,7 @@ const checkListStore = create<ListAllItemFn & ListFnStateValue>(set => ({
   all: false,
   checkAllSenderIdList: (listValue: CheckboxValueType[]) => {
     set(() => ({
-      checkAllList: [...listValue]
+      checkAllList: listValue
     }))
   },
   setIndeterminate: (val: boolean) => {

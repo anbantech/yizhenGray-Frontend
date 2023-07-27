@@ -1,4 +1,4 @@
-import { Form, FormInstance, Input, Select, Tooltip } from 'antd'
+import { Form, Input, Select } from 'antd'
 import * as React from 'react'
 import { DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd'
 import dragImg from 'Src/assets/drag/icon_drag.png'
@@ -43,45 +43,9 @@ interface PriceInputProps {
   onChange?: (value: PriceValue) => void
 }
 
-const CountInput: React.FC<PriceInputProps> = ({ value = {}, onChange }) => {
-  const [number, setNumber] = React.useState(10)
-  const triggerChange = (changedValue: { count?: number }) => {
-    onChange?.({ ...changedValue })
-  }
-
-  const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newNumber = Number.parseInt(e.target.value || '0', 10)
-    if (Number.isNaN(number)) {
-      return
-    }
-    if (!('number' in value)) {
-      setNumber(newNumber)
-    }
-    triggerChange({ count: newNumber })
-  }
-  const onNumberBlur = (e: any) => {
-    const newNumber = Number.parseInt(e.target.value || '10', 10)
-    if (newNumber >= 255) {
-      setNumber(255)
-      onChange?.({ count: 255 })
-    }
-
-    if (newNumber === 0) {
-      setNumber(1)
-      onChange?.({ count: 1 })
-    }
-  }
-
-  return (
-    <Tooltip trigger={['focus']} title={number} placement='topLeft' overlayClassName='numeric-input'>
-      <Input type='text' value={value.count || number} onChange={onNumberChange} onBlur={onNumberBlur} className={styles.IntArrayInput} />
-    </Tooltip>
-  )
-}
-
-const StringComponents = ({ index, Item, moveCardHandler }: DropCmps) => {
-  // { type: 'string', name: '', skip: false, value: '' }
-
+const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmps, myRef: any) => {
+  const [form] = Form.useForm()
+  const inInt = { type: 'string', name: '', skip: false, value: '' }
   const DropList = ArgeementDropListStore(state => state.DropList)
   const ref = React.useRef<HTMLDivElement>(null)
   const [isDragItem, setCanDrag] = React.useState(true)
@@ -90,10 +54,16 @@ const StringComponents = ({ index, Item, moveCardHandler }: DropCmps) => {
     return Promise.reject(new Error('数据段名称由汉字、数字、字母和下划线组成'))
   }, [setCanDrag])
 
+  const noValueFrom = React.useCallback(() => {
+    setCanDrag(false)
+    return Promise.reject(new Error('请输入数字段名称'))
+  }, [setCanDrag])
+
   const IsDrag = React.useCallback(() => {
     setCanDrag(true)
     return Promise.resolve()
   }, [setCanDrag])
+
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
@@ -109,7 +79,7 @@ const StringComponents = ({ index, Item, moveCardHandler }: DropCmps) => {
         isDragging: monitor.isDragging()
       })
     }),
-    [index, DropList, isDragItem]
+    [index, DropList, isDragItem, form]
   )
 
   const [{ handlerId }, drop] = useDrop({
@@ -173,9 +143,24 @@ const StringComponents = ({ index, Item, moveCardHandler }: DropCmps) => {
     }
   })
 
+  const validateForm = React.useCallback(async () => {
+    const value = await form.validateFields()
+    return value
+  }, [form])
+
+  React.useImperativeHandle(myRef, () => ({
+    save: () => {
+      return { ...form.getFieldsValue(), type: 'string', concontext: false }
+    },
+    delete: () => {},
+    validate: () => {
+      return validateForm
+    },
+    clearInteraction: () => {}
+  }))
+
   drag(drop(ref))
 
-  const [form] = Form.useForm()
   return (
     <div
       key={Item.keys}
@@ -189,27 +174,34 @@ const StringComponents = ({ index, Item, moveCardHandler }: DropCmps) => {
         <img src={dragImg} alt='' />
         <span className={styles.cloumnBodyCharts}>字符串 </span>
       </div>
-      <Form form={form} name='IntCompoents' layout='inline' className={styles.StringForm}>
+      <Form form={form} name='IntCompoents' layout='inline' className={styles.StringForm} initialValues={inInt}>
         <Form.Item
           name='name'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
-            { required: true, message: '请输入数据段名称' },
-            { type: 'string', min: 2, max: 20, message: '数据段名称长度为2到20个字符' },
             {
               validateTrigger: 'onBlur',
               validator(_, value) {
-                const reg = /^[\w\u4E00-\u9FA5]+$/
-                if (reg.test(value)) {
-                  return IsDrag()
+                if (value) {
+                  const reg = /^[\w\u4E00-\u9FA5]+$/
+                  if (value.length > 20) {
+                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
+                  }
+                  if (value.length < 2 && value.length !== 0) {
+                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
+                  }
+                  if (reg.test(value)) {
+                    return IsDrag()
+                  }
+                  return onToggleForbidDrag()
                 }
-                return onToggleForbidDrag()
+                return noValueFrom()
               }
             }
           ]}
         >
-          <Input placeholder='seg_xxx' className={styles.StringInput} />
+          <Input placeholder='请输入数据段名称' className={styles.StringInput} />
         </Form.Item>
 
         <Form.Item name='skip' rules={[{ required: true, message: 'Missing area' }]}>
@@ -224,12 +216,12 @@ const StringComponents = ({ index, Item, moveCardHandler }: DropCmps) => {
       <div className={styles.imgStyle} />
     </div>
   )
-}
+})
 
-const IntCompoents = ({ index, Item, moveCardHandler }: DropCmps) => {
+const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmps, myRef: any) => {
   const initValue = {
-    name: '',
     type: 'byte',
+    name: '',
     value: 0,
     context: false,
     skip: false,
@@ -329,6 +321,25 @@ const IntCompoents = ({ index, Item, moveCardHandler }: DropCmps) => {
   drag(drop(ref))
 
   const [form] = Form.useForm()
+
+  const validateForm = React.useCallback(async () => {
+    const value = await form.validateFields()
+    return value
+  }, [form])
+  React.useImperativeHandle(myRef, () => ({
+    save: () => {
+      return { ...form.getFieldsValue(), type: 'byte', concontext: false }
+    },
+    delete: () => {},
+    validate: () => {
+      return validateForm()
+    },
+    clearInteraction: () => {}
+  }))
+  const noValueFrom = React.useCallback(() => {
+    setCanDrag(false)
+    return Promise.reject(new Error('请输入数字段名称'))
+  }, [setCanDrag])
   return (
     <div
       className={styles.cloumnBody}
@@ -347,21 +358,28 @@ const IntCompoents = ({ index, Item, moveCardHandler }: DropCmps) => {
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
-            { required: true, message: '请输入数据段名称' },
-            { type: 'string', min: 2, max: 20, message: '数据段名称长度为2到20个字符' },
             {
               validateTrigger: 'onBlur',
               validator(_, value) {
-                const reg = /^[\w\u4E00-\u9FA5]+$/
-                if (reg.test(value)) {
-                  return IsDrag()
+                if (value) {
+                  const reg = /^[\w\u4E00-\u9FA5]+$/
+                  if (value.length > 20) {
+                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
+                  }
+                  if (value.length < 2 && value.length !== 0) {
+                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
+                  }
+                  if (reg.test(value)) {
+                    return IsDrag()
+                  }
+                  return onToggleForbidDrag()
                 }
-                return onToggleForbidDrag()
+                return noValueFrom()
               }
             }
           ]}
         >
-          <Input placeholder='seg_xxx' bordered={false} className={styles.IntInput} />
+          <Input placeholder='请输入数据段名称' bordered={false} className={styles.IntInput} />
         </Form.Item>
 
         <div className={styles.FourCharts}> 字节长度</div>
@@ -381,23 +399,27 @@ const IntCompoents = ({ index, Item, moveCardHandler }: DropCmps) => {
       <div className={styles.imgStyle} />
     </div>
   )
-}
+})
 
-interface IntArrayFormInstance {
-  name: string
-  value: string
-  skip: boolean
-  count: string
-  length: string
-}
-
-const IntArrayCompoents = ({ index, Item, moveCardHandler }: DropCmps) => {
-  const [form] = Form.useForm<FormInstance>()
+const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmps, myRef: any) => {
+  const initValue = {
+    name: '',
+    type: 'byte_array',
+    value: 0,
+    context: false,
+    count: 10,
+    skip: false,
+    length: 8
+  }
+  const [form] = Form.useForm<any>()
   const DropList = ArgeementDropListStore(state => state.DropList)
+  const [val, setVal] = React.useState(10)
   const ref = React.useRef<HTMLDivElement>(null)
-  const [val, setValue] = React.useState('232')
   const [isDragItem, setCanDrag] = React.useState(true)
-
+  const noValueFrom = React.useCallback(() => {
+    setCanDrag(false)
+    return Promise.reject(new Error('请输入数字段名称'))
+  }, [setCanDrag])
   const onToggleForbidDrag = React.useCallback(() => {
     setCanDrag(false)
     return Promise.reject(new Error('数据段名称由汉字、数字、字母和下划线组成'))
@@ -422,7 +444,7 @@ const IntArrayCompoents = ({ index, Item, moveCardHandler }: DropCmps) => {
         isDragging: monitor.isDragging()
       })
     }),
-    [index, DropList, isDragItem, val]
+    [index, DropList, isDragItem]
   )
 
   const [{ handlerId }, drop] = useDrop({
@@ -486,19 +508,44 @@ const IntArrayCompoents = ({ index, Item, moveCardHandler }: DropCmps) => {
     }
   })
 
-  const checkPrice = (_: any, value: { count: number }) => {
-    if (value.count <= 255 || value.count > 1) {
-      return Promise.resolve()
-    }
-    return Promise.reject()
-  }
+  const onChangeGu_time = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newNumber = Number.parseInt(e.target.value || '0', 10)
+      if (Number.isNaN(newNumber)) {
+        return
+      }
+      form.setFieldsValue({ count: val })
+      setVal(newNumber)
+    },
+    [form, val]
+  )
 
-  const onValuesChange = (value: any, allValues: any) => {
-    console.log(allValues)
-  }
+  const onMax = React.useCallback(() => {
+    const newValue = Number(val) > 255 ? 255 : 1
+    setVal(newValue)
+  }, [val, setVal])
+
+  React.useEffect(() => {
+    form.setFieldsValue({ count: val })
+  }, [val, form])
 
   drag(drop(ref))
 
+  const validateForm = React.useCallback(async () => {
+    const value = await form.validateFields()
+    return value
+  }, [form])
+
+  React.useImperativeHandle(myRef, () => ({
+    save: () => {
+      return { ...form.getFieldsValue(), type: 'byte_array', concontext: false }
+    },
+    delete: () => {},
+    validate: () => {
+      return validateForm()
+    },
+    clearInteraction: () => {}
+  }))
   return (
     <div
       className={styles.cloumnBody}
@@ -512,45 +559,50 @@ const IntArrayCompoents = ({ index, Item, moveCardHandler }: DropCmps) => {
         <span className={styles.cloumnBodyCharts}>整数数组 </span>
       </div>
 
-      <Form
-        form={form}
-        name='IntArrayCompoents'
-        onValuesChange={onValuesChange}
-        className={styles.StringForm}
-        initialValues={{
-          count: {
-            count: 0
-          }
-        }}
-      >
+      <Form form={form} name='IntArrayCompoents' className={styles.StringForm} initialValues={initValue}>
         <Form.Item
           name='name'
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
-            { required: true, message: '请输入数据段名称' },
-            { type: 'string', min: 2, max: 20, message: '数据段名称长度为2到20个字符' },
             {
               validateTrigger: 'onBlur',
               validator(_, value) {
-                const reg = /^[\w\u4E00-\u9FA5]+$/
-                if (reg.test(value)) {
-                  return IsDrag()
+                if (value) {
+                  const reg = /^[\w\u4E00-\u9FA5]+$/
+                  if (value.length > 20) {
+                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
+                  }
+                  if (value.length < 2 && value.length !== 0) {
+                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
+                  }
+                  if (reg.test(value)) {
+                    return IsDrag()
+                  }
+                  return onToggleForbidDrag()
                 }
-                return onToggleForbidDrag()
+                return noValueFrom()
               }
             }
           ]}
         >
-          <Input placeholder='请输入字段名' bordered={false} className={styles.IntInput} />
+          <Input placeholder='请输入数据段名称' bordered={false} className={styles.IntInput} />
         </Form.Item>
 
         <div className={styles.FourCharts} style={{ height: '37px', borderRight: '1px solid #E9E9E9' }}>
           元素个数
         </div>
 
-        <Form.Item name='count' className={styles.IntArrayForm} rules={[{ validator: checkPrice }]}>
-          <CountInput />
+        <Form.Item name='count' className={styles.IntArrayForm}>
+          <Input
+            onBlur={() => {
+              onMax()
+            }}
+            onChange={e => {
+              onChangeGu_time(e)
+            }}
+            className={styles.IntArrayInput}
+          />
         </Form.Item>
 
         <div className={styles.FourCharts} style={{ height: '37px' }}>
@@ -573,7 +625,7 @@ const IntArrayCompoents = ({ index, Item, moveCardHandler }: DropCmps) => {
       <div className={styles.imgStyle} />
     </div>
   )
-}
+})
 
 const MemoIntArrayCompoents = React.memo(IntArrayCompoents)
 const MemoStringComponents = React.memo(StringComponents)

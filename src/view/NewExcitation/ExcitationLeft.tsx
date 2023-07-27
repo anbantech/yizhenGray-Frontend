@@ -21,7 +21,7 @@ const request = {
   key_word: '',
   status: null,
   page: 1,
-  page_size: 10,
+  page_size: 12,
   sort_field: 'create_time',
   sort_order: 'descend'
 }
@@ -152,6 +152,7 @@ const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = () => 
   }
 
   useEffect(() => {
+    console.log(updateStatus)
     getExcitationList({ ...params })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, updateStatus])
@@ -222,6 +223,7 @@ const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = () => 
           next={loadMoreData}
           hasMore={hasMoreData}
           height={height}
+          style={{ overflowX: 'hidden' }}
           loader={
             <p style={{ textAlign: 'center', width: '216px' }}>
               <div className={styles.listLine} />

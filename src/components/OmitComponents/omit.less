@@ -96,3 +96,178 @@
   line-height: 25px;
   text-align: center;
 }
+
+.ItemBodyMenu{
+  width: 188px;
+  position: absolute;
+  padding: 4px 0;
+  top:20px;
+  left: -170px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  height: 168px;
+  border-radius: 4px;
+  box-shadow: 0px 5px 12px 4px rgba(0, 0, 0, 0.09), 0px 3px 6px 0px rgba(0, 0, 0, 0.12), 0px 1px 2px -2px rgba(0, 0, 0, 0.16);
+  background:  #FFF;
+}
+
+.detail{
+    padding-left: 12px;
+    display: flex;
+    width: 100%;
+    height: 32px;
+    background-color: #fff;
+    align-items: center;
+    &:hover {
+      background-color: #f5f5f5;
+      color: #4880FF;
+    }
+    &:hover>div:first-child {
+      width: 15px;
+      height: 15px;
+      background-size: 15px 17px;
+      background-repeat: no-repeat;
+      background-image: url(../../assets/drag/icon_eye_blue.svg);
+  }
+}
+
+.edit{
+  padding-left: 12px;
+  display: flex;
+  width: 100%;
+  height: 32px;
+  background-color: #fff;
+  align-items: center;
+
+  &:hover {
+    background-color: #f5f5f5;
+    color: #4880FF;
+  }
+
+  &:hover>div:first-child {
+    width: 15px;
+      height: 15px;
+      background-size: 15px 17px;
+      background-repeat: no-repeat;
+      background-image: url(../../assets/instanceImage/icon_edit_hover.svg);
+  }
+}
+
+.info {
+  padding-left: 12px;
+  display: flex;
+  width: 100%;
+  height: 32px;
+  background-color: #fff;
+  align-items: center;
+
+  &:hover {
+    background-color: #f5f5f5;
+    color: #4880FF;
+  }
+
+  &:hover>div:first-child {
+    width: 15px;
+      height: 15px;
+      background-size: 15px 17px;
+      background-repeat: no-repeat;
+      background-image: url(../../assets/drag/icon_link_blue.svg);
+  }
+}
+
+
+.export {
+  padding-left: 12px;
+  display: flex;
+  width: 100%;
+  height: 32px;
+  background-color: #fff;
+  align-items: center;
+
+  &:hover {
+    background-color: #f5f5f5;
+    color: #4880FF;
+  }
+
+  &:hover>div:first-child {
+    width: 15px;
+    height: 15px;
+    background-size: 15px 17px;
+    background-repeat: no-repeat;
+    background-image: url(../../assets/drag/icon_export_blue.svg);
+  }
+}
+
+
+.delete{
+  padding-left: 12px;
+  display: flex;
+  width: 100%;
+  height: 32px;
+  background-color: #fff;
+  align-items: center;
+
+  &:hover {
+    background-color: #f5f5f5;
+    color: #4880FF;
+  }
+
+  &:hover>div:first-child {
+    width: 15px;
+    height: 15px;
+    background-size: 15px 17px;
+    background-repeat: no-repeat;
+    background-image: url(../../assets/drag/icon_delete_blue.svg);
+  }
+}
+
+
+
+.taskListLeft_editImg {
+  width: 15px;
+  height: 15px;
+  background-size: 15px 17px;
+  background-repeat: no-repeat;
+  background-image: url(../../assets/image/icon_detail.svg);
+
+}
+
+
+
+.taskListLeft_detailImg {
+  width: 15px;
+  height: 15px;
+  background-size: 15px 17px;
+  background-repeat: no-repeat;
+  background-image: url(../../assets/drag/icon_delete_black.svg);
+}
+
+
+
+.taskListLeft_linkInfo {
+  width: 15px;
+  height: 15px;
+  background-size: 15px 17px;
+  background-repeat: no-repeat;
+  background-image: url(../../assets/drag/icon_link_black.svg);
+}
+
+
+.taskListLeft_lookInfo {
+  width: 15px;
+  height: 15px;
+  background-size: 15px 17px;
+  background-repeat: no-repeat;
+  background-image: url(../../assets/drag/icon_eye_black.svg);
+}
+
+
+.taskListLeft_exportInfo {
+  width: 15px;
+  height: 15px;
+  background-size: 15px 17px;
+  background-repeat: no-repeat;
+  background-image: url(../../assets/drag/icon_export_black.svg);
+}
+

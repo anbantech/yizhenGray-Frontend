@@ -20,7 +20,6 @@ function DropHeaderMemo() {
     if (Number.isNaN(newNumber)) {
       return
     }
-
     setValue(type, newNumber)
     setBtnStatus(false)
   }
@@ -53,8 +52,9 @@ function DropHeaderMemo() {
     const res = await updateExcitationList(sender_id, params)
     if (res.code === 0) {
       message.success('创建成功')
+      setBtnStatus(true)
     }
-  }, [DropList, desc, gu_cnt0, gu_w0, name, sender_id])
+  }, [DropList, desc, gu_cnt0, gu_w0, name, sender_id, setBtnStatus])
   return (
     <div className={StyleSheet.DropHeader}>
       <Button disabled={!BtnStatus} onClick={saveConfig} className={StyleSheet.saveBtn}>

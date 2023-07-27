@@ -1,13 +1,16 @@
 import * as React from 'react'
 import { useDrop } from 'react-dnd'
+import withScrolling from 'react-dnd-scrolling'
 import { ArgeementDropListStore, DragableDragingStatusStore } from '../../ExcitaionStore/ExcitaionStore'
 import styles from './agreementCompoents.less'
 
+const ScrollingComponent = withScrolling('div')
 function AgreementDrop() {
   const [, drop] = useDrop(() => ({
     accept: 'DragDropItem'
   }))
   const DropList = ArgeementDropListStore(state => state.DropList)
+  const setDropListRef = ArgeementDropListStore(state => state.setDropListRef)
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
   const dragableDragingStatus = DragableDragingStatusStore(state => state.dragableDragingStatus)
 
@@ -26,11 +29,24 @@ function AgreementDrop() {
     },
     [DropList, dragableDragingStatus, setLeftList]
   )
+
   return (
-    <div ref={drop} className={styles.agreementDrop}>
-      {DropList?.map((item, index: number) => {
-        return <item.Components ref={() => {}} index={index} key={item.keys} Item={item} moveCardHandler={moveCardHandler} />
-      })}
+    <div ref={drop} className={styles.agreementDropTop}>
+      <ScrollingComponent className={styles.agreementDrop}>
+        {DropList?.map((item, index: number) => {
+          return (
+            <item.Components
+              ref={(ref: any) => {
+                setDropListRef(ref, index)
+              }}
+              index={index}
+              key={item.keys}
+              Item={item}
+              moveCardHandler={moveCardHandler}
+            />
+          )
+        })}
+      </ScrollingComponent>
     </div>
   )
 }

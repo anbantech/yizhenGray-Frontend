@@ -125,6 +125,10 @@ export function updateExcitationList(id: number, params: any) {
   return request.put<any>(`/api/v1.0/temp_and_sti/interaction/update/${id}`, params)
 }
 
-export function getExcitaionDeatilFn(id: number) {
+export function getExcitaionDeatilFn(id: number | string) {
   return request.get<any>(`/api/v1.0/temp_and_sti/sender/get/${id}`)
+}
+
+export function saveExcitaionFn(params: any) {
+  return request.post<any>(`/api/v1.0/temp_and_sti/single/save`, params)
 }
