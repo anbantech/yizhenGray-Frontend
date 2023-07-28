@@ -3,7 +3,7 @@ import * as React from 'react'
 import CreateButton from 'Src/components/Button/createButton'
 import StyleSheet from '../excitationDraw.less'
 
-function BtnCompoents({ setVsible, setNewCreate }: { setVsible: (val: boolean) => void; setNewCreate: (val: boolean) => void }) {
+function BtnCompoents({ setVsible, setNewCreate }: { setVsible: (val: boolean) => void; setNewCreate: (value: boolean) => void }) {
   return (
     <>
       <div className={StyleSheet.btn_header}>

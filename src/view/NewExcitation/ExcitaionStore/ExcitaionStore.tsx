@@ -69,6 +69,12 @@ const LeftDropListStore = create<LeftAction & sendList & ListFn & LeftActionStat
   sender_id: -1,
   detailData: {},
   btnStatus: true,
+  ModalStatus: false,
+  setShowModal: (val: boolean) => {
+    set(() => ({
+      ModalStatus: val
+    }))
+  },
   setLeftList: (item: ItemListState) => {
     set(() => ({
       DropList: [...item]
@@ -141,6 +147,7 @@ const LeftDropListStore = create<LeftAction & sendList & ListFn & LeftActionStat
     set({ detailData: state, name: state.name, desc: state.desc, gu_cnt0: state.gu_cnt0, gu_w0: state.gu_w0, DropList: state.group_data_list[1] })
 }))
 
+// 是否正在拖拽
 const DragableDragingStatusStore = create<DragableStatuState & DragableStatusAction>(set => ({
   dragableDragingStatus: false,
   setDragableStatus: (bool: boolean) => {
@@ -150,11 +157,15 @@ const DragableDragingStatusStore = create<DragableStatuState & DragableStatusAct
   }
 }))
 
+// 协议弹窗
 const ArgeementDropListStore = create<ArgeementAction & ArgeementActionState>((set, get) => ({
   DropList: [],
   gu_cnt0: 1,
   gu_w0: 0,
+  name: '',
+  peripheral: '',
   DropListRef: [],
+  detaileStatus: false,
   setLeftList: (item: DragCmps[]) => {
     set(() => ({
       DropList: [...item]
@@ -214,7 +225,21 @@ const ArgeementDropListStore = create<ArgeementAction & ArgeementActionState>((s
       DropList: [],
       gu_cnt0: 1,
       gu_w0: 0,
-      DropListRef: []
+      name: '',
+      peripheral: '',
+      DropListRef: [],
+      detaileStatus: false
+    }))
+  },
+  setDeatilStatus: (val: boolean) => {
+    set(() => ({ detaileStatus: val }))
+  },
+  setHead: (val: Record<string, any>) => {
+    set(() => ({
+      name: val.name,
+      gu_cnt0: val.gu_cnt0,
+      gu_w0: val.gu_w0,
+      peripheral: val.peripheral
     }))
   }
 }))

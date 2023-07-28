@@ -40,8 +40,9 @@ type ResparamsType = Record<string, any>
 const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = () => {
   const layoutRef = useRef<any>()
 
-  const { sender_id, checkList } = LeftDropListStore()
-  const { updateStatus } = GlobalStatusStore()
+  const { checkList } = LeftDropListStore()
+  const sender_id = LeftDropListStore(state => state.sender_id)
+  const updateStatus = GlobalStatusStore(state => state.updateStatus)
   const [params, setParams] = useState<Resparams>({ ...request })
   // 任务列表参数
   const [excitationList, setExcitationList] = useState<ResparamsType[]>([])
@@ -150,9 +151,8 @@ const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = () => 
     const Item = { ...modalData, fixTitle: true, isModalVisible: true, excitationInfo: item }
     setModalData({ ...Item })
   }
-
+  console.log('render')
   useEffect(() => {
-    console.log(updateStatus)
     getExcitationList({ ...params })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, updateStatus])
@@ -277,6 +277,7 @@ const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = () => 
           })}
         </InfiniteScroll>
       </div>
+
       {sender_id && (
         <>
           <CommonModle
@@ -288,14 +289,16 @@ const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = () => 
             name='删除激励发送列表'
             concent='是否确认删除？'
           />
-          <ExcitationModal
-            visible={modalData.isModalVisible}
-            hideModal={cancel}
-            excitationInfo={modalData.excitationInfo}
-            fixTitle={modalData.fixTitle}
-            sender_id={sender_id}
-            width={480}
-          />
+          {modalData.isModalVisible && (
+            <ExcitationModal
+              visible={modalData.isModalVisible}
+              hideModal={cancel}
+              excitationInfo={modalData.excitationInfo}
+              fixTitle={modalData.fixTitle}
+              sender_id={sender_id}
+              width={480}
+            />
+          )}
           <LookUpDependence
             visibility={visibility as boolean}
             name='激励发送列表关联信息'

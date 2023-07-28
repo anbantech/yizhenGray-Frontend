@@ -29,9 +29,17 @@ interface ItemType {
   keys: string
   isItemDragging?: boolean
 }
+interface PropsType {
+  index: number
+  Item: Record<string, any>
+  moveCardHandler: (dragIndex: number, hoverIndex: number) => void
+  DeleteCheckItem: any
+}
 
-const DropableMemo = ({ index, item, moveCardHandler, sender_id, DropList, DeleteCheckItem }: any) => {
+const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsType) => {
+  const { sender_id } = Item
   const ref = React.useRef<HTMLDivElement>(null)
+  const DropList = LeftDropListStore(state => state.DropList)
   const setBtnStatus = LeftDropListStore(state => state.setBtnStatus)
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -69,7 +77,6 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id, DropList, Delet
       if (dragIndex === hoverIndex) {
         return
       }
-
       // 确定屏幕上矩形范围
       const hoverBoundingRect = ref.current!.getBoundingClientRect()
 
@@ -108,10 +115,8 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id, DropList, Delet
        * 如果拖拽的组件为 Card，则将 hoverIndex 赋值给 item 的 index 属性
        */
 
-      if (item.index !== undefined) {
-        // eslint-disable-next-line no-param-reassign
-        item.index = hoverIndex
-      }
+      // eslint-disable-next-line no-param-reassign
+      item.index = hoverIndex
     }
   })
 
@@ -122,26 +127,26 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id, DropList, Delet
       ref={ref}
       data-handler-id={handlerId}
       className={StyleSheet.excitationItemDrop}
-      style={{ opacity: isDragging || item.isItemDragging ? 0.4 : 1, cursor: 'move' }}
+      style={{ opacity: isDragging || Item.isItemDragging ? 0.4 : 1, cursor: 'move' }}
     >
       <div className={StyleSheet.excitationItemDrop_left}>
         <img className={StyleSheet.img_Body} src={dragImg} alt='' />
-        <Checkbox value={item.keys} />
+        <Checkbox value={Item.keys} />
       </div>
       <div className={StyleSheet.excitationItemDrop_right}>
         <span className={StyleSheet.excitationChart}>{index}</span>
-        <Tooltip placement='bottom' title={item.name}>
-          <span className={StyleSheet.excitationChart}>{item.name}</span>
+        <Tooltip placement='bottom' title={Item.name}>
+          <span className={StyleSheet.excitationChart}>{Item.name}</span>
         </Tooltip>
-        <span className={StyleSheet.excitationChart}>{item.peripheral}</span>
-        <span className={StyleSheet.excitationChart}>{item.gu_cnt0}</span>
-        <span className={StyleSheet.excitationChart}>{item.gu_w0}</span>
+        <span className={StyleSheet.excitationChart}>{Item.peripheral}</span>
+        <span className={StyleSheet.excitationChart}>{Item.gu_cnt0}</span>
+        <span className={StyleSheet.excitationChart}>{Item.gu_w0}</span>
         <div style={{ paddingRight: '16px' }}>
           <div
             role='time'
             className={styles.taskListLeft_detailImg}
             onClick={() => {
-              DeleteCheckItem(item.keys)
+              DeleteCheckItem(Item.keys)
             }}
           />
         </div>
@@ -162,6 +167,7 @@ function ExcitationDropList() {
   const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
   const dragableDragingStatus = DragableDragingStatusStore(state => state.dragableDragingStatus)
+
   const moveCardHandler = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
       if (dragableDragingStatus) {
@@ -212,20 +218,11 @@ function ExcitationDropList() {
     <ScrollingComponent className={StyleSheet.dropList_ListScroll}>
       <div ref={drop} className={StyleSheet.dropList_List}>
         <Checkbox.Group style={{ width: '100%' }} onChange={onChange} value={checkAllList}>
-          {DropList?.map((item: any, index: number) => {
-            return (
-              <Dropable
-                sender_id={item.sender_id}
-                key={item.keys}
-                DropList={DropList}
-                isDragableDraging={dragableDragingStatus}
-                moveCardHandler={moveCardHandler}
-                index={index}
-                DeleteCheckItem={DeleteCheckItem}
-                item={item}
-              />
-            )
-          })}
+          <div ref={drop} className={StyleSheet.dropList_List}>
+            {DropList?.map((item, index: number) => {
+              return <Dropable index={index} key={item.keys} DeleteCheckItem={DeleteCheckItem} moveCardHandler={moveCardHandler} Item={item} />
+            })}
+          </div>
         </Checkbox.Group>
       </div>
     </ScrollingComponent>

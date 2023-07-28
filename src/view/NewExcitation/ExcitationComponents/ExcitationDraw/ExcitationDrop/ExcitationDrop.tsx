@@ -43,6 +43,7 @@ function ExcitationDropMemo() {
   // 筛选逻辑
   const { checkAllSenderIdList, setIndeterminate, setCheckAll } = checkListStore()
   const checkAllList = checkListStore(state => state.checkAllList)
+
   const DeleteCheckItem = React.useCallback(() => {
     const copyList = DropList.filter(item => !checkAllList.includes(item.keys))
     setLeftList([...copyList])
@@ -70,11 +71,13 @@ function ExcitationDropMemo() {
     },
     [setDetailData]
   )
+
   useEffect(() => {
     if (sender_id !== -1) {
       getExcitaionDeatilFunction(sender_id)
     }
   }, [getExcitaionDeatilFunction, sender_id, updateStatus])
+
   return (
     <div className={StyleSheet.excitaionDrop_Body}>
       <DropHeader />

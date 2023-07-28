@@ -5,19 +5,14 @@ import { getPortList } from 'Src/services/api/excitationApi'
 import { ArgeementDropListStore } from '../../ExcitaionStore/ExcitaionStore'
 import styles from './agreementCompoents.less'
 
-interface PriceValue {
-  count?: number
-}
-
-const HeadForm = React.forwardRef((props, myRef) => {
+const HeadForm = React.forwardRef((props: { detaileStatus: boolean }, myRef) => {
+  const { detaileStatus } = props
   const [form] = Form.useForm<any>()
   const { Option } = Select
   const [portList, setPortList] = React.useState<string[]>([])
-  const { gu_cnt0, gu_w0, setValue } = ArgeementDropListStore()
-
+  const { gu_cnt0, gu_w0, setValue, name, peripheral } = ArgeementDropListStore()
   // 端口列表
   const fetchPortList = React.useCallback(async () => {
-    //  Todo code码
     try {
       const result = await getPortList()
       if (result.data) {
@@ -52,6 +47,11 @@ const HeadForm = React.forwardRef((props, myRef) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  React.useEffect(() => {
+    if (name) {
+      form.setFieldsValue({ name, gu_cnt0, gu_w0, peripheral })
+    }
+  }, [name, form, gu_cnt0, gu_w0, peripheral])
   const onChangeGu_time = (type: string, e: React.ChangeEvent<HTMLInputElement>) => {
     const newNumber = Number.parseInt(e.target.value || '0', 10)
     if (Number.isNaN(newNumber)) {
@@ -101,10 +101,11 @@ const HeadForm = React.forwardRef((props, myRef) => {
             }
           ]}
         >
-          <Input placeholder='请输入激励名称' className={styles.commonItem} />
+          <Input placeholder='请输入激励名称' className={styles.commonItem} disabled={detaileStatus} />
         </Form.Item>
         <Form.Item name='gu_cnt0' label='发送次数' rules={[{ required: true }]}>
           <Input
+            disabled={detaileStatus}
             className={styles.commonItems}
             onBlur={() => {
               onMax('gu_cnt0')
@@ -116,7 +117,7 @@ const HeadForm = React.forwardRef((props, myRef) => {
           />
         </Form.Item>
         <Form.Item name='peripheral' label='外设' rules={[{ required: true, message: '请选择外设' }]}>
-          <Select placeholder='请选择外设' className={styles.commonItem}>
+          <Select placeholder='请选择外设' className={styles.commonItem} disabled={detaileStatus}>
             {
               /**
                * 下拉选择端口
@@ -134,6 +135,7 @@ const HeadForm = React.forwardRef((props, myRef) => {
 
         <Form.Item name='gu_w0' label='发送间隔' rules={[{ required: true }]}>
           <Input
+            disabled={detaileStatus}
             className={styles.commonItems}
             onChange={e => {
               onChangeGu_time('gu_w0', e)

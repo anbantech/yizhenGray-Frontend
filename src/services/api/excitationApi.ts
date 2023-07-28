@@ -7,8 +7,7 @@ import {
   groupParams,
   excitation_1Params,
   dataStructureParams,
-  UpdateOneExcitaionListParams,
-  ExcitationListParams
+  UpdateOneExcitaionListParams
 } from 'Src/globalType/Param'
 import { ResCreExcitationList, getAllRes, excitationRes, checkoutDataStructureRes, ResExcitationListNew } from 'Src/globalType/Response'
 
@@ -116,7 +115,7 @@ export function deleteExcitationSignal(id: string) {
 }
 
 // 创建激励
-export function createExcitationList(params: ExcitationListParams) {
+export function createExcitationList(params: any) {
   return request.post('/api/v1.0/temp_and_sti/interaction/save', params)
 }
 

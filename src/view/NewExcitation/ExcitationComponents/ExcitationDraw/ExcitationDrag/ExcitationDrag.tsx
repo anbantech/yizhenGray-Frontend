@@ -34,7 +34,7 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
         const useless = DropList.find((item: any) => item.sender_id === -1)
         // 拖拽开始时，向 cardList 数据源中插入一个占位的元素，如果占位元素已经存在，不再重复插入
         if (!useless) {
-          setLeftList([{ ...item, sender_id: -1, keys: generateUUID(), isItemDragging: true }, ...DropList])
+          setLeftList([...DropList, { ...item, sender_id: -1, keys: generateUUID(), isItemDragging: true }])
         }
         setDragableStatus(true)
         const Item = { ...item, keys: generateUUID() }
@@ -48,11 +48,12 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
         const dropCardListCopy = DropList
         if (monitor.didDrop()) {
           dropCardListCopy.splice(uselessIndex, 1, item)
+          setLeftList([...dropCardListCopy])
           setBtnStatus(false)
         } else {
           dropCardListCopy.splice(uselessIndex, 1)
+          setLeftList([...dropCardListCopy])
         }
-        setLeftList([...dropCardListCopy])
         setDragableStatus(false)
       }
     }),
@@ -111,13 +112,13 @@ function ExcitationDrag({ height, onChange }: Props) {
         height={height}
         loader={
           <p style={{ textAlign: 'center', marginTop: '12px', marginLeft: '20px', width: '208px' }}>
-            <div className={styles.listLine} />
-            <div className={styles.concentList}>内容已经加载完毕</div>
+            <span className={styles.listLine} />
+            <span className={styles.concentList}>内容已经加载完毕</span>
           </p>
         }
         endMessage={
           <p style={{ textAlign: 'center', marginTop: '12px', marginLeft: '20px', width: '208px' }}>
-            <div className={styles.concentList}>内容已经加载完毕</div>
+            <span className={styles.concentList}>内容已经加载完毕</span>
           </p>
         }
       >

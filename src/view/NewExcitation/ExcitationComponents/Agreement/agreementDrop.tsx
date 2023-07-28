@@ -13,7 +13,7 @@ function AgreementDrop() {
   const setDropListRef = ArgeementDropListStore(state => state.setDropListRef)
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
   const dragableDragingStatus = DragableDragingStatusStore(state => state.dragableDragingStatus)
-
+  const detaileStatus = ArgeementDropListStore(state => state.detaileStatus)
   const moveCardHandler = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
       if (dragableDragingStatus) {
@@ -29,7 +29,6 @@ function AgreementDrop() {
     },
     [DropList, dragableDragingStatus, setLeftList]
   )
-
   return (
     <div ref={drop} className={styles.agreementDropTop}>
       <ScrollingComponent className={styles.agreementDrop}>
@@ -40,6 +39,7 @@ function AgreementDrop() {
                 setDropListRef(ref, index)
               }}
               index={index}
+              detaileStatus={detaileStatus}
               key={item.keys}
               Item={item}
               moveCardHandler={moveCardHandler}
