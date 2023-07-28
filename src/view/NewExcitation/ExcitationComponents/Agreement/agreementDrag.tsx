@@ -16,30 +16,25 @@ interface DragCmps {
 
 const preViewImg = {
   IntArrayComponents: IntArrayPng,
-
   IntComponents: IntPng,
-
   StringComponents: StringPng
 }
 
 const preViewTitle = {
-  IntArrayComponents: '整数数组',
-
-  IntComponents: '整数',
-
-  StringComponents: '字符串'
+  byte_array: '整数数组',
+  byte: '整数',
+  string: '字符串'
 }
 
 const StyleMap = {
-  StringComponents: { width: '74px', height: '26px', borderRadius: '4px', cursor: 'move' },
-  IntComponents: { width: '60px', height: '26px', borderRadius: '4px', margin: '0px 6px', cursor: 'move' },
-  IntArrayComponents: { width: '88px', height: '26px', borderRadius: '4px', cursor: 'move' }
+  string: { width: '74px', height: '26px', borderRadius: '4px', cursor: 'move' },
+  byte: { width: '60px', height: '26px', borderRadius: '4px', margin: '0px 6px', cursor: 'move' },
+  byte_array: { width: '88px', height: '26px', borderRadius: '4px', cursor: 'move' }
 }
 
 type ItemType = { item: DragCmps }
 
 const Draggable = ({ item }: ItemType) => {
-  const DragingBeforeRef = React.useRef<any>()
   const DropList = ArgeementDropListStore(state => state.DropList)
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
   const LeftDragIndexFn = ArgeementDropListStore(state => state.LeftDragIndexFn)
@@ -67,9 +62,9 @@ const Draggable = ({ item }: ItemType) => {
         const uselessIndex = LeftDragIndexFn()
         const dropCardListCopy = DropList
         if (monitor.didDrop()) {
-          dropCardListCopy.splice(uselessIndex, 1, item)
+          const preItem = item as any
+          dropCardListCopy.splice(uselessIndex, 1, preItem)
           setLeftList([...dropCardListCopy])
-          DragingBeforeRef.current = []
         } else {
           dropCardListCopy.splice(uselessIndex, 1)
           setLeftList([...dropCardListCopy])

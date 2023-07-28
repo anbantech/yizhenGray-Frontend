@@ -16,6 +16,7 @@ type LeftAction = {
   decrease: (type: string) => void
   setValue: (type: string, val: number) => void
   setBtnStatus: (val: boolean) => void
+  setShowModal: (val: boolean) => void
 }
 
 interface LeftActionState {
@@ -25,6 +26,7 @@ interface LeftActionState {
   name: string
   desc: string
   btnStatus: boolean
+  ModalStatus: boolean
 }
 
 interface CmpsOnly {
@@ -50,13 +52,18 @@ type ArgeementAction = {
   setValue: (type: string, val: number) => void
   setDropListRef: (ref: any, index: number) => void
   destoryEveryItem: () => void
+  setHead: (val: Record<string, any>) => void
+  setDeatilStatus: (val: boolean) => void
 }
 
 interface ArgeementActionState {
   DropList: DragCmps[]
   gu_cnt0: number
   gu_w0: number
+  name: string
+  peripheral: string
   DropListRef: any[]
+  detaileStatus: boolean
 }
 
 type ItemListState = ListType[] | any[]

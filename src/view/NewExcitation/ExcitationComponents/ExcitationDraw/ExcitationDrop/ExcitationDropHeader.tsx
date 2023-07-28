@@ -1,5 +1,6 @@
 import { Button, Input, message } from 'antd'
 import * as React from 'react'
+import { useHistory } from 'react-router'
 import { DropTip } from 'Src/view/excitation/excitationComponent/Tip'
 import InputNumberSuffixMemo from 'Src/components/inputNumbersuffix/inputNumberSuffix'
 import { LeftDropListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
@@ -10,11 +11,12 @@ const CloumnLine = () => {
   return <div className={StyleSheet.cloumnLine} />
 }
 function DropHeaderMemo() {
+  const history = useHistory()
   const setValue = LeftDropListStore(state => state.setValue)
   const setBtnStatus = LeftDropListStore(state => state.setBtnStatus)
   const DropList = LeftDropListStore(state => state.DropList)
-  const { name, desc, gu_cnt0, gu_w0, btnStatus, sender_id } = LeftDropListStore()
 
+  const { name, desc, gu_cnt0, gu_w0, btnStatus, sender_id, setShowModal, ModalStatus } = LeftDropListStore()
   const onChangeGu_time = (type: string, e: React.ChangeEvent<HTMLInputElement>) => {
     const newNumber = Number.parseInt(e.target.value || '0', 10)
     if (Number.isNaN(newNumber)) {
@@ -55,6 +57,19 @@ function DropHeaderMemo() {
       setBtnStatus(true)
     }
   }, [DropList, desc, gu_cnt0, gu_w0, name, sender_id, setBtnStatus])
+
+  React.useEffect(() => {
+    const unlisten = history.listen(() => {
+      // 路由发生变化时，关闭modal
+      setShowModal(true)
+    })
+
+    // 组件卸载时，取消监听
+    return () => {
+      unlisten()
+    }
+  }, [history, setShowModal])
+
   return (
     <div className={StyleSheet.DropHeader}>
       <Button disabled={!BtnStatus} onClick={saveConfig} className={StyleSheet.saveBtn}>

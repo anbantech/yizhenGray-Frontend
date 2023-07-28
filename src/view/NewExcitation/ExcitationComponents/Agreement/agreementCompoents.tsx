@@ -11,6 +11,7 @@ interface DropCmps {
   index: number
   moveCardHandler: (dragIndex: number, hoverIndex: number) => void
   Item: any
+  detaileStatus: boolean
 }
 const byteLength = [
   { label: '8', value: 'fixed_8' },
@@ -43,7 +44,7 @@ interface PriceInputProps {
   onChange?: (value: PriceValue) => void
 }
 
-const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmps, myRef: any) => {
+const StringComponents = React.forwardRef(({ index, Item, moveCardHandler, detaileStatus }: DropCmps, myRef: any) => {
   const [form] = Form.useForm()
   const inInt = { type: 'string', name: '', skip: false, value: '' }
   const DropList = ArgeementDropListStore(state => state.DropList)
@@ -67,7 +68,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
-      canDrag: isDragItem,
+      canDrag: isDragItem && !detaileStatus,
       item() {
         return {
           keys: Item.keys,
@@ -79,7 +80,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
         isDragging: monitor.isDragging()
       })
     }),
-    [index, DropList, isDragItem, form]
+    [index, DropList, isDragItem, form, detaileStatus]
   )
 
   const [{ handlerId }, drop] = useDrop({
@@ -159,6 +160,12 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
     clearInteraction: () => {}
   }))
 
+  React.useEffect(() => {
+    if (Item.name) {
+      const { name, skip, value, context } = Item
+      form.setFieldsValue({ name, skip, value, context })
+    }
+  }, [form, Item])
   drag(drop(ref))
 
   return (
@@ -201,16 +208,16 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
             }
           ]}
         >
-          <Input placeholder='请输入数据段名称' className={styles.StringInput} />
+          <Input placeholder='请输入数据段名称' className={styles.StringInput} disabled={detaileStatus} />
         </Form.Item>
 
         <Form.Item name='skip' rules={[{ required: true, message: 'Missing area' }]}>
-          <Select options={skipMap} className={styles.StringSelect} />
+          <Select options={skipMap} className={styles.StringSelect} disabled={detaileStatus} />
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
         <Form.Item name='value' rules={[{ required: true, message: 'Please input your password!' }]}>
-          <Input placeholder='string' bordered={false} className={styles.StringInputValue} />
+          <Input placeholder='string' bordered={false} className={styles.StringInputValue} disabled={detaileStatus} />
         </Form.Item>
       </Form>
       <div className={styles.imgStyle} />
@@ -218,7 +225,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
   )
 })
 
-const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmps, myRef: any) => {
+const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileStatus }: DropCmps, myRef: any) => {
   const initValue = {
     type: 'byte',
     name: '',
@@ -240,10 +247,11 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
     setCanDrag(true)
     return Promise.resolve()
   }, [setCanDrag])
+
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
-      canDrag: isDragItem,
+      canDrag: isDragItem && !detaileStatus,
       item() {
         return {
           index,
@@ -254,7 +262,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
         isDragging: monitor.isDragging()
       })
     }),
-    [index, DropList, isDragItem]
+    [index, DropList, isDragItem, detaileStatus]
   )
 
   const [{ handlerId }, drop] = useDrop({
@@ -268,8 +276,11 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
       if (!ref.current) {
         return
       }
+
       const dragIndex = item.index
+
       const hoverIndex = index
+
       // 拖拽元素下标与鼠标悬浮元素下标一致时，不进行操作
       if (dragIndex === hoverIndex) {
         return
@@ -340,6 +351,13 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
     setCanDrag(false)
     return Promise.reject(new Error('请输入数字段名称'))
   }, [setCanDrag])
+
+  React.useEffect(() => {
+    if (Item.name) {
+      const { name, skip, value, length, context } = Item
+      form.setFieldsValue({ name, skip, value, length, context })
+    }
+  }, [form, Item])
   return (
     <div
       className={styles.cloumnBody}
@@ -379,21 +397,21 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
             }
           ]}
         >
-          <Input placeholder='请输入数据段名称' bordered={false} className={styles.IntInput} />
+          <Input placeholder='请输入数据段名称' bordered={false} className={styles.IntInput} disabled={detaileStatus} />
         </Form.Item>
 
         <div className={styles.FourCharts}> 字节长度</div>
         <Form.Item name='length' rules={[{ required: true, message: 'Missing area' }]}>
-          <Select options={byteLength} className={styles.IntSelect} />
+          <Select options={byteLength} className={styles.IntSelect} disabled={detaileStatus} />
         </Form.Item>
 
         <Form.Item name='skip' rules={[{ required: true, message: 'Missing area' }]}>
-          <Select options={skipMap} className={styles.StringSelect} style={{ borderColor: 'none' }} />
+          <Select options={skipMap} className={styles.StringSelect} style={{ borderColor: 'none' }} disabled={detaileStatus} />
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
         <Form.Item name='value' rules={[{ required: true, message: 'Please input your password!' }]}>
-          <Input bordered={false} className={styles.IntInputValue} />
+          <Input bordered={false} className={styles.IntInputValue} disabled={detaileStatus} />
         </Form.Item>
       </Form>
       <div className={styles.imgStyle} />
@@ -401,7 +419,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
   )
 })
 
-const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmps, myRef: any) => {
+const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileStatus }: DropCmps, myRef: any) => {
   const initValue = {
     name: '',
     type: 'byte_array',
@@ -433,7 +451,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
-      canDrag: isDragItem,
+      canDrag: isDragItem && !detaileStatus,
       item() {
         return {
           index,
@@ -444,7 +462,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
         isDragging: monitor.isDragging()
       })
     }),
-    [index, DropList, isDragItem]
+    [index, DropList, isDragItem, detaileStatus]
   )
 
   const [{ handlerId }, drop] = useDrop({
@@ -526,8 +544,13 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
   }, [val, setVal])
 
   React.useEffect(() => {
-    form.setFieldsValue({ count: val })
-  }, [val, form])
+    if (Item.name) {
+      const { name, skip, value, length, context, count } = Item
+      form.setFieldsValue({ name, skip, value, length, context, count })
+    } else {
+      form.setFieldsValue({ count: val })
+    }
+  }, [val, form, Item])
 
   drag(drop(ref))
 
@@ -586,7 +609,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
             }
           ]}
         >
-          <Input placeholder='请输入数据段名称' bordered={false} className={styles.IntInput} />
+          <Input placeholder='请输入数据段名称' bordered={false} className={styles.IntInput} disabled={detaileStatus} />
         </Form.Item>
 
         <div className={styles.FourCharts} style={{ height: '37px', borderRight: '1px solid #E9E9E9' }}>
@@ -595,6 +618,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
 
         <Form.Item name='count' className={styles.IntArrayForm}>
           <Input
+            disabled={detaileStatus}
             onBlur={() => {
               onMax()
             }}
@@ -609,16 +633,16 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
           字节长度
         </div>
         <Form.Item name='length' rules={[{ required: true, message: 'Missing area' }]}>
-          <Select options={byteLength} className={styles.IntSelect} />
+          <Select options={byteLength} className={styles.IntSelect} disabled={detaileStatus} />
         </Form.Item>
 
         <Form.Item name='skip' rules={[{ required: true, message: 'Missing area' }]}>
-          <Select options={skipMap} className={styles.StringSelect} />
+          <Select options={skipMap} className={styles.StringSelect} disabled={detaileStatus} />
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
         <Form.Item name='value' rules={[{ required: true, message: 'Please input your password!' }]}>
-          <Input bordered={false} className={styles.IntArrayInputValue} />
+          <Input bordered={false} className={styles.IntArrayInputValue} disabled={detaileStatus} />
         </Form.Item>
       </Form>
 
@@ -633,19 +657,19 @@ const MemoIntCompoents = React.memo(IntCompoents)
 
 const ComponentsArray = [
   {
-    type: 'IntArrayComponents',
+    type: 'byte_array',
     id: 2,
     keys: '2',
     Components: MemoIntArrayCompoents
   },
   {
-    type: 'IntComponents',
+    type: 'byte',
     id: 1,
     keys: '1',
     Components: MemoIntCompoents
   },
   {
-    type: 'StringComponents',
+    type: 'string',
     id: 3,
     keys: '3',
     Components: MemoStringComponents

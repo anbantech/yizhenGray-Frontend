@@ -3,12 +3,24 @@ import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { useState } from 'react'
 import SearchInput from 'Src/components/Input/searchInput/searchInput'
 import styles from 'Src/layout/LeftNav/leftNav.less'
-import { deleteneExcitaionListMore, excitationListFn, lookUpDependenceUnit, updateExcitationList } from 'Src/services/api/excitationApi'
+import {
+  createExcitationList,
+  deleteneExcitaionListMore,
+  excitationListFn,
+  lookUpDependenceUnit,
+  updateExcitationList
+} from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import { message, Modal, notification } from 'antd'
 import useMenu from 'Src/util/Hooks/useMenu'
 import LookUpDependence from 'Src/components/Modal/taskModal/lookUpDependence'
-import { GlobalStatusStore, RightDragListStore, useRequestStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import {
+  ArgeementDropListStore,
+  GlobalStatusStore,
+  LeftDropListStore,
+  RightDragListStore,
+  useRequestStore
+} from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import { warn } from 'Src/util/common'
 import utils from 'Src/view/template/TemplateResult/utils'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
@@ -19,12 +31,14 @@ import BtnCompoents from './ExcitationDragHeaderBtn'
 import TemplateDialog from './ExcitaionDragExportModal'
 import NewExcitationMoadl from '../../Agreement/createModal'
 
-const BottomFooterDrag = ({ DeleteCheckItem, exportAll, saveConfig }: any) => {
+const BottomFooterDrag = ({ DeleteCheckItem, exportAll, saveConfig, id }: any) => {
   return (
     <div className={StyleSheet.BottomFooterDragBody}>
-      <div className={StyleSheet.buleButton} role='time' onClick={saveConfig}>
-        添加到发送列表
-      </div>
+      {id === -1 && (
+        <div className={StyleSheet.buleButton} role='time' onClick={saveConfig}>
+          添加到发送列表
+        </div>
+      )}
       <div className={StyleSheet.exportButtn} role='time' onClick={exportAll}>
         导出
       </div>
@@ -41,14 +55,17 @@ function ExcitationListMemo() {
   const layoutRef = React.useRef<any>()
   const { confirm } = Modal
   const [isClose, setClose] = React.useState(true)
+  const id = LeftDropListStore(state => state.sender_id)
   const { params, setKeyWord, setHasMore, setPage } = useRequestStore()
   const [visible, setVsible] = useState(false)
   const checkAllList = RightDragListStore(state => state.checkAllList)
+  const destoryEveryItem = ArgeementDropListStore(state => state.destoryEveryItem)
+  const setDeatilStatus = ArgeementDropListStore(state => state.setDeatilStatus)
   const { checkAllSenderIdList, setIndeterminate, setCheckAll } = RightDragListStore()
   const { setRightList, DragList } = RightDragListStore()
   const [sender_id, setSender_id] = React.useState(-1)
   const { visibility, chioceModalStatus } = useMenu()
-  const [newCreate, setNewCreate] = useState(true)
+  const [newCreate, setNewCreate] = useState(false)
   const updateStatus = GlobalStatusStore(state => state.updateStatus)
   const setUpdateStatus = GlobalStatusStore(state => state.setUpdateStatus)
   const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
@@ -69,7 +86,6 @@ function ExcitationListMemo() {
         if (result.data) {
           const newList = [...result.data.results]
           if (newList.length === 0) {
-            // InstancesDetail.setInstance(false)
             setHasMore(false)
             return false
           }
@@ -78,7 +94,6 @@ function ExcitationListMemo() {
             setHasMore(false)
           }
           setRightList([...newList])
-          // InstancesDetail.setInstance(true)
         }
       } catch (error) {
         throwErrorMessage(error, { 1004: '请求资源未找到' })
@@ -203,11 +218,9 @@ function ExcitationListMemo() {
       case 'info':
         getDependenceInfo(id)
         break
-      case 'edit':
-        // jumpUpdateWeb(updateMenue)
-        break
       case 'detail':
-        // jumpUpdateWeb(updateMenue)
+        setNewCreate(true)
+        setDeatilStatus(true)
         break
       case 'export':
         utils.templateDataLoader.singleExporter(id)
@@ -225,9 +238,10 @@ function ExcitationListMemo() {
     return checkAllList.length
   }, [checkAllList])
 
-  const onOk = () => {
+  const onOk = React.useCallback(() => {
+    destoryEveryItem()
     setVsible(false)
-  }
+  }, [destoryEveryItem])
 
   // 模版导出失败 提醒
   const configFn = React.useCallback(() => {
@@ -248,7 +262,7 @@ function ExcitationListMemo() {
         configFn()
         return
       }
-      utils.templateDataLoader.exporter(checkAllList, '激励合集', (c, a) => {
+      await utils.templateDataLoader.exporter(checkAllList, '激励合集', (c, a) => {
         if (c < a) {
           notification.info({
             key: '1',
@@ -274,29 +288,36 @@ function ExcitationListMemo() {
   // 保存配置
   const saveConfig = React.useCallback(async () => {
     const child_id_list = [[], [...checkAllList], []]
-    const params = { child_id_list }
-    const res = await updateExcitationList(sender_id, params)
+    const res = await createExcitationList({ name: '默认1', desc: '默认创建', gu_cnt0: 1, gu_w0: 0, child_id_list })
     if (res.code === 0) {
+      checkAllSenderIdList([])
+      setIndeterminate(false)
+      setCheckAll(false)
+      setUpdateStatus(!updateStatus)
       message.success('创建成功')
     }
-  }, [sender_id, checkAllList])
+  }, [checkAllList, setUpdateStatus, updateStatus, checkAllSenderIdList, setCheckAll, setIndeterminate])
 
   // 取消新建
-
   const cancelNewCreate = () => {
     setNewCreate(false)
   }
+  // 打开新建弹窗 清除sender_id
+  const opneModal = React.useCallback((value: boolean) => {
+    setSender_id(-1)
+    setNewCreate(value)
+  }, [])
 
   return (
     <div className={isClose ? StyleSheet.rightList : StyleSheet.rightListClose} ref={layoutRef}>
       {isClose && (
         <>
-          <BtnCompoents setVsible={setVsible} setNewCreate={setNewCreate} />
+          <BtnCompoents setVsible={setVsible} setNewCreate={opneModal} />
           <SearchInput className={StyleSheet.ExictationInput} placeholder='根据名称搜索激励' onChangeValue={updateParams} />
           {DragList?.length > 0 && <ExcitationDragHeader />}
           {/* 列表拖拽 */}
           <ExcitationDrag height={height} onChange={onChange} />
-          {LengthMemo ? <BottomFooterDragMemo DeleteCheckItem={DeleteCheckItem} exportAll={exportAll} saveConfig={saveConfig} /> : null}
+          {LengthMemo ? <BottomFooterDragMemo id={id} DeleteCheckItem={DeleteCheckItem} exportAll={exportAll} saveConfig={saveConfig} /> : null}
         </>
       )}
       {isClose ? (
@@ -326,8 +347,8 @@ function ExcitationListMemo() {
         concent='是否确认删除？'
       />
       <LookUpDependence visibility={visibility as boolean} name='激励关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
-      <TemplateDialog visible={visible} onOk={onOk} />
-      <NewExcitationMoadl visibility={newCreate} onOk={cancelNewCreate} />
+      {visible && <TemplateDialog visible={visible} onOk={onOk} />}
+      {newCreate && <NewExcitationMoadl visibility={newCreate} sender_id={sender_id} onOk={cancelNewCreate} />}
     </div>
   )
 }
