@@ -2,13 +2,13 @@ import React from 'react'
 import style from './omit.less'
 
 const menuMap = [
-  { type: 'detail', title: '查看激励详情', StyleSheet: style.detail, styleImage: style.taskListLeft_lookInfo },
+  { type: 'detail', title: '查看/修改激励详情', StyleSheet: style.detail, styleImage: style.taskListLeft_lookInfo },
   { type: 'info', title: '查看关联信息', StyleSheet: style.info, styleImage: style.taskListLeft_linkInfo },
   { type: 'export', title: '导出', StyleSheet: style.export, styleImage: style.taskListLeft_exportInfo },
   { type: 'delete', title: '删除', StyleSheet: style.delete, styleImage: style.taskListLeft_detailImg }
 ]
 
-function DragComponents({ setOpen, onChange, id }: any) {
+function DragComponentsMemo({ setOpen, onChange, id }: any) {
   return (
     <div
       onMouseLeave={() => {
@@ -34,5 +34,7 @@ function DragComponents({ setOpen, onChange, id }: any) {
     </div>
   )
 }
+
+const DragComponents = React.memo(DragComponentsMemo)
 
 export default DragComponents

@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import 'antd/dist/antd.css'
 import { Button, message, Modal } from 'antd'
-import { getExcitaionDeatilFn, saveExcitaionFn } from 'Src/services/api/excitationApi'
+import { getExcitaionDeatilFn, saveExcitaionFn, updateControl } from 'Src/services/api/excitationApi'
 import { ComponentsArray } from 'Src/view/NewExcitation/ExcitationComponents/Agreement/agreementCompoents'
 import { generateUUID } from 'Src/util/common'
 import AgreementIndex from './agreementIndex'
@@ -49,7 +49,24 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
       message.error('新建失败')
     }
   }, [DropListRef, onOk])
-
+  // 更新元素 updateControl
+  const updateItem = React.useCallback(async () => {
+    const res = DropListRef.map((item: any) => {
+      return item.save()
+    })
+    const headObj = myRef.current.save()
+    const params = { ...headObj, template: res }
+    try {
+      const res = await updateControl(sender_id, params)
+      if (res) {
+        message.success('激励修改成功')
+        onOk()
+      }
+    } catch {
+      message.error('修改失败')
+    }
+  }, [DropListRef, onOk, sender_id])
+  // 创建
   const getItemInfo = React.useCallback(async () => {
     checkItem()
       .then(res => {
@@ -82,6 +99,32 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
     },
     [setHead, setLeftList]
   )
+  const DropListMemo = React.useMemo(() => {
+    return DropList.length !== 0
+  }, [DropList])
+  // 更新
+  const upadateItemInfo = React.useCallback(async () => {
+    checkItem()
+      .then(res => {
+        if (res) {
+          updateItem()
+        }
+        return res
+      })
+      .catch(() => {
+        message.error('请检查控件')
+      })
+  }, [checkItem, updateItem])
+
+  const contorl = React.useCallback(() => {
+    if (sender_id === -1) {
+      getItemInfo()
+    } else if (sender_id !== -1 && detaileStatus) {
+      setDeatilStatus(false)
+    } else {
+      upadateItemInfo()
+    }
+  }, [detaileStatus, getItemInfo, sender_id, setDeatilStatus, upadateItemInfo])
 
   React.useEffect(() => {
     if (sender_id !== -1) {
@@ -101,18 +144,19 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
           <Button onClick={onOk}>取消</Button>
           <Button
             type='primary'
+            disabled={!DropListMemo}
             onClick={() => {
-              setDeatilStatus(false)
+              contorl()
             }}
           >
-            新建
+            {sender_id === -1 ? '新建' : detaileStatus ? '编辑' : ' 修改'}
           </Button>
         </>
       ]}
     >
       <div className={StyleSheet.excitationModalBody}>
         <HeaderForm ref={myRef} detaileStatus={detaileStatus} />
-        {DropList.length > 0 ? <AgreementIndex sender_id={sender_id} /> : null}
+        <AgreementIndex sender_id={sender_id} />
       </div>
     </Modal>
   )

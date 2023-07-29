@@ -15,8 +15,6 @@ type LeftAction = {
   increase: (type: string) => void
   decrease: (type: string) => void
   setValue: (type: string, val: number) => void
-  setBtnStatus: (val: boolean) => void
-  setShowModal: (val: boolean) => void
 }
 
 interface LeftActionState {
@@ -25,8 +23,6 @@ interface LeftActionState {
   gu_w0: number
   name: string
   desc: string
-  btnStatus: boolean
-  ModalStatus: boolean
 }
 
 interface CmpsOnly {
@@ -87,12 +83,10 @@ type DragableStatuState = {
 }
 
 type sendList = {
-  sender_id: number
   detailData: Record<string, any>
 }
 
 interface ListFn {
-  checkList: (id: number) => void
   setDetailData: (state: any) => void
 }
 
@@ -122,8 +116,24 @@ type ListFnStateValue = {
 
 type GlobalStatusType = {
   updateStatus: boolean
+  setUpdateStatus: (val: boolean) => void
+  sendBtnStatus: boolean
+  setSendBtnStatus: (val: boolean) => void
 }
 
-interface UpdateStatusFn {
-  setUpdateStatus: (val: boolean) => void
+interface RouterProps {
+  RouterChange: boolean
+  ModalStatus: boolean
+  setRouterChange: (val: boolean) => void
+  reRouterBoolean: () => void
+  setShowModal: (val: boolean) => void
+}
+
+interface Sender_idType {
+  sender_id: number | null
+  setSender_id: (id: number | null) => void
+}
+
+interface ExcitationLisSendBtnType {
+  sendBtnStatus: boolean
 }

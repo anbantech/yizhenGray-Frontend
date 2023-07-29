@@ -1,15 +1,24 @@
-// import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { Checkbox } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { isEqual } from 'lodash'
 import * as React from 'react'
 import { RightDragListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import StyleSheet from '../excitationDraw.less'
 
-function ExcitationDragHeader() {
+function ExcitationDragHeaderMemo() {
   const indeterminate = RightDragListStore(state => state.indeterminate)
   const all = RightDragListStore(state => state.all)
-  const { checkAllSenderIdList, setIndeterminate, setCheckAll } = RightDragListStore()
-  const DragList = RightDragListStore(state => state.DragList)
+  const checkAllSenderIdList = RightDragListStore(
+    state => state.checkAllSenderIdList,
+    (pre, old) => isEqual(pre, old)
+  )
+  const setIndeterminate = RightDragListStore(state => state.setIndeterminate)
+  const setCheckAll = RightDragListStore(state => state.setCheckAll)
+  const DragList = RightDragListStore(
+    state => state.DragList,
+    (pre, old) => isEqual(pre, old)
+  )
+
   const checkItem = React.useCallback(() => {
     return DragList.map((item: any) => item.sender_id)
   }, [DragList])
@@ -32,5 +41,7 @@ function ExcitationDragHeader() {
     </div>
   )
 }
+
+const ExcitationDragHeader = React.memo(ExcitationDragHeaderMemo)
 
 export default ExcitationDragHeader

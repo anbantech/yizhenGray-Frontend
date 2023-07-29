@@ -3,27 +3,23 @@ import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { useState } from 'react'
 import SearchInput from 'Src/components/Input/searchInput/searchInput'
 import styles from 'Src/layout/LeftNav/leftNav.less'
-import {
-  createExcitationList,
-  deleteneExcitaionListMore,
-  excitationListFn,
-  lookUpDependenceUnit,
-  updateExcitationList
-} from 'Src/services/api/excitationApi'
+import { createExcitationList, deleteneExcitaionListMore, excitationListFn, lookUpDependenceUnit } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import { message, Modal, notification } from 'antd'
 import useMenu from 'Src/util/Hooks/useMenu'
 import LookUpDependence from 'Src/components/Modal/taskModal/lookUpDependence'
 import {
   ArgeementDropListStore,
-  GlobalStatusStore,
-  LeftDropListStore,
   RightDragListStore,
+  useExicitationSenderId,
+  // useExicitationSenderId,
   useRequestStore
 } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import { warn } from 'Src/util/common'
 import utils from 'Src/view/template/TemplateResult/utils'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { shallow } from 'zustand/shallow'
+import { isEqual } from 'lodash'
 import ExcitationDragHeader from './ExcitationDragHeader'
 import ExcitationDrag from './ExcitationDrag'
 import StyleSheet from '../excitationDraw.less'
@@ -31,10 +27,14 @@ import BtnCompoents from './ExcitationDragHeaderBtn'
 import TemplateDialog from './ExcitaionDragExportModal'
 import NewExcitationMoadl from '../../Agreement/createModal'
 
-const BottomFooterDrag = ({ DeleteCheckItem, exportAll, saveConfig, id }: any) => {
+const BottomFooterDrag = ({ DeleteCheckItem, exportAll, saveConfig }: any) => {
+  const sender_id = useExicitationSenderId(state => state.sender_id)
+  const isShowSave = React.useMemo(() => {
+    return sender_id === -1
+  }, [sender_id])
   return (
     <div className={StyleSheet.BottomFooterDragBody}>
-      {id === -1 && (
+      {isShowSave && (
         <div className={StyleSheet.buleButton} role='time' onClick={saveConfig}>
           添加到发送列表
         </div>
@@ -55,22 +55,29 @@ function ExcitationListMemo() {
   const layoutRef = React.useRef<any>()
   const { confirm } = Modal
   const [isClose, setClose] = React.useState(true)
-  const id = LeftDropListStore(state => state.sender_id)
-  const { params, setKeyWord, setHasMore, setPage } = useRequestStore()
   const [visible, setVsible] = useState(false)
-  const checkAllList = RightDragListStore(state => state.checkAllList)
-  const destoryEveryItem = ArgeementDropListStore(state => state.destoryEveryItem)
-  const setDeatilStatus = ArgeementDropListStore(state => state.setDeatilStatus)
-  const { checkAllSenderIdList, setIndeterminate, setCheckAll } = RightDragListStore()
-  const { setRightList, DragList } = RightDragListStore()
-  const [sender_id, setSender_id] = React.useState(-1)
   const { visibility, chioceModalStatus } = useMenu()
   const [newCreate, setNewCreate] = useState(false)
-  const updateStatus = GlobalStatusStore(state => state.updateStatus)
-  const setUpdateStatus = GlobalStatusStore(state => state.setUpdateStatus)
   const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
-  //  删除弹出框
   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
+  const [sender_id, setSender_id] = React.useState(-1)
+  const { params, setKeyWord, setHasMore, setPage } = useRequestStore()
+
+  const checkAllList = RightDragListStore(
+    state => state.checkAllList,
+    (pre, old) => isEqual(pre, old)
+  )
+  const destoryEveryItem = ArgeementDropListStore(state => state.destoryEveryItem)
+  const setDeatilStatus = ArgeementDropListStore(state => state.setDeatilStatus)
+  const setIndeterminate = RightDragListStore(state => state.setIndeterminate)
+  const checkAllSenderIdList = RightDragListStore(state => state.checkAllSenderIdList, shallow)
+  const setCheckAll = RightDragListStore(state => state.setCheckAll)
+
+  const DragList = RightDragListStore(
+    state => state.DragList,
+    (pre, old) => isEqual(pre, old)
+  )
+  const setRightList = RightDragListStore(state => state.setRightList)
 
   // 删除弹出框函数
   const CommonModleClose = (value: boolean) => {
@@ -101,6 +108,7 @@ function ExcitationListMemo() {
     },
     [setHasMore, setRightList]
   )
+
   React.useEffect(() => {
     getExcitationList(params)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -113,31 +121,6 @@ function ExcitationListMemo() {
     setRightList([])
     setKeyWord(value)
   }
-
-  React.useEffect(() => {
-    const resizeObserver = new ResizeObserver(entries => {
-      for (const entry of entries) {
-        const { height } = entry.contentRect
-        let num = 700
-        if (height >= 1940 && height >= 2300) {
-          num = height * 0.8
-        } else if (height >= 1400 && height <= 1940) {
-          num = height * 0.5
-        } else {
-          num = height * 0.3
-        }
-        setHeight(height - Math.ceil(num as number))
-      }
-    })
-
-    if (layoutRef.current) {
-      resizeObserver.observe(layoutRef.current)
-    }
-
-    return () => {
-      resizeObserver.disconnect()
-    }
-  }, [])
 
   const DeleteCheckoneItem = React.useCallback(
     (val: number) => {
@@ -190,12 +173,11 @@ function ExcitationListMemo() {
       }
       setSpinning(false)
       CommonModleClose(false)
-      setUpdateStatus(!updateStatus)
     } catch (error) {
       CommonModleClose(false)
       throwErrorMessage(error, { 1009: '删除失败' })
     }
-  }, [DeleteCheckoneItem, allIn, checkAllList, sender_id, setPage, setRightList, setUpdateStatus, updateStatus])
+  }, [DeleteCheckoneItem, allIn, checkAllList, sender_id, setPage, setRightList])
 
   // 获取关联信息
   const getDependenceInfo = React.useCallback(
@@ -230,20 +212,41 @@ function ExcitationListMemo() {
     }
   }
 
+  // 删除框
   const DeleteCheckItem = React.useCallback(() => {
     CommonModleClose(true)
   }, [])
 
+  // 筛选列表 出现底部按钮
   const LengthMemo = React.useMemo(() => {
     return checkAllList.length
   }, [checkAllList])
 
-  const onOk = React.useCallback(() => {
-    destoryEveryItem()
-    setVsible(false)
-  }, [destoryEveryItem])
+  // 当新建激励发送列表没有内容时  点击添加到发送列表按钮调用
+  const saveConfig = React.useCallback(async () => {
+    const child_id_list = [[], [...checkAllList], []]
+    const res = await createExcitationList({ name: '默认1', desc: '默认创建', gu_cnt0: 1, gu_w0: 0, child_id_list })
+    if (res.code === 0) {
+      checkAllSenderIdList([])
+      setIndeterminate(false)
+      setCheckAll(false)
+      message.success('创建成功')
+    }
+  }, [checkAllList, checkAllSenderIdList, setCheckAll, setIndeterminate])
 
-  // 模版导出失败 提醒
+  // 取消新建
+  const cancelNewCreate = React.useCallback(() => {
+    setNewCreate(false)
+    setPage(1)
+  }, [setPage])
+
+  // 打开新建弹窗 清除sender_id
+  const opneModal = React.useCallback((value: boolean) => {
+    setSender_id(-1)
+    setNewCreate(value)
+  }, [])
+
+  //  导入导出功能
   const configFn = React.useCallback(() => {
     confirm({
       icon: <ExclamationCircleOutlined style={{ color: '#262626' }} />,
@@ -285,39 +288,45 @@ function ExcitationListMemo() {
     exportTemplate(checkAllList)
   }
 
-  // 保存配置
-  const saveConfig = React.useCallback(async () => {
-    const child_id_list = [[], [...checkAllList], []]
-    const res = await createExcitationList({ name: '默认1', desc: '默认创建', gu_cnt0: 1, gu_w0: 0, child_id_list })
-    if (res.code === 0) {
-      checkAllSenderIdList([])
-      setIndeterminate(false)
-      setCheckAll(false)
-      setUpdateStatus(!updateStatus)
-      message.success('创建成功')
+  const onOk = React.useCallback(() => {
+    destoryEveryItem()
+    setVsible(false)
+  }, [destoryEveryItem])
+
+  React.useEffect(() => {
+    const resizeObserver = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        const { height } = entry.contentRect
+        let num = 700
+        if (height >= 1940 && height >= 2300) {
+          num = height * 0.8
+        } else if (height >= 1400 && height <= 1940) {
+          num = height * 0.5
+        } else {
+          num = height * 0.3
+        }
+        setHeight(height - Math.ceil(num as number))
+      }
+    })
+
+    if (layoutRef.current) {
+      resizeObserver.observe(layoutRef.current)
     }
-  }, [checkAllList, setUpdateStatus, updateStatus, checkAllSenderIdList, setCheckAll, setIndeterminate])
 
-  // 取消新建
-  const cancelNewCreate = () => {
-    setNewCreate(false)
-  }
-  // 打开新建弹窗 清除sender_id
-  const opneModal = React.useCallback((value: boolean) => {
-    setSender_id(-1)
-    setNewCreate(value)
+    return () => {
+      resizeObserver.disconnect()
+    }
   }, [])
-
   return (
     <div className={isClose ? StyleSheet.rightList : StyleSheet.rightListClose} ref={layoutRef}>
       {isClose && (
         <>
           <BtnCompoents setVsible={setVsible} setNewCreate={opneModal} />
           <SearchInput className={StyleSheet.ExictationInput} placeholder='根据名称搜索激励' onChangeValue={updateParams} />
-          {DragList?.length > 0 && <ExcitationDragHeader />}
+          {DragList?.length && <ExcitationDragHeader />}
           {/* 列表拖拽 */}
           <ExcitationDrag height={height} onChange={onChange} />
-          {LengthMemo ? <BottomFooterDragMemo id={id} DeleteCheckItem={DeleteCheckItem} exportAll={exportAll} saveConfig={saveConfig} /> : null}
+          {LengthMemo ? <BottomFooterDragMemo DeleteCheckItem={DeleteCheckItem} exportAll={exportAll} saveConfig={saveConfig} /> : null}
         </>
       )}
       {isClose ? (

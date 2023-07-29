@@ -3,7 +3,6 @@ import 'antd/dist/antd.css'
 import { Modal, Input, Form, Button, message } from 'antd'
 import { throwErrorMessage } from 'Src/util/message'
 import { createExcitationList, updateExcitationList } from 'Src/services/api/excitationApi'
-import { GlobalStatusStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import styles from '../BaseModle.less'
 
 interface FormInstance {
@@ -17,9 +16,9 @@ const layout = {
 }
 
 function ExcitationModal(props: any) {
-  const { setUpdateStatus, updateStatus } = GlobalStatusStore()
   const { TextArea } = Input
   const { visible, hideModal, fixTitle, sender_id, excitationInfo } = props
+  console.log(visible)
   const [form] = Form.useForm<FormInstance>()
   const [isDisableStatus, setDisabledStatus] = useState(true)
 
@@ -40,11 +39,11 @@ function ExcitationModal(props: any) {
         }
       }
     } catch (error) {
-      setDisabledStatus(true)
+      hideModal(false)
       throwErrorMessage(error, { 1005: '激励发送列表名称重复，请修改' })
       return error
     }
-  }, [fixTitle, form, sender_id])
+  }, [fixTitle, form, hideModal, sender_id])
 
   const formVali = React.useCallback(() => {
     setDisabledStatus(true)
@@ -52,15 +51,15 @@ function ExcitationModal(props: any) {
       .then(res => {
         if (res.code !== 1005) {
           hideModal(false)
-          setUpdateStatus(!updateStatus)
           form.resetFields()
         }
         return res
       })
       .catch(error => {
+        hideModal(false)
         return error
       })
-  }, [form, hideModal, setUpdateStatus, updateStatus, validateForm])
+  }, [form, hideModal, validateForm])
 
   const onValuesChange = (changedValues: any, allValues: any) => {
     const bol = allValues.desc === undefined || allValues.desc?.length <= 50

@@ -13,11 +13,12 @@ interface DropCmps {
   Item: any
   detaileStatus: boolean
 }
+
 const byteLength = [
-  { label: '8', value: 'fixed_8' },
-  { label: '16', value: 'fixed_16' },
-  { label: '32', value: 'fixed_32' },
-  { label: '64', value: 'fixed_64' }
+  { label: '1', value: '1' },
+  { label: '2', value: '2' },
+  { label: '4', value: '4' },
+  { label: '8', value: '8' }
 ]
 
 const skipMap = [
@@ -42,6 +43,21 @@ interface PriceValue {
 interface PriceInputProps {
   value?: PriceValue
   onChange?: (value: PriceValue) => void
+}
+
+const RegCompare = (str: string) => {
+  const isOctal = /^0[0-7]+$/.test(str)
+  const isDecimal = /^\d+$/.test(str)
+  const isHexadecimal = /^0x[\dA-Fa-f]+$/.test(str)
+  if (isOctal || isDecimal || isHexadecimal) {
+    return Promise.resolve()
+  }
+  return Promise.reject(new Error('数据格式不匹配'))
+}
+
+const NoValCompare = (cb: (val: boolean) => void) => {
+  cb(false)
+  return Promise.reject(new Error('初始值为空'))
 }
 
 const StringComponents = React.forwardRef(({ index, Item, moveCardHandler, detaileStatus }: DropCmps, myRef: any) => {
@@ -155,7 +171,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler, detai
     },
     delete: () => {},
     validate: () => {
-      return validateForm
+      return validateForm()
     },
     clearInteraction: () => {}
   }))
@@ -166,6 +182,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler, detai
       form.setFieldsValue({ name, skip, value, context })
     }
   }, [form, Item])
+
   drag(drop(ref))
 
   return (
@@ -216,7 +233,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler, detai
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Form.Item name='value' rules={[{ required: true, message: 'Please input your password!' }]}>
+        <Form.Item name='value'>
           <Input placeholder='string' bordered={false} className={styles.StringInputValue} disabled={detaileStatus} />
         </Form.Item>
       </Form>
@@ -238,15 +255,6 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
   const ref = React.useRef<HTMLDivElement>(null)
 
   const [isDragItem, setCanDrag] = React.useState(true)
-  const onToggleForbidDrag = React.useCallback(() => {
-    setCanDrag(false)
-    return Promise.reject(new Error('数据段名称由汉字、数字、字母和下划线组成'))
-  }, [setCanDrag])
-
-  const IsDrag = React.useCallback(() => {
-    setCanDrag(true)
-    return Promise.resolve()
-  }, [setCanDrag])
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -337,6 +345,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
     const value = await form.validateFields()
     return value
   }, [form])
+
   React.useImperativeHandle(myRef, () => ({
     save: () => {
       return { ...form.getFieldsValue(), type: 'byte', concontext: false }
@@ -347,10 +356,6 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
     },
     clearInteraction: () => {}
   }))
-  const noValueFrom = React.useCallback(() => {
-    setCanDrag(false)
-    return Promise.reject(new Error('请输入数字段名称'))
-  }, [setCanDrag])
 
   React.useEffect(() => {
     if (Item.name) {
@@ -380,19 +385,9 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
               validateTrigger: 'onBlur',
               validator(_, value) {
                 if (value) {
-                  const reg = /^[\w\u4E00-\u9FA5]+$/
-                  if (value.length > 20) {
-                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
-                  }
-                  if (value.length < 2 && value.length !== 0) {
-                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
-                  }
-                  if (reg.test(value)) {
-                    return IsDrag()
-                  }
-                  return onToggleForbidDrag()
+                  return RegCompare(value)
                 }
-                return noValueFrom()
+                return NoValCompare(setCanDrag)
               }
             }
           ]}
@@ -410,7 +405,22 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Form.Item name='value' rules={[{ required: true, message: 'Please input your password!' }]}>
+        <Form.Item
+          name='value'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[
+            {
+              validateTrigger: 'onBlur',
+              validator(_, value) {
+                if (value) {
+                  return RegCompare(value)
+                }
+                return NoValCompare(setCanDrag)
+              }
+            }
+          ]}
+        >
           <Input bordered={false} className={styles.IntInputValue} disabled={detaileStatus} />
         </Form.Item>
       </Form>
@@ -641,7 +651,22 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Form.Item name='value' rules={[{ required: true, message: 'Please input your password!' }]}>
+        <Form.Item
+          name='value'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[
+            {
+              validateTrigger: 'onBlur',
+              validator(_, value) {
+                if (value) {
+                  return RegCompare(value)
+                }
+                return noValueFrom()
+              }
+            }
+          ]}
+        >
           <Input bordered={false} className={styles.IntArrayInputValue} disabled={detaileStatus} />
         </Form.Item>
       </Form>

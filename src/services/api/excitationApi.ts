@@ -124,6 +124,12 @@ export function updateExcitationList(id: number, params: any) {
   return request.put<any>(`/api/v1.0/temp_and_sti/interaction/update/${id}`, params)
 }
 
+// 更新激励控件
+
+export function updateControl(id: number, params: any) {
+  return request.put<any>(`/api/v1.0/temp_and_sti/single/update/${id}`, params)
+}
+
 export function getExcitaionDeatilFn(id: number | string) {
   return request.get<any>(`/api/v1.0/temp_and_sti/sender/get/${id}`)
 }
