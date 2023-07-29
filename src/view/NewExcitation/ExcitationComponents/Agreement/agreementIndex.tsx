@@ -9,11 +9,17 @@ function AgreementIndexMemo(props: { sender_id: number }) {
   const { sender_id } = props
   const detaileStatus = ArgeementDropListStore(state => state.detaileStatus)
 
+  const DragContorlStatus = React.useMemo(() => {
+    const bol = sender_id !== -1 && detaileStatus
+    return bol
+  }, [detaileStatus, sender_id])
   return (
-    <DndProvider backend={HTML5Backend}>
-      <AgreementDrop />
-      {sender_id === -1 || (!detaileStatus && <AgreementDrag />)}
-    </DndProvider>
+    <>
+      <DndProvider backend={HTML5Backend}>
+        <AgreementDrop />
+        {!DragContorlStatus && <AgreementDrag />}
+      </DndProvider>
+    </>
   )
 }
 

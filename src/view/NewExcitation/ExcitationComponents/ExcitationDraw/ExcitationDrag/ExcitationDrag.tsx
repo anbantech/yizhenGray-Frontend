@@ -1,13 +1,16 @@
 import Checkbox from 'antd/lib/checkbox'
 import * as React from 'react'
+import { shallow } from 'zustand/shallow'
 import { DragSourceMonitor, useDrag } from 'react-dnd'
 import {
   LeftDropListStore,
   RightDragListStore,
   DragableDragingStatusStore,
-  useRequestStore
+  useRequestStore,
+  GlobalStatusStore
 } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import { Tooltip } from 'antd'
+import { isEqual } from 'lodash'
 import dragImg from 'Src/assets/drag/icon_drag.png'
 import OmitExcitation from 'Src/components/OmitComponents/OpenMenu'
 import styles from 'Src/view/Project/task/taskList/task.less'
@@ -21,11 +24,14 @@ type Props = { height: number; onChange: (val: string, id: number) => void }
 
 // 拖拽列表的item
 const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
-  const DropList = LeftDropListStore(state => state.DropList)
+  const DropList = LeftDropListStore(
+    state => state.DropList,
+    (pre, old) => isEqual(pre, old)
+  )
   const setLeftList = LeftDropListStore(state => state.setLeftList)
   const LeftDragIndexFn = LeftDropListStore(state => state.LeftDragIndexFn)
   const setDragableStatus = DragableDragingStatusStore(state => state.setDragableStatus)
-  const setBtnStatus = LeftDropListStore(state => state.setBtnStatus)
+  const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -49,7 +55,7 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
         if (monitor.didDrop()) {
           dropCardListCopy.splice(uselessIndex, 1, item)
           setLeftList([...dropCardListCopy])
-          setBtnStatus(false)
+          setSendBtnStatus(false)
         } else {
           dropCardListCopy.splice(uselessIndex, 1)
           setLeftList([...dropCardListCopy])
@@ -57,13 +63,14 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
         setDragableStatus(false)
       }
     }),
-    [DropList, setDragableStatus]
+    [DropList, setDragableStatus, item]
   )
   const myRef = React.useRef<any>()
   return (
     <div
       ref={drag}
       role='time'
+      key={item.sender_id}
       style={{ opacity: isDragging ? 0.5 : 1, cursor: 'move' }}
       onMouseLeave={() => {
         myRef.current?.closeMenu()
@@ -86,13 +93,24 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
   )
 }
 
-const DragableMemo = React.memo(Dragable)
+const DragableMemo = React.memo(Dragable, isEqual)
 // 拖拽区
-function ExcitationDrag({ height, onChange }: Props) {
-  const rightDragList = RightDragListStore(state => state.DragList)
-  const checkAllList = RightDragListStore(state => state.checkAllList)
-  const { checkAllSenderIdList, setIndeterminate, setCheckAll } = RightDragListStore()
-  const { hasMoreData, loadMoreData } = useRequestStore()
+function ExcitationDragMemo({ height, onChange }: Props) {
+  const rightDragList = RightDragListStore(
+    state => state.DragList,
+    (pre, old) => isEqual(pre, old)
+  )
+
+  const checkAllList = RightDragListStore(
+    state => state.checkAllList,
+    (pre, old) => isEqual(pre, old)
+  )
+
+  const setIndeterminate = RightDragListStore(state => state.setIndeterminate)
+  const checkAllSenderIdList = RightDragListStore(state => state.checkAllSenderIdList, shallow)
+  const setCheckAll = RightDragListStore(state => state.setCheckAll)
+  const hasMoreData = useRequestStore(state => state.hasMoreData)
+  const loadMoreData = useRequestStore(state => state.loadMoreData)
 
   const onChanges = React.useCallback(
     (checkedValues: CheckboxValueType[]) => {
@@ -132,4 +150,5 @@ function ExcitationDrag({ height, onChange }: Props) {
   )
 }
 
+const ExcitationDrag = React.memo(ExcitationDragMemo, isEqual)
 export default ExcitationDrag

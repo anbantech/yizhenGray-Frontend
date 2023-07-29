@@ -360,12 +360,25 @@
 }
 
 
-.agreementDrop{
+.agreementDropTop {
+  overflow: visible !important;
   width: 100%;
   height: 342px;
-  overflow-y: hidden;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border: 1px solid #E9E9E9;
+  background-color: #F7F9FA;
 }
+
+.agreementDrop{
+  overflow: visible !important;
+  width: 100%;
+  height: 342px;
+  overflow-y: scroll;
+}
+
 .agreementDrop:hover {
+  overflow: visible !important;
   width: 100%;
   height: 342px;
   overflow-y: scroll;
@@ -447,25 +460,21 @@
 }
 
 .excitationModalBody{
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 
 
-.agreementDropTop {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  border: 1px solid #E9E9E9;
-  background-color: #F7F9FA;
-}
+
 
 .headerForm{
   display: flex; 
   height: 110px;
   justify-content: space-between;
   align-content:stretch;
+  padding-bottom: 20px;
   :global(.ant-form-item-label){
       font-size: 14px;
       font-style: normal;

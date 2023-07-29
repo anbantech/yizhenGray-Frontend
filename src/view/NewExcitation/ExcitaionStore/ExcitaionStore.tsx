@@ -18,8 +18,9 @@ import {
   ListFnStateValue,
   RightAction,
   RightStateType,
-  sendList,
-  UpdateStatusFn
+  RouterProps,
+  Sender_idType,
+  sendList
 } from './ExcitationStoreParams'
 
 const useModalExcitationStore = create((set: any) => ({
@@ -28,9 +29,14 @@ const useModalExcitationStore = create((set: any) => ({
   openModal: () => set({ modal: true })
 }))
 
-const useExicitationId = create((set: any) => ({
-  id: null,
-  setId: () => set((state: any) => ({ id: state.id }))
+// 激励列表的 sender_id 存取
+const useExicitationSenderId = create<Sender_idType>((set: any) => ({
+  sender_id: null,
+  setSender_id: (id: number | null) => {
+    set(() => ({
+      sender_id: id
+    }))
+  }
 }))
 
 const RightDragListStore = create<RightStateType & RightAction & ListAllItemFn & ListFnStateValue>(set => ({
@@ -66,23 +72,10 @@ const LeftDropListStore = create<LeftAction & sendList & ListFn & LeftActionStat
   gu_w0: 0,
   name: '',
   desc: '',
-  sender_id: -1,
   detailData: {},
-  btnStatus: true,
-  ModalStatus: false,
-  setShowModal: (val: boolean) => {
-    set(() => ({
-      ModalStatus: val
-    }))
-  },
   setLeftList: (item: ItemListState) => {
     set(() => ({
       DropList: [...item]
-    }))
-  },
-  setBtnStatus: (val: boolean) => {
-    set(() => ({
-      btnStatus: val
     }))
   },
   LeftDragIndexFn: () => {
@@ -134,13 +127,7 @@ const LeftDropListStore = create<LeftAction & sendList & ListFn & LeftActionStat
       desc: '',
       gu_w0: 0,
       sender_id: -1,
-      detailData: {},
-      btnStatus: true
-    }))
-  },
-  checkList: (id: number) => {
-    set(() => ({
-      sender_id: id
+      detailData: {}
     }))
   },
   setDetailData: state =>
@@ -306,8 +293,14 @@ const checkListStore = create<ListAllItemFn & ListFnStateValue>(set => ({
   }
 }))
 
-const GlobalStatusStore = create<UpdateStatusFn & GlobalStatusType>(set => ({
+const GlobalStatusStore = create<GlobalStatusType>(set => ({
   updateStatus: false,
+  sendBtnStatus: true,
+  setSendBtnStatus: (val: boolean) => {
+    set(() => ({
+      sendBtnStatus: val
+    }))
+  },
   setUpdateStatus: (val: boolean) => {
     set(() => ({
       updateStatus: val
@@ -315,8 +308,27 @@ const GlobalStatusStore = create<UpdateStatusFn & GlobalStatusType>(set => ({
   }
 }))
 
+// 路由
+const RouterStore = create<RouterProps>(set => ({
+  RouterChange: false,
+  ModalStatus: false,
+  setShowModal: (val: boolean) => {
+    set(() => ({
+      ModalStatus: val
+    }))
+  },
+  setRouterChange: (val: boolean) => {
+    set(() => ({
+      RouterChange: val
+    }))
+  },
+  reRouterBoolean: () => {
+    return true
+  }
+}))
+
 export {
-  useExicitationId,
+  useExicitationSenderId,
   useModalExcitationStore,
   DragableDragingStatusStore,
   RightDragListStore,
@@ -324,5 +336,6 @@ export {
   ArgeementDropListStore,
   useRequestStore,
   checkListStore,
-  GlobalStatusStore
+  GlobalStatusStore,
+  RouterStore
 }

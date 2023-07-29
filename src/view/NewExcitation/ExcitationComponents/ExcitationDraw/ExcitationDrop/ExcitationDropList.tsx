@@ -2,7 +2,12 @@ import { Checkbox, Tooltip } from 'antd'
 import * as React from 'react'
 import { DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd'
 import dragImg from 'Src/assets/drag/icon_drag.png'
-import { checkListStore, DragableDragingStatusStore, LeftDropListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import {
+  checkListStore,
+  DragableDragingStatusStore,
+  GlobalStatusStore,
+  LeftDropListStore
+} from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import withScrolling from 'react-dnd-scrolling'
 import styles from 'Src/view/Project/task/taskList/task.less'
@@ -29,6 +34,7 @@ interface ItemType {
   keys: string
   isItemDragging?: boolean
 }
+
 interface PropsType {
   index: number
   Item: Record<string, any>
@@ -40,7 +46,8 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
   const { sender_id } = Item
   const ref = React.useRef<HTMLDivElement>(null)
   const DropList = LeftDropListStore(state => state.DropList)
-  const setBtnStatus = LeftDropListStore(state => state.setBtnStatus)
+  // 更新按钮状态
+  const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
@@ -53,7 +60,7 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
       }),
       end(draggedItem, monitor) {
         if (monitor.didDrop()) {
-          setBtnStatus(false)
+          setSendBtnStatus(false)
         }
       }
     }),
@@ -127,7 +134,10 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
       ref={ref}
       data-handler-id={handlerId}
       className={StyleSheet.excitationItemDrop}
-      style={{ opacity: isDragging || Item.isItemDragging ? 0.4 : 1, cursor: 'move' }}
+      style={{
+        opacity: isDragging || Item.isItemDragging ? 0.4 : 1,
+        cursor: 'move'
+      }}
     >
       <div className={StyleSheet.excitationItemDrop_left}>
         <img className={StyleSheet.img_Body} src={dragImg} alt='' />
@@ -147,6 +157,7 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
             className={styles.taskListLeft_detailImg}
             onClick={() => {
               DeleteCheckItem(Item.keys)
+              setSendBtnStatus(false)
             }}
           />
         </div>
@@ -157,6 +168,7 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
 
 const Dropable = React.memo(DropableMemo)
 const ScrollingComponent = withScrolling('div')
+
 function ExcitationDropList() {
   const [, drop] = useDrop(() => ({
     accept: 'DragDropItem'

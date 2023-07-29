@@ -10,7 +10,7 @@ import ac_Arge from 'Image/ac_Arge.svg'
 import { useHistory, withRouter } from 'react-router-dom'
 import { UpOutlined } from '@ant-design/icons'
 import { GlobalContext } from 'Src/globalContext/globalContext'
-
+import { RouterStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import styles from './leftNav.less'
 
 interface SideBarRoute {
@@ -68,6 +68,7 @@ const routerList: SideBarRoute[] = [
 
 const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ routerList, isClose }) => {
   const history = useHistory()
+  const RouterChange = RouterStore(state => state.RouterChange)
   const { config } = useContext(GlobalContext)
   const {
     userInfo: { roles },
@@ -146,6 +147,7 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
     // eslint-disable-next-line prefer-destructuring
     const routerPath = history.location.pathname.split('/')[1]
     const routerList = extendRouterList()
+    console.log('111', routerPath)
     const findRouter = (routerList: Required<SideBarRouteExtension>[], routerPath: string): Required<SideBarRouteExtension> | undefined => {
       let rt
       for (const _router of routerList) {
@@ -166,7 +168,7 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
     }
     findRouter(routerList, routerPath)
     setRouterList2Render(routerList)
-  }, [extendRouterList, history.location.pathname])
+  }, [extendRouterList, history.location.pathname, RouterChange])
   const styleMemoFn = useCallback(
     (router: any) => {
       if (isClose) {
