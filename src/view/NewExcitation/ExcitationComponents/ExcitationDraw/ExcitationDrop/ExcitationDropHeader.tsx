@@ -59,10 +59,11 @@ function DropHeaderMemo() {
     if (sender_id) {
       const res = await updateExcitationList(sender_id, params)
       if (res.code === 0) {
+        setSendBtnStatus(true)
         message.success('创建成功')
       }
     }
-  }, [DropList, desc, gu_cnt0, gu_w0, name, sender_id])
+  }, [DropList, desc, gu_cnt0, gu_w0, name, sender_id, setSendBtnStatus])
 
   return (
     <div className={StyleSheet.DropHeader}>

@@ -1,6 +1,7 @@
 // import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { Checkbox } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { isEqual } from 'lodash'
 import * as React from 'react'
 import { checkListStore, LeftDropListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import StyleSheet from '../excitationDraw.less'
@@ -8,8 +9,14 @@ import StyleSheet from '../excitationDraw.less'
 function ExcitationDropHeader() {
   const indeterminate = checkListStore(state => state.indeterminate)
   const all = checkListStore(state => state.all)
-  const { checkAllSenderIdList, setIndeterminate, setCheckAll } = checkListStore()
-  const DropList = LeftDropListStore(state => state.DropList)
+  const setIndeterminate = checkListStore(state => state.setIndeterminate)
+  const checkAllSenderIdList = checkListStore(state => state.checkAllSenderIdList)
+  const setCheckAll = checkListStore(state => state.setCheckAll)
+
+  const DropList = LeftDropListStore(
+    state => state.DropList,
+    (pre, now) => isEqual(pre, now)
+  )
   const checkItem = React.useCallback(() => {
     return DropList.map((item: any) => item.keys)
   }, [DropList])

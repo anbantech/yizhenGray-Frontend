@@ -18,7 +18,6 @@ const layout = {
 function ExcitationModal(props: any) {
   const { TextArea } = Input
   const { visible, hideModal, fixTitle, sender_id, excitationInfo } = props
-  console.log(visible)
   const [form] = Form.useForm<FormInstance>()
   const [isDisableStatus, setDisabledStatus] = useState(true)
 

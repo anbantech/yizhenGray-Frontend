@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { checkListStore, GlobalStatusStore, LeftDropListStore, useExicitationSenderId } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import { checkListStore, LeftDropListStore, useExicitationSenderId } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import img_empty from 'Src/assets/drag/img_empty@2x.png'
 import { message } from 'antd'
 import { getExcitaionDeatilFn } from 'Src/services/api/excitationApi'
@@ -36,27 +36,28 @@ const DeleteCompoent = ({ number, DeleteCheckItem }: { number: number; DeleteChe
 const DeleteCompoentMemo = React.memo(DeleteCompoent)
 
 function ExcitationDropMemo() {
-  const { updateStatus } = GlobalStatusStore()
   const DropList = LeftDropListStore(state => state.DropList)
+  // const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
-  const { setDetailData } = LeftDropListStore()
+  const setDetailData = LeftDropListStore(state => state.setDetailData)
   // sender_id
   const sender_id = useExicitationSenderId(state => state.sender_id)
   // 筛选逻辑
-  const { checkAllSenderIdList, setIndeterminate, setCheckAll } = checkListStore()
   const checkAllList = checkListStore(state => state.checkAllList)
-
+  const clearCheckList = checkListStore(state => state.clearCheckList)
   const DeleteCheckItem = React.useCallback(() => {
     const copyList = DropList.filter(item => !checkAllList.includes(item.keys))
     setLeftList([...copyList])
-    checkAllSenderIdList([])
-    setIndeterminate(false)
-    setCheckAll(false)
-  }, [DropList, checkAllList, checkAllSenderIdList, setLeftList, setCheckAll, setIndeterminate])
+    clearCheckList()
+  }, [DropList, checkAllList, clearCheckList, setLeftList])
 
-  const LengthMemo = useMemo(() => {
+  const checkListMemo = useMemo(() => {
     return checkAllList.length
   }, [checkAllList])
+
+  const DropListLength = useMemo(() => {
+    return DropList.length
+  }, [DropList])
 
   // 页面更新
   const getExcitaionDeatilFunction = React.useCallback(
@@ -64,7 +65,6 @@ function ExcitationDropMemo() {
       try {
         const res = await getExcitaionDeatilFn(id)
         if (res.data) {
-          // const keysList = res.data.map((item: any) => item.keys)
           setDetailData(res.data)
         }
       } catch (error) {
@@ -78,7 +78,7 @@ function ExcitationDropMemo() {
     if (sender_id) {
       getExcitaionDeatilFunction(sender_id)
     }
-  }, [getExcitaionDeatilFunction, sender_id, updateStatus])
+  }, [getExcitaionDeatilFunction, sender_id])
 
   return (
     <div className={StyleSheet.excitaionDrop_Body}>
@@ -86,8 +86,8 @@ function ExcitationDropMemo() {
       <Line />
       <span className={StyleSheet.sendListTitle}>发送列表</span>
       <MemoExcitationListHeader />
-      {DropList.length > 0 ? <ExcitationDropList /> : <NoTask />}
-      {LengthMemo ? <DeleteCompoentMemo number={LengthMemo} DeleteCheckItem={DeleteCheckItem} /> : null}
+      {DropListLength ? <ExcitationDropList /> : <NoTask />}
+      {checkListMemo ? <DeleteCompoentMemo number={checkListMemo} DeleteCheckItem={DeleteCheckItem} /> : null}
     </div>
   )
 }

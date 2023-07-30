@@ -174,7 +174,7 @@ function ExcitationDropList() {
     accept: 'DragDropItem'
   }))
   const checkAllList = checkListStore(state => state.checkAllList)
-  const { checkAllSenderIdList, setCheckAll, setIndeterminate } = checkListStore()
+  const { checkAllSenderIdList, setCheckAll, setIndeterminate, clearCheckList } = checkListStore()
   // 列表元素
   const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
@@ -182,6 +182,7 @@ function ExcitationDropList() {
 
   const moveCardHandler = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
+      clearCheckList()
       if (dragableDragingStatus) {
         const dropCardListCopy = DropList
         const lessIndex = DropList.findIndex((item: any) => item.sender_id === -1)
@@ -193,7 +194,7 @@ function ExcitationDropList() {
         setLeftList([...dropCardListCopy])
       }
     },
-    [DropList, dragableDragingStatus, setLeftList]
+    [DropList, clearCheckList, dragableDragingStatus, setLeftList]
   )
 
   const onChange = React.useCallback(

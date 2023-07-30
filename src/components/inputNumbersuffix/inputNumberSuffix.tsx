@@ -1,26 +1,26 @@
 import * as React from 'react'
-import { LeftDropListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import { GlobalStatusStore, LeftDropListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import StyleSheet from './inputNumberSuffix.less'
 
 type porpsType = { type: string }
 function InputNumberSuffixMemo({ type }: porpsType) {
   const increase = LeftDropListStore(state => state.increase)
   const decrease = LeftDropListStore(state => state.decrease)
-  const setBtnStatus = LeftDropListStore(state => state.setBtnStatus)
+  const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const operationUpFn = React.useCallback(
     (type: string) => {
       increase(type)
-      setBtnStatus(false)
+      setSendBtnStatus(false)
     },
-    [increase, setBtnStatus]
+    [increase, setSendBtnStatus]
   )
 
   const operationDownFn = React.useCallback(
     (type: string) => {
       decrease(type)
-      setBtnStatus(false)
+      setSendBtnStatus(false)
     },
-    [decrease, setBtnStatus]
+    [decrease, setSendBtnStatus]
   )
   return (
     <div className={StyleSheet.inputNumberSuffix}>

@@ -106,6 +106,7 @@ interface ListAllItemFn {
   checkAllSenderIdList: (val: checkedValues[]) => void
   setIndeterminate: (val: boolean) => void
   setCheckAll: (val: boolean) => void
+  clearCheckList: () => void
 }
 
 type ListFnStateValue = {

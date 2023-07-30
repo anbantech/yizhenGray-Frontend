@@ -2,7 +2,6 @@ import SearchInput from 'Src/components/Input/searchInput/searchInput'
 import CreateButton from 'Src/components/Button/createButton'
 import { useEffect, useRef, useState } from 'react'
 import * as React from 'react'
-import { RouteComponentProps, StaticContext, withRouter } from 'react-router'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import styles from 'Src/view/Project/task/taskList/task.less'
@@ -14,7 +13,7 @@ import useMenu from 'Src/util/Hooks/useMenu'
 import { message } from 'antd'
 import Leftstyles from './NewExcitation.less'
 import StyleSheet from './ExcitationComponents/ExcitationDraw/excitationDraw.less'
-import { GlobalStatusStore, RouterStore, useExicitationSenderId } from './ExcitaionStore/ExcitaionStore'
+import { checkListStore, GlobalStatusStore, RouterStore, useExicitationSenderId } from './ExcitaionStore/ExcitaionStore'
 
 const request = {
   target_type: '3',
@@ -37,18 +36,19 @@ interface Resparams {
 }
 type ResparamsType = Record<string, any>
 
-const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = () => {
+const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   const layoutRef = useRef<any>()
+  const sender_idRef = useRef<number | null>()
+  const updateStatus = GlobalStatusStore(state => state.updateStatus)
   const sendBtnStatus = GlobalStatusStore(state => state.sendBtnStatus)
-
   // 保存moadl
   const setShowModal = RouterStore(state => state.setShowModal)
-
   // get sender_id curd
   const sender_id = useExicitationSenderId(state => state.sender_id)
-
   // set sender_id
   const setSender_id = useExicitationSenderId(state => state.setSender_id)
+  // 清除筛选框
+  const clearCheckList = checkListStore(state => state.clearCheckList)
 
   const [params, setParams] = useState<Resparams>({ ...request })
   // 任务列表参数
@@ -161,7 +161,7 @@ const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = () => 
   useEffect(() => {
     getExcitationList({ ...params })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params])
+  }, [params, updateStatus])
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver(entries => {
@@ -190,12 +190,15 @@ const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = () => 
 
   const leaveModalFn = React.useCallback(
     (id: number) => {
+      sender_idRef.current = id
       if (!sendBtnStatus) {
         setShowModal(true)
+      } else {
+        clearCheckList()
+        setSender_id(id)
       }
-      setSender_id(id)
     },
-    [sendBtnStatus, setSender_id, setShowModal]
+    [clearCheckList, sendBtnStatus, setSender_id, setShowModal]
   )
 
   // 控制弹出框消失隐藏
@@ -221,7 +224,15 @@ const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = () => 
     },
     [chioceModalStatus]
   )
-  console.log(modalData.isModalVisible)
+
+  React.useImperativeHandle(myRef, () => ({
+    getId: () => {
+      return sender_idRef
+    },
+    clearId: () => {
+      sender_idRef.current = null
+    }
+  }))
   return (
     <div className={Leftstyles.excitationLeftBoby} ref={layoutRef}>
       <div className={StyleSheet.btn_header}>
@@ -330,6 +341,7 @@ const ExcitationLeft: React.FC<RouteComponentProps<any, StaticContext>> = () => 
       </>
     </div>
   )
-}
+})
 
-export default withRouter(ExcitationLeft)
+const ExcitationLeft = React.memo(ExcitationLeftMemo)
+export default ExcitationLeft
