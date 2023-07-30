@@ -28,7 +28,6 @@ const DragComponentsforwardRef = forwardRef(function MemoOmitComponents(props: M
     },
     []
   )
-  console.log('render')
   return (
     <div style={{ cursor: 'pointer' }} className={styles.omitCompoentsTarget} role='time' onClick={openMenu}>
       <div className={styles.omitRounds}>{open ? <img src={more_hover} alt='' /> : <img src={more} alt='' />}</div>

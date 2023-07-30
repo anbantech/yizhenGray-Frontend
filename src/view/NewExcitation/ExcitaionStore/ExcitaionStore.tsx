@@ -63,6 +63,13 @@ const RightDragListStore = create<RightStateType & RightAction & ListAllItemFn &
     set(() => ({
       DragList: item
     }))
+  },
+  clearCheckList() {
+    set(() => ({
+      checkAllList: [],
+      indeterminate: false,
+      all: false
+    }))
   }
 }))
 
@@ -289,6 +296,13 @@ const checkListStore = create<ListAllItemFn & ListFnStateValue>(set => ({
   setCheckAll: (val: boolean) => {
     set(() => ({
       all: val
+    }))
+  },
+  clearCheckList: () => {
+    set(() => ({
+      checkAllList: [],
+      indeterminate: false,
+      all: false
     }))
   }
 }))

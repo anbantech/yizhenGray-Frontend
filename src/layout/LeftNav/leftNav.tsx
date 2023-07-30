@@ -147,7 +147,6 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
     // eslint-disable-next-line prefer-destructuring
     const routerPath = history.location.pathname.split('/')[1]
     const routerList = extendRouterList()
-    console.log('111', routerPath)
     const findRouter = (routerList: Required<SideBarRouteExtension>[], routerPath: string): Required<SideBarRouteExtension> | undefined => {
       let rt
       for (const _router of routerList) {

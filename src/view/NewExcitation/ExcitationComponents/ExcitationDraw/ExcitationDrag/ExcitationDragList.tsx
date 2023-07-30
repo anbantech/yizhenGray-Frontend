@@ -10,6 +10,7 @@ import useMenu from 'Src/util/Hooks/useMenu'
 import LookUpDependence from 'Src/components/Modal/taskModal/lookUpDependence'
 import {
   ArgeementDropListStore,
+  GlobalStatusStore,
   RightDragListStore,
   useExicitationSenderId,
   // useExicitationSenderId,
@@ -29,12 +30,9 @@ import NewExcitationMoadl from '../../Agreement/createModal'
 
 const BottomFooterDrag = ({ DeleteCheckItem, exportAll, saveConfig }: any) => {
   const sender_id = useExicitationSenderId(state => state.sender_id)
-  const isShowSave = React.useMemo(() => {
-    return sender_id === -1
-  }, [sender_id])
   return (
     <div className={StyleSheet.BottomFooterDragBody}>
-      {isShowSave && (
+      {!sender_id && (
         <div className={StyleSheet.buleButton} role='time' onClick={saveConfig}>
           添加到发送列表
         </div>
@@ -67,12 +65,15 @@ function ExcitationListMemo() {
     state => state.checkAllList,
     (pre, old) => isEqual(pre, old)
   )
+
+  const setUpdateStatus = GlobalStatusStore(state => state.setUpdateStatus)
+  const updateStatus = GlobalStatusStore(state => state.updateStatus)
   const destoryEveryItem = ArgeementDropListStore(state => state.destoryEveryItem)
   const setDeatilStatus = ArgeementDropListStore(state => state.setDeatilStatus)
   const setIndeterminate = RightDragListStore(state => state.setIndeterminate)
   const checkAllSenderIdList = RightDragListStore(state => state.checkAllSenderIdList, shallow)
   const setCheckAll = RightDragListStore(state => state.setCheckAll)
-
+  const clearCheckList = RightDragListStore(state => state.clearCheckList)
   const DragList = RightDragListStore(
     state => state.DragList,
     (pre, old) => isEqual(pre, old)
@@ -227,12 +228,11 @@ function ExcitationListMemo() {
     const child_id_list = [[], [...checkAllList], []]
     const res = await createExcitationList({ name: '默认1', desc: '默认创建', gu_cnt0: 1, gu_w0: 0, child_id_list })
     if (res.code === 0) {
-      checkAllSenderIdList([])
-      setIndeterminate(false)
-      setCheckAll(false)
+      clearCheckList()
+      setUpdateStatus(!updateStatus)
       message.success('创建成功')
     }
-  }, [checkAllList, checkAllSenderIdList, setCheckAll, setIndeterminate])
+  }, [checkAllList, clearCheckList, setUpdateStatus, updateStatus])
 
   // 取消新建
   const cancelNewCreate = React.useCallback(() => {
@@ -323,7 +323,7 @@ function ExcitationListMemo() {
         <>
           <BtnCompoents setVsible={setVsible} setNewCreate={opneModal} />
           <SearchInput className={StyleSheet.ExictationInput} placeholder='根据名称搜索激励' onChangeValue={updateParams} />
-          {DragList?.length && <ExcitationDragHeader />}
+          {DragList?.length ? <ExcitationDragHeader /> : null}
           {/* 列表拖拽 */}
           <ExcitationDrag height={height} onChange={onChange} />
           {LengthMemo ? <BottomFooterDragMemo DeleteCheckItem={DeleteCheckItem} exportAll={exportAll} saveConfig={saveConfig} /> : null}
