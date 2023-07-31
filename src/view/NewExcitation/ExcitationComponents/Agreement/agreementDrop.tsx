@@ -31,6 +31,7 @@ function AgreementDrop() {
   )
   return (
     <div ref={drop} className={styles.agreementDropTop}>
+      {/* <div> */}
       <ScrollingComponent className={styles.agreementDrop}>
         {DropList?.map((item, index: number) => {
           return (
@@ -48,6 +49,7 @@ function AgreementDrop() {
         })}
       </ScrollingComponent>
     </div>
+    // </div>
   )
 }
 

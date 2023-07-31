@@ -15,9 +15,9 @@ interface DragCmps {
 }
 
 const preViewImg = {
-  IntArrayComponents: IntArrayPng,
-  IntComponents: IntPng,
-  StringComponents: StringPng
+  byte_array: IntArrayPng,
+  byte: IntPng,
+  string: StringPng
 }
 
 const preViewTitle = {
@@ -74,10 +74,23 @@ const Draggable = ({ item }: ItemType) => {
     }),
     [DropList, setDragableStatus]
   )
+
+  const addDragItem = React.useCallback(() => {
+    const Item = { ...item, keys: generateUUID() }
+    const dropCardListCopy = DropList
+    dropCardListCopy.push(Item)
+    setLeftList([...dropCardListCopy])
+  }, [DropList, item, setLeftList])
   return (
     <>
       <DragPreviewImage connect={preview} src={preViewImg[item.type as keyof typeof preViewImg]} />
-      <div ref={drag} style={{ opacity: isDragging ? 0.4 : 1, ...StyleMap[item.type as keyof typeof StyleMap] }} className={styles.dragButton}>
+      <div
+        ref={drag}
+        role='time'
+        style={{ opacity: isDragging ? 0.4 : 1, ...StyleMap[item.type as keyof typeof StyleMap] }}
+        className={styles.dragButton}
+        onClick={addDragItem}
+      >
         <div className={styles.dragImage} />
         <span>{preViewTitle[item.type as keyof typeof preViewTitle]} </span>
       </div>

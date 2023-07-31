@@ -79,6 +79,7 @@ const LeftDropListStore = create<LeftAction & sendList & ListFn & LeftActionStat
   gu_w0: 0,
   name: '',
   desc: '',
+  updated: false,
   detailData: {},
   setLeftList: (item: ItemListState) => {
     set(() => ({
@@ -138,7 +139,15 @@ const LeftDropListStore = create<LeftAction & sendList & ListFn & LeftActionStat
     }))
   },
   setDetailData: state =>
-    set({ detailData: state, name: state.name, desc: state.desc, gu_cnt0: state.gu_cnt0, gu_w0: state.gu_w0, DropList: state.group_data_list[1] })
+    set({
+      detailData: state,
+      name: state.name,
+      desc: state.desc,
+      gu_cnt0: state.gu_cnt0,
+      gu_w0: state.gu_w0,
+      DropList: state.group_data_list[1],
+      updated: state.updated
+    })
 }))
 
 // 是否正在拖拽

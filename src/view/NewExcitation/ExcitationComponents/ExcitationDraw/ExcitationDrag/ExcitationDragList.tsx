@@ -11,12 +11,13 @@ import LookUpDependence from 'Src/components/Modal/taskModal/lookUpDependence'
 import {
   ArgeementDropListStore,
   GlobalStatusStore,
+  LeftDropListStore,
   RightDragListStore,
   useExicitationSenderId,
   // useExicitationSenderId,
   useRequestStore
 } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
-import { warn } from 'Src/util/common'
+import { generateUUID, warn } from 'Src/util/common'
 import utils from 'Src/view/template/TemplateResult/utils'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { shallow } from 'zustand/shallow'
@@ -29,14 +30,11 @@ import TemplateDialog from './ExcitaionDragExportModal'
 import NewExcitationMoadl from '../../Agreement/createModal'
 
 const BottomFooterDrag = ({ DeleteCheckItem, exportAll, saveConfig }: any) => {
-  const sender_id = useExicitationSenderId(state => state.sender_id)
   return (
     <div className={StyleSheet.BottomFooterDragBody}>
-      {!sender_id && (
-        <div className={StyleSheet.buleButton} role='time' onClick={saveConfig}>
-          添加到发送列表
-        </div>
-      )}
+      <div className={StyleSheet.buleButton} role='time' onClick={saveConfig}>
+        添加到发送列表
+      </div>
       <div className={StyleSheet.exportButtn} role='time' onClick={exportAll}>
         导出
       </div>
@@ -65,9 +63,10 @@ function ExcitationListMemo() {
     state => state.checkAllList,
     (pre, old) => isEqual(pre, old)
   )
-
+  const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const setUpdateStatus = GlobalStatusStore(state => state.setUpdateStatus)
   const updateStatus = GlobalStatusStore(state => state.updateStatus)
+  const id = useExicitationSenderId(state => state.sender_id)
   const destoryEveryItem = ArgeementDropListStore(state => state.destoryEveryItem)
   const setDeatilStatus = ArgeementDropListStore(state => state.setDeatilStatus)
   const setIndeterminate = RightDragListStore(state => state.setIndeterminate)
@@ -79,7 +78,8 @@ function ExcitationListMemo() {
     (pre, old) => isEqual(pre, old)
   )
   const setRightList = RightDragListStore(state => state.setRightList)
-
+  const DropList = LeftDropListStore(state => state.DropList)
+  const setLeftList = LeftDropListStore(state => state.setLeftList)
   // 删除弹出框函数
   const CommonModleClose = (value: boolean) => {
     setCommonModleStatus(value)
@@ -144,6 +144,11 @@ function ExcitationListMemo() {
     [DragList, checkAllList, checkAllSenderIdList, setCheckAll, setIndeterminate, setRightList]
   )
 
+  const close = React.useCallback(() => {
+    setSpinning(false)
+    CommonModleClose(false)
+  }, [])
+
   const allIn = React.useCallback(() => {
     const copyList = DragList.filter(item => !checkAllList.includes(item.sender_id))
     setRightList([...copyList])
@@ -163,22 +168,18 @@ function ExcitationListMemo() {
             allIn()
           } else {
             DeleteCheckoneItem(sender_id)
-            setSender_id(-1)
           }
-          setRightList([])
           message.success('删除成功')
-        } else {
-          message.error(res.message)
         }
+        setUpdateStatus(!updateStatus)
         setPage(1)
       }
-      setSpinning(false)
-      CommonModleClose(false)
+      close()
     } catch (error) {
-      CommonModleClose(false)
+      close()
       throwErrorMessage(error, { 1009: '删除失败' })
     }
-  }, [DeleteCheckoneItem, allIn, checkAllList, sender_id, setPage, setRightList])
+  }, [DeleteCheckoneItem, allIn, checkAllList, close, sender_id, setPage])
 
   // 获取关联信息
   const getDependenceInfo = React.useCallback(
@@ -225,14 +226,33 @@ function ExcitationListMemo() {
 
   // 当新建激励发送列表没有内容时  点击添加到发送列表按钮调用
   const saveConfig = React.useCallback(async () => {
-    const child_id_list = [[], [...checkAllList], []]
-    const res = await createExcitationList({ name: '默认1', desc: '默认创建', gu_cnt0: 1, gu_w0: 0, child_id_list })
-    if (res.code === 0) {
+    if (!id) {
+      const child_id_list = [[], [...checkAllList], []]
+      try {
+        const res = await createExcitationList({ name: '默认1', desc: '默认创建', gu_cnt0: 1, gu_w0: 0, child_id_list })
+        if (res.code === 0) {
+          clearCheckList()
+          setUpdateStatus(!updateStatus)
+          message.success('创建成功')
+        }
+      } catch {
+        clearCheckList()
+        message.error('创建失败')
+      }
+    } else {
+      const DropListFilter = DragList.filter((item: any) => {
+        return checkAllList.includes(item.sender_id)
+      })
+      const DropItem = DropListFilter.filter((item: any) => {
+        const Item = { ...item, keys: generateUUID() }
+        return Item
+      })
+      const DropListCopy = [...DropList, ...DropItem]
+      setLeftList([...DropListCopy])
       clearCheckList()
-      setUpdateStatus(!updateStatus)
-      message.success('创建成功')
+      setSendBtnStatus(false)
     }
-  }, [checkAllList, clearCheckList, setUpdateStatus, updateStatus])
+  }, [DragList, DropList, checkAllList, clearCheckList, id, setLeftList, setSendBtnStatus, setUpdateStatus, updateStatus])
 
   // 取消新建
   const cancelNewCreate = React.useCallback(() => {

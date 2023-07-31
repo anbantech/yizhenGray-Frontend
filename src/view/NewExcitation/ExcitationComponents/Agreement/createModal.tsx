@@ -1,5 +1,6 @@
 import React, { useRef } from 'react'
 import 'antd/dist/antd.css'
+import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { Button, message, Modal } from 'antd'
 import { getExcitaionDeatilFn, saveExcitaionFn, updateControl } from 'Src/services/api/excitationApi'
 import { ComponentsArray } from 'Src/view/NewExcitation/ExcitationComponents/Agreement/agreementCompoents'
@@ -18,6 +19,8 @@ interface PropsType {
 function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
   const DropListRef = ArgeementDropListStore(state => state.DropListRef)
   const myRef = useRef<any>()
+  const [spinning, setSpinning] = React.useState(false)
+  const [visibilitys, setVisibility] = React.useState(false)
   const DropList = ArgeementDropListStore(state => state.DropList)
   const setHead = ArgeementDropListStore(state => state.setHead)
   const setDeatilStatus = ArgeementDropListStore(state => state.setDeatilStatus)
@@ -32,7 +35,9 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
     const header = myRef.current?.validate()
     return Item && header
   }, [DropListRef])
-
+  const CommonModleClose = React.useCallback((val: boolean) => {
+    setVisibility(val)
+  }, [])
   const createItem = React.useCallback(async () => {
     const res = DropListRef.map((item: any) => {
       return item.save()
@@ -59,13 +64,15 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
     try {
       const res = await updateControl(sender_id, params)
       if (res) {
-        message.success('激励修改成功')
-        onOk()
+        if (res.code === 0) {
+          message.success('激励修改成功')
+        }
       }
+      return res
     } catch {
-      message.error('修改失败')
+      message.error('激励修改失败')
     }
-  }, [DropListRef, onOk, sender_id])
+  }, [DropListRef, sender_id])
   // 创建
   const getItemInfo = React.useCallback(async () => {
     checkItem()
@@ -104,17 +111,36 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
   }, [DropList])
   // 更新
   const upadateItemInfo = React.useCallback(async () => {
+    setSpinning(true)
     checkItem()
       .then(res => {
         if (res) {
           updateItem()
         }
+        onOk()
+        CommonModleClose(false)
+        setSpinning(false)
         return res
       })
       .catch(() => {
+        setSpinning(false)
         message.error('请检查控件')
       })
-  }, [checkItem, updateItem])
+  }, [CommonModleClose, checkItem, onOk, updateItem])
+
+  const fixExcitaiton = React.useCallback(async () => {
+    checkItem()
+      .then(res => {
+        if (res) {
+          CommonModleClose(true)
+        }
+        return res
+      })
+      .catch(() => {
+        CommonModleClose(false)
+        message.error('请检查控件')
+      })
+  }, [CommonModleClose, checkItem])
 
   const contorl = React.useCallback(() => {
     if (sender_id === -1) {
@@ -122,9 +148,9 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
     } else if (sender_id !== -1 && detaileStatus) {
       setDeatilStatus(false)
     } else {
-      upadateItemInfo()
+      fixExcitaiton()
     }
-  }, [detaileStatus, getItemInfo, sender_id, setDeatilStatus, upadateItemInfo])
+  }, [detaileStatus, fixExcitaiton, getItemInfo, sender_id, setDeatilStatus])
 
   React.useEffect(() => {
     if (sender_id !== -1) {
@@ -158,6 +184,17 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
         <HeaderForm ref={myRef} detaileStatus={detaileStatus} />
         <AgreementIndex sender_id={sender_id} />
       </div>
+      {visibilitys && (
+        <CommonModle
+          IsModalVisible={visibilitys}
+          spinning={spinning}
+          deleteProjectRight={upadateItemInfo}
+          CommonModleClose={CommonModleClose}
+          ing='修改中'
+          name='修改激励'
+          concent='修改激励配置，会停止关联任务，并清空关联任务的测试数据，是否确认保存？'
+        />
+      )}
     </Modal>
   )
 }

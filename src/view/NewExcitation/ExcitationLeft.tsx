@@ -134,8 +134,8 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
             setHasMore(false)
             return false
           }
-          if (sender_id) {
-            keepCheckTask(sender_id)
+          if (!sender_id) {
+            keepCheckTask(sender_id as number)
           } else {
             keepCheckTask(newList[0].sender_id)
           }
@@ -205,18 +205,20 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   const cancel = React.useCallback(
     (e: boolean) => {
       setParams({ ...params, key_word: '', page: 1 })
-      setModalData({ ...modalData, fixTitle: false, isModalVisible: e })
+      setModalData({ ...modalData, fixTitle: false, isModalVisible: e, excitationInfo: {} })
     },
     [modalData, params]
   )
 
   const { visibility, chioceModalStatus } = useMenu()
+
   // 存储关联任务信息
   const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
+
   // 获取依赖信息
   const getDependenceInfo = React.useCallback(
-    async (id: number) => {
-      const res = await lookUpDependenceUnit(id)
+    async item => {
+      const res = await lookUpDependenceUnit(item.sender_id)
       if (res.data) {
         setDependenceInfo(res.data)
       }
@@ -233,6 +235,20 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
       sender_idRef.current = null
     }
   }))
+  const operationFn = React.useCallback(
+    (item: any, cb: (item: any) => void, type: string) => {
+      if (sender_id !== item.sender_id && !sendBtnStatus) {
+        setShowModal(true)
+      } else {
+        setSender_id(item.sender_id)
+        if (type === 'boolean') {
+          return cb(true)
+        }
+        cb(item)
+      }
+    },
+    [sendBtnStatus, sender_id, setSender_id, setShowModal]
+  )
   return (
     <div className={Leftstyles.excitationLeftBoby} ref={layoutRef}>
       <div className={StyleSheet.btn_header}>
@@ -282,23 +298,26 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
                 <div className={Leftstyles.icon_layout}>
                   <div
                     role='time'
-                    onClick={() => {
-                      fixExcitation(item)
+                    onClick={e => {
+                      e.stopPropagation()
+                      operationFn(item, fixExcitation, 'fn')
                     }}
                     className={styles.taskListLeft_editImg}
                   />
                   <div
                     role='time'
                     className={styles.taskListLeft_detailImg}
-                    onClick={() => {
-                      CommonModleClose(true)
+                    onClick={e => {
+                      e.stopPropagation()
+                      operationFn(item, CommonModleClose, 'boolean')
                     }}
                   />
                   <div
                     role='time'
                     className={styles.taskListLeft_linkInfo}
-                    onClick={() => {
-                      getDependenceInfo(item.sender_id)
+                    onClick={e => {
+                      e.stopPropagation()
+                      operationFn(item, getDependenceInfo, 'fn')
                     }}
                   />
                 </div>

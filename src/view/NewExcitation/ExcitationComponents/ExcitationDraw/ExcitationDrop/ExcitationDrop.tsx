@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { checkListStore, LeftDropListStore, useExicitationSenderId } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import { checkListStore, GlobalStatusStore, LeftDropListStore, useExicitationSenderId } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import img_empty from 'Src/assets/drag/img_empty@2x.png'
 import { message } from 'antd'
 import { getExcitaionDeatilFn } from 'Src/services/api/excitationApi'
@@ -45,11 +45,15 @@ function ExcitationDropMemo() {
   // 筛选逻辑
   const checkAllList = checkListStore(state => state.checkAllList)
   const clearCheckList = checkListStore(state => state.clearCheckList)
+  // 按钮
+  const updateStatus = GlobalStatusStore(state => state.updateStatus)
+  const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const DeleteCheckItem = React.useCallback(() => {
     const copyList = DropList.filter(item => !checkAllList.includes(item.keys))
     setLeftList([...copyList])
     clearCheckList()
-  }, [DropList, checkAllList, clearCheckList, setLeftList])
+    setSendBtnStatus(false)
+  }, [DropList, checkAllList, clearCheckList, setLeftList, setSendBtnStatus])
 
   const checkListMemo = useMemo(() => {
     return checkAllList.length

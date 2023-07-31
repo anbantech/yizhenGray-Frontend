@@ -96,7 +96,7 @@ const HeadForm = React.forwardRef((props: { detaileStatus: boolean }, myRef) => 
                 if (reg.test(value)) {
                   return Promise.resolve()
                 }
-                return Promise.reject(new Error('请输入激励名称'))
+                return Promise.reject(new Error('激励名称名称由汉字、数字、字母和下划线组成'))
               }
             }
           ]}
