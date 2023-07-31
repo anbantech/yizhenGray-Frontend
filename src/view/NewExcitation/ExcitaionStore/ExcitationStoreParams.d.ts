@@ -23,6 +23,7 @@ interface LeftActionState {
   gu_w0: number
   name: string
   desc: string
+  updated: boolean
 }
 
 interface CmpsOnly {

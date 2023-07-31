@@ -54,11 +54,9 @@ function ExcitationIndex() {
       return reRouterBoolean()
     })
     setShowModal(false)
-    setSendBtnStatus(true)
     history.push('/Excitataions')
     setRouterChange(!RouterChange)
-    setSender_id(myRef.current?.clearId())
-  }, [RouterChange, history, reRouterBoolean, setRouterChange, setSendBtnStatus, setSender_id, setShowModal])
+  }, [RouterChange, history, reRouterBoolean, setRouterChange, setSendBtnStatus, setShowModal])
 
   const onLeave = React.useCallback(() => {
     history.block(() => {

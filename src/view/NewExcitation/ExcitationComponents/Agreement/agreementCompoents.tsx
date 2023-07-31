@@ -3,6 +3,7 @@ import * as React from 'react'
 import { DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd'
 import dragImg from 'Src/assets/drag/icon_drag.png'
 import { ArgeementDropListStore } from '../../ExcitaionStore/ExcitaionStore'
+import { DragCmps } from '../../ExcitaionStore/ExcitationStoreParams'
 import styles from './agreementCompoents.less'
 
 type Type = { type: string; index: number }
@@ -22,18 +23,12 @@ const byteLength = [
 ]
 
 const skipMap = [
-  { label: '不变异', value: false },
-  { label: '变异', value: true }
+  { label: '不变异', value: true },
+  { label: '变异', value: false }
 ]
 
 interface PriceValue {
   count?: number
-}
-
-interface PriceInputProps {
-  value?: PriceValue
-  onChange?: (value: PriceValue) => void
-  onBlur?: (value: PriceValue) => void
 }
 
 interface PriceValue {
@@ -46,9 +41,9 @@ interface PriceInputProps {
 }
 
 const RegCompare = (str: string) => {
-  const isOctal = /^0[0-7]+$/.test(str)
+  const isOctal = /^0o[0-7]+$/.test(str) || /^0O[0-7]+$/.test(str)
   const isDecimal = /^\d+$/.test(str)
-  const isHexadecimal = /^0x[\dA-Fa-f]+$/.test(str)
+  const isHexadecimal = /^0x[\dA-Fa-f]+$/.test(str) || /^0X[\dA-Fa-f]+$/.test(str)
   if (isOctal || isDecimal || isHexadecimal) {
     return Promise.resolve()
   }
@@ -60,9 +55,16 @@ const NoValCompare = (cb: (val: boolean) => void) => {
   return Promise.reject(new Error('初始值为空'))
 }
 
+const DeleteItem = (cb: (val: DragCmps[]) => void, val: DragCmps[], index: number) => {
+  const pre = val
+  pre.splice(index, 1)
+  cb(pre)
+}
+
 const StringComponents = React.forwardRef(({ index, Item, moveCardHandler, detaileStatus }: DropCmps, myRef: any) => {
+  const setLeftList = ArgeementDropListStore(state => state.setLeftList)
   const [form] = Form.useForm()
-  const inInt = { type: 'string', name: '', skip: false, value: '' }
+  const inInt = { type: 'string', name: '', skip: true, value: '' }
   const DropList = ArgeementDropListStore(state => state.DropList)
   const ref = React.useRef<HTMLDivElement>(null)
   const [isDragItem, setCanDrag] = React.useState(true)
@@ -167,7 +169,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler, detai
 
   React.useImperativeHandle(myRef, () => ({
     save: () => {
-      return { ...form.getFieldsValue(), type: 'string', concontext: false }
+      return { ...form.getFieldsValue(), type: 'string', context: false }
     },
     delete: () => {},
     validate: () => {
@@ -237,7 +239,14 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler, detai
           <Input placeholder='string' bordered={false} className={styles.StringInputValue} disabled={detaileStatus} />
         </Form.Item>
       </Form>
-      <div className={styles.imgStyle} />
+      <div
+        className={styles.imgStyle}
+        style={{ cursor: 'pointer' }}
+        role='time'
+        onClick={() => {
+          DeleteItem(setLeftList, DropList, index)
+        }}
+      />
     </div>
   )
 })
@@ -248,13 +257,27 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
     name: '',
     value: 0,
     context: false,
-    skip: false,
+    skip: true,
     length: 8
   }
+  const setLeftList = ArgeementDropListStore(state => state.setLeftList)
   const DropList = ArgeementDropListStore(state => state.DropList)
   const ref = React.useRef<HTMLDivElement>(null)
-
   const [isDragItem, setCanDrag] = React.useState(true)
+  const onToggleForbidDrag = React.useCallback(() => {
+    setCanDrag(false)
+    return Promise.reject(new Error('数据段名称由汉字、数字、字母和下划线组成'))
+  }, [setCanDrag])
+
+  const noValueFrom = React.useCallback(() => {
+    setCanDrag(false)
+    return Promise.reject(new Error('请输入数字段名称'))
+  }, [setCanDrag])
+
+  const IsDrag = React.useCallback(() => {
+    setCanDrag(true)
+    return Promise.resolve()
+  }, [setCanDrag])
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -348,7 +371,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
 
   React.useImperativeHandle(myRef, () => ({
     save: () => {
-      return { ...form.getFieldsValue(), type: 'byte', concontext: false }
+      return { ...form.getFieldsValue(), type: 'byte', context: false }
     },
     delete: () => {},
     validate: () => {
@@ -385,9 +408,19 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
               validateTrigger: 'onBlur',
               validator(_, value) {
                 if (value) {
-                  return RegCompare(value)
+                  const reg = /^[\w\u4E00-\u9FA5]+$/
+                  if (value.length > 20) {
+                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
+                  }
+                  if (value.length < 2 && value.length !== 0) {
+                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
+                  }
+                  if (reg.test(value)) {
+                    return IsDrag()
+                  }
+                  return onToggleForbidDrag()
                 }
-                return NoValCompare(setCanDrag)
+                return noValueFrom()
               }
             }
           ]}
@@ -406,6 +439,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
 
         <div className={styles.initValue}>初始值</div>
         <Form.Item
+          className={styles.intFormItem}
           name='value'
           validateFirst
           validateTrigger={['onBlur']}
@@ -424,7 +458,14 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
           <Input bordered={false} className={styles.IntInputValue} disabled={detaileStatus} />
         </Form.Item>
       </Form>
-      <div className={styles.imgStyle} />
+      <div
+        className={styles.imgStyle}
+        style={{ cursor: 'pointer' }}
+        role='time'
+        onClick={() => {
+          DeleteItem(setLeftList, DropList, index)
+        }}
+      />
     </div>
   )
 })
@@ -436,9 +477,10 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
     value: 0,
     context: false,
     count: 10,
-    skip: false,
+    skip: true,
     length: 8
   }
+  const setLeftList = ArgeementDropListStore(state => state.setLeftList)
   const [form] = Form.useForm<any>()
   const DropList = ArgeementDropListStore(state => state.DropList)
   const [val, setVal] = React.useState(10)
@@ -549,8 +591,13 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
   )
 
   const onMax = React.useCallback(() => {
-    const newValue = Number(val) > 255 ? 255 : 1
-    setVal(newValue)
+    const l1 = typeof val === 'number' && val > 255
+    const l2 = typeof val === 'number' && val < 1
+    if (l1) {
+      setVal(255)
+    } else if (l2) {
+      setVal(1)
+    }
   }, [val, setVal])
 
   React.useEffect(() => {
@@ -571,7 +618,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
 
   React.useImperativeHandle(myRef, () => ({
     save: () => {
-      return { ...form.getFieldsValue(), type: 'byte_array', concontext: false }
+      return { ...form.getFieldsValue(), type: 'byte_array', context: false }
     },
     delete: () => {},
     validate: () => {
@@ -652,6 +699,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
 
         <div className={styles.initValue}>初始值</div>
         <Form.Item
+          className={styles.intArrayFormItem}
           name='value'
           validateFirst
           validateTrigger={['onBlur']}
@@ -662,7 +710,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
                 if (value) {
                   return RegCompare(value)
                 }
-                return noValueFrom()
+                return NoValCompare(setCanDrag)
               }
             }
           ]}
@@ -671,7 +719,14 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
         </Form.Item>
       </Form>
 
-      <div className={styles.imgStyle} />
+      <div
+        className={styles.imgStyle}
+        style={{ cursor: 'pointer' }}
+        role='time'
+        onClick={() => {
+          DeleteItem(setLeftList, DropList, index)
+        }}
+      />
     </div>
   )
 })

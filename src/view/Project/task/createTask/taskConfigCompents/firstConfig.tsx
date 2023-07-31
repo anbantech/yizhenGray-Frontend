@@ -1,5 +1,4 @@
 import { Divider, Form, Input, message, Select, Space } from 'antd'
-import { useHistory } from 'react-router'
 import { useForm } from 'antd/lib/form/Form'
 
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
@@ -58,12 +57,11 @@ interface propsFn {
   fromDataTask: any
 }
 const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
-  const { onChange, id, taskInfo, cancenlForm, projectInfo, fromDataTask } = props
+  const { onChange, id, taskInfo, cancenlForm, fromDataTask } = props
 
   const [form] = useForm()
   const { Option } = Select
-  const history = useHistory()
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const charRef = useRef(false)
   const [params, setParams] = useState<Resparams>(request)
   // 弹窗
@@ -243,21 +241,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   }
   // 新建任务
   const jumpNewCreateTask = async () => {
-    const values = await form.getFieldsValue()
-    const createGroupExcitation = '/FourExcitationList/createGroupExcitation'
     setOpen(true)
-    // history.push({
-    //   pathname: `${createGroupExcitation}`,
-    //   state: {
-    //     projectInfo,
-    //     taskInfo,
-    //     type: 'four',
-    //     isFixForm: false,
-    //     name: '新建交互',
-    //     from: '/projects/Tasks/createTask',
-    //     fromDataTask: { values, isRight: true }
-    //   }
-    // })
   }
 
   const getContainer = () => {
@@ -327,9 +311,15 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
             }
           </Select>
         </Form.Item>
-        <Form.Item label='交互' name='sender_id' validateFirst validateTrigger={['onBlur']} rules={[{ required: true, message: '请选择交互' }]}>
+        <Form.Item
+          label='激励发送列表'
+          name='sender_id'
+          validateFirst
+          validateTrigger={['onBlur']}
+          rules={[{ required: true, message: '请选择激励发送列表' }]}
+        >
           <Select
-            placeholder='请选择交互'
+            placeholder='请选择激励发送列表'
             showSearch
             onSearch={onSearch}
             optionFilterProp='children'
@@ -349,7 +339,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
                     }}
                   >
                     <img src={addImage} alt='' />
-                    <span>新建交互</span>
+                    <span>新建激励发送列表</span>
                   </div>
                 </Space>
               </div>

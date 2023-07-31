@@ -40,11 +40,15 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
     })
     const child_id_list = [[], [...listArray], []]
     const params = { name: baseInfo.name.trim(), gu_cnt0, gu_w0, desc: baseInfo.desc ? baseInfo.desc.trim() : '', child_id_list }
-    const res = await createExcitationList(params)
-    if (res.code === 0) {
-      message.success('创建成功')
-      deleteEverything()
-      cancel()
+    try {
+      const res = await createExcitationList(params)
+      if (res.code === 0) {
+        message.success('创建成功')
+        deleteEverything()
+        cancel()
+      }
+    } catch (error) {
+      message.success(error.message)
     }
   }, [baseInfo.desc, baseInfo.name, cancel, deleteEverything, excitationList, gu_cnt0, gu_w0])
   return (

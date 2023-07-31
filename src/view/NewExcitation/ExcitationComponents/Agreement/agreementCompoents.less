@@ -1,12 +1,12 @@
 .cloumnBody{
-  width: 100%;
-  height: 38px;
+  // width: 100%;
   display: flex;
   background-color: #fff;
 }
 
 .cloumnBodyHeader{
   width: 88px;
+  height: 38px;
   display: flex;
   align-items: center;
   border-top: 0.5px solid #E9E9E9;
@@ -19,6 +19,7 @@
 
 .cloumnIntBodyHeader {
   width: 88px;
+  height: 38px;
   display: flex;
   align-items: center;
   border-top: 0.5px solid #E9E9E9;
@@ -124,35 +125,28 @@
     display: flex;
   :global(.ant-form-item){
     margin-right: 0px !important;
+    margin-bottom: 0px !important;
   }
-  :global(.ant-form-item-explain){
+  :global(.ant-form-item-with-help){
+    margin-bottom: 0px !important;
+  }
+  :global(.ant-form-item-explain-error){
     position: absolute;
-    right: -70px;
-    top:-57px;
-    width: 190px;
-    height: 50px;
-    z-index: 99999;
-    background: #fff;
-    padding: 5px 0px 5px 5px;
-    border-radius: 2px;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    box-shadow: 0px 5px 12px 4px rgba(0, 0, 0, 0.09), 0px 3px 6px 0px rgba(0, 0, 0, 0.12), 0px 1px 2px -2px rgba(0, 0, 0, 0.16);
+    width: 120px;
   }
-  :global(.ant-form-item-explain::before) {
-      display: block;
-      content: "";
-      width: 0;
-      height: 0;
-      border-left: 8px solid transparent;
-      border-right: 8px solid transparent;
-      border-top: 10px solid #fff;
-      z-index: 99999;
-      position: absolute;
-      bottom: -10px;
-      left: 20px;
-    }
+  // :global(.ant-form-item-explain::before) {
+  //     display: block;
+  //     content: "";
+  //     width: 0;
+  //     height: 0;
+  //     border-left: 8px solid transparent;
+  //     border-right: 8px solid transparent;
+  //     border-top: 10px solid #fff;
+  //     z-index: 99999;
+  //     position: absolute;
+  //     bottom: -10px;
+  //     left: 20px;
+  //   }
    :global(.ant-input){
       border: 0.5px solid #E9E9E9 ;
    }
@@ -166,37 +160,37 @@
     margin-right: 0px !important;
   }
 
-  :global(.ant-form-item-explain) {
-    position: absolute;
-    right: -140px;
-    top: -57px;
-    width: 190px;
-    height: 50px;
-    z-index: 99999;
-    vertical-align: middle;
-    background: #fff;
-    padding: 5px 0px 5px 5px;
-    border-radius: 2px;
-    font-size: 14px;
-    font-style: normal;
-    line-height: 20px;
-    font-weight: 400;
-    box-shadow: 0px 5px 12px 4px rgba(0, 0, 0, 0.09), 0px 3px 6px 0px rgba(0, 0, 0, 0.12), 0px 1px 2px -2px rgba(0, 0, 0, 0.16);
-  }
+  // :global(.ant-form-item-explain) {
+  //   position: absolute;
+  //   right: -140px;
+  //   top: -57px;
+  //   width: 190px;
+  //   height: 50px;
+  //   z-index: 99999;
+  //   vertical-align: middle;
+  //   background: #fff;
+  //   padding: 5px 0px 5px 5px;
+  //   border-radius: 2px;
+  //   font-size: 14px;
+  //   font-style: normal;
+  //   line-height: 20px;
+  //   font-weight: 400;
+  //   box-shadow: 0px 5px 12px 4px rgba(0, 0, 0, 0.09), 0px 3px 6px 0px rgba(0, 0, 0, 0.12), 0px 1px 2px -2px rgba(0, 0, 0, 0.16);
+  // }
 
-  :global(.ant-form-item-explain::before) {
-    display: block;
-    content: "";
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-top: 10px solid #fff;
-    z-index: 99999;
-    position: absolute;
-    bottom: -10px;
-    left: 20px;
-  }
+  // :global(.ant-form-item-explain::before) {
+  //   display: block;
+  //   content: "";
+  //   width: 0;
+  //   height: 0;
+  //   border-left: 8px solid transparent;
+  //   border-right: 8px solid transparent;
+  //   border-top: 10px solid #fff;
+  //   z-index: 99999;
+  //   position: absolute;
+  //   bottom: -10px;
+  //   left: 20px;
+  // }
 
   :global(.ant-form-item) {
     border-style: none !important;
@@ -303,10 +297,10 @@
   border-bottom: 1px solid #E9E9E9;
 }
 
-  .agreeFooter>span {
+.agreeFooter>span {
     display: block;
     margin-right: 8px;
-  }
+}
 
 .dragButton{
   display: flex;
@@ -361,8 +355,6 @@
 
 
 .agreementDropTop {
-  overflow: visible !important;
-  width: 100%;
   height: 342px;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
@@ -371,17 +363,15 @@
 }
 
 .agreementDrop{
-  overflow: visible !important;
-  width: 100%;
   height: 342px;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .agreementDrop:hover {
-  overflow: visible !important;
-  width: 100%;
   height: 342px;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .cloumnBody:first-child{
@@ -474,7 +464,6 @@
   height: 110px;
   justify-content: space-between;
   align-content:stretch;
-  padding-bottom: 20px;
   :global(.ant-form-item-label){
       font-size: 14px;
       font-style: normal;
@@ -483,17 +472,18 @@
   }
   :global(.ant-form-item){
       margin-right: 0px !important;
+      max-height: 32px !important;
   }
   :global(.ant-form-item-with-help){
       margin-bottom: 0px !important;
   }
 }
 
- .commonItem{
+.commonItem{
     width:232px  !important;
     height:32px !important;
     border-radius: 2px;
- }
+}
 
 .commonItems {
     width: 260px !important;
