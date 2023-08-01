@@ -82,9 +82,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
         }
         return res
       })
-      .catch(() => {
-        message.error('请检查控件')
-      })
+      .catch(() => {})
   }, [checkItem, createItem])
 
   const getExcitaionDeatilFunction = React.useCallback(
@@ -111,20 +109,19 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
   }, [DropList])
   // 更新
   const upadateItemInfo = React.useCallback(async () => {
+    CommonModleClose(false)
     setSpinning(true)
     checkItem()
-      .then(res => {
-        if (res) {
-          updateItem()
+      .then(async res => {
+        const res1 = await updateItem()
+        if (res1) {
+          onOk()
+          setSpinning(false)
         }
-        onOk()
-        CommonModleClose(false)
-        setSpinning(false)
         return res
       })
       .catch(() => {
         setSpinning(false)
-        message.error('请检查控件')
       })
   }, [CommonModleClose, checkItem, onOk, updateItem])
 
@@ -138,7 +135,6 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
       })
       .catch(() => {
         CommonModleClose(false)
-        message.error('请检查控件')
       })
   }, [CommonModleClose, checkItem])
 
@@ -193,7 +189,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
           ing='修改中'
           btnName='修改'
           name='修改激励'
-          concent='修改激励配置，会停止关联任务，并清空关联任务的测试数据，是否确认保存？'
+          concent='修改激励配置，会停止关联任务，并清空关联任务的测试数据，是否确认修改？'
         />
       )}
     </Modal>

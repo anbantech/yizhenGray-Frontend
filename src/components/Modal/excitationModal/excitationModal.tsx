@@ -38,11 +38,10 @@ function ExcitationModal(props: any) {
         }
       }
     } catch (error) {
-      hideModal(false)
       throwErrorMessage(error, { 1005: '激励发送列表名称重复，请修改' })
       return error
     }
-  }, [fixTitle, form, hideModal, sender_id])
+  }, [fixTitle, form, sender_id])
 
   const formVali = React.useCallback(() => {
     setDisabledStatus(true)

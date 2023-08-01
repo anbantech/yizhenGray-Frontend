@@ -319,6 +319,7 @@ const checkListStore = create<ListAllItemFn & ListFnStateValue>(set => ({
 const GlobalStatusStore = create<GlobalStatusType>(set => ({
   updateStatus: false,
   sendBtnStatus: true,
+  detailStatus: true,
   setSendBtnStatus: (val: boolean) => {
     set(() => ({
       sendBtnStatus: val
@@ -327,6 +328,11 @@ const GlobalStatusStore = create<GlobalStatusType>(set => ({
   setUpdateStatus: (val: boolean) => {
     set(() => ({
       updateStatus: val
+    }))
+  },
+  setDetailStatus: (val: boolean) => {
+    set(() => ({
+      detailStatus: val
     }))
   }
 }))

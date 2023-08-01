@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { useHistory, withRouter } from 'react-router'
+import { useHistory, useLocation, withRouter } from 'react-router'
 import { checkListStore, GlobalStatusStore, RouterStore, useExicitationSenderId } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import ExcitationDraw from './ExcitationComponents/ExcitationDraw/ExcitationDraw'
 import ExcitationLeft from './ExcitationLeft'
@@ -10,6 +10,8 @@ import StyleSheet from './NewExcitation.less'
 
 function ExcitationIndex() {
   const history = useHistory()
+  const pathname = useLocation()?.pathname
+
   const myRef = React.useRef<any>()
   // 更新按钮状态
   const sendBtnStatus = GlobalStatusStore(state => state.sendBtnStatus)
@@ -47,13 +49,14 @@ function ExcitationIndex() {
     return () => {
       cancel()
     }
-  }, [history, sendBtnStatus, setShowModal])
+  }, [history, sendBtnStatus, pathname, setShowModal, nextLocation])
 
   const onCancelLeave = React.useCallback(() => {
     history.block(() => {
       return reRouterBoolean()
     })
     setShowModal(false)
+    setNextLocation('/Excitataions')
     history.push('/Excitataions')
     setRouterChange(!RouterChange)
   }, [RouterChange, history, reRouterBoolean, setRouterChange, setShowModal])

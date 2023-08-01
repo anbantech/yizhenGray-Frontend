@@ -46,6 +46,9 @@ function ExcitationDropMemo() {
   const checkAllList = checkListStore(state => state.checkAllList)
   const clearCheckList = checkListStore(state => state.clearCheckList)
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
+  // 实例状态是否更新
+  const detailStatus = GlobalStatusStore(state => state.detailStatus)
+
   const DeleteCheckItem = React.useCallback(() => {
     const copyList = DropList.filter(item => !checkAllList.includes(item.keys))
     setLeftList([...copyList])
@@ -80,7 +83,7 @@ function ExcitationDropMemo() {
     if (sender_id) {
       getExcitaionDeatilFunction(sender_id)
     }
-  }, [getExcitaionDeatilFunction, sender_id])
+  }, [getExcitaionDeatilFunction, sender_id, detailStatus])
 
   return (
     <div className={StyleSheet.excitaionDrop_Body}>
