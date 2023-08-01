@@ -244,7 +244,9 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler, detai
         style={{ cursor: 'pointer' }}
         role='time'
         onClick={() => {
-          DeleteItem(setLeftList, DropList, index)
+          if (!detaileStatus) {
+            DeleteItem(setLeftList, DropList, index)
+          }
         }}
       />
     </div>
@@ -459,11 +461,13 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
         </Form.Item>
       </Form>
       <div
-        className={styles.imgStyle}
-        style={{ cursor: 'pointer' }}
+        className={detaileStatus ? styles.imgStyle : ''}
+        style={{ cursor: detaileStatus ? 'not-allowed' : 'pointer' }}
         role='time'
         onClick={() => {
-          DeleteItem(setLeftList, DropList, index)
+          if (!detaileStatus) {
+            DeleteItem(setLeftList, DropList, index)
+          }
         }}
       />
     </div>
@@ -720,11 +724,13 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
       </Form>
 
       <div
-        className={styles.imgStyle}
-        style={{ cursor: 'pointer' }}
+        className={detaileStatus ? styles.imgStyle : 'none'}
+        style={{ cursor: detaileStatus ? 'not-allowed' : 'pointer' }}
         role='time'
         onClick={() => {
-          DeleteItem(setLeftList, DropList, index)
+          if (!detaileStatus) {
+            DeleteItem(setLeftList, DropList, index)
+          }
         }}
       />
     </div>

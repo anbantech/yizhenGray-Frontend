@@ -9,6 +9,7 @@ const HeadForm = React.forwardRef((props: { detaileStatus: boolean }, myRef) => 
   const { detaileStatus } = props
   const [form] = Form.useForm<any>()
   const { Option } = Select
+
   const [portList, setPortList] = React.useState<string[]>([])
   const { gu_cnt0, gu_w0, setValue, name, peripheral } = ArgeementDropListStore()
   // 端口列表
@@ -84,6 +85,7 @@ const HeadForm = React.forwardRef((props: { detaileStatus: boolean }, myRef) => 
         <Form.Item
           name='name'
           label='名称'
+          className={styles.nameSty}
           validateFirst
           validateTrigger={['onBlur']}
           rules={[
@@ -113,7 +115,7 @@ const HeadForm = React.forwardRef((props: { detaileStatus: boolean }, myRef) => 
             onChange={e => {
               onChangeGu_time('gu_cnt0', e)
             }}
-            suffix={<NewInputNumberSuffixModal type='gu_cnt0' />}
+            suffix={<NewInputNumberSuffixModal type='gu_cnt0' detaileStatus={detaileStatus} />}
           />
         </Form.Item>
         <Form.Item name='peripheral' label='外设' rules={[{ required: true, message: '请选择外设' }]}>
@@ -143,7 +145,7 @@ const HeadForm = React.forwardRef((props: { detaileStatus: boolean }, myRef) => 
             onBlur={() => {
               onMax('gu_w0')
             }}
-            suffix={<NewInputNumberSuffixModal type='gu_w0' />}
+            suffix={<NewInputNumberSuffixModal type='gu_w0' detaileStatus={detaileStatus} />}
           />
         </Form.Item>
       </Form>

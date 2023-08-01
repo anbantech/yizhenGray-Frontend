@@ -269,7 +269,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
           onClick={createNewExcitationList}
         />
       </div>
-      <SearchInput className={StyleSheet.ExictationInputLeft} placeholder='根据名称搜索激励' onChangeValue={updateParams} />
+      <SearchInput className={StyleSheet.ExictationInputLeft} placeholder='根据名称搜索激励发送列表' onChangeValue={updateParams} />
       <div className={styles.concentBody}>
         <InfiniteScroll
           dataLength={excitationList.length}
