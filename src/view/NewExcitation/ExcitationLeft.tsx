@@ -337,8 +337,9 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
             deleteProjectRight={deleteExcitation}
             CommonModleClose={CommonModleClose}
             ing='删除中'
+            btnName='删除'
             name='删除激励发送列表'
-            concent='是否确认删除？'
+            concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
           />
         )}
         {modalData.isModalVisible && (

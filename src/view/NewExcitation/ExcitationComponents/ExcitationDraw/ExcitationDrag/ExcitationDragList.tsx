@@ -379,7 +379,7 @@ function ExcitationListMemo() {
         CommonModleClose={CommonModleClose}
         ing='删除中'
         name='删除激励'
-        concent='是否确认删除？'
+        concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？？'
       />
       <LookUpDependence visibility={visibility as boolean} name='激励关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
       {visible && <TemplateDialog visible={visible} onOk={onOk} />}

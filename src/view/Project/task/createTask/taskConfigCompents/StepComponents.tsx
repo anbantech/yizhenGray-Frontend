@@ -57,8 +57,8 @@ const OneSteps = () => {
         label='名称'
         validateTrigger={['onBlur']}
         rules={[
-          { required: true, message: '请输入项目名称' },
-          { type: 'string', min: 2, max: 20, message: '项目名称长度为2到20个字符' },
+          { required: true, message: '请输入激励发送列表名称' },
+          { type: 'string', min: 2, max: 20, message: '激励发送列表名称长度为2到20个字符' },
           {
             validateTrigger: 'onBlur',
             validator(_, value) {
@@ -66,16 +66,16 @@ const OneSteps = () => {
               if (reg.test(value)) {
                 return Promise.resolve()
               }
-              return Promise.reject(new Error('项目名称由汉字、数字、字母和下划线组成'))
+              return Promise.reject(new Error('激励发送列表名称由汉字、数字、字母和下划线组成'))
             }
           }
         ]}
       >
-        <Input placeholder='请输入项目名称' />
+        <Input placeholder='请输入激励发送列表名称' />
       </Form.Item>
       <Form.Item name='desc' label='描述' rules={[{ type: 'string', max: 50, message: '字数不能超过50个' }]}>
         <TextArea
-          placeholder='请添加针对项目的相关描述'
+          placeholder='请添加针对激励发送列表的相关描述'
           autoSize={{ minRows: 4, maxRows: 5 }}
           showCount={{
             formatter({ count }) {

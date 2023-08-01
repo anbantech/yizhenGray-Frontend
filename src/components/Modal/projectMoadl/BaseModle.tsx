@@ -113,7 +113,7 @@ function ModalpPop(props: any) {
           取消
         </Button>,
         <Button className={styles.btn_create} key='submit' disabled={isDisableStatus} type='primary' onClick={() => formVali()}>
-          {fixTitle ? '确认' : '确认'}
+          {fixTitle ? '修改' : '新建'}
         </Button>
       ]}
     >

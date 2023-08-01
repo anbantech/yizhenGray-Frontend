@@ -167,6 +167,7 @@ function DropHeaderMemo() {
           CommonModleClose={CommonModleClose}
           ing='保存中'
           name='保存配置'
+          btnName='确定'
           concent='修改激励发送列表配置，会停止关联任务，并清空关联任务的测试数据，是否确认保存？'
         />
       )}
