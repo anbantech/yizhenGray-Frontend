@@ -151,7 +151,7 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
         <span className={StyleSheet.excitationChart}>{Item.peripheral}</span>
         <span className={StyleSheet.excitationChart}>{Item.gu_cnt0}</span>
         <span className={StyleSheet.excitationChart}>{Item.gu_w0}</span>
-        <div style={{ paddingRight: '16px' }}>
+        <div style={{ paddingRight: '16px', cursor: 'pointer' }}>
           <div
             role='time'
             className={styles.taskListLeft_detailImg}

@@ -40,6 +40,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   const layoutRef = useRef<any>()
   const sender_idRef = useRef<number | null>()
   const updateStatus = GlobalStatusStore(state => state.updateStatus)
+  // const setUpdateStatus = GlobalStatusStore(state => state.setUpdateStatus)
   const sendBtnStatus = GlobalStatusStore(state => state.sendBtnStatus)
   // 保存moadl
   const setShowModal = RouterStore(state => state.setShowModal)
@@ -55,7 +56,9 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   const [excitationList, setExcitationList] = useState<ResparamsType[]>([])
   // 动态设置虚拟列表高度
   const [height, setHeight] = useState(700)
-
+  // 更新发送列表详情
+  const detailStatus = GlobalStatusStore(state => state.detailStatus)
+  const setDetailStatus = GlobalStatusStore(state => state.setDetailStatus)
   // 数据是否还有更多
   const [hasMoreData, setHasMore] = useState(true)
 
@@ -207,10 +210,11 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   // 控制弹出框消失隐藏
   const cancel = React.useCallback(
     (e: boolean) => {
+      setDetailStatus(!detailStatus)
       setParams({ ...params, key_word: '', page: 1 })
       setModalData({ ...modalData, fixTitle: false, isModalVisible: e, excitationInfo: {} })
     },
-    [modalData, params]
+    [detailStatus, modalData, params, setDetailStatus]
   )
 
   const { visibility, chioceModalStatus } = useMenu()

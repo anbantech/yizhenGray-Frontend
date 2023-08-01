@@ -121,6 +121,8 @@ type GlobalStatusType = {
   setUpdateStatus: (val: boolean) => void
   sendBtnStatus: boolean
   setSendBtnStatus: (val: boolean) => void
+  detailStatus: boolean
+  setDetailStatus: (val: boolean) => void
 }
 
 interface RouterProps {
