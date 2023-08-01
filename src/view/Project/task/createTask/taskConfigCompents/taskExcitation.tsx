@@ -48,7 +48,7 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
         cancel()
       }
     } catch (error) {
-      message.success(error.message)
+      message.error(error.message)
     }
   }, [baseInfo.desc, baseInfo.name, cancel, deleteEverything, excitationList, gu_cnt0, gu_w0])
   return (

@@ -2,10 +2,10 @@ import * as React from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useHistory, withRouter } from 'react-router'
-import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { checkListStore, GlobalStatusStore, RouterStore, useExicitationSenderId } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import ExcitationDraw from './ExcitationComponents/ExcitationDraw/ExcitationDraw'
 import ExcitationLeft from './ExcitationLeft'
+import LeaveModal from './LeaveModal'
 import StyleSheet from './NewExcitation.less'
 
 function ExcitationIndex() {
@@ -76,11 +76,12 @@ function ExcitationIndex() {
         <ExcitationDraw />
       </div>
       {ModalStatus && (
-        <CommonModle
+        <LeaveModal
           IsModalVisible={ModalStatus}
           deleteProjectRight={onLeave}
           CommonModleClose={onCancelLeave}
           name='保存配置'
+          ing='保存中'
           concent='当前配置未保存，离开页面将会放弃所有修改数据。'
         />
       )}
