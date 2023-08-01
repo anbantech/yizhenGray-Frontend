@@ -434,11 +434,16 @@
 .saveBtn{
     width: 100px;
     height: 36px;
-    border: radius 4px !important; 
     position:absolute;
     right: 0px;
-    top:-12px
+    top:-12px;
+    :global(.ant-btn){
+        background-color: #4880FF !important;
+        color: #fff !important;
+        border: radius 4px !important;
+    }
 }
+
 
 .BottomFooterDragBody{
     display: flex;

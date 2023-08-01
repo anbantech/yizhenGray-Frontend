@@ -10,6 +10,7 @@ import useMenu from 'Src/util/Hooks/useMenu'
 import LookUpDependence from 'Src/components/Modal/taskModal/lookUpDependence'
 import {
   ArgeementDropListStore,
+  checkListStore,
   GlobalStatusStore,
   LeftDropListStore,
   RightDragListStore,
@@ -56,7 +57,7 @@ function ExcitationListMemo() {
   const [newCreate, setNewCreate] = useState(false)
   const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
-  const [sender_id, setSender_id] = React.useState(-1)
+  const [sender_id, setDragList_id] = React.useState(-1)
   const { params, setKeyWord, setHasMore, setPage } = useRequestStore()
 
   const checkAllList = RightDragListStore(
@@ -65,6 +66,8 @@ function ExcitationListMemo() {
   )
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const setUpdateStatus = GlobalStatusStore(state => state.setUpdateStatus)
+  // set sender_id
+  const setSender_id = useExicitationSenderId(state => state.setSender_id)
   const updateStatus = GlobalStatusStore(state => state.updateStatus)
   const id = useExicitationSenderId(state => state.sender_id)
   const destoryEveryItem = ArgeementDropListStore(state => state.destoryEveryItem)
@@ -73,6 +76,7 @@ function ExcitationListMemo() {
   const checkAllSenderIdList = RightDragListStore(state => state.checkAllSenderIdList, shallow)
   const setCheckAll = RightDragListStore(state => state.setCheckAll)
   const clearCheckList = RightDragListStore(state => state.clearCheckList)
+  const clearCheckDropList = checkListStore(state => state.clearCheckList)
   const DragList = RightDragListStore(
     state => state.DragList,
     (pre, old) => isEqual(pre, old)
@@ -171,6 +175,7 @@ function ExcitationListMemo() {
           }
           message.success('删除成功')
         }
+        setSender_id(null)
         setUpdateStatus(!updateStatus)
         setPage(1)
       }
@@ -179,7 +184,7 @@ function ExcitationListMemo() {
       close()
       throwErrorMessage(error, { 1009: '删除失败' })
     }
-  }, [DeleteCheckoneItem, allIn, checkAllList, close, sender_id, setPage])
+  }, [DeleteCheckoneItem, allIn, checkAllList, close, sender_id, setPage, setSender_id, setUpdateStatus, updateStatus])
 
   // 获取关联信息
   const getDependenceInfo = React.useCallback(
@@ -194,7 +199,7 @@ function ExcitationListMemo() {
   )
 
   const onChange = (val: string, id: number) => {
-    setSender_id(id)
+    setDragList_id(id)
     switch (val) {
       case 'delete':
         CommonModleClose(true)
@@ -240,6 +245,7 @@ function ExcitationListMemo() {
         message.error('创建失败')
       }
     } else {
+      clearCheckDropList()
       const DropListFilter = DragList.filter((item: any) => {
         return checkAllList.includes(item.sender_id)
       })
@@ -252,7 +258,7 @@ function ExcitationListMemo() {
       clearCheckList()
       setSendBtnStatus(false)
     }
-  }, [DragList, DropList, checkAllList, clearCheckList, id, setLeftList, setSendBtnStatus, setUpdateStatus, updateStatus])
+  }, [DragList, DropList, checkAllList, clearCheckDropList, clearCheckList, id, setLeftList, setSendBtnStatus, setUpdateStatus, updateStatus])
 
   // 取消新建
   const cancelNewCreate = React.useCallback(() => {
@@ -262,7 +268,7 @@ function ExcitationListMemo() {
 
   // 打开新建弹窗 清除sender_id
   const opneModal = React.useCallback((value: boolean) => {
-    setSender_id(-1)
+    setDragList_id(-1)
     setNewCreate(value)
   }, [])
 

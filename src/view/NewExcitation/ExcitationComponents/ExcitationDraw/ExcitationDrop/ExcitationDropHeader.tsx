@@ -63,8 +63,8 @@ function DropHeaderMemo() {
   )
 
   const BtnStatus = React.useMemo(() => {
-    return DropList.length !== 0 && !sendBtnStatus
-  }, [DropList.length, sendBtnStatus])
+    return !sendBtnStatus
+  }, [sendBtnStatus])
 
   const saveConfig = React.useCallback(async () => {
     if (updated) {
@@ -101,7 +101,7 @@ function DropHeaderMemo() {
   }
   return (
     <div className={StyleSheet.DropHeader}>
-      <Button disabled={!BtnStatus} onClick={updateOrCreate} className={StyleSheet.saveBtn}>
+      <Button disabled={!BtnStatus} type='primary' onClick={updateOrCreate} className={StyleSheet.saveBtn}>
         保存配置
       </Button>
       <Tooltip placement='bottom' title={name || ''}>

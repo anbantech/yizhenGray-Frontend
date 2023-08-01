@@ -96,23 +96,26 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
     [params]
   )
 
+  const close = React.useCallback(() => {
+    setSpinning(false)
+    CommonModleClose(false)
+  }, [CommonModleClose])
   const deleteExcitation = React.useCallback(async () => {
     setSpinning(true)
     try {
       const res = await deleteneExcitaionListMore(`${sender_id}`)
       if (res.code === 0) {
-        setExcitationList([])
         setSender_id(null)
-        setSpinning(false)
-        CommonModleClose(false)
+        setExcitationList([])
+        close()
+        setParams({ ...params, key_word: '', page: 1 })
         message.success('删除成功')
       }
     } catch (error) {
-      setSpinning(false)
-      CommonModleClose(false)
+      close()
       throwErrorMessage(error, { 1009: '删除失败' })
     }
-  }, [CommonModleClose, sender_id, setSender_id])
+  }, [close, params, sender_id, setSender_id])
 
   const keepCheckTask = React.useCallback(
     (id: number) => {
@@ -134,7 +137,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
             setHasMore(false)
             return false
           }
-          if (!sender_id) {
+          if (sender_id) {
             keepCheckTask(sender_id as number)
           } else {
             keepCheckTask(newList[0].sender_id)
