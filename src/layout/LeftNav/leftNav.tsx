@@ -220,7 +220,7 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
 const LeftNav: React.FC = () => {
   const [isClose, setClose] = useState(true)
   const [license, setLicense] = useState()
-  const getLicenseInfo = async () => {
+  const getLicenseInfo = React.useCallback(async () => {
     try {
       const res = await getLicense()
       if (res.data) {
@@ -230,10 +230,10 @@ const LeftNav: React.FC = () => {
     } catch (error) {
       message.error(error.message)
     }
-  }
+  }, [])
   useEffect(() => {
     getLicenseInfo()
-  }, [])
+  }, [getLicenseInfo])
   return (
     <div className={isClose ? styles.sideNav : styles.sideCloseNav}>
       <SideBar routerList={routerList} isClose={isClose} />
