@@ -224,6 +224,7 @@ const LeftNav: React.FC = () => {
     try {
       const res = await getLicense()
       if (res.data) {
+        console.log(res)
         setLicense(res.data.expires)
       }
     } catch (error) {
@@ -237,9 +238,9 @@ const LeftNav: React.FC = () => {
     <div className={isClose ? styles.sideNav : styles.sideCloseNav}>
       <SideBar routerList={routerList} isClose={isClose} />
       {isClose && process.env.NODE_ENV === 'development' ? (
-        <div style={{ position: 'absolute', bottom: '0', margin: '0px 24px' }}>
+        <div style={{ position: 'absolute', bottom: '0', margin: '0px 24px', fontSize: '12px', color: '#99999' }}>
           <p>版本：{process.env.VERSION?.slice(0, 17)}</p>
-          {license && <p>License到期时间：{license}</p>}
+          {license && <p>到期时间：{license}</p>}
           <p>HASH：{process.env.COMMITHASH?.slice(0, 8)}</p>
           <p>分支：{process.env.BRANCH}</p>
         </div>
