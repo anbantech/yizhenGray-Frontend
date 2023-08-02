@@ -189,7 +189,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
           ing='修改中'
           btnName='修改'
           name='修改激励'
-          concent='修改激励配置，会停止关联任务，并清空关联任务的测试数据，是否确认修改？'
+          concent='修改激励配置，会停止关联任务，并清空关联任务的测试数据，是否确认修改？ '
         />
       )}
     </Modal>

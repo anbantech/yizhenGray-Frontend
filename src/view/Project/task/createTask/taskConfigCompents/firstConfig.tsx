@@ -380,6 +380,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         spinning={modalData.spinning}
         deleteProjectRight={createOneExcitationFn}
         CommonModleClose={CommonModleClose}
+        btnName='修改'
         ing='修改中'
         name='修改任务'
         concent='修改除名称、描述以外的配置项，会停止关联任务，并清空关联任务的测试数据，是否确认修改？'

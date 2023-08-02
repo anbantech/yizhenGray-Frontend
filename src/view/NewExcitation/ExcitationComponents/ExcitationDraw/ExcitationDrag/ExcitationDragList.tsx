@@ -295,7 +295,7 @@ function ExcitationListMemo() {
           notification.close('1')
         }
       })
-      allIn()
+      clearCheckList()
     },
 
     [allIn, checkAllList, configFn]
@@ -371,10 +371,11 @@ function ExcitationListMemo() {
         deleteProjectRight={deleteExcitation}
         CommonModleClose={CommonModleClose}
         ing='删除中'
+        btnName='删除'
         name='删除激励'
         concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？？'
       />
-      <LookUpDependence visibility={visibility as boolean} name='激励关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='760px' />
+      <LookUpDependence visibility={visibility as boolean} name='激励关联信息' data={dependenceInfo} choiceModal={chioceModalStatus} width='520px' />
       {visible && <TemplateDialog visible={visible} onOk={onOk} />}
       {newCreate && <NewExcitationMoadl visibility={newCreate} sender_id={sender_id} onOk={cancelNewCreate} />}
     </div>

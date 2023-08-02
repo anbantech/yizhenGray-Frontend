@@ -1,6 +1,5 @@
 import Checkbox from 'antd/lib/checkbox'
 import * as React from 'react'
-import { shallow } from 'zustand/shallow'
 import { DragSourceMonitor, useDrag } from 'react-dnd'
 import {
   LeftDropListStore,
@@ -29,11 +28,12 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
   const LeftDragIndexFn = LeftDropListStore(state => state.LeftDragIndexFn)
   const setDragableStatus = DragableDragingStatusStore(state => state.setDragableStatus)
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
-
+  const clearCheckList = RightDragListStore(state => state.clearCheckList)
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
       item() {
+        clearCheckList()
         const useless = DropList.find((item: any) => item.sender_id === -1)
         // 拖拽开始时，向 cardList 数据源中插入一个占位的元素，如果占位元素已经存在，不再重复插入
         if (!useless) {
@@ -60,7 +60,7 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
         setDragableStatus(false)
       }
     }),
-    [DropList, setDragableStatus, item]
+    [DropList, setDragableStatus, item, clearCheckList]
   )
   const myRef = React.useRef<any>()
   return (
@@ -94,11 +94,9 @@ const DragableMemo = React.memo(Dragable, isEqual)
 // 拖拽区
 function ExcitationDragMemo({ height, onChange }: Props) {
   const rightDragList = RightDragListStore(state => state.DragList)
-
   const checkAllList = RightDragListStore(state => state.checkAllList)
-
   const setIndeterminate = RightDragListStore(state => state.setIndeterminate)
-  const checkAllSenderIdList = RightDragListStore(state => state.checkAllSenderIdList, shallow)
+  const checkAllSenderIdList = RightDragListStore(state => state.checkAllSenderIdList)
   const setCheckAll = RightDragListStore(state => state.setCheckAll)
   const hasMoreData = useRequestStore(state => state.hasMoreData)
   const loadMoreData = useRequestStore(state => state.loadMoreData)
