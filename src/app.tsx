@@ -42,7 +42,6 @@ function Main() {
               <Contents />
             </Content>
           </Layout>
-          {/* <LoadingDataWrapper /> */}
         </Layout>
       )}
     </GlobalContextProvider>
@@ -57,18 +56,7 @@ const App: React.FC<RouteComponentProps<any, any, any>> = props => {
       console.log('%c开发环境路由监听', 'background:yellow;', props.location)
     }
   }, [props.location])
-  const RouterMap = new Set([
-    '/projects',
-    '/Excitataions'
-    // '/excitationList/createExcitation/ExcitationDraw',
-    // '/UserLog',
-    // '/OneExcitationList',
-    // '/TwoExcitationList',
-    // '/ThreeExcitationList',
-    // '/FourExcitationList',
-    // '/UserList',
-    // '/templateList'
-  ])
+  const RouterMap = new Set(['/projects', '/Excitataions'])
   const tokenID = window.localStorage.getItem('access_token')
   return (
     <>
