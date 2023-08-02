@@ -311,6 +311,7 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id, DropList, Delet
         </div>
         <div className={StyleSheet.excitationItemDrop_Img}>
           <div
+            style={{ cursor: 'pointer' }}
             role='time'
             className={styles.taskListLeft_detailImg}
             onClick={() => {

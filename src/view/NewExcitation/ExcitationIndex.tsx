@@ -55,10 +55,10 @@ function ExcitationIndex() {
     history.block(() => {
       return reRouterBoolean()
     })
-    setShowModal(false)
     setNextLocation('/Excitataions')
-    history.push('/Excitataions')
+    setShowModal(false)
     setRouterChange(!RouterChange)
+    history.push('/Excitataions')
   }, [RouterChange, history, reRouterBoolean, setRouterChange, setShowModal])
 
   const onLeave = React.useCallback(() => {
