@@ -298,7 +298,7 @@ function ExcitationListMemo() {
       clearCheckList()
     },
 
-    [allIn, checkAllList, configFn]
+    [checkAllList, clearCheckList, configFn]
   )
 
   // 导出全部
