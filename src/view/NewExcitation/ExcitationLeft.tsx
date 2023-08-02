@@ -246,6 +246,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
     (item: any, cb: (item: any) => void, type: string) => {
       if (sender_id !== item.sender_id && !sendBtnStatus) {
         setShowModal(true)
+        sender_idRef.current = item.sender_id
       } else {
         setSender_id(item.sender_id)
         if (type === 'boolean') {
