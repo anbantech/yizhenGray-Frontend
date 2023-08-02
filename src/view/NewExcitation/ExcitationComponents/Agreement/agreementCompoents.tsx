@@ -70,7 +70,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler, detai
   const [isDragItem, setCanDrag] = React.useState(true)
   const onToggleForbidDrag = React.useCallback(() => {
     setCanDrag(false)
-    return Promise.reject(new Error('数据段名称由汉字、数字、字母和下划线组成'))
+    return Promise.reject(new Error('字段名称由汉字、数字、字母和下划线组成'))
   }, [setCanDrag])
 
   const noValueFrom = React.useCallback(() => {
@@ -212,10 +212,10 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler, detai
                 if (value) {
                   const reg = /^[\w\u4E00-\u9FA5]+$/
                   if (value.length > 20) {
-                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
+                    return Promise.reject(new Error('字段名称长度为2到20个字符'))
                   }
                   if (value.length < 2 && value.length !== 0) {
-                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
+                    return Promise.reject(new Error('字段名称长度为2到20个字符'))
                   }
                   if (reg.test(value)) {
                     return IsDrag()
@@ -227,7 +227,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler, detai
             }
           ]}
         >
-          <Input placeholder='请输入数据段名称' className={styles.StringInput} disabled={detaileStatus} />
+          <Input placeholder='请输入字段名' className={styles.StringInput} disabled={detaileStatus} />
         </Form.Item>
 
         <Form.Item name='skip' rules={[{ required: true, message: 'Missing area' }]}>
@@ -236,7 +236,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler, detai
 
         <div className={styles.initValue}>初始值</div>
         <Form.Item name='value'>
-          <Input placeholder='string' bordered={false} className={styles.StringInputValue} disabled={detaileStatus} />
+          <Input bordered={false} className={styles.StringInputValue} disabled={detaileStatus} />
         </Form.Item>
       </Form>
       <div
@@ -268,12 +268,12 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
   const [isDragItem, setCanDrag] = React.useState(true)
   const onToggleForbidDrag = React.useCallback(() => {
     setCanDrag(false)
-    return Promise.reject(new Error('数据段名称由汉字、数字、字母和下划线组成'))
+    return Promise.reject(new Error('字段名称由汉字、数字、字母和下划线组成'))
   }, [setCanDrag])
 
   const noValueFrom = React.useCallback(() => {
     setCanDrag(false)
-    return Promise.reject(new Error('请输入数字段名称'))
+    return Promise.reject(new Error('请输入字段名称'))
   }, [setCanDrag])
 
   const IsDrag = React.useCallback(() => {
@@ -412,10 +412,10 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
                 if (value) {
                   const reg = /^[\w\u4E00-\u9FA5]+$/
                   if (value.length > 20) {
-                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
+                    return Promise.reject(new Error('字段名称长度为2到20个字符'))
                   }
                   if (value.length < 2 && value.length !== 0) {
-                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
+                    return Promise.reject(new Error('字段名称长度为2到20个字符'))
                   }
                   if (reg.test(value)) {
                     return IsDrag()
@@ -427,7 +427,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
             }
           ]}
         >
-          <Input placeholder='请输入数据段名称' bordered={false} className={styles.IntInput} disabled={detaileStatus} />
+          <Input placeholder='请输入字段名' bordered={false} className={styles.IntInput} disabled={detaileStatus} />
         </Form.Item>
 
         <div className={styles.FourCharts}> 字节长度</div>
@@ -449,7 +449,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
             {
               validateTrigger: 'onBlur',
               validator(_, value) {
-                if (value) {
+                if (value !== '') {
                   return RegCompare(value)
                 }
                 return NoValCompare(setCanDrag)
@@ -461,7 +461,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
         </Form.Item>
       </Form>
       <div
-        className={detaileStatus ? styles.imgStyle : ''}
+        className={styles.imgStyle}
         style={{ cursor: detaileStatus ? 'not-allowed' : 'pointer' }}
         role='time'
         onClick={() => {
@@ -492,11 +492,11 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
   const [isDragItem, setCanDrag] = React.useState(true)
   const noValueFrom = React.useCallback(() => {
     setCanDrag(false)
-    return Promise.reject(new Error('请输入数字段名称'))
+    return Promise.reject(new Error('请输入字段名称'))
   }, [setCanDrag])
   const onToggleForbidDrag = React.useCallback(() => {
     setCanDrag(false)
-    return Promise.reject(new Error('数据段名称由汉字、数字、字母和下划线组成'))
+    return Promise.reject(new Error('字段名称由汉字、数字、字母和下划线组成'))
   }, [setCanDrag])
 
   const IsDrag = React.useCallback(() => {
@@ -638,7 +638,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
       data-handler-id={handlerId}
     >
       <span style={{ display: 'none' }}> {index} </span>
-      <div className={styles.cloumnIntBodyHeader}>
+      <div className={styles.cloumnIntBodyHeader} ref={ref}>
         <img src={dragImg} alt='' />
         <span className={styles.cloumnBodyCharts}>整数数组 </span>
       </div>
@@ -655,10 +655,10 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
                 if (value) {
                   const reg = /^[\w\u4E00-\u9FA5]+$/
                   if (value.length > 20) {
-                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
+                    return Promise.reject(new Error('字段名称长度为2到20个字符'))
                   }
                   if (value.length < 2 && value.length !== 0) {
-                    return Promise.reject(new Error('数据段名称长度为2到20个字符'))
+                    return Promise.reject(new Error('字段名称长度为2到20个字符'))
                   }
                   if (reg.test(value)) {
                     return IsDrag()
@@ -670,7 +670,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
             }
           ]}
         >
-          <Input placeholder='请输入数据段名称' bordered={false} className={styles.IntInput} disabled={detaileStatus} />
+          <Input placeholder='请输入字段名' bordered={false} className={styles.IntInput} disabled={detaileStatus} />
         </Form.Item>
 
         <div className={styles.FourCharts} style={{ height: '37px', borderRight: '1px solid #E9E9E9' }}>
@@ -711,7 +711,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
             {
               validateTrigger: 'onBlur',
               validator(_, value) {
-                if (value) {
+                if (value !== '') {
                   return RegCompare(value)
                 }
                 return NoValCompare(setCanDrag)
@@ -724,7 +724,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
       </Form>
 
       <div
-        className={detaileStatus ? styles.imgStyle : 'none'}
+        className={styles.imgStyle}
         style={{ cursor: detaileStatus ? 'not-allowed' : 'pointer' }}
         role='time'
         onClick={() => {

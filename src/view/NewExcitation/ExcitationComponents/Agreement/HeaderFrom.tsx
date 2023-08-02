@@ -15,9 +15,11 @@ const GuCntInput: React.FC<any> = (props: any) => {
 
   const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newNumber = Number.parseInt(e.target.value || '0', 10)
-    if (Number.isNaN(gu_cnt0)) {
+
+    if (Number.isNaN(newNumber)) {
       return
     }
+
     setValue('gu_cnt0', newNumber)
     triggerChange(newNumber)
   }
@@ -54,7 +56,7 @@ const GuW0Input: React.FC<any> = (props: any) => {
   )
   const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newNumber = Number.parseInt(e.target.value || '0', 10)
-    if (Number.isNaN(gu_w0)) {
+    if (Number.isNaN(newNumber)) {
       return
     }
     setValue('gu_w0', newNumber)

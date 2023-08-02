@@ -45,6 +45,7 @@ function ExcitationDropMemo() {
   // 筛选逻辑
   const checkAllList = checkListStore(state => state.checkAllList)
   const clearCheckList = checkListStore(state => state.clearCheckList)
+
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   // 实例状态是否更新
   const detailStatus = GlobalStatusStore(state => state.detailStatus)
@@ -84,11 +85,11 @@ function ExcitationDropMemo() {
       setSendBtnStatus(true)
       getExcitaionDeatilFunction(sender_id)
     }
-  }, [getExcitaionDeatilFunction, sender_id, detailStatus])
+  }, [getExcitaionDeatilFunction, sender_id, detailStatus, setSendBtnStatus])
 
   return (
     <div className={StyleSheet.excitaionDrop_Body}>
-      <DropHeader />
+      <DropHeader getExcitaionDeatilFunction={getExcitaionDeatilFunction} />
       <Line />
       <span className={StyleSheet.sendListTitle}>发送列表</span>
       <MemoExcitationListHeader />

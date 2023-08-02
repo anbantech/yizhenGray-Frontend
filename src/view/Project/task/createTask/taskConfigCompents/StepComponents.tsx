@@ -108,37 +108,13 @@ const Ementy = () => {
   )
 }
 
-const TwoSteps = () => {
+const TwoSteps = ({ List }: Record<string, any>) => {
   const excitationList = stepStore(state => state.excitationList)
   const current = stepStore(state => state.current)
-  const [List, setList] = useState<Record<string, any>>([])
+  const { hasMoreData, loadMoreData } = useRequestStore()
   const [checkListItem, setListMemo] = useState<any[]>([])
   const CheckboxGroup = Checkbox.Group
-  const { params, setHasMore, hasMoreData, loadMoreData } = useRequestStore()
   const setExcitation = stepStore(state => state.setExcitation)
-  const getExcitationList = React.useCallback(
-    async value => {
-      try {
-        const result = await excitationListFn(value)
-        if (result.data) {
-          const newList = [...result.data.results]
-          if (newList.length === 0) {
-            // InstancesDetail.setInstance(false)
-            setHasMore(false)
-            return false
-          }
-
-          if (newList.length === result.data.total) {
-            setHasMore(false)
-          }
-          setList([...newList])
-        }
-      } catch (error) {
-        throwErrorMessage(error, { 1004: '请求资源未找到' })
-      }
-    },
-    [setHasMore]
-  )
 
   const GetCheckList = React.useCallback(() => {
     const list = excitationList.map((item: any) => {
@@ -151,10 +127,6 @@ const TwoSteps = () => {
     GetCheckList()
   }, [excitationList, current, GetCheckList])
 
-  React.useEffect(() => {
-    getExcitationList(params)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params])
   const onChange = (list: CheckboxValueType[]) => {
     const listArray = list
     setListMemo(list)
@@ -367,7 +339,12 @@ const ThreeSteps = () => {
     (type: string) => {
       if (type === 'gu_cnt0') {
         const newValue = Number(gu_cnt0) > 20 ? 20 : gu_cnt0
-        setValue(type, newValue)
+        const newValue_2 = Number(gu_cnt0) === 0
+        if (newValue_2) {
+          setValue(type, 1)
+        } else {
+          setValue(type, newValue)
+        }
       }
       if (type === 'gu_w0') {
         const newValue = Number(gu_w0) > 100 ? 100 : gu_w0
@@ -479,6 +456,35 @@ const ThreeSteps = () => {
 
 function StepComponents() {
   const current = stepStore(state => state.current)
+  const [List, setList] = useState<Record<string, any>>([])
+  const { params, setHasMore } = useRequestStore()
+  const getExcitationList = React.useCallback(
+    async value => {
+      try {
+        const result = await excitationListFn(value)
+        if (result.data) {
+          const newList = [...result.data.results]
+          if (newList.length === 0) {
+            // InstancesDetail.setInstance(false)
+            setHasMore(false)
+            return false
+          }
+
+          if (newList.length === result.data.total) {
+            setHasMore(false)
+          }
+          setList([...newList])
+        }
+      } catch (error) {
+        throwErrorMessage(error, { 1004: '请求资源未找到' })
+      }
+    },
+    [setHasMore]
+  )
+  React.useEffect(() => {
+    getExcitationList(params)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params])
   const { Step } = Steps
   const steps = [
     {
@@ -487,7 +493,7 @@ function StepComponents() {
     },
     {
       title: '选择目标激励',
-      content: <TwoSteps />
+      content: <TwoSteps List={List} />
     },
     {
       title: '编辑发送列表',
@@ -505,7 +511,6 @@ function StepComponents() {
             ))}
           </Steps>
         </div>
-
         <div className={StyleSheet.concent}>{steps[current].content}</div>
       </DndProvider>
     </div>
