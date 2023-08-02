@@ -19,7 +19,6 @@ const GuCntInput: React.FC<any> = (props: any) => {
       return
     }
     setValue('gu_cnt0', newNumber)
-
     triggerChange(newNumber)
   }
   const onMax = () => {

@@ -24,10 +24,7 @@ type Props = { height: number; onChange: (val: string, id: number) => void }
 
 // 拖拽列表的item
 const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
-  const DropList = LeftDropListStore(
-    state => state.DropList,
-    (pre, old) => isEqual(pre, old)
-  )
+  const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
   const LeftDragIndexFn = LeftDropListStore(state => state.LeftDragIndexFn)
   const setDragableStatus = DragableDragingStatusStore(state => state.setDragableStatus)
@@ -96,15 +93,9 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
 const DragableMemo = React.memo(Dragable, isEqual)
 // 拖拽区
 function ExcitationDragMemo({ height, onChange }: Props) {
-  const rightDragList = RightDragListStore(
-    state => state.DragList,
-    (pre, old) => isEqual(pre, old)
-  )
+  const rightDragList = RightDragListStore(state => state.DragList)
 
-  const checkAllList = RightDragListStore(
-    state => state.checkAllList,
-    (pre, old) => isEqual(pre, old)
-  )
+  const checkAllList = RightDragListStore(state => state.checkAllList)
 
   const setIndeterminate = RightDragListStore(state => state.setIndeterminate)
   const checkAllSenderIdList = RightDragListStore(state => state.checkAllSenderIdList, shallow)

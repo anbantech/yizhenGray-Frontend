@@ -21,8 +21,6 @@ import {
 import { generateUUID, warn } from 'Src/util/common'
 import utils from 'Src/view/template/TemplateResult/utils'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { shallow } from 'zustand/shallow'
-import { isEqual } from 'lodash'
 import ExcitationDragHeader from './ExcitationDragHeader'
 import ExcitationDrag from './ExcitationDrag'
 import StyleSheet from '../excitationDraw.less'
@@ -60,10 +58,7 @@ function ExcitationListMemo() {
   const [sender_id, setDragList_id] = React.useState(-1)
   const { params, setKeyWord, setHasMore, setPage } = useRequestStore()
 
-  const checkAllList = RightDragListStore(
-    state => state.checkAllList,
-    (pre, old) => isEqual(pre, old)
-  )
+  const checkAllList = RightDragListStore(state => state.checkAllList)
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const setUpdateStatus = GlobalStatusStore(state => state.setUpdateStatus)
   // set sender_id
@@ -73,14 +68,11 @@ function ExcitationListMemo() {
   const destoryEveryItem = ArgeementDropListStore(state => state.destoryEveryItem)
   const setDeatilStatus = ArgeementDropListStore(state => state.setDeatilStatus)
   const setIndeterminate = RightDragListStore(state => state.setIndeterminate)
-  const checkAllSenderIdList = RightDragListStore(state => state.checkAllSenderIdList, shallow)
+  const checkAllSenderIdList = RightDragListStore(state => state.checkAllSenderIdList)
   const setCheckAll = RightDragListStore(state => state.setCheckAll)
   const clearCheckList = RightDragListStore(state => state.clearCheckList)
   const clearCheckDropList = checkListStore(state => state.clearCheckList)
-  const DragList = RightDragListStore(
-    state => state.DragList,
-    (pre, old) => isEqual(pre, old)
-  )
+  const DragList = RightDragListStore(state => state.DragList)
   const setRightList = RightDragListStore(state => state.setRightList)
   const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
@@ -317,7 +309,8 @@ function ExcitationListMemo() {
   const onOk = React.useCallback(() => {
     destoryEveryItem()
     setVsible(false)
-  }, [destoryEveryItem])
+    setPage(1)
+  }, [destoryEveryItem, setPage])
 
   React.useEffect(() => {
     const resizeObserver = new ResizeObserver(entries => {

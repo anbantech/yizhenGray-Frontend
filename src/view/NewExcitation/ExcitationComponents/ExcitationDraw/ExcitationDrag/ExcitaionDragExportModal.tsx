@@ -72,7 +72,7 @@ const TemplateDialog: React.FC<TemplateDialogProps> = ({ visible, onOk }) => {
         setOriginalFileList(originalFileList => {
           const og = originalFileList
           og[index].status = 'error'
-          og[index].response = '激励格式不正确'
+          og[index].response = '导入失败=>目标激励无效，请检查文件内容'
           return [...originalFileList]
         })
         // eslint-disable-next-line no-continue
@@ -110,10 +110,11 @@ const TemplateDialog: React.FC<TemplateDialogProps> = ({ visible, onOk }) => {
         setOriginalFileList(originalFileList => {
           const og = originalFileList
           og[index].status = 'error'
-          og[index].response = `上传失败 => ${throwErrorMessage(error, { 1005: '名称重复', 4003: '该模板无效，请检查模板' }, false).replace(
-            /name/,
-            '名称'
-          )}`
+          og[index].response = `导入失败 => ${throwErrorMessage(
+            error,
+            { 1005: '目标激励已存在', 4003: '该激励无效，请检查激励', 1006: '格式校验不通过，请检查文件内容' },
+            false
+          ).replace(/name/, '名称')}`
           return [...originalFileList]
         })
       }
@@ -141,7 +142,7 @@ const TemplateDialog: React.FC<TemplateDialogProps> = ({ visible, onOk }) => {
   }, [])
 
   return (
-    <Modal width={600} title='导入模板' visible={visible} onCancel={closeDialog} footer={null}>
+    <Modal width={600} title='导入激励' visible={visible} onCancel={closeDialog} footer={null}>
       {uploading === 0 ? (
         <>
           <Dragger multiple beforeUpload={checkFile} fileList={originalFileList} onRemove={removeFile}>
@@ -158,7 +159,7 @@ const TemplateDialog: React.FC<TemplateDialogProps> = ({ visible, onOk }) => {
               justifyContent: 'flex-end'
             }}
           >
-            <Button type='primary' onClick={uploadFiles}>
+            <Button type='primary' disabled={effectiveFileList.length === 0} onClick={uploadFiles}>
               上传
             </Button>
           </div>
