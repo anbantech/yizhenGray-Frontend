@@ -74,6 +74,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
       return item.sender_id
     })
     if (listArray.length === 0) {
+      close()
       return message.error('发送列表至少要包含一个激励')
     }
     const child_id_list = [[], [...listArray], []]

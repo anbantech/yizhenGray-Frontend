@@ -8,7 +8,7 @@ import { generateUUID } from 'Src/util/common'
 import AgreementIndex from './agreementIndex'
 import StyleSheet from './agreementCompoents.less'
 import HeaderForm from './HeaderFrom'
-import { ArgeementDropListStore } from '../../ExcitaionStore/ExcitaionStore'
+import { ArgeementDropListStore, GlobalStatusStore } from '../../ExcitaionStore/ExcitaionStore'
 
 interface PropsType {
   visibility: boolean
@@ -25,6 +25,9 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
   const setHead = ArgeementDropListStore(state => state.setHead)
   const setDeatilStatus = ArgeementDropListStore(state => state.setDeatilStatus)
   const detaileStatus = ArgeementDropListStore(state => state.detaileStatus)
+  //
+  const setDrop = GlobalStatusStore(state => state.setDetailStatus)
+  const DropStatus = GlobalStatusStore(state => state.detailStatus)
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
   // 检查所有信息Item项 是否符合规则
   const checkItem = React.useCallback(async () => {
@@ -117,13 +120,14 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
         if (res1) {
           onOk()
           setSpinning(false)
+          setDrop(!DropStatus)
         }
         return res
       })
       .catch(() => {
         setSpinning(false)
       })
-  }, [CommonModleClose, checkItem, onOk, updateItem])
+  }, [CommonModleClose, DropStatus, checkItem, onOk, setDrop, updateItem])
 
   const fixExcitaiton = React.useCallback(async () => {
     checkItem()
