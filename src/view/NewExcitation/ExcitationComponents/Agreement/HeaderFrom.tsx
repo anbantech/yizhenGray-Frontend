@@ -5,13 +5,93 @@ import { getPortList } from 'Src/services/api/excitationApi'
 import { ArgeementDropListStore } from '../../ExcitaionStore/ExcitaionStore'
 import styles from './agreementCompoents.less'
 
+const GuCntInput: React.FC<any> = (props: any) => {
+  const { detaileStatus, value, onChange } = props
+  const setValue = ArgeementDropListStore(state => state.setValue)
+  const gu_cnt0 = ArgeementDropListStore(state => state.gu_cnt0)
+  const triggerChange = (changedValue: any) => {
+    onChange?.(changedValue)
+  }
+
+  const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newNumber = Number.parseInt(e.target.value || '0', 10)
+    if (Number.isNaN(gu_cnt0)) {
+      return
+    }
+    setValue('gu_cnt0', newNumber)
+
+    triggerChange(newNumber)
+  }
+  const onMax = () => {
+    const newValue = gu_cnt0 > 20 ? 20 : gu_cnt0
+    setValue('gu_cnt0', newValue)
+    triggerChange(newValue)
+  }
+
+  return (
+    <span>
+      <Input
+        type='text'
+        onBlur={onMax}
+        value={value || gu_cnt0}
+        onChange={onNumberChange}
+        style={{ width: 232 }}
+        disabled={detaileStatus}
+        suffix={<NewInputNumberSuffixModal type='gu_cnt0' detaileStatus={detaileStatus} />}
+      />
+    </span>
+  )
+}
+
+const GuW0Input: React.FC<any> = (props: any) => {
+  const { detaileStatus, value, onChange } = props
+  const setValue = ArgeementDropListStore(state => state.setValue)
+  const gu_w0 = ArgeementDropListStore(state => state.gu_w0)
+  const triggerChange = React.useCallback(
+    (changedValue: any) => {
+      onChange?.(changedValue)
+    },
+    [onChange]
+  )
+  const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newNumber = Number.parseInt(e.target.value || '0', 10)
+    if (Number.isNaN(gu_w0)) {
+      return
+    }
+    setValue('gu_w0', newNumber)
+    triggerChange(newNumber)
+  }
+  const onMax = React.useCallback(() => {
+    const newValue = gu_w0 > 100 ? 100 : gu_w0
+    setValue('gu_w0', newValue)
+    triggerChange(newValue)
+  }, [gu_w0, setValue, triggerChange])
+  return (
+    <span>
+      <Input
+        type='text'
+        onBlur={onMax}
+        value={value || gu_w0}
+        onChange={onNumberChange}
+        disabled={detaileStatus}
+        style={{ width: 232 }}
+        suffix={<NewInputNumberSuffixModal type='gu_w0' detaileStatus={detaileStatus} />}
+      />
+    </span>
+  )
+}
+
 const HeadForm = React.forwardRef((props: { detaileStatus: boolean }, myRef) => {
   const { detaileStatus } = props
   const [form] = Form.useForm<any>()
   const { Option } = Select
 
   const [portList, setPortList] = React.useState<string[]>([])
-  const { gu_cnt0, gu_w0, setValue, name, peripheral } = ArgeementDropListStore()
+  const { gu_cnt0, gu_w0, name, peripheral } = ArgeementDropListStore()
+  const initialValues = {
+    gu_cnt0: 1,
+    gu_w0: 0
+  }
   // 端口列表
   const fetchPortList = React.useCallback(async () => {
     try {
@@ -53,35 +133,22 @@ const HeadForm = React.forwardRef((props: { detaileStatus: boolean }, myRef) => 
       form.setFieldsValue({ name, gu_cnt0, gu_w0, peripheral })
     }
   }, [name, form, gu_cnt0, gu_w0, peripheral])
-  const onChangeGu_time = (type: string, e: React.ChangeEvent<HTMLInputElement>) => {
-    const newNumber = Number.parseInt(e.target.value || '0', 10)
-    if (Number.isNaN(newNumber)) {
-      return
+
+  const checkGuCnt = (_: any, value: any) => {
+    if (value >= 1) {
+      return Promise.resolve()
     }
-    setValue(type, newNumber)
+    return Promise.reject(new Error('发送次数最少为1次'))
   }
-
-  const onMax = React.useCallback(
-    (type: string) => {
-      if (type === 'gu_cnt0') {
-        const newValue = Number(gu_cnt0) > 20 ? 20 : gu_cnt0
-        setValue(type, newValue)
-      }
-      if (type === 'gu_w0') {
-        const newValue = Number(gu_w0) > 100 ? 100 : gu_w0
-        setValue(type, newValue)
-      }
-    },
-    [gu_cnt0, gu_w0, setValue]
-  )
-
-  React.useEffect(() => {
-    form.setFieldsValue({ gu_w0, gu_cnt0 })
-  }, [gu_w0, gu_cnt0, form])
-
+  const checkGuW0 = (_: any, value: any) => {
+    if (value >= 0) {
+      return Promise.resolve()
+    }
+    return Promise.reject(new Error('请填写发送间隔'))
+  }
   return (
     <>
-      <Form form={form} name='horizontal_login' layout='inline' className={styles.headerForm}>
+      <Form form={form} name='horizontal_login' autoComplete='off' layout='inline' className={styles.headerForm} initialValues={initialValues}>
         <Form.Item
           name='name'
           label='名称'
@@ -105,18 +172,8 @@ const HeadForm = React.forwardRef((props: { detaileStatus: boolean }, myRef) => 
         >
           <Input placeholder='请输入激励名称' className={styles.commonItem} disabled={detaileStatus} />
         </Form.Item>
-        <Form.Item name='gu_cnt0' label='发送次数' rules={[{ required: true }]}>
-          <Input
-            disabled={detaileStatus}
-            className={styles.commonItems}
-            onBlur={() => {
-              onMax('gu_cnt0')
-            }}
-            onChange={e => {
-              onChangeGu_time('gu_cnt0', e)
-            }}
-            suffix={<NewInputNumberSuffixModal type='gu_cnt0' detaileStatus={detaileStatus} />}
-          />
+        <Form.Item name='gu_cnt0' label='发送次数' rules={[{ required: true, validator: checkGuCnt }]}>
+          <GuCntInput detaileStatus={detaileStatus} />
         </Form.Item>
         <Form.Item name='peripheral' label='外设' rules={[{ required: true, message: '请选择外设' }]}>
           <Select placeholder='请选择外设' className={styles.commonItem} disabled={detaileStatus}>
@@ -135,18 +192,8 @@ const HeadForm = React.forwardRef((props: { detaileStatus: boolean }, myRef) => 
           </Select>
         </Form.Item>
 
-        <Form.Item name='gu_w0' label='发送间隔' rules={[{ required: true }]}>
-          <Input
-            disabled={detaileStatus}
-            className={styles.commonItems}
-            onChange={e => {
-              onChangeGu_time('gu_w0', e)
-            }}
-            onBlur={() => {
-              onMax('gu_w0')
-            }}
-            suffix={<NewInputNumberSuffixModal type='gu_w0' detaileStatus={detaileStatus} />}
-          />
+        <Form.Item name='gu_w0' label='发送间隔' rules={[{ required: true, validator: checkGuW0 }]}>
+          <GuW0Input detaileStatus={detaileStatus} />
         </Form.Item>
       </Form>
     </>
