@@ -11,6 +11,8 @@ import { useHistory, withRouter } from 'react-router-dom'
 import { UpOutlined } from '@ant-design/icons'
 import { GlobalContext } from 'Src/globalContext/globalContext'
 import { RouterStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import { getLicense } from 'Src/services/api/loginApi'
+import { message } from 'antd'
 import styles from './leftNav.less'
 
 interface SideBarRoute {
@@ -217,14 +219,34 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
 // 侧边栏
 const LeftNav: React.FC = () => {
   const [isClose, setClose] = useState(true)
+  const [license, setLicense] = useState()
+  const getLicenseInfo = async () => {
+    try {
+      const res = await getLicense()
+      if (res.data) {
+        setLicense(res.data.expires)
+      }
+    } catch (error) {
+      message.error(error.message)
+    }
+  }
+  useEffect(() => {
+    getLicenseInfo()
+  }, [])
   return (
     <div className={isClose ? styles.sideNav : styles.sideCloseNav}>
       <SideBar routerList={routerList} isClose={isClose} />
-      {isClose && process.env.NODE_ENV === 'development' && (
+      {isClose && process.env.NODE_ENV === 'development' ? (
         <div style={{ position: 'absolute', bottom: '0', margin: '0px 24px' }}>
           <p>版本：{process.env.VERSION?.slice(0, 17)}</p>
+          {license && <p>License到期时间：{license}</p>}
           <p>HASH：{process.env.COMMITHASH?.slice(0, 8)}</p>
           <p>分支：{process.env.BRANCH}</p>
+        </div>
+      ) : (
+        <div style={{ position: 'absolute', bottom: '0', margin: '0px 24px' }}>
+          <p>版本：{process.env.VERSION?.slice(0, 17)}</p>
+          {license && <p>License到期时间：{license}</p>}
         </div>
       )}
       {isClose ? (

@@ -26,3 +26,7 @@ export function resetPassword(params: { userId: number; username: string; passwo
   const { userId, ...restParams } = params
   return request.put(`/api/v1.0/users/update/${userId}`, restParams)
 }
+
+export function getLicense() {
+  return request.get(`/api/v1.0/system/license`)
+}

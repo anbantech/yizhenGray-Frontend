@@ -40,19 +40,19 @@ interface PriceInputProps {
   onChange?: (value: PriceValue) => void
 }
 
-const RegCompare = (str: string) => {
+const RegCompare = (str: string, fn: any) => {
   const isOctal = /^0o[0-7]+$/.test(str) || /^0O[0-7]+$/.test(str)
   const isDecimal = /^\d+$/.test(str)
   const isHexadecimal = /^0x[\dA-Fa-f]+$/.test(str) || /^0X[\dA-Fa-f]+$/.test(str)
   if (isOctal || isDecimal || isHexadecimal) {
     return Promise.resolve()
   }
-  return Promise.reject(new Error('数据格式不匹配'))
+  return fn()
 }
 
-const NoValCompare = (cb: (val: boolean) => void) => {
+const NoValCompare = (cb: (val: boolean) => void, fn: any) => {
   cb(false)
-  return Promise.reject(new Error('初始值为空'))
+  fn()
 }
 
 const DeleteItem = (cb: (val: DragCmps[]) => void, val: DragCmps[], index: number) => {
@@ -381,7 +381,9 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
     },
     clearInteraction: () => {}
   }))
-
+  const resvertValue = React.useCallback(() => {
+    form.setFieldsValue({ value: 0 })
+  }, [form])
   React.useEffect(() => {
     if (Item.name) {
       const { name, skip, value, length, context } = Item
@@ -450,9 +452,9 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler, detaileSt
               validateTrigger: 'onBlur',
               validator(_, value) {
                 if (value !== '') {
-                  return RegCompare(value)
+                  return RegCompare(value, resvertValue)
                 }
-                return NoValCompare(setCanDrag)
+                return NoValCompare(setCanDrag, resvertValue)
               }
             }
           ]}
@@ -484,6 +486,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
     skip: true,
     length: 8
   }
+
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
   const [form] = Form.useForm<any>()
   const DropList = ArgeementDropListStore(state => state.DropList)
@@ -503,7 +506,9 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
     setCanDrag(true)
     return Promise.resolve()
   }, [setCanDrag])
-
+  const resvertValue = React.useCallback(() => {
+    form.setFieldsValue({ value: 0 })
+  }, [form])
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
@@ -712,9 +717,9 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler, deta
               validateTrigger: 'onBlur',
               validator(_, value) {
                 if (value !== '') {
-                  return RegCompare(value)
+                  return RegCompare(value, resvertValue)
                 }
-                return NoValCompare(setCanDrag)
+                return NoValCompare(setCanDrag, resvertValue)
               }
             }
           ]}
