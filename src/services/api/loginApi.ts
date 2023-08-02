@@ -14,6 +14,10 @@ export function loginIn(params: loginParams) {
   return request.post<resLogin>(`/api/v1.0/users/login`, params)
 }
 
+export function getLicense() {
+  return request.get(`/api/v1.0/system/license`)
+}
+
 export function logout() {
   return request.post(`/api/v1.0/users/logout`)
 }
@@ -25,8 +29,4 @@ export function getUserInfo() {
 export function resetPassword(params: { userId: number; username: string; password: string; confirm_password: string; admin_password: string }) {
   const { userId, ...restParams } = params
   return request.put(`/api/v1.0/users/update/${userId}`, restParams)
-}
-
-export function getLicense() {
-  return request.get(`/api/v1.0/system/license`)
 }
