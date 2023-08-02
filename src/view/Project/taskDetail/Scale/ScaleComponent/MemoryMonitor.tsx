@@ -91,7 +91,7 @@ function MemoryMonitor() {
               }
             ]}
           >
-            <Input style={{ width: 236, height: 32 }} />
+            <Input style={{ width: 236, height: 32 }} placeholder='00000000' />
           </Form.Item>
           <Form.Item
             name='length'

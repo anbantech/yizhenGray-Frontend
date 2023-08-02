@@ -362,7 +362,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
             name='激励发送列表关联信息'
             data={dependenceInfo}
             choiceModal={chioceModalStatus}
-            width='760px'
+            width='520px'
           />
         )}
       </>
