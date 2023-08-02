@@ -48,13 +48,12 @@ function ExcitationModal(props: any) {
     validateForm()
       .then(res => {
         if (res.code !== 1005) {
-          hideModal(false)
+          hideModal(false, 'result')
           form.resetFields()
         }
         return res
       })
       .catch(error => {
-        hideModal(false)
         return error
       })
   }, [form, hideModal, validateForm])
@@ -86,7 +85,7 @@ function ExcitationModal(props: any) {
       visible={visible}
       title={fixTitle ? '修改激励发送列表' : '新建激励发送列表'}
       onCancel={() => {
-        hideModal(false)
+        hideModal(false, 'noResult')
         form.resetFields()
         setDisabledStatus(true)
       }}
@@ -96,7 +95,7 @@ function ExcitationModal(props: any) {
           key='back'
           onClick={() => {
             form.resetFields()
-            hideModal(false)
+            hideModal(false, 'noResult')
             setDisabledStatus(true)
           }}
         >

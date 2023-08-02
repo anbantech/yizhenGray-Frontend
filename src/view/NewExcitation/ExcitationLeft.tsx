@@ -183,9 +183,11 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
 
   // 控制弹出框消失隐藏
   const cancel = React.useCallback(
-    (e: boolean) => {
-      setDetailStatus(!detailStatus)
-      setParams({ ...params, key_word: '', page: 1 })
+    (e: boolean, type: string) => {
+      if (type === 'result') {
+        setDetailStatus(!detailStatus)
+        setParams({ ...params, key_word: '', page: 1 })
+      }
       setModalData({ ...modalData, fixTitle: false, isModalVisible: e, excitationInfo: {} })
     },
     [detailStatus, modalData, params, setDetailStatus]
