@@ -73,6 +73,9 @@ function DropHeaderMemo() {
     const listArray = DropList.map((item: any) => {
       return item.sender_id
     })
+    if (listArray.length === 0) {
+      return message.error('发送列表至少要包含一个激励')
+    }
     const child_id_list = [[], [...listArray], []]
     const params = { name, gu_cnt0, gu_w0, desc: desc ? desc.trim() : '', child_id_list }
     try {
@@ -80,7 +83,7 @@ function DropHeaderMemo() {
         const res = await updateExcitationList(sender_id, params)
         if (res.code === 0) {
           setSendBtnStatus(true)
-          message.success('保存成功')
+          message.success('发送列表保存成功')
         }
         if (updated) {
           close()
@@ -88,7 +91,7 @@ function DropHeaderMemo() {
       }
     } catch {
       close()
-      message.success('保存失败')
+      message.success('发送列表保存失败')
     }
   }, [DropList, close, desc, gu_cnt0, gu_w0, name, sender_id, setSendBtnStatus, updated])
 

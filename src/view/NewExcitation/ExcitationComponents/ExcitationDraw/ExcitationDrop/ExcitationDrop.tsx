@@ -81,6 +81,7 @@ function ExcitationDropMemo() {
 
   useEffect(() => {
     if (sender_id) {
+      setSendBtnStatus(true)
       getExcitaionDeatilFunction(sender_id)
     }
   }, [getExcitaionDeatilFunction, sender_id, detailStatus])

@@ -50,8 +50,8 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
         message.success('激励创建成功')
         onOk()
       }
-    } catch {
-      message.error('新建失败')
+    } catch (error) {
+      message.error(error.message)
     }
   }, [DropListRef, onOk])
   // 更新元素 updateControl
@@ -188,8 +188,8 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
           CommonModleClose={CommonModleClose}
           ing='修改中'
           btnName='修改'
+          concent='修改激励配置，会停止关联任务，并清空关联任务的测试数据，是否确认修改？'
           name='修改激励'
-          concent='修改激励配置，会停止关联任务，并清空关联任务的测试数据，是否确认修改？ '
         />
       )}
     </Modal>
