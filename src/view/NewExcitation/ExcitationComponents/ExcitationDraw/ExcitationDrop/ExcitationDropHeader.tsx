@@ -10,7 +10,7 @@ import StyleSheet from '../excitationDraw.less'
 const CloumnLine = () => {
   return <div className={StyleSheet.cloumnLine} />
 }
-function DropHeaderMemo() {
+function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunction: (val: number) => void }) {
   const [spinning, setSpinning] = React.useState(false)
   const [visibility, setVisibility] = React.useState(false)
   // 拿 sender_id
@@ -84,6 +84,7 @@ function DropHeaderMemo() {
         if (res.code === 0) {
           setSendBtnStatus(true)
           message.success('发送列表保存成功')
+          getExcitaionDeatilFunction(sender_id)
         }
         if (updated) {
           close()
@@ -93,7 +94,7 @@ function DropHeaderMemo() {
       close()
       message.success('发送列表保存失败')
     }
-  }, [DropList, close, desc, gu_cnt0, gu_w0, name, sender_id, setSendBtnStatus, updated])
+  }, [DropList, close, desc, getExcitaionDeatilFunction, gu_cnt0, gu_w0, name, sender_id, setSendBtnStatus, updated])
 
   const updateOrCreate = () => {
     if (updated) {

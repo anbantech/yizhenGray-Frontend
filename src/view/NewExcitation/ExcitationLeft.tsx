@@ -20,7 +20,7 @@ const request = {
   key_word: '',
   status: null,
   page: 1,
-  page_size: 12,
+  page_size: 20,
   sort_field: 'create_time',
   sort_order: 'descend'
 }
@@ -55,7 +55,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   // 任务列表参数
   const [excitationList, setExcitationList] = useState<ResparamsType[]>([])
   // 动态设置虚拟列表高度
-  const [height, setHeight] = useState(700)
+  // const [height, setHeight] = useState(700)
   // 更新发送列表详情
   const detailStatus = GlobalStatusStore(state => state.detailStatus)
   const setDetailStatus = GlobalStatusStore(state => state.setDetailStatus)
@@ -145,7 +145,6 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
           } else {
             keepCheckTask(newList[0].sender_id)
           }
-
           if (newList.length === result.data.total) {
             setHasMore(false)
           }
@@ -168,31 +167,6 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
     getExcitationList({ ...params })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, updateStatus])
-
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver(entries => {
-      for (const entry of entries) {
-        const { height } = entry.contentRect
-        let num = 700
-        if (height >= 1940 && height >= 2300) {
-          num = height * 0.8
-        } else if (height >= 1400 && height <= 1940) {
-          num = height * 0.5
-        } else {
-          num = height * 0.2
-        }
-        setHeight(height - Math.ceil(num as number))
-      }
-    })
-
-    if (layoutRef.current) {
-      resizeObserver.observe(layoutRef.current)
-    }
-
-    return () => {
-      resizeObserver.disconnect()
-    }
-  }, [])
 
   const leaveModalFn = React.useCallback(
     (id: number) => {
@@ -270,13 +244,13 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
           onClick={createNewExcitationList}
         />
       </div>
-      <SearchInput className={StyleSheet.ExictationInputLeft} placeholder='根据名称搜索激励发送列表' onChangeValue={updateParams} />
+      <SearchInput className={StyleSheet.ExictationInputLeft} placeholder='根据名称搜索' onChangeValue={updateParams} />
       <div className={styles.concentBody}>
         <InfiniteScroll
           dataLength={excitationList.length}
           next={loadMoreData}
           hasMore={hasMoreData}
-          height={height}
+          height={600}
           style={{ overflowX: 'hidden' }}
           loader={
             <p style={{ textAlign: 'center', width: '216px' }}>

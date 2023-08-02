@@ -188,7 +188,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
           CommonModleClose={CommonModleClose}
           ing='修改中'
           btnName='修改'
-          concent='修改激励配置，会停止关联任务，并清空关联任务的测试数据，是否确认修改？'
+          concent='修改除名称以外的配置项，会停止关联任务，并清空关联任务的测试数据，是否确认修改？'
           name='修改激励'
         />
       )}

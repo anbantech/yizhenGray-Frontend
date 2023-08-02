@@ -313,12 +313,12 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
         </InfiniteScroll>
       </div>
       <CommonModle
+        btnName='删除'
         IsModalVisible={CommonModleStatus}
         spinning={spinning}
         deleteProjectRight={deleteProjectRight}
         CommonModleClose={CommonModleClose}
         ing='删除中'
-        btnName='删除'
         name='删除任务'
         concent='是否确认删除？'
       />
