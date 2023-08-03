@@ -97,7 +97,7 @@
 }
 
 .dropList_ListScroll{
-    height: 400px;
+    height: calc(100vh - 300px);
     overflow-y: scroll;
 }
 .dropList_HeaderCheckBoxRight >span:nth-child(1){
@@ -306,8 +306,8 @@
 }
 
 .Headerdesc{
-    max-width: 200px;
-    display: inline-block;
+    width: 100px;
+    display: flex;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -317,17 +317,23 @@
 
 .sendListTitle{
     width: 200px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    display: inline-block;
+    display:flex;
+    align-items: flex-end;
+    flex-direction: row;
     height: 25px;
+    line-height: 23px;
     color: #333;
     font-size: 18px;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
     margin-bottom: 8px;
+    &>span{
+        max-width: 200px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
 }
 
 
@@ -350,11 +356,23 @@
 }
 
 .headerDesc{
+    display: flex;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
     line-height: 26px;
     color: #666;
+    &>span{
+        width: 65px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 26px;
+        color: #666;
+    }
 }
 
 .editConcent{
@@ -490,4 +508,58 @@
     line-height: normal;
     margin: 0px 6px;
     cursor: pointer;
+}
+
+
+.LISTScroll{
+    display: flex;
+    height: calc(100vh - 120px);
+    flex-direction: column;
+    padding-bottom: 48px;
+}
+
+.headerInput{
+    max-width: 150px;
+    display: flex;
+    align-items: center;
+}
+
+.numberInputHeader{
+    position: relative;
+    display: inline-block;
+    text-align: left;
+    height: 25px;
+    color: #333;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 8px;
+    padding: 0px;
+}
+
+
+.tagPosistion{
+    width: 0px;
+    position: relative;
+}
+
+.header_editImg {
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-image: url(../../../../assets/drag/icon_edit.svg);
+}
+
+.header_editImg:hover {
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-image: url(../../../../assets/instanceImage/icon_edit_hover.svg);
+}
+
+.descInputHeader{
+    width: 100px;
 }

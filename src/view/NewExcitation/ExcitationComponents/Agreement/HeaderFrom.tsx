@@ -6,7 +6,7 @@ import { ArgeementDropListStore } from '../../ExcitaionStore/ExcitaionStore'
 import styles from './agreementCompoents.less'
 
 const GuCntInput: React.FC<any> = (props: any) => {
-  const { detaileStatus, value, onChange } = props
+  const { value, onChange } = props
   const setValue = ArgeementDropListStore(state => state.setValue)
   const gu_cnt0 = ArgeementDropListStore(state => state.gu_cnt0)
   const triggerChange = (changedValue: any) => {
@@ -41,8 +41,7 @@ const GuCntInput: React.FC<any> = (props: any) => {
         value={value || gu_cnt0}
         onChange={onNumberChange}
         style={{ width: 232 }}
-        disabled={detaileStatus}
-        suffix={<NewInputNumberSuffixModal type='gu_cnt0' detaileStatus={detaileStatus} />}
+        suffix={<NewInputNumberSuffixModal type='gu_cnt0' />}
       />
     </span>
   )
@@ -80,14 +79,13 @@ const GuW0Input: React.FC<any> = (props: any) => {
         onChange={onNumberChange}
         disabled={detaileStatus}
         style={{ width: 232 }}
-        suffix={<NewInputNumberSuffixModal type='gu_w0' detaileStatus={detaileStatus} />}
+        suffix={<NewInputNumberSuffixModal type='gu_w0' />}
       />
     </span>
   )
 }
 
-const HeadForm = React.forwardRef((props: { detaileStatus: boolean }, myRef) => {
-  const { detaileStatus } = props
+const HeadForm = React.forwardRef((props, myRef) => {
   const [form] = Form.useForm<any>()
   const { Option } = Select
 
@@ -175,13 +173,13 @@ const HeadForm = React.forwardRef((props: { detaileStatus: boolean }, myRef) => 
             }
           ]}
         >
-          <Input placeholder='请输入激励名称' className={styles.commonItem} disabled={detaileStatus} />
+          <Input placeholder='请输入激励名称' className={styles.commonItem} />
         </Form.Item>
         <Form.Item name='gu_cnt0' label='发送次数' rules={[{ required: true, validator: checkGuCnt }]}>
-          <GuCntInput detaileStatus={detaileStatus} />
+          <GuCntInput />
         </Form.Item>
         <Form.Item name='peripheral' label='外设' rules={[{ required: true, message: '请选择外设' }]}>
-          <Select placeholder='请选择外设' className={styles.commonItem} disabled={detaileStatus}>
+          <Select placeholder='请选择外设' className={styles.commonItem}>
             {
               /**
                * 下拉选择端口
@@ -198,7 +196,7 @@ const HeadForm = React.forwardRef((props: { detaileStatus: boolean }, myRef) => 
         </Form.Item>
 
         <Form.Item name='gu_w0' label='发送间隔' rules={[{ required: true, validator: checkGuW0 }]}>
-          <GuW0Input detaileStatus={detaileStatus} />
+          <GuW0Input />
         </Form.Item>
       </Form>
     </>

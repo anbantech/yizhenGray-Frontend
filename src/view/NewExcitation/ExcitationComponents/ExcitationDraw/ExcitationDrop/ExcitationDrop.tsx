@@ -45,7 +45,7 @@ function ExcitationDropMemo() {
   // 筛选逻辑
   const checkAllList = checkListStore(state => state.checkAllList)
   const clearCheckList = checkListStore(state => state.clearCheckList)
-
+  const { setParamsChange } = LeftDropListStore()
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   // 实例状态是否更新
   const detailStatus = GlobalStatusStore(state => state.detailStatus)
@@ -55,7 +55,8 @@ function ExcitationDropMemo() {
     setLeftList([...copyList])
     clearCheckList()
     setSendBtnStatus(false)
-  }, [DropList, checkAllList, clearCheckList, setLeftList, setSendBtnStatus])
+    setParamsChange(true)
+  }, [DropList, setParamsChange, checkAllList, clearCheckList, setLeftList, setSendBtnStatus])
 
   const checkListMemo = useMemo(() => {
     return checkAllList.length

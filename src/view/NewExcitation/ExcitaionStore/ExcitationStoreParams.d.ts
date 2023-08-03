@@ -14,6 +14,7 @@ type LeftAction = {
   setDestoryEverything: () => void
   increase: (type: string) => void
   decrease: (type: string) => void
+  setTitleorDesc: (type: string, val: string) => void
   setValue: (type: string, val: number) => void
 }
 
@@ -85,10 +86,12 @@ type DragableStatuState = {
 
 type sendList = {
   detailData: Record<string, any>
+  paramsChange: boolean
 }
 
 interface ListFn {
   setDetailData: (state: any) => void
+  setParamsChange: (val: boolean) => void
 }
 
 interface ExcitationListState {

@@ -1,14 +1,25 @@
-import { Button, Input, message, Tooltip } from 'antd'
+import { Button, Input, message, Tag, Tooltip } from 'antd'
 import * as React from 'react'
 import { DropTip } from 'Src/view/excitation/excitationComponent/Tip'
 import InputNumberSuffixMemo from 'Src/components/inputNumbersuffix/inputNumberSuffix'
 import { GlobalStatusStore, LeftDropListStore, useExicitationSenderId } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import { updateExcitationList } from 'Src/services/api/excitationApi'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import StyleSheet from '../excitationDraw.less'
 
 const CloumnLine = () => {
   return <div className={StyleSheet.cloumnLine} />
+}
+
+const iconMap = {
+  1: <CheckCircleOutlined />,
+  2: <CloseCircleOutlined />
+}
+
+const statusMap = {
+  1: 'success',
+  2: 'error'
 }
 function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunction: (val: number) => void }) {
   const [spinning, setSpinning] = React.useState(false)
@@ -20,7 +31,11 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
   const sendBtnStatus = GlobalStatusStore(state => state.sendBtnStatus)
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const DropList = LeftDropListStore(state => state.DropList)
-  const { name, desc, gu_cnt0, gu_w0, updated } = LeftDropListStore()
+  const { name, desc, gu_cnt0, gu_w0, updated, paramsChange, setTitleorDesc, setParamsChange } = LeftDropListStore()
+  const [isReg, setReg] = React.useState(1)
+  const [isEditing, setIsEditing] = React.useState(false)
+  const [inputSatus, setInputStatus] = React.useState(false)
+
   const CommonModleClose = React.useCallback((val: boolean) => {
     setVisibility(val)
   }, [])
@@ -38,8 +53,9 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
       }
       setValue(type, newNumber)
       setSendBtnStatus(false)
+      setParamsChange(true)
     },
-    [setSendBtnStatus, setValue]
+    [setParamsChange, setSendBtnStatus, setValue]
   )
 
   const onMax = React.useCallback(
@@ -58,8 +74,9 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
         setValue(type, newValue)
       }
       setSendBtnStatus(false)
+      setParamsChange(true)
     },
-    [gu_cnt0, gu_w0, setSendBtnStatus, setValue]
+    [gu_cnt0, gu_w0, setParamsChange, setSendBtnStatus, setValue]
   )
 
   const BtnStatus = React.useMemo(() => {
@@ -67,12 +84,13 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
   }, [sendBtnStatus])
 
   const saveConfig = React.useCallback(async () => {
-    if (updated) {
-      setSpinning(true)
-    }
     const listArray = DropList.map((item: any) => {
       return item.sender_id
     })
+    if (updated) {
+      setSpinning(true)
+    }
+
     if (listArray.length === 0) {
       close()
       return message.error('发送列表至少要包含一个激励')
@@ -97,32 +115,135 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
     }
   }, [DropList, close, desc, getExcitaionDeatilFunction, gu_cnt0, gu_w0, name, sender_id, setSendBtnStatus, updated])
 
-  const updateOrCreate = () => {
-    if (updated) {
+  const updateOrCreate = React.useCallback(() => {
+    if (updated && paramsChange) {
       CommonModleClose(true)
     } else {
       saveConfig()
     }
+  }, [CommonModleClose, paramsChange, saveConfig, updated])
+
+  const disableOnBlur = (type: string) => {
+    if (type === 'name') {
+      setIsEditing(false)
+    } else {
+      setInputStatus(false)
+    }
+    setParamsChange(true)
+    setSendBtnStatus(false)
+  }
+
+  const onChangeName = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
+      if (type === 'name') {
+        const reg = /^[\w\u4E00-\u9FA5]+$/
+        if (e.target.value.length <= 20) {
+          if (reg.test(e.target.value)) {
+            setReg(1)
+          } else {
+            setReg(2)
+          }
+          setTitleorDesc(type, e.target.value)
+        }
+      }
+      if (e.target.value.length <= 50 && type === 'desc') {
+        setTitleorDesc(type, e.target.value)
+      }
+    },
+    [setTitleorDesc]
+  )
+
+  const doubleClick = (type: string) => {
+    if (type === 'name') {
+      setIsEditing(true)
+    } else {
+      setInputStatus(true)
+    }
+  }
+
+  const allEdmit = () => {
+    setIsEditing(true)
+  }
+
+  const InputEdmit = () => {
+    setInputStatus(true)
   }
   return (
     <div className={StyleSheet.DropHeader}>
       <Button disabled={!BtnStatus} type='primary' onClick={updateOrCreate} className={StyleSheet.saveBtn}>
         保存配置
       </Button>
-      <Tooltip placement='bottom' title={name || ''}>
-        <span className={StyleSheet.sendListTitle}>{name}</span>
-      </Tooltip>
+
+      {isEditing ? (
+        <div className={StyleSheet.headerInput}>
+          <Input
+            className={StyleSheet.numberInputHeader}
+            value={name}
+            onBlur={() => {
+              disableOnBlur('name')
+            }}
+            autoFocus={isEditing}
+            bordered={false}
+            onChange={e => {
+              onChangeName(e, 'name')
+            }}
+          />
+          <div className={StyleSheet.tagPosistion}>
+            <Tag
+              icon={iconMap[isReg as keyof typeof iconMap]}
+              style={{ position: 'absolute', left: '0px', top: '-15px' }}
+              color={statusMap[isReg as keyof typeof statusMap]}
+            >
+              名称由汉字、数字、字母和下划线组成
+            </Tag>
+          </div>
+        </div>
+      ) : (
+        <div className={StyleSheet.sendListTitle}>
+          <Tooltip placement='bottom' title={name || ''}>
+            <span
+              role='time'
+              onDoubleClick={() => {
+                doubleClick('name')
+              }}
+            >
+              {name}
+            </span>
+          </Tooltip>
+          <div className={StyleSheet.header_editImg} style={{ marginBottom: '1px' }} role='time' onClick={allEdmit} />
+        </div>
+      )}
 
       <div className={StyleSheet.editConcent}>
-        <span className={StyleSheet.headerDesc} style={{ display: 'flex', alignItems: 'center' }}>
+        <div className={StyleSheet.headerDesc} style={{ display: 'flex', alignItems: 'center' }}>
           {' '}
           描述:
-          <Tooltip placement='bottom' title={desc || '暂无描述'}>
-            <span className={StyleSheet.Headerdesc} style={{ display: 'flex', alignItems: 'center', paddingLeft: '8px' }}>
-              {desc}
-            </span>{' '}
-          </Tooltip>
-        </span>
+          {inputSatus ? (
+            <Input
+              className={StyleSheet.descInputHeader}
+              value={desc}
+              onBlur={() => {
+                disableOnBlur('desc')
+              }}
+              autoFocus={inputSatus}
+              bordered={false}
+              onChange={e => {
+                onChangeName(e, 'desc')
+              }}
+            />
+          ) : (
+            <span
+              role='time'
+              style={{ paddingLeft: '8px' }}
+              onDoubleClick={() => {
+                doubleClick('desc')
+              }}
+            >
+              {desc || '暂无描述'}
+            </span>
+          )}
+          <div className={StyleSheet.header_editImg} role='time' onClick={InputEdmit} />
+        </div>
 
         <CloumnLine />
         <div className={StyleSheet.inputEdit} style={{ display: 'flex', alignItems: 'center' }}>
