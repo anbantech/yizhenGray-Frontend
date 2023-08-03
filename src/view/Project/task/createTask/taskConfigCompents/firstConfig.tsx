@@ -236,9 +236,15 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   }, [form, taskInfo.data, fromDataTask])
 
   // 关闭弹窗
-  const cancel = () => {
+  const cancel = React.useCallback((val?: string) => {
+    if (val === 'result') {
+      setExcitationList([])
+      setParams((pre: Resparams) => {
+        return { ...pre, page: 1 }
+      })
+    }
     setOpen(false)
-  }
+  }, [])
   // 新建任务
   const jumpNewCreateTask = async () => {
     setOpen(true)
@@ -339,7 +345,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
                     }}
                   >
                     <img src={addImage} alt='' />
-                    <span>新建激励发送列表</span>
+                    <span className={styles.sendlistTitle}>新建激励发送列表</span>
                   </div>
                 </Space>
               </div>

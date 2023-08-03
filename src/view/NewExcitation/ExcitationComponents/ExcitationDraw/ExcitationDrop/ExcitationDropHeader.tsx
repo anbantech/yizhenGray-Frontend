@@ -117,7 +117,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
         <span className={StyleSheet.headerDesc} style={{ display: 'flex', alignItems: 'center' }}>
           {' '}
           描述:
-          <Tooltip placement='bottom' title={desc || ''}>
+          <Tooltip placement='bottom' title={desc || '暂无描述'}>
             <span className={StyleSheet.Headerdesc} style={{ display: 'flex', alignItems: 'center', paddingLeft: '8px' }}>
               {desc}
             </span>{' '}
