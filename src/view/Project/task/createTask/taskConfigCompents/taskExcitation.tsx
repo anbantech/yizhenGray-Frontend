@@ -7,7 +7,7 @@ import stepStore from './sendListStore'
 
 interface OpenType {
   open: boolean
-  cancel: () => void
+  cancel: (val?: string) => void
   getContainer: any
 }
 
@@ -45,7 +45,7 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
       if (res.code === 0) {
         message.success('创建成功')
         deleteEverything()
-        cancel()
+        cancel('result')
       }
     } catch (error) {
       message.error(error.message)

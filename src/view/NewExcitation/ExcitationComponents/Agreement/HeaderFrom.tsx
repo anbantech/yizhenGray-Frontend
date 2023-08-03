@@ -15,18 +15,22 @@ const GuCntInput: React.FC<any> = (props: any) => {
 
   const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newNumber = Number.parseInt(e.target.value || '0', 10)
-
     if (Number.isNaN(newNumber)) {
       return
     }
-
     setValue('gu_cnt0', newNumber)
     triggerChange(newNumber)
   }
   const onMax = () => {
     const newValue = gu_cnt0 > 20 ? 20 : gu_cnt0
-    setValue('gu_cnt0', newValue)
-    triggerChange(newValue)
+    const val = newValue === 0
+    if (val) {
+      setValue('gu_cnt0', 1)
+      triggerChange(1)
+    } else {
+      setValue('gu_cnt0', newValue)
+      triggerChange(newValue)
+    }
   }
 
   return (
