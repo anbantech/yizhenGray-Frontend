@@ -20,7 +20,7 @@ const request = {
   key_word: '',
   status: null,
   page: 1,
-  page_size: 20,
+  page_size: 25,
   sort_field: 'create_time',
   sort_order: 'descend'
 }
@@ -55,10 +55,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   // 任务列表参数
   const [excitationList, setExcitationList] = useState<ResparamsType[]>([])
   // 动态设置虚拟列表高度
-  // const [height, setHeight] = useState(700)
-  // 更新发送列表详情
-  const detailStatus = GlobalStatusStore(state => state.detailStatus)
-  const setDetailStatus = GlobalStatusStore(state => state.setDetailStatus)
+  const [height, setHeight] = useState(0)
   // 数据是否还有更多
   const [hasMoreData, setHasMore] = useState(true)
 
@@ -70,11 +67,16 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
 
   //
   const [spinning, setSpinning] = useState(false)
-
+  const openModalRef = useRef(false)
   // 新建任务
   const createNewExcitationList = React.useCallback(() => {
-    setModalData({ ...modalData, fixTitle: false, isModalVisible: true })
-  }, [modalData])
+    if (!sendBtnStatus) {
+      openModalRef.current = true
+      setShowModal(true)
+    } else {
+      setModalData({ ...modalData, fixTitle: false, isModalVisible: true })
+    }
+  }, [modalData, sendBtnStatus, setShowModal])
 
   // 更新参数获取列表
   const updateParams = (value: string) => {
@@ -157,12 +159,6 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
     [keepCheckTask, sender_id]
   )
 
-  // 跳转修改任务
-  const fixExcitation = (item: Record<string, any>) => {
-    const Item = { ...modalData, fixTitle: true, isModalVisible: true, excitationInfo: item }
-    setModalData({ ...Item })
-  }
-
   useEffect(() => {
     getExcitationList({ ...params })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -184,13 +180,13 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   // 控制弹出框消失隐藏
   const cancel = React.useCallback(
     (e: boolean, type: string) => {
-      if (type === 'result') {
-        setDetailStatus(!detailStatus)
-        setParams({ ...params, key_word: '', page: 1 })
+      if (type) {
+        setSender_id(null)
       }
+      setParams({ ...params, key_word: '', page: 1 })
       setModalData({ ...modalData, fixTitle: false, isModalVisible: e, excitationInfo: {} })
     },
-    [detailStatus, modalData, params, setDetailStatus]
+    [modalData, params, setSender_id]
   )
 
   const { visibility, chioceModalStatus } = useMenu()
@@ -216,8 +212,15 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
     },
     clearId: () => {
       sender_idRef.current = null
+    },
+    openModal: () => {
+      if (openModalRef.current) {
+        return setModalData({ ...modalData, fixTitle: false, isModalVisible: true })
+      }
+      return () => {}
     }
   }))
+
   const operationFn = React.useCallback(
     (item: any, cb: (item: any) => void, type: string) => {
       if (sender_id !== item.sender_id && !sendBtnStatus) {
@@ -233,8 +236,26 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
     },
     [sendBtnStatus, sender_id, setSender_id, setShowModal]
   )
+
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        const { height } = entry.contentRect
+        setHeight(height)
+      }
+    })
+
+    if (layoutRef.current) {
+      resizeObserver.observe(layoutRef.current)
+    }
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [])
+
   return (
-    <div className={Leftstyles.excitationLeftBoby} ref={layoutRef}>
+    <div className={Leftstyles.excitationLeftBoby}>
       <div className={StyleSheet.btn_header}>
         <CreateButton
           width='100%'
@@ -247,12 +268,12 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
         />
       </div>
       <SearchInput className={StyleSheet.ExictationInputLeft} placeholder='根据名称搜索' onChangeValue={updateParams} />
-      <div className={styles.concentBody}>
+      <div className={Leftstyles.concentBody} ref={layoutRef}>
         <InfiniteScroll
           dataLength={excitationList.length}
           next={loadMoreData}
           hasMore={hasMoreData}
-          height={600}
+          height={height - 50}
           style={{ overflowX: 'hidden' }}
           loader={
             <p style={{ textAlign: 'center', width: '216px' }}>
@@ -280,14 +301,6 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
               >
                 <span>{item.name}</span>
                 <div className={Leftstyles.icon_layout}>
-                  <div
-                    role='time'
-                    onClick={e => {
-                      e.stopPropagation()
-                      operationFn(item, fixExcitation, 'fn')
-                    }}
-                    className={styles.taskListLeft_editImg}
-                  />
                   <div
                     role='time'
                     className={styles.taskListLeft_detailImg}

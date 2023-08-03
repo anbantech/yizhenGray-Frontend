@@ -70,6 +70,7 @@ function ExcitationIndex() {
     setShowModal(false)
     setSendBtnStatus(true)
     history.push(nextLocation?.pathname)
+    myRef.current?.openModal()
   }, [clearCheckList, history, nextLocation?.pathname, reRouterBoolean, setSendBtnStatus, setSender_id, setShowModal])
 
   return (
@@ -83,9 +84,9 @@ function ExcitationIndex() {
           IsModalVisible={ModalStatus}
           deleteProjectRight={onLeave}
           CommonModleClose={onCancelLeave}
-          name='保存配置'
+          name='离开提醒'
           ing='保存中'
-          concent='当前配置未保存，离开页面将会放弃所有修改数据。'
+          concent='当前配置未保存，离开页面将会放弃所有更改。是否确认离开？'
         />
       )}
     </DndProvider>

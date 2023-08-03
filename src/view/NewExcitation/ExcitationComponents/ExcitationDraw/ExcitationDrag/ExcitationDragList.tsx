@@ -47,7 +47,6 @@ const BottomFooterDrag = ({ DeleteCheckItem, exportAll, saveConfig }: any) => {
 const BottomFooterDragMemo = React.memo(BottomFooterDrag)
 
 function ExcitationListMemo() {
-  const layoutRef = React.useRef<any>()
   const { confirm } = Modal
   const [isClose, setClose] = React.useState(true)
   const [visible, setVsible] = useState(false)
@@ -75,6 +74,7 @@ function ExcitationListMemo() {
   const DragList = RightDragListStore(state => state.DragList)
   const setRightList = RightDragListStore(state => state.setRightList)
   const DropList = LeftDropListStore(state => state.DropList)
+  const { setParamsChange } = LeftDropListStore()
   const setLeftList = LeftDropListStore(state => state.setLeftList)
   // 删除弹出框函数
   const CommonModleClose = (value: boolean) => {
@@ -110,9 +110,6 @@ function ExcitationListMemo() {
     getExcitationList(params)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params])
-
-  // 动态设置虚拟列表高度
-  const [height, setHeight] = React.useState(700)
 
   const updateParams = (value: string) => {
     setRightList([])
@@ -248,9 +245,22 @@ function ExcitationListMemo() {
       const DropListCopy = [...DropList, ...DropItem]
       setLeftList([...DropListCopy])
       clearCheckList()
+      setParamsChange(true)
       setSendBtnStatus(false)
     }
-  }, [DragList, DropList, checkAllList, clearCheckDropList, clearCheckList, id, setLeftList, setSendBtnStatus, setUpdateStatus, updateStatus])
+  }, [
+    DragList,
+    DropList,
+    setParamsChange,
+    checkAllList,
+    clearCheckDropList,
+    clearCheckList,
+    id,
+    setLeftList,
+    setSendBtnStatus,
+    setUpdateStatus,
+    updateStatus
+  ])
 
   // 取消新建
   const cancelNewCreate = React.useCallback(() => {
@@ -312,39 +322,15 @@ function ExcitationListMemo() {
     setPage(1)
   }, [destoryEveryItem, setPage])
 
-  React.useEffect(() => {
-    const resizeObserver = new ResizeObserver(entries => {
-      for (const entry of entries) {
-        const { height } = entry.contentRect
-        let num = 700
-        if (height >= 1940 && height >= 2300) {
-          num = height * 0.8
-        } else if (height >= 1400 && height <= 1940) {
-          num = height * 0.5
-        } else {
-          num = height * 0.3
-        }
-        setHeight(height - Math.ceil(num as number))
-      }
-    })
-
-    if (layoutRef.current) {
-      resizeObserver.observe(layoutRef.current)
-    }
-
-    return () => {
-      resizeObserver.disconnect()
-    }
-  }, [])
   return (
-    <div className={isClose ? StyleSheet.rightList : StyleSheet.rightListClose} ref={layoutRef}>
+    <div className={isClose ? StyleSheet.rightList : StyleSheet.rightListClose}>
       {isClose && (
         <>
           <BtnCompoents setVsible={setVsible} setNewCreate={opneModal} />
           <SearchInput className={StyleSheet.ExictationInput} placeholder='根据名称搜索激励' onChangeValue={updateParams} />
           {DragList?.length ? <ExcitationDragHeader /> : null}
           {/* 列表拖拽 */}
-          <ExcitationDrag height={height} onChange={onChange} />
+          <ExcitationDrag onChange={onChange} />
           {LengthMemo ? <BottomFooterDragMemo DeleteCheckItem={DeleteCheckItem} exportAll={exportAll} saveConfig={saveConfig} /> : null}
         </>
       )}

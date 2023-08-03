@@ -2,27 +2,23 @@ import * as React from 'react'
 import { ArgeementDropListStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import StyleSheet from './inputNumberSuffix.less'
 
-type porpsType = { type: string; detaileStatus: boolean }
-function InputNumberModalMemo({ type, detaileStatus }: porpsType) {
+type porpsType = { type: string }
+function InputNumberModalMemo({ type }: porpsType) {
   const increase = ArgeementDropListStore(state => state.increase)
   const decrease = ArgeementDropListStore(state => state.decrease)
 
   const operationUpFn = React.useCallback(
     (type: string) => {
-      if (!detaileStatus) {
-        increase(type)
-      }
+      increase(type)
     },
-    [detaileStatus, increase]
+    [increase]
   )
 
   const operationDownFn = React.useCallback(
     (type: string) => {
-      if (!detaileStatus) {
-        decrease(type)
-      }
+      decrease(type)
     },
-    [decrease, detaileStatus]
+    [decrease]
   )
   return (
     <div className={StyleSheet.inputNumberSuffix}>

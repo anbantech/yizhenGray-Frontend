@@ -44,23 +44,34 @@ interface PropsType {
 
 const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsType) => {
   const { sender_id } = Item
+  const { setParamsChange } = LeftDropListStore()
   const ref = React.useRef<HTMLDivElement>(null)
+  const [position, setPosition] = React.useState<{ index: number; sender_id: number }>({ index: -2, sender_id: -2 })
   const DropList = LeftDropListStore(state => state.DropList)
   // 更新按钮状态
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
-      item: {
-        index,
-        sender_id
+      item: () => {
+        const positionInfo = {
+          index,
+          sender_id
+        }
+        setPosition({ ...positionInfo })
+        return positionInfo
       },
       collect: monitor => ({
         isDragging: monitor.isDragging()
       }),
       end(draggedItem, monitor) {
         if (monitor.didDrop()) {
-          setSendBtnStatus(false)
+          if (position.index === draggedItem.index) {
+            setSendBtnStatus(true)
+          } else {
+            setParamsChange(true)
+            setSendBtnStatus(false)
+          }
         }
       }
     }),
@@ -158,6 +169,7 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
             onClick={() => {
               DeleteCheckItem(Item.keys)
               setSendBtnStatus(false)
+              setParamsChange(true)
             }}
           />
         </div>
@@ -176,6 +188,7 @@ function ExcitationDropList() {
   const checkAllList = checkListStore(state => state.checkAllList)
   const { checkAllSenderIdList, setCheckAll, setIndeterminate, clearCheckList } = checkListStore()
   // 列表元素
+
   const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
   const dragableDragingStatus = DragableDragingStatusStore(state => state.dragableDragingStatus)
@@ -183,9 +196,11 @@ function ExcitationDropList() {
   const moveCardHandler = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
       clearCheckList()
+      console.log(dragableDragingStatus)
       if (dragableDragingStatus) {
         const dropCardListCopy = DropList
         const lessIndex = DropList.findIndex((item: any) => item.sender_id === -1)
+        console.log(hoverIndex)
         dropCardListCopy.splice(hoverIndex, 1, ...dropCardListCopy.splice(lessIndex, 1, dropCardListCopy[hoverIndex]))
         setLeftList([...dropCardListCopy])
       } else {
@@ -216,7 +231,6 @@ function ExcitationDropList() {
       })
       checkAllSenderIdList([...CheckListFilter])
       setLeftList([...DropListFilter])
-
       if (DropListFilter.length === 0) {
         setCheckAll(false)
       } else {

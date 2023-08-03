@@ -51,7 +51,7 @@ function LeaveModal(props: any) {
             deleteProjectRight()
           }}
         >
-          {spinning ? `${ing}` : '确认'}
+          {spinning ? `${ing}` : '确认离开'}
         </Button>
       ]}
     >

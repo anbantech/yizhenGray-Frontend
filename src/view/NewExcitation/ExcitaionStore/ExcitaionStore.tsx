@@ -80,7 +80,25 @@ const LeftDropListStore = create<LeftAction & sendList & ListFn & LeftActionStat
   name: '',
   desc: '',
   updated: false,
+  paramsChange: false,
   detailData: {},
+  setParamsChange: (val: boolean) => {
+    set(() => ({
+      paramsChange: val
+    }))
+  },
+  setTitleorDesc: (type: string, val: string) => {
+    if (type === 'name') {
+      set(() => ({
+        name: val
+      }))
+    }
+    if (type === 'desc') {
+      set(() => ({
+        desc: val
+      }))
+    }
+  },
   setLeftList: (item: ItemListState) => {
     set(() => ({
       DropList: [...item]

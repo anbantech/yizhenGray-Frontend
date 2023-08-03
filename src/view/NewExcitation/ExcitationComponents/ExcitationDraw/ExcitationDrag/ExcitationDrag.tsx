@@ -19,7 +19,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import StyleSheet from '../excitationDraw.less'
 
 type DragableType = { sender_id: number; name: string; item: Record<string, any>; onChange: (val: string, id: number) => void }
-type Props = { height: number; onChange: (val: string, id: number) => void }
+type Props = { onChange: (val: string, id: number) => void }
 
 // 拖拽列表的item
 const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
@@ -29,6 +29,7 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
   const setDragableStatus = DragableDragingStatusStore(state => state.setDragableStatus)
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const clearCheckList = RightDragListStore(state => state.clearCheckList)
+  const { setParamsChange } = LeftDropListStore()
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
@@ -53,6 +54,7 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
           dropCardListCopy.splice(uselessIndex, 1, item)
           setLeftList([...dropCardListCopy])
           setSendBtnStatus(false)
+          setParamsChange(true)
         } else {
           dropCardListCopy.splice(uselessIndex, 1)
           setLeftList([...dropCardListCopy])
@@ -92,7 +94,8 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
 
 const DragableMemo = React.memo(Dragable, isEqual)
 // 拖拽区
-function ExcitationDragMemo({ height, onChange }: Props) {
+function ExcitationDragMemo({ onChange }: Props) {
+  const layoutRef = React.useRef<any>()
   const rightDragList = RightDragListStore(state => state.DragList)
   const checkAllList = RightDragListStore(state => state.checkAllList)
   const setIndeterminate = RightDragListStore(state => state.setIndeterminate)
@@ -100,7 +103,8 @@ function ExcitationDragMemo({ height, onChange }: Props) {
   const setCheckAll = RightDragListStore(state => state.setCheckAll)
   const hasMoreData = useRequestStore(state => state.hasMoreData)
   const loadMoreData = useRequestStore(state => state.loadMoreData)
-
+  // 动态设置虚拟列表高度
+  const [height, setHeight] = React.useState(0)
   const onChanges = React.useCallback(
     (checkedValues: CheckboxValueType[]) => {
       checkAllSenderIdList([...checkedValues])
@@ -110,13 +114,29 @@ function ExcitationDragMemo({ height, onChange }: Props) {
     [checkAllSenderIdList, rightDragList.length, setCheckAll, setIndeterminate]
   )
 
+  React.useEffect(() => {
+    const resizeObserver = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        const { height } = entry.contentRect
+        setHeight(height)
+      }
+    })
+
+    if (layoutRef.current) {
+      resizeObserver.observe(layoutRef.current)
+    }
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [])
   return (
-    <div className={StyleSheet.LISTScroll}>
+    <div className={StyleSheet.LISTScroll} ref={layoutRef}>
       <InfiniteScroll
         dataLength={rightDragList.length}
         next={loadMoreData}
         hasMore={hasMoreData}
-        height={height}
+        height={height - 50}
         loader={
           <p style={{ textAlign: 'center', marginTop: '12px', marginLeft: '20px', width: '208px' }}>
             <span className={styles.listLine} />

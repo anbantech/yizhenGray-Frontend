@@ -23,8 +23,6 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
   const [visibilitys, setVisibility] = React.useState(false)
   const DropList = ArgeementDropListStore(state => state.DropList)
   const setHead = ArgeementDropListStore(state => state.setHead)
-  const setDeatilStatus = ArgeementDropListStore(state => state.setDeatilStatus)
-  const detaileStatus = ArgeementDropListStore(state => state.detaileStatus)
   //
   const setDrop = GlobalStatusStore(state => state.setDetailStatus)
   const DropStatus = GlobalStatusStore(state => state.detailStatus)
@@ -38,9 +36,11 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
     const header = myRef.current?.validate()
     return Item && header
   }, [DropListRef])
+
   const CommonModleClose = React.useCallback((val: boolean) => {
     setVisibility(val)
   }, [])
+
   const createItem = React.useCallback(async () => {
     const res = DropListRef.map((item: any) => {
       return item.save()
@@ -137,20 +137,16 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
         }
         return res
       })
-      .catch(() => {
-        CommonModleClose(false)
-      })
+      .catch(() => {})
   }, [CommonModleClose, checkItem])
 
   const contorl = React.useCallback(() => {
     if (sender_id === -1) {
       getItemInfo()
-    } else if (sender_id !== -1 && detaileStatus) {
-      setDeatilStatus(false)
     } else {
       fixExcitaiton()
     }
-  }, [detaileStatus, fixExcitaiton, getItemInfo, sender_id, setDeatilStatus])
+  }, [fixExcitaiton, getItemInfo, sender_id])
 
   React.useEffect(() => {
     if (sender_id !== -1) {
@@ -163,7 +159,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
       width={720}
       className={StyleSheet.excitaionModal}
       visible={visibility}
-      title={sender_id === -1 ? '新建激励' : detaileStatus ? '激励详情' : ' 修改激励'}
+      title={sender_id === -1 ? '新建激励' : '查看和修改'}
       onCancel={onOk}
       footer={[
         <>
@@ -175,13 +171,13 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
               contorl()
             }}
           >
-            {sender_id === -1 ? '新建' : detaileStatus ? '编辑' : ' 修改'}
+            {sender_id === -1 ? '新建' : '修改'}
           </Button>
         </>
       ]}
     >
       <div className={StyleSheet.excitationModalBody}>
-        <HeaderForm ref={myRef} detaileStatus={detaileStatus} />
+        <HeaderForm ref={myRef} />
         <AgreementIndex sender_id={sender_id} />
       </div>
       {visibilitys && (
