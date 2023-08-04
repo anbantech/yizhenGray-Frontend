@@ -198,7 +198,6 @@ function ExcitationDropList() {
   const moveCardHandler = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
       clearCheckList()
-      // console.log(dragableDragingStatus)
       if (dragableDragingStatus) {
         const dropCardListCopy = DropList
         const lessIndex = dropCardListCopy.findIndex((item: any) => item.sender_id === -1)
