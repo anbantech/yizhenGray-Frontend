@@ -160,7 +160,6 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   )
 
   useEffect(() => {
-    console.log(updateStatus)
     getExcitationList({ ...params })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, updateStatus])
@@ -181,7 +180,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   // 控制弹出框消失隐藏
   const cancel = React.useCallback(
     (e: boolean, type: string) => {
-      if (type) {
+      if (type === 'result') {
         setSender_id(null)
       }
       setParams({ ...params, key_word: '', page: 1 })

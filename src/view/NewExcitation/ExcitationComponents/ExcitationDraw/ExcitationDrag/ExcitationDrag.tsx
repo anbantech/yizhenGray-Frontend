@@ -38,7 +38,7 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
         const useless = DropList.find((item: any) => item.sender_id === -1)
         // 拖拽开始时，向 cardList 数据源中插入一个占位的元素，如果占位元素已经存在，不再重复插入
         if (!useless) {
-          setLeftList([...DropList, { ...item, sender_id: -1, keys: generateUUID(), isItemDragging: true }])
+          setLeftList([{ ...item, sender_id: -1, keys: generateUUID(), isItemDragging: true }, ...DropList])
         }
         setDragableStatus(true)
         const Item = { ...item, keys: generateUUID() }
