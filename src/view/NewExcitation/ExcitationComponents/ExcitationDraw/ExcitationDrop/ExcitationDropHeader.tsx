@@ -90,7 +90,10 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
     if (updated) {
       setSpinning(true)
     }
-
+    if (name === '') {
+      close()
+      return message.error('发送列表名称不能为空')
+    }
     if (listArray.length === 0) {
       close()
       return message.error('发送列表至少要包含一个激励')
@@ -129,7 +132,6 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
     } else {
       setInputStatus(false)
     }
-    setParamsChange(true)
     setSendBtnStatus(false)
   }
 
@@ -232,17 +234,19 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
               }}
             />
           ) : (
-            <span
-              role='time'
-              style={{ paddingLeft: '8px' }}
-              onDoubleClick={() => {
-                doubleClick('desc')
-              }}
-            >
-              {desc || '暂无描述'}
-            </span>
+            <>
+              <span
+                role='time'
+                style={{ paddingLeft: '8px' }}
+                onDoubleClick={() => {
+                  doubleClick('desc')
+                }}
+              >
+                {desc || '暂无描述'}
+              </span>
+              <div className={StyleSheet.header_editImg} role='time' onClick={InputEdmit} />
+            </>
           )}
-          <div className={StyleSheet.header_editImg} role='time' onClick={InputEdmit} />
         </div>
 
         <CloumnLine />

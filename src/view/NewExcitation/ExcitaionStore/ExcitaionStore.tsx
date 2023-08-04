@@ -152,6 +152,7 @@ const LeftDropListStore = create<LeftAction & sendList & ListFn & LeftActionStat
       name: '',
       desc: '',
       gu_w0: 0,
+      paramsChange: false,
       sender_id: -1,
       detailData: {}
     }))
