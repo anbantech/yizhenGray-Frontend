@@ -178,7 +178,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
     >
       <div className={StyleSheet.excitationModalBody}>
         <HeaderForm ref={myRef} />
-        <AgreementIndex sender_id={sender_id} />
+        <AgreementIndex />
       </div>
       {visibilitys && (
         <CommonModle

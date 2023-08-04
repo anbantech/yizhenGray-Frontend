@@ -2,7 +2,7 @@ import { Button, Input, message, Tag, Tooltip } from 'antd'
 import * as React from 'react'
 import { DropTip } from 'Src/view/excitation/excitationComponent/Tip'
 import InputNumberSuffixMemo from 'Src/components/inputNumbersuffix/inputNumberSuffix'
-import { GlobalStatusStore, LeftDropListStore, useExicitationSenderId } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
+import { checkListStore, GlobalStatusStore, LeftDropListStore, useExicitationSenderId } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import { updateExcitationList } from 'Src/services/api/excitationApi'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
@@ -35,6 +35,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const DropList = LeftDropListStore(state => state.DropList)
   const updateStatus = GlobalStatusStore(state => state.updateStatus)
+  const clearCheckList = checkListStore(state => state.clearCheckList)
   const setUpdateStatus = GlobalStatusStore(state => state.setUpdateStatus)
   const { name, desc, gu_cnt0, gu_w0, updated, paramsChange, setTitleorDesc, setParamsChange } = LeftDropListStore()
   const [isReg, setReg] = React.useState(1)
@@ -120,6 +121,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
         const res = await updateExcitationList(sender_id, params)
         if (res.code === 0) {
           callback()
+          clearCheckList()
         }
         if (updated) {
           close()
@@ -129,15 +131,17 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
       close()
       throwErrorMessage(error, { 1005: '激励发送列表名称重复，请修改' })
     }
-  }, [isReg, DropList, updated, name, gu_cnt0, gu_w0, desc, close, sender_id, callback])
+  }, [isReg, DropList, updated, name, gu_cnt0, gu_w0, desc, close, sender_id, callback, clearCheckList])
 
   const updateOrCreate = React.useCallback(() => {
     if (updated && paramsChange) {
-      CommonModleClose(true)
+      if (isReg === 1) {
+        CommonModleClose(true)
+      }
     } else {
       saveConfig()
     }
-  }, [CommonModleClose, paramsChange, saveConfig, updated])
+  }, [CommonModleClose, isReg, paramsChange, saveConfig, updated])
 
   const disableOnBlur = React.useCallback(
     (type: string) => {
@@ -192,6 +196,13 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
       setInputStatus(true)
     }
   }
+  React.useEffect(() => {
+    return () => {
+      setReg(1)
+      setIsEditing(false)
+      setInputStatus(false)
+    }
+  }, [sender_id])
 
   return (
     <div className={StyleSheet.DropHeader}>
@@ -257,17 +268,17 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
             />
           ) : (
             <>
-              <span
-                role='time'
-                style={{ paddingLeft: '8px' }}
-                onDoubleClick={() => {
-                  doubleClick('desc')
-                }}
-              >
-                <Tooltip placement='bottom' title={desc || '暂无描述'}>
+              <Tooltip placement='bottom' title={desc}>
+                <span
+                  role='time'
+                  style={{ paddingLeft: '8px' }}
+                  onDoubleClick={() => {
+                    doubleClick('desc')
+                  }}
+                >
                   {desc || '暂无描述'}
-                </Tooltip>
-              </span>
+                </span>
+              </Tooltip>
             </>
           )}
         </div>
