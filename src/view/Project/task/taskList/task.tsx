@@ -249,7 +249,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     <div className={styles.taskLeft_list} ref={layoutRef}>
       <div className={globalStyle.AnBan_header}>
         <div className={styles.taskHeadr}>
-          <Tooltip placement='bottom' title={projectInfo?.projectName || ''}>
+          <Tooltip placement='bottomLeft' title={projectInfo?.projectName || ''}>
             <span className={styles.taskLeft_header_title}>{projectInfo?.projectName || ''}</span>
           </Tooltip>
 
