@@ -1,4 +1,4 @@
-import { Form, Input, Select } from 'antd'
+import { Form, Input, Select, Tooltip } from 'antd'
 import * as React from 'react'
 import { DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd'
 import dragImg from 'Src/assets/drag/icon_drag.png'
@@ -63,10 +63,14 @@ const DeleteItem = (cb: (val: DragCmps[]) => void, val: DragCmps[], index: numbe
 const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmps, myRef: any) => {
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
   const [form] = Form.useForm()
-  const inInt = { type: 'string', name: '', skip: true, value: '' }
+  const [formData, setformData] = React.useState<any>({ type: 'string', name: '', skip: true, value: '' })
   const DropList = ArgeementDropListStore(state => state.DropList)
   const ref = React.useRef<HTMLDivElement>(null)
   const [isDragItem, setCanDrag] = React.useState(true)
+
+  const onValuesChange = React.useCallback((changedValues: any, allValues: any) => {
+    setformData(allValues)
+  }, [])
   const onToggleForbidDrag = React.useCallback(() => {
     setCanDrag(false)
     return Promise.reject(new Error('字段名称由汉字、数字、字母和下划线组成'))
@@ -180,6 +184,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
   React.useEffect(() => {
     if (Item.name) {
       const { name, skip, value, context } = Item
+      setformData({ name, skip, value, context })
       form.setFieldsValue({ name, skip, value, context })
     }
   }, [form, Item])
@@ -199,45 +204,49 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
         <img src={dragImg} alt='' />
         <span className={styles.cloumnBodyCharts}>字符串 </span>
       </div>
-      <Form form={form} name='IntCompoents' layout='inline' className={styles.StringForm} initialValues={inInt}>
-        <Form.Item
-          name='name'
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[
-            {
-              validateTrigger: 'onBlur',
-              validator(_, value) {
-                if (value) {
-                  const reg = /^[\w\u4E00-\u9FA5]+$/
-                  if (value.length > 20) {
-                    return Promise.reject(new Error('字段名称长度为2到20个字符'))
+      <Form form={form} name='IntCompoents' layout='inline' onValuesChange={onValuesChange} className={styles.StringForm} initialValues={formData}>
+        <Tooltip placement='bottom' title={formData.value}>
+          <Form.Item
+            name='name'
+            validateFirst
+            validateTrigger={['onBlur']}
+            rules={[
+              {
+                validateTrigger: 'onBlur',
+                validator(_, value) {
+                  if (value) {
+                    const reg = /^[\w\u4E00-\u9FA5]+$/
+                    if (value.length > 20) {
+                      return Promise.reject(new Error('字段名称长度为2到20个字符'))
+                    }
+                    if (value.length < 2 && value.length !== 0) {
+                      return Promise.reject(new Error('字段名称长度为2到20个字符'))
+                    }
+                    if (reg.test(value)) {
+                      return IsDrag()
+                    }
+                    return onToggleForbidDrag()
                   }
-                  if (value.length < 2 && value.length !== 0) {
-                    return Promise.reject(new Error('字段名称长度为2到20个字符'))
-                  }
-                  if (reg.test(value)) {
-                    return IsDrag()
-                  }
-                  return onToggleForbidDrag()
+                  return noValueFrom()
                 }
-                return noValueFrom()
               }
-            }
-          ]}
-        >
-          <Input placeholder='请输入字段名' className={styles.StringInput} />
-        </Form.Item>
-
+            ]}
+          >
+            <Input placeholder='请输入字段名' className={styles.StringInput} />
+          </Form.Item>
+        </Tooltip>
         <Form.Item name='skip' rules={[{ required: true, message: 'Missing area' }]}>
           <Select options={skipMap} className={styles.StringSelect} />
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Form.Item name='value'>
-          <Input bordered={false} className={styles.StringInputValue} />
-        </Form.Item>
+        <Tooltip placement='bottom' title={formData.value}>
+          <Form.Item name='value'>
+            <Input bordered={false} className={styles.StringInputValue} />
+          </Form.Item>
+        </Tooltip>
       </Form>
+
       <div
         className={styles.imgStyle}
         style={{ cursor: 'pointer' }}
@@ -251,14 +260,14 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
 })
 
 const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmps, myRef: any) => {
-  const initValue = {
+  const [formData, setformData] = React.useState<any>({
     type: 'byte',
     name: '',
     value: 0,
     context: false,
     skip: true,
     length: 8
-  }
+  })
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
   const DropList = ArgeementDropListStore(state => state.DropList)
   const ref = React.useRef<HTMLDivElement>(null)
@@ -277,6 +286,10 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
     setCanDrag(true)
     return Promise.resolve()
   }, [setCanDrag])
+
+  const onValuesChange = React.useCallback((changedValues: any, allValues: any) => {
+    setformData(allValues)
+  }, [])
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -384,6 +397,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
   React.useEffect(() => {
     if (Item.name) {
       const { name, skip, value, length, context } = Item
+      setformData({ name, skip, value, length, context })
       form.setFieldsValue({ name, skip, value, length, context })
     }
   }, [form, Item])
@@ -399,36 +413,37 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
         <img src={dragImg} alt='' />
         <span className={styles.cloumnBodyCharts}>整数 </span>
       </div>
-      <Form form={form} name='IntCompoents' className={styles.StringForm} layout='inline' initialValues={initValue}>
-        <Form.Item
-          name='name'
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[
-            {
-              validateTrigger: 'onBlur',
-              validator(_, value) {
-                if (value) {
-                  const reg = /^[\w\u4E00-\u9FA5]+$/
-                  if (value.length > 20) {
-                    return Promise.reject(new Error('字段名称长度为2到20个字符'))
+      <Form form={form} name='IntCompoents' className={styles.StringForm} onValuesChange={onValuesChange} layout='inline' initialValues={formData}>
+        <Tooltip placement='bottom' title={formData.name}>
+          <Form.Item
+            name='name'
+            validateFirst
+            validateTrigger={['onBlur']}
+            rules={[
+              {
+                validateTrigger: 'onBlur',
+                validator(_, value) {
+                  if (value) {
+                    const reg = /^[\w\u4E00-\u9FA5]+$/
+                    if (value.length > 20) {
+                      return Promise.reject(new Error('字段名称长度为2到20个字符'))
+                    }
+                    if (value.length < 2 && value.length !== 0) {
+                      return Promise.reject(new Error('字段名称长度为2到20个字符'))
+                    }
+                    if (reg.test(value)) {
+                      return IsDrag()
+                    }
+                    return onToggleForbidDrag()
                   }
-                  if (value.length < 2 && value.length !== 0) {
-                    return Promise.reject(new Error('字段名称长度为2到20个字符'))
-                  }
-                  if (reg.test(value)) {
-                    return IsDrag()
-                  }
-                  return onToggleForbidDrag()
+                  return noValueFrom()
                 }
-                return noValueFrom()
               }
-            }
-          ]}
-        >
-          <Input placeholder='请输入字段名' bordered={false} className={styles.IntInput} />
-        </Form.Item>
-
+            ]}
+          >
+            <Input placeholder='请输入字段名' bordered={false} className={styles.IntInput} />
+          </Form.Item>
+        </Tooltip>
         <div className={styles.FourCharts}> 字节长度</div>
         <Form.Item name='length' rules={[{ required: true, message: 'Missing area' }]}>
           <Select options={byteLength} className={styles.IntSelect} />
@@ -439,25 +454,27 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Form.Item
-          className={styles.intFormItem}
-          name='value'
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[
-            {
-              validateTrigger: 'onBlur',
-              validator(_, value) {
-                if (value !== '') {
-                  return RegCompare(value, resvertValue)
+        <Tooltip placement='bottom' title={formData.value}>
+          <Form.Item
+            className={styles.intFormItem}
+            name='value'
+            validateFirst
+            validateTrigger={['onBlur']}
+            rules={[
+              {
+                validateTrigger: 'onBlur',
+                validator(_, value) {
+                  if (value !== '') {
+                    return RegCompare(value, resvertValue)
+                  }
+                  return NoValCompare(setCanDrag, resvertValue)
                 }
-                return NoValCompare(setCanDrag, resvertValue)
               }
-            }
-          ]}
-        >
-          <Input bordered={false} className={styles.IntInputValue} />
-        </Form.Item>
+            ]}
+          >
+            <Input bordered={false} className={styles.IntInputValue} />
+          </Form.Item>
+        </Tooltip>
       </Form>
       <div
         className={styles.imgStyle}
@@ -472,7 +489,11 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
 })
 
 const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmps, myRef: any) => {
-  const initValue = {
+  const setLeftList = ArgeementDropListStore(state => state.setLeftList)
+  const [form] = Form.useForm<any>()
+  const DropList = ArgeementDropListStore(state => state.DropList)
+  const [val, setVal] = React.useState(10)
+  const [formData, setformData] = React.useState<any>({
     name: '',
     type: 'byte_array',
     value: 0,
@@ -480,12 +501,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
     count: 10,
     skip: true,
     length: 8
-  }
-
-  const setLeftList = ArgeementDropListStore(state => state.setLeftList)
-  const [form] = Form.useForm<any>()
-  const DropList = ArgeementDropListStore(state => state.DropList)
-  const [val, setVal] = React.useState(10)
+  })
   const ref = React.useRef<HTMLDivElement>(null)
   const [isDragItem, setCanDrag] = React.useState(true)
   const noValueFrom = React.useCallback(() => {
@@ -607,6 +623,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
   React.useEffect(() => {
     if (Item.name) {
       const { name, skip, value, length, context, count } = Item
+      setformData({ name, skip, value, length, context, count })
       form.setFieldsValue({ name, skip, value, length, context, count })
     } else {
       form.setFieldsValue({ count: val })
@@ -619,7 +636,9 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
     const value = await form.validateFields()
     return value
   }, [form])
-
+  const onValuesChange = React.useCallback((changedValues: any, allValues: any) => {
+    setformData(allValues)
+  }, [])
   React.useImperativeHandle(myRef, () => ({
     save: () => {
       return { ...form.getFieldsValue(), type: 'byte_array', context: false }
@@ -643,36 +662,37 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
         <span className={styles.cloumnBodyCharts}>整数数组 </span>
       </div>
 
-      <Form form={form} name='IntArrayCompoents' className={styles.StringForm} initialValues={initValue}>
-        <Form.Item
-          name='name'
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[
-            {
-              validateTrigger: 'onBlur',
-              validator(_, value) {
-                if (value) {
-                  const reg = /^[\w\u4E00-\u9FA5]+$/
-                  if (value.length > 20) {
-                    return Promise.reject(new Error('字段名称长度为2到20个字符'))
+      <Form form={form} name='IntArrayCompoents' className={styles.StringForm} onValuesChange={onValuesChange} initialValues={formData}>
+        <Tooltip placement='bottom' title={formData.name}>
+          <Form.Item
+            name='name'
+            validateFirst
+            validateTrigger={['onBlur']}
+            rules={[
+              {
+                validateTrigger: 'onBlur',
+                validator(_, value) {
+                  if (value) {
+                    const reg = /^[\w\u4E00-\u9FA5]+$/
+                    if (value.length > 20) {
+                      return Promise.reject(new Error('字段名称长度为2到20个字符'))
+                    }
+                    if (value.length < 2 && value.length !== 0) {
+                      return Promise.reject(new Error('字段名称长度为2到20个字符'))
+                    }
+                    if (reg.test(value)) {
+                      return IsDrag()
+                    }
+                    return onToggleForbidDrag()
                   }
-                  if (value.length < 2 && value.length !== 0) {
-                    return Promise.reject(new Error('字段名称长度为2到20个字符'))
-                  }
-                  if (reg.test(value)) {
-                    return IsDrag()
-                  }
-                  return onToggleForbidDrag()
+                  return noValueFrom()
                 }
-                return noValueFrom()
               }
-            }
-          ]}
-        >
-          <Input placeholder='请输入字段名' bordered={false} className={styles.IntInput} />
-        </Form.Item>
-
+            ]}
+          >
+            <Input placeholder='请输入字段名' bordered={false} className={styles.IntInput} />
+          </Form.Item>
+        </Tooltip>
         <div className={styles.FourCharts} style={{ height: '37px', borderRight: '1px solid #E9E9E9' }}>
           元素个数
         </div>
@@ -701,25 +721,27 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Form.Item
-          className={styles.intArrayFormItem}
-          name='value'
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[
-            {
-              validateTrigger: 'onBlur',
-              validator(_, value) {
-                if (value !== '') {
-                  return RegCompare(value, resvertValue)
+        <Tooltip placement='bottom' title={formData.value}>
+          <Form.Item
+            className={styles.intArrayFormItem}
+            name='value'
+            validateFirst
+            validateTrigger={['onBlur']}
+            rules={[
+              {
+                validateTrigger: 'onBlur',
+                validator(_, value) {
+                  if (value !== '') {
+                    return RegCompare(value, resvertValue)
+                  }
+                  return NoValCompare(setCanDrag, resvertValue)
                 }
-                return NoValCompare(setCanDrag, resvertValue)
               }
-            }
-          ]}
-        >
-          <Input bordered={false} className={styles.IntArrayInputValue} />
-        </Form.Item>
+            ]}
+          >
+            <Input bordered={false} className={styles.IntArrayInputValue} />
+          </Form.Item>
+        </Tooltip>
       </Form>
 
       <div

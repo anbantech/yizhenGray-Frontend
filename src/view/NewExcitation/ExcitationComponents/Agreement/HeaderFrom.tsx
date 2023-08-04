@@ -93,7 +93,7 @@ const HeadForm = React.forwardRef((props, myRef) => {
   const { gu_cnt0, gu_w0, name, peripheral } = ArgeementDropListStore()
   const initialValues = {
     gu_cnt0: 1,
-    gu_w0: 0
+    gu_w0: 1
   }
   // 端口列表
   const fetchPortList = React.useCallback(async () => {

@@ -60,7 +60,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   const [hasMoreData, setHasMore] = useState(true)
 
   // 弹窗
-  const [modalData, setModalData] = useState({ fixTitle: false, isModalVisible: false, excitationInfo: {} })
+  const [modalData, setModalData] = useState({ fixTitle: false, isModalVisible: false })
 
   //  删除弹出框
   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
@@ -184,7 +184,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
         setSender_id(null)
       }
       setParams({ ...params, key_word: '', page: 1 })
-      setModalData({ ...modalData, fixTitle: false, isModalVisible: e, excitationInfo: {} })
+      setModalData({ ...modalData, fixTitle: false, isModalVisible: e })
     },
     [modalData, params, setSender_id]
   )
@@ -337,14 +337,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
           />
         )}
         {modalData.isModalVisible && (
-          <ExcitationModal
-            visible={modalData.isModalVisible}
-            hideModal={cancel}
-            excitationInfo={modalData.excitationInfo}
-            fixTitle={modalData.fixTitle}
-            sender_id={sender_id}
-            width={480}
-          />
+          <ExcitationModal visible={modalData.isModalVisible} hideModal={cancel} fixTitle={modalData.fixTitle} sender_id={sender_id} width={480} />
         )}
         {visibility && (
           <LookUpDependence
