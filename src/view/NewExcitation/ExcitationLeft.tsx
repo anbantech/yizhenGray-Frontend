@@ -160,6 +160,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   )
 
   useEffect(() => {
+    console.log(updateStatus)
     getExcitationList({ ...params })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, updateStatus])

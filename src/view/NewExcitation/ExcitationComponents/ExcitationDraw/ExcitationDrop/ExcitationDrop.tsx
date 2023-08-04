@@ -37,7 +37,6 @@ const DeleteCompoentMemo = React.memo(DeleteCompoent)
 
 function ExcitationDropMemo() {
   const DropList = LeftDropListStore(state => state.DropList)
-  // const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
   const setDetailData = LeftDropListStore(state => state.setDetailData)
   // sender_id

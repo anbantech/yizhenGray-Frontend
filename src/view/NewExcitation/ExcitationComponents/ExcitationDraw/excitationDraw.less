@@ -315,26 +315,6 @@
     line-height: 25px;
 }
 
-.sendListTitle{
-    width: 200px;
-    display:flex;
-    align-items: flex-end;
-    flex-direction: row;
-    height: 25px;
-    line-height: 23px;
-    color: #333;
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    margin-bottom: 8px;
-    &>span{
-        max-width: 200px;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-    }
-}
 
 
 .numberInput{
@@ -521,6 +501,7 @@
 .headerInput{
     max-width: 150px;
     display: flex;
+    padding-bottom: 8px;
     align-items: center;
 }
 
@@ -528,16 +509,40 @@
     position: relative;
     display: inline-block;
     text-align: left;
-    height: 25px;
+    height: 32px;
+
     color: #333;
     font-size: 18px;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
-    margin-bottom: 8px;
+    
+    // margin-bottom: 8px;
     padding: 0px;
 }
 
+.sendListTitle {
+    width: 200px;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: row;
+    line-height: normal;
+    color: #333;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    padding-bottom: 8px;
+    &>span {
+        display: block;
+        height: 32px;
+        line-height: 33px;
+        max-width: 200px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+}
 
 .tagPosistion{
     width: 0px;
