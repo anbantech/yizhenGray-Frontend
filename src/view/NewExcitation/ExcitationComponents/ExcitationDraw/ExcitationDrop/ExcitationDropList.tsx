@@ -201,9 +201,9 @@ function ExcitationDropList() {
       // console.log(dragableDragingStatus)
       if (dragableDragingStatus) {
         const dropCardListCopy = DropList
-        const lessIndex = DropList.findIndex((item: any) => item.sender_id === -1)
-        // console.log(hoverIndex)
-        dropCardListCopy.splice(hoverIndex, 1, ...dropCardListCopy.splice(lessIndex, 1, dropCardListCopy[hoverIndex]))
+        const lessIndex = dropCardListCopy.findIndex((item: any) => item.sender_id === -1)
+        const copy = dropCardListCopy.splice(lessIndex, 1)
+        dropCardListCopy.splice(hoverIndex, 0, ...copy)
         setLeftList([...dropCardListCopy])
       } else {
         const dropCardListCopy = DropList

@@ -28,6 +28,7 @@ function LeaveModal(props: any) {
       visible={IsModalVisible}
       width='400px'
       title={<Title />}
+      destroyOnClose
       onCancel={isClose}
       footer={[
         <Button
