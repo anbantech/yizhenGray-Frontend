@@ -95,12 +95,16 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
     setUpdateStatus(!updateStatus)
   }, [getExcitaionDeatilFunction, sender_id, setParamsChange, setSendBtnStatus, setUpdateStatus, updateStatus])
   const saveConfig = React.useCallback(async () => {
+    if (isReg !== 1) {
+      return
+    }
     const listArray = DropList.map((item: any) => {
       return item.sender_id
     })
     if (updated) {
       setSpinning(true)
     }
+
     if (name === '' || name.length < 2) {
       close()
       return message.error('发送列表名称长度不能小于俩个字符')
@@ -125,7 +129,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
       close()
       throwErrorMessage(error, { 1005: '激励发送列表名称重复，请修改' })
     }
-  }, [DropList, updated, name, gu_cnt0, gu_w0, desc, close, sender_id, callback])
+  }, [isReg, DropList, updated, name, gu_cnt0, gu_w0, desc, close, sender_id, callback])
 
   const updateOrCreate = React.useCallback(() => {
     if (updated && paramsChange) {
@@ -143,13 +147,11 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
         if (valLength >= 2 && valLength <= 20 && reg.test(name)) {
           setReg(1)
           setIsEditing(false)
-        } else if (valLength <= 2 || valLength > 20) {
+        } else if (valLength < 2 || valLength > 20) {
           setReg(3)
-          setSendBtnStatus(true)
           setIsEditing(true)
         } else {
           setReg(2)
-          setSendBtnStatus(true)
           setIsEditing(true)
         }
       }
@@ -157,7 +159,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
         setInputStatus(false)
       }
     },
-    [desc.length, name, setSendBtnStatus]
+    [desc.length, name]
   )
 
   const onChangeName = React.useCallback(
@@ -167,14 +169,12 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
         const valLength = e.target.value.length
         if (valLength >= 2 && valLength <= 20 && reg.test(e.target.value)) {
           setReg(1)
-          setSendBtnStatus(false)
-        } else if (valLength <= 2 || valLength > 20) {
+        } else if (valLength < 2 || valLength > 20) {
           setReg(3)
-          setSendBtnStatus(true)
         } else {
           setReg(2)
-          setSendBtnStatus(true)
         }
+        setSendBtnStatus(false)
         setTitleorDesc(type, e.target.value)
       }
       if (e.target.value.length <= 50 && type === 'desc') {
@@ -264,7 +264,9 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
                   doubleClick('desc')
                 }}
               >
-                {desc || '暂无描述'}
+                <Tooltip placement='bottom' title={desc || '暂无描述'}>
+                  {desc || '暂无描述'}
+                </Tooltip>
               </span>
             </>
           )}

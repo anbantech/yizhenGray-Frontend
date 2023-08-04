@@ -167,14 +167,14 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   const leaveModalFn = React.useCallback(
     (id: number) => {
       sender_idRef.current = id
-      if (!sendBtnStatus) {
+      if (!sendBtnStatus && id !== sender_id) {
         setShowModal(true)
       } else {
         clearCheckList()
         setSender_id(id)
       }
     },
-    [clearCheckList, sendBtnStatus, setSender_id, setShowModal]
+    [clearCheckList, sendBtnStatus, sender_id, setSender_id, setShowModal]
   )
 
   // 控制弹出框消失隐藏
