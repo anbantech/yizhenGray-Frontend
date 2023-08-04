@@ -379,7 +379,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         ing='删除中'
         btnName='删除'
         name='删除实例'
-        concent='是否确认删除'
+        concent='是否确认删除？'
       />
       {visibility ? (
         <NewTaskInstance visibility={visibility} isDetail={0} task_id={InstancesDetail.task_detail.id} choiceModal={choiceModal} width='532px' />
