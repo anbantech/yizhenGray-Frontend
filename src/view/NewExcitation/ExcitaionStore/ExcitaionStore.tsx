@@ -183,7 +183,7 @@ const DragableDragingStatusStore = create<DragableStatuState & DragableStatusAct
 const ArgeementDropListStore = create<ArgeementAction & ArgeementActionState>((set, get) => ({
   DropList: [],
   gu_cnt0: 1,
-  gu_w0: 0,
+  gu_w0: 1,
   name: '',
   peripheral: '',
   DropListRef: [],

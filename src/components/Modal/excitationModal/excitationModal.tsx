@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import 'antd/dist/antd.css'
 import { Modal, Input, Form, Button, message } from 'antd'
 import { throwErrorMessage } from 'Src/util/message'
@@ -17,7 +17,7 @@ const layout = {
 
 function ExcitationModal(props: any) {
   const { TextArea } = Input
-  const { visible, hideModal, fixTitle, sender_id, excitationInfo } = props
+  const { visible, hideModal, fixTitle, sender_id } = props
   const [form] = Form.useForm<FormInstance>()
   const [isDisableStatus, setDisabledStatus] = useState(true)
 
@@ -66,17 +66,6 @@ function ExcitationModal(props: any) {
       setDisabledStatus(true)
     }
   }
-
-  useEffect(() => {
-    if (excitationInfo) {
-      const { name, desc } = excitationInfo
-      // cause backend will auto add prefix for queue name
-      // thus remove prefix of queue name when editing
-      const formData = { name, desc }
-      form.setFieldsValue(formData)
-      setDisabledStatus(false)
-    }
-  }, [form, excitationInfo])
 
   return (
     <Modal

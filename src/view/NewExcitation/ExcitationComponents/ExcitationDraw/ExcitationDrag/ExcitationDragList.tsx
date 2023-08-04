@@ -238,10 +238,12 @@ function ExcitationListMemo() {
       const DropListFilter = DragList.filter((item: any) => {
         return checkAllList.includes(item.sender_id)
       })
-      const DropItem = DropListFilter.filter((item: any) => {
+
+      const DropItem = DropListFilter.map((item: any) => {
         const Item = { ...item, keys: generateUUID() }
         return Item
       })
+
       const DropListCopy = [...DropList, ...DropItem]
       setLeftList([...DropListCopy])
       clearCheckList()
