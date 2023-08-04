@@ -141,7 +141,6 @@ const HeadForm = React.forwardRef((props, myRef) => {
     if (value >= 1) {
       return Promise.resolve()
     }
-    return Promise.reject(new Error('发送次数最少为1次'))
   }
   const checkGuW0 = (_: any, value: any) => {
     if (value >= 0) {

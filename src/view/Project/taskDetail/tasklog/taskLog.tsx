@@ -259,7 +259,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     </Tooltip>
                     <div>
                       <div className={styles.dataInfoContainer}>
-                        <Tooltip
+                        {/* <Tooltip
                           title={
                             <Tips
                               val={item.send_data[0]}
@@ -276,7 +276,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                           overlayClassName={styles.overlay}
                         >
                           <span className={styles.dataLongInfo}>{item.send_data[0] || '无'}</span>
-                        </Tooltip>
+                        </Tooltip> */}
                         <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(item.send_data[0])}>
                           <img src={errorFrameCopy} alt='' />
                         </span>
@@ -399,6 +399,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
           {logData.length === 0 ? <NoData title='暂无数据' /> : null}
         </div>
       </div>
+
       <div className={globalStyle.AnBan_PaginationsAge}>
         {params && <PaginationsAge length={total} num={params.page_size} getParams={setOperation} pagenums={params.page} />}
       </div>

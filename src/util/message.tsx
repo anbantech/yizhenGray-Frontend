@@ -33,6 +33,9 @@ export function throwErrorMessage(errorMessage: ErrorMessage, defaultErrorMessag
   if (+errorMessage.code === 0) {
     return ''
   }
+  if (errorMessage.code === undefined) {
+    return '网络波动,请检查网络'
+  }
   // 没有自定义错误对象，直接抛出后端异常 message
   if (!defaultErrorMessage) {
     popErrorMessage(errorMessage.message, pop)
