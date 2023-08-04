@@ -90,9 +90,9 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
     if (updated) {
       setSpinning(true)
     }
-    if (name === '') {
+    if (name === '' || name.length < 2) {
       close()
-      return message.error('发送列表名称不能为空')
+      return message.error('发送列表名称长度不能小于俩个字符')
     }
     if (listArray.length === 0) {
       close()
@@ -105,6 +105,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
         const res = await updateExcitationList(sender_id, params)
         if (res.code === 0) {
           setSendBtnStatus(true)
+          setParamsChange(false)
           message.success('发送列表保存成功')
           getExcitaionDeatilFunction(sender_id)
         }
@@ -116,7 +117,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
       close()
       message.success('发送列表保存失败')
     }
-  }, [DropList, close, desc, getExcitaionDeatilFunction, gu_cnt0, gu_w0, name, sender_id, setSendBtnStatus, updated])
+  }, [DropList, close, desc, getExcitaionDeatilFunction, gu_cnt0, gu_w0, name, sender_id, setParamsChange, setSendBtnStatus, updated])
 
   const updateOrCreate = React.useCallback(() => {
     if (updated && paramsChange) {
@@ -126,18 +127,30 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
     }
   }, [CommonModleClose, paramsChange, saveConfig, updated])
 
-  const disableOnBlur = (type: string) => {
-    if (type === 'name') {
-      setIsEditing(false)
-    } else {
-      setInputStatus(false)
-    }
-    setSendBtnStatus(false)
-  }
+  const disableOnBlur = React.useCallback(
+    (type: string) => {
+      if (type === 'name') {
+        if (name.length >= 2) {
+          setIsEditing(false)
+          setSendBtnStatus(false)
+        } else {
+          setSendBtnStatus(true)
+        }
+      }
+      if (type === 'desc') {
+        setInputStatus(false)
+        setSendBtnStatus(false)
+      }
+    },
+    [name, setSendBtnStatus]
+  )
 
   const onChangeName = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
       if (type === 'name') {
+        if (e.target.value.length < 2) {
+          setSendBtnStatus(true)
+        }
         const reg = /^[\w\u4E00-\u9FA5]+$/
         if (e.target.value.length <= 20) {
           if (reg.test(e.target.value)) {
@@ -152,7 +165,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
         setTitleorDesc(type, e.target.value)
       }
     },
-    [setTitleorDesc]
+    [setSendBtnStatus, setTitleorDesc]
   )
 
   const doubleClick = (type: string) => {
@@ -163,13 +176,6 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
     }
   }
 
-  const allEdmit = () => {
-    setIsEditing(true)
-  }
-
-  const InputEdmit = () => {
-    setInputStatus(true)
-  }
   return (
     <div className={StyleSheet.DropHeader}>
       <Button disabled={!BtnStatus} type='primary' onClick={updateOrCreate} className={StyleSheet.saveBtn}>
@@ -212,7 +218,6 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
               {name}
             </span>
           </Tooltip>
-          <div className={StyleSheet.header_editImg} style={{ marginBottom: '1px' }} role='time' onClick={allEdmit} />
         </div>
       )}
 
@@ -244,7 +249,6 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
               >
                 {desc || '暂无描述'}
               </span>
-              <div className={StyleSheet.header_editImg} role='time' onClick={InputEdmit} />
             </>
           )}
         </div>
