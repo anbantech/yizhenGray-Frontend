@@ -6,6 +6,7 @@ import { GlobalStatusStore, LeftDropListStore, useExicitationSenderId } from 'Sr
 import { updateExcitationList } from 'Src/services/api/excitationApi'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import { throwErrorMessage } from 'Src/util/message'
 import StyleSheet from '../excitationDraw.less'
 
 const CloumnLine = () => {
@@ -14,12 +15,14 @@ const CloumnLine = () => {
 
 const iconMap = {
   1: <CheckCircleOutlined />,
-  2: <CloseCircleOutlined />
+  2: <CloseCircleOutlined />,
+  3: <CloseCircleOutlined />
 }
 
 const statusMap = {
   1: 'success',
-  2: 'error'
+  2: 'error',
+  3: 'error'
 }
 function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunction: (val: number) => void }) {
   const [spinning, setSpinning] = React.useState(false)
@@ -31,11 +34,12 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
   const sendBtnStatus = GlobalStatusStore(state => state.sendBtnStatus)
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const DropList = LeftDropListStore(state => state.DropList)
+  const updateStatus = GlobalStatusStore(state => state.updateStatus)
+  const setUpdateStatus = GlobalStatusStore(state => state.setUpdateStatus)
   const { name, desc, gu_cnt0, gu_w0, updated, paramsChange, setTitleorDesc, setParamsChange } = LeftDropListStore()
   const [isReg, setReg] = React.useState(1)
   const [isEditing, setIsEditing] = React.useState(false)
   const [inputSatus, setInputStatus] = React.useState(false)
-
   const CommonModleClose = React.useCallback((val: boolean) => {
     setVisibility(val)
   }, [])
@@ -83,6 +87,13 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
     return !sendBtnStatus
   }, [sendBtnStatus])
 
+  const callback = React.useCallback(() => {
+    setSendBtnStatus(true)
+    setParamsChange(false)
+    message.success('发送列表保存成功')
+    getExcitaionDeatilFunction(sender_id as number)
+    setUpdateStatus(!updateStatus)
+  }, [getExcitaionDeatilFunction, sender_id, setParamsChange, setSendBtnStatus, setUpdateStatus, updateStatus])
   const saveConfig = React.useCallback(async () => {
     const listArray = DropList.map((item: any) => {
       return item.sender_id
@@ -104,20 +115,17 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
       if (sender_id) {
         const res = await updateExcitationList(sender_id, params)
         if (res.code === 0) {
-          setSendBtnStatus(true)
-          setParamsChange(false)
-          message.success('发送列表保存成功')
-          getExcitaionDeatilFunction(sender_id)
+          callback()
         }
         if (updated) {
           close()
         }
       }
-    } catch {
+    } catch (error) {
       close()
-      message.success('发送列表保存失败')
+      throwErrorMessage(error, { 1005: '激励发送列表名称重复，请修改' })
     }
-  }, [DropList, close, desc, getExcitaionDeatilFunction, gu_cnt0, gu_w0, name, sender_id, setParamsChange, setSendBtnStatus, updated])
+  }, [DropList, updated, name, gu_cnt0, gu_w0, desc, close, sender_id, callback])
 
   const updateOrCreate = React.useCallback(() => {
     if (updated && paramsChange) {
@@ -130,38 +138,47 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
   const disableOnBlur = React.useCallback(
     (type: string) => {
       if (type === 'name') {
-        if (name.length >= 2) {
+        const reg = /^[\w\u4E00-\u9FA5]+$/
+        const valLength = name.length
+        if (valLength >= 2 && valLength <= 20 && reg.test(name)) {
+          setReg(1)
           setIsEditing(false)
-          setSendBtnStatus(false)
-        } else {
+        } else if (valLength <= 2 || valLength > 20) {
+          setReg(3)
           setSendBtnStatus(true)
+          setIsEditing(true)
+        } else {
+          setReg(2)
+          setSendBtnStatus(true)
+          setIsEditing(true)
         }
       }
-      if (type === 'desc') {
+      if (desc.length <= 50 && type === 'desc') {
         setInputStatus(false)
-        setSendBtnStatus(false)
       }
     },
-    [name, setSendBtnStatus]
+    [desc.length, name, setSendBtnStatus]
   )
 
   const onChangeName = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
       if (type === 'name') {
-        if (e.target.value.length < 2) {
+        const reg = /^[\w\u4E00-\u9FA5]+$/
+        const valLength = e.target.value.length
+        if (valLength >= 2 && valLength <= 20 && reg.test(e.target.value)) {
+          setReg(1)
+          setSendBtnStatus(false)
+        } else if (valLength <= 2 || valLength > 20) {
+          setReg(3)
+          setSendBtnStatus(true)
+        } else {
+          setReg(2)
           setSendBtnStatus(true)
         }
-        const reg = /^[\w\u4E00-\u9FA5]+$/
-        if (e.target.value.length <= 20) {
-          if (reg.test(e.target.value)) {
-            setReg(1)
-          } else {
-            setReg(2)
-          }
-          setTitleorDesc(type, e.target.value)
-        }
+        setTitleorDesc(type, e.target.value)
       }
       if (e.target.value.length <= 50 && type === 'desc') {
+        setSendBtnStatus(false)
         setTitleorDesc(type, e.target.value)
       }
     },
@@ -199,10 +216,10 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
           <div className={StyleSheet.tagPosistion}>
             <Tag
               icon={iconMap[isReg as keyof typeof iconMap]}
-              style={{ position: 'absolute', left: '0px', top: '-15px' }}
+              style={{ position: 'absolute', left: '4px', top: '-12px' }}
               color={statusMap[isReg as keyof typeof statusMap]}
             >
-              名称由汉字、数字、字母和下划线组成
+              {isReg === 3 ? '名称长度为2-20个字符' : '名称由汉字、数字、字母和下划线组成'}
             </Tag>
           </div>
         </div>

@@ -72,6 +72,8 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
             setParamsChange(true)
             setSendBtnStatus(false)
           }
+        } else {
+          setSendBtnStatus(true)
         }
       }
     }),
