@@ -78,10 +78,8 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
         const newValue = Number(gu_w0) > 100 ? 100 : gu_w0
         setValue(type, newValue)
       }
-      setSendBtnStatus(false)
-      setParamsChange(true)
     },
-    [gu_cnt0, gu_w0, setParamsChange, setSendBtnStatus, setValue]
+    [gu_cnt0, gu_w0, setValue]
   )
 
   const BtnStatus = React.useMemo(() => {
