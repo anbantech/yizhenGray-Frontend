@@ -95,7 +95,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   const [statusOperationStatus, setStatusOperationStatus] = useState<boolean>(false)
 
   // 状态显示控制
-  const [isShows, setShow] = useState<statusValue>(-2)
+  const [isShows, setShow] = useState<statusValue | null>('')
 
   // 弹窗
   const [modalData, setModalData] = useState({ instances_id: '', fixTitle: false, isModalVisible: false })
@@ -116,18 +116,21 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   }
 
   // 选择任务状态
-  const checkStatus = (value: string | number | null) => {
-    setShow(value as number)
-    if (value === '') {
-      setParams({ ...params, status: null, page: 1 })
-    } else {
-      setParams({ ...params, status: `${value}`, page: 1 })
-    }
-    setStatusOperationStatus(false)
-  }
+  const checkStatus = React.useCallback(
+    (value: string | number | null) => {
+      setShow(value as number)
+      if (value === '') {
+        setParams({ ...params, status: null, page: 1 })
+      } else {
+        setParams({ ...params, status: `${value}`, page: 1 })
+      }
+      setStatusOperationStatus(false)
+    },
+    [params]
+  )
 
   // 状态菜单
-  const StatusMenuComponents = () => {
+  const StatusMenuComponents = React.useCallback(() => {
     return (
       <div className={styles.statusMenu}>
         {statusList.map((item: statusItemType) => {
@@ -148,7 +151,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         })}
       </div>
     )
-  }
+  }, [checkStatus, isShows])
 
   const jumpTasksDetail = (value: any) => {
     const { task_id } = value
@@ -337,6 +340,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       sort_order: 'descend',
       task_id: InstancesDetail?.task_detail?.id
     })
+    setShow('')
     inputRef.current?.save()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [InstancesDetail?.task_detail?.id, visibility, InstancesDetail?.task_detail?.status])

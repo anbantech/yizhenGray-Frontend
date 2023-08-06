@@ -29,7 +29,7 @@ const stepStore = create<ListState>(set => ({
   btnStatus: true,
   excitationList: [],
   gu_cnt0: 1,
-  gu_w0: 0,
+  gu_w0: 1,
   checkList: [],
   setCurrent: () =>
     set(state => ({
@@ -105,7 +105,7 @@ const stepStore = create<ListState>(set => ({
       excitationList: [],
       checkList: [],
       gu_cnt0: 1,
-      gu_w0: 0
+      gu_w0: 1
     })
 }))
 

@@ -57,7 +57,7 @@ const NoValCompare = (cb: (val: boolean) => void, fn: any) => {
 const DeleteItem = (cb: (val: DragCmps[]) => void, val: DragCmps[], index: number) => {
   const pre = val
   pre.splice(index, 1)
-  cb(pre)
+  cb([...pre])
 }
 
 const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmps, myRef: any) => {
@@ -634,6 +634,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
 
   const validateForm = React.useCallback(async () => {
     const value = await form.validateFields()
+    // console.log(value, form.validateFields())
     return value
   }, [form])
   const onValuesChange = React.useCallback((changedValues: any, allValues: any) => {

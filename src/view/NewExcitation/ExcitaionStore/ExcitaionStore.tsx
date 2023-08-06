@@ -76,7 +76,7 @@ const RightDragListStore = create<RightStateType & RightAction & ListAllItemFn &
 const LeftDropListStore = create<LeftAction & sendList & ListFn & LeftActionState>((set, get) => ({
   DropList: [],
   gu_cnt0: 1,
-  gu_w0: 0,
+  gu_w0: 1,
   name: '',
   desc: '',
   updated: false,
@@ -151,7 +151,7 @@ const LeftDropListStore = create<LeftAction & sendList & ListFn & LeftActionStat
       gu_cnt0: 1,
       name: '',
       desc: '',
-      gu_w0: 0,
+      gu_w0: 1,
       paramsChange: false,
       sender_id: -1,
       detailData: {}
@@ -239,15 +239,16 @@ const ArgeementDropListStore = create<ArgeementAction & ArgeementActionState>((s
     const { DropListRef } = get()
     const DropListRefCopy = DropListRef
     DropListRefCopy[index] = ref
+    const data = DropListRefCopy.filter(item => item !== null)
     set(() => ({
-      DropListRef: DropListRefCopy
+      DropListRef: data
     }))
   },
   destoryEveryItem: () => {
     set(() => ({
       DropList: [],
       gu_cnt0: 1,
-      gu_w0: 0,
+      gu_w0: 1,
       name: '',
       peripheral: '',
       DropListRef: [],
