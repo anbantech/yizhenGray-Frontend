@@ -79,7 +79,7 @@ const Draggable = ({ item }: ItemType) => {
     const Item = { ...item, keys: generateUUID() }
     const dropCardListCopy = DropList
     dropCardListCopy.push(Item)
-    setLeftList([...dropCardListCopy])
+    setLeftList(dropCardListCopy)
   }, [DropList, item, setLeftList])
   return (
     <>

@@ -54,14 +54,16 @@ const NoValCompare = (cb: (val: boolean) => void, fn: any) => {
   fn()
 }
 
-const DeleteItem = (cb: (val: DragCmps[]) => void, val: DragCmps[], index: number) => {
+const DeleteItem = (cb: (val: DragCmps[]) => void, val: DragCmps[], index: number, del: (index: number) => void) => {
   const pre = val
   pre.splice(index, 1)
   cb([...pre])
+  del(index)
 }
 
 const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmps, myRef: any) => {
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
+  const deleteDropListRef = ArgeementDropListStore(state => state.deleteDropListRef)
   const [form] = Form.useForm()
   const [formData, setformData] = React.useState<any>({ type: 'string', name: '', skip: true, value: '' })
   const DropList = ArgeementDropListStore(state => state.DropList)
@@ -164,11 +166,22 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
       item.index = hoverIndex
     }
   })
-
   const validateForm = React.useCallback(async () => {
-    const value = await form.validateFields()
-    return value
+    let bol
+    try {
+      await form.validateFields()
+      bol = true
+    } catch {
+      bol = false
+    }
+    return bol
   }, [form])
+
+  const getPositionRef = React.useCallback(() => {
+    if (ref) {
+      ref.current?.scrollIntoView()
+    }
+  }, [ref])
 
   React.useImperativeHandle(myRef, () => ({
     save: () => {
@@ -176,9 +189,12 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
     },
     delete: () => {},
     validate: () => {
-      return validateForm()
+      return validateForm
     },
-    clearInteraction: () => {}
+    clearInteraction: () => {},
+    getRef: () => {
+      return getPositionRef()
+    }
   }))
 
   React.useEffect(() => {
@@ -205,7 +221,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
         <span className={styles.cloumnBodyCharts}>字符串 </span>
       </div>
       <Form form={form} name='IntCompoents' layout='inline' onValuesChange={onValuesChange} className={styles.StringForm} initialValues={formData}>
-        <Tooltip placement='bottom' title={formData.value}>
+        <Tooltip placement='bottom' title={formData.name}>
           <Form.Item
             name='name'
             validateFirst
@@ -252,7 +268,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
         style={{ cursor: 'pointer' }}
         role='time'
         onClick={() => {
-          DeleteItem(setLeftList, DropList, index)
+          DeleteItem(setLeftList, DropList, index, deleteDropListRef)
         }}
       />
     </div>
@@ -268,6 +284,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
     skip: true,
     length: 8
   })
+  const deleteDropListRef = ArgeementDropListStore(state => state.deleteDropListRef)
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
   const DropList = ArgeementDropListStore(state => state.DropList)
   const ref = React.useRef<HTMLDivElement>(null)
@@ -377,9 +394,21 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
   const [form] = Form.useForm()
 
   const validateForm = React.useCallback(async () => {
-    const value = await form.validateFields()
-    return value
+    let bol
+    try {
+      await form.validateFields()
+      bol = true
+    } catch {
+      bol = false
+    }
+    return bol
   }, [form])
+
+  const getPositionRef = React.useCallback(() => {
+    if (ref) {
+      ref.current?.scrollIntoView()
+    }
+  }, [ref])
 
   React.useImperativeHandle(myRef, () => ({
     save: () => {
@@ -387,9 +416,12 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
     },
     delete: () => {},
     validate: () => {
-      return validateForm()
+      return validateForm
     },
-    clearInteraction: () => {}
+    clearInteraction: () => {},
+    getRef: () => {
+      return getPositionRef()
+    }
   }))
   const resvertValue = React.useCallback(() => {
     form.setFieldsValue({ value: 0 })
@@ -401,6 +433,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
       form.setFieldsValue({ name, skip, value, length, context })
     }
   }, [form, Item])
+
   return (
     <div
       className={styles.cloumnBody}
@@ -481,7 +514,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
         style={{ cursor: 'pointer' }}
         role='time'
         onClick={() => {
-          DeleteItem(setLeftList, DropList, index)
+          DeleteItem(setLeftList, DropList, index, deleteDropListRef)
         }}
       />
     </div>
@@ -490,6 +523,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
 
 const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmps, myRef: any) => {
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
+  const deleteDropListRef = ArgeementDropListStore(state => state.deleteDropListRef)
   const [form] = Form.useForm<any>()
   const DropList = ArgeementDropListStore(state => state.DropList)
   const [val, setVal] = React.useState(10)
@@ -633,23 +667,39 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
   drag(drop(ref))
 
   const validateForm = React.useCallback(async () => {
-    const value = await form.validateFields()
-    // console.log(value, form.validateFields())
-    return value
+    let bol
+    try {
+      await form.validateFields()
+      bol = true
+    } catch {
+      bol = false
+    }
+    return bol
   }, [form])
-  const onValuesChange = React.useCallback((changedValues: any, allValues: any) => {
-    setformData(allValues)
-  }, [])
+
+  const getPositionRef = React.useCallback(() => {
+    if (ref) {
+      ref.current?.scrollIntoView()
+    }
+  }, [ref])
+
   React.useImperativeHandle(myRef, () => ({
     save: () => {
       return { ...form.getFieldsValue(), type: 'byte_array', context: false }
     },
     delete: () => {},
     validate: () => {
-      return validateForm()
+      return validateForm
     },
-    clearInteraction: () => {}
+    clearInteraction: () => {},
+    getRef: () => {
+      return getPositionRef()
+    }
   }))
+  const onValuesChange = React.useCallback((changedValues: any, allValues: any) => {
+    setformData(allValues)
+  }, [])
+
   return (
     <div
       className={styles.cloumnBody}
@@ -750,7 +800,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
         style={{ cursor: 'pointer' }}
         role='time'
         onClick={() => {
-          DeleteItem(setLeftList, DropList, index)
+          DeleteItem(setLeftList, DropList, index, deleteDropListRef)
         }}
       />
     </div>

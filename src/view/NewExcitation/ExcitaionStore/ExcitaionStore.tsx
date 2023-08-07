@@ -239,9 +239,16 @@ const ArgeementDropListStore = create<ArgeementAction & ArgeementActionState>((s
     const { DropListRef } = get()
     const DropListRefCopy = DropListRef
     DropListRefCopy[index] = ref
-    const data = DropListRefCopy.filter(item => item !== null)
     set(() => ({
-      DropListRef: data
+      DropListRef: [...DropListRefCopy]
+    }))
+  },
+  deleteDropListRef: (index: number) => {
+    const { DropListRef } = get()
+    const DropListRefCopy = DropListRef
+    DropListRefCopy.splice(index, 1)
+    set(() => ({
+      DropListRef: [...DropListRefCopy]
     }))
   },
   destoryEveryItem: () => {
