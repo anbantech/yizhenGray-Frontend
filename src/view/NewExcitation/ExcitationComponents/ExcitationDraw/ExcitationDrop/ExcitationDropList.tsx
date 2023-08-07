@@ -158,7 +158,7 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
       </div>
       <div className={StyleSheet.excitationItemDrop_right}>
         <span className={StyleSheet.excitationChart}>{index}</span>
-        <Tooltip placement='bottom' title={Item.name}>
+        <Tooltip placement='bottomLeft' title={Item.name}>
           <span className={StyleSheet.excitationChart}>{Item.name}</span>
         </Tooltip>
         <span className={StyleSheet.excitationChart}>{Item.peripheral}</span>

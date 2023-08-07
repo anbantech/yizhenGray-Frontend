@@ -28,6 +28,14 @@ function AgreementDrop() {
     },
     [DropList, dragableDragingStatus, setLeftList]
   )
+  const getRef = React.useCallback(
+    (ref: any, index) => {
+      setDropListRef(ref, index)
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [setDropListRef, DropList]
+  )
+
   return (
     <div ref={drop} className={styles.agreementDropTop}>
       {/* <div> */}
@@ -36,7 +44,9 @@ function AgreementDrop() {
           return (
             <item.Components
               ref={(ref: any) => {
-                setDropListRef(ref, index)
+                if (ref) {
+                  getRef(ref, index)
+                }
               }}
               index={index}
               key={item.keys}

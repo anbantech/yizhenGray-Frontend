@@ -29,12 +29,30 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
   // 检查所有信息Item项 是否符合规则
   const checkItem = React.useCallback(async () => {
-    const res = DropListRef.map((item: any) => {
-      return item.validate()
-    })
-    const Item = await Promise.all(res)
-    const header = myRef.current?.validate()
-    return Item && header
+    if (DropList.length === 0) return false
+    const value = [...DropListRef]
+    const res = await myRef.current?.validate()
+    const refArray: any[] = []
+    for (const item of value) {
+      await item
+        .validate()()
+        .then((res: any) => {
+          if (!res) {
+            refArray.push(item)
+          }
+          return res
+        })
+    }
+    for (const item of refArray) {
+      if (refArray.length !== 0) {
+        item.getRef()
+        return
+      }
+    }
+    if (refArray.length === 0) {
+      return res
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [DropListRef])
 
   const CommonModleClose = React.useCallback((val: boolean) => {
@@ -72,21 +90,11 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
         }
       }
       return res
-    } catch {
-      message.error('激励修改失败')
+    } catch (error) {
+      message.error(error.message)
     }
   }, [DropListRef, sender_id])
   // 创建
-  const getItemInfo = React.useCallback(async () => {
-    checkItem()
-      .then(res => {
-        if (res) {
-          createItem()
-        }
-        return res
-      })
-      .catch(() => {})
-  }, [checkItem, createItem])
 
   const getExcitaionDeatilFunction = React.useCallback(
     async (id: number) => {
@@ -129,31 +137,27 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
       })
   }, [CommonModleClose, DropStatus, checkItem, onOk, setDrop, updateItem])
 
-  const fixExcitaiton = React.useCallback(async () => {
-    checkItem()
-      .then(res => {
-        if (res) {
-          CommonModleClose(true)
-        }
-        return res
-      })
-      .catch(() => {})
-  }, [CommonModleClose, checkItem])
-
-  const contorl = React.useCallback(() => {
-    if (sender_id === -1) {
-      getItemInfo()
-    } else {
-      fixExcitaiton()
-    }
-  }, [fixExcitaiton, getItemInfo, sender_id])
-
   React.useEffect(() => {
     if (sender_id !== -1) {
       getExcitaionDeatilFunction(sender_id)
     }
   }, [getExcitaionDeatilFunction, sender_id])
 
+  const createOrFix = React.useCallback(() => {
+    checkItem()
+      .then(async (res: any) => {
+        if (res.name) {
+          if (sender_id === -1) {
+            const val = await createItem()
+            return val
+          }
+          const val = await upadateItemInfo()
+          return val
+        }
+        return res
+      })
+      .catch(() => {})
+  }, [checkItem, createItem, sender_id, upadateItemInfo])
   return (
     <Modal
       width={720}
@@ -168,7 +172,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
             type='primary'
             disabled={!DropListMemo}
             onClick={() => {
-              contorl()
+              createOrFix()
             }}
           >
             {sender_id === -1 ? '新建' : '修改'}
