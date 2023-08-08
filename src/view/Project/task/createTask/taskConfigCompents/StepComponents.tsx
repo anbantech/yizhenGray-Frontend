@@ -505,7 +505,7 @@ function StepComponents() {
     <div>
       <DndProvider backend={HTML5Backend}>
         <div className={StyleSheet.stepHeader}>
-          <Steps current={current}>
+          <Steps current={current} className={StyleSheet.stepBackground}>
             {steps.map(item => (
               <Step key={item.title} title={item.title} />
             ))}
