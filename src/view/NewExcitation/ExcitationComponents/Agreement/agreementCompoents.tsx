@@ -54,6 +54,10 @@ const NoValCompare = (cb: (val: boolean) => void, fn: any) => {
   fn()
 }
 
+const canDragBool = (cb: (val: boolean) => void) => {
+  cb(false)
+}
+
 const DeleteItem = (cb: (val: DragCmps[]) => void, val: DragCmps[], index: number, del: (index: number) => void) => {
   const pre = val
   pre.splice(index, 1)
@@ -69,7 +73,6 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
   const DropList = ArgeementDropListStore(state => state.DropList)
   const ref = React.useRef<HTMLDivElement>(null)
   const [isDragItem, setCanDrag] = React.useState(true)
-
   const onValuesChange = React.useCallback((changedValues: any, allValues: any) => {
     setformData(allValues)
   }, [])
@@ -91,13 +94,16 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
-      canDrag: isDragItem,
       item() {
         return {
           keys: Item.keys,
           index,
           id: Item.id
         }
+      },
+      canDrag: () => {
+        if (!isDragItem) return isDragItem
+        return true
       },
       collect: monitor => ({
         isDragging: monitor.isDragging()
@@ -213,6 +219,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
       className={styles.cloumnBody}
       style={{ opacity: Item.id === -1 || isDragging ? 0.4 : 1, cursor: 'move' }}
       ref={ref}
+      role='time'
       data-handler-id={handlerId}
     >
       <span style={{ display: 'none' }}> {index} </span>
@@ -248,7 +255,13 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
               }
             ]}
           >
-            <Input placeholder='请输入字段名' className={styles.StringInput} />
+            <Input
+              placeholder='请输入字段名'
+              onFocus={() => {
+                canDragBool(setCanDrag)
+              }}
+              className={styles.StringInput}
+            />
           </Form.Item>
         </Tooltip>
         <Form.Item name='skip' rules={[{ required: true, message: 'Missing area' }]}>
@@ -258,7 +271,13 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
         <div className={styles.initValue}>初始值</div>
         <Tooltip placement='bottom' title={formData.value}>
           <Form.Item name='value'>
-            <Input bordered={false} className={styles.StringInputValue} />
+            <Input
+              bordered={false}
+              className={styles.StringInputValue}
+              onFocus={() => {
+                canDragBool(setCanDrag)
+              }}
+            />
           </Form.Item>
         </Tooltip>
       </Form>
@@ -282,7 +301,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
     value: 0,
     context: false,
     skip: true,
-    length: 8
+    length: 1
   })
   const deleteDropListRef = ArgeementDropListStore(state => state.deleteDropListRef)
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
@@ -474,7 +493,14 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
               }
             ]}
           >
-            <Input placeholder='请输入字段名' bordered={false} className={styles.IntInput} />
+            <Input
+              placeholder='请输入字段名'
+              onFocus={() => {
+                canDragBool(setCanDrag)
+              }}
+              bordered={false}
+              className={styles.IntInput}
+            />
           </Form.Item>
         </Tooltip>
         <div className={styles.FourCharts}> 字节长度</div>
@@ -505,7 +531,13 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
               }
             ]}
           >
-            <Input bordered={false} className={styles.IntInputValue} />
+            <Input
+              bordered={false}
+              className={styles.IntInputValue}
+              onFocus={() => {
+                canDragBool(setCanDrag)
+              }}
+            />
           </Form.Item>
         </Tooltip>
       </Form>
@@ -741,7 +773,14 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
               }
             ]}
           >
-            <Input placeholder='请输入字段名' bordered={false} className={styles.IntInput} />
+            <Input
+              placeholder='请输入字段名'
+              onFocus={() => {
+                canDragBool(setCanDrag)
+              }}
+              bordered={false}
+              className={styles.IntInput}
+            />
           </Form.Item>
         </Tooltip>
         <div className={styles.FourCharts} style={{ height: '37px', borderRight: '1px solid #E9E9E9' }}>
@@ -755,6 +794,9 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
             }}
             onChange={e => {
               onChangeGu_time(e)
+            }}
+            onFocus={() => {
+              canDragBool(setCanDrag)
             }}
             className={styles.IntArrayInput}
           />
@@ -790,7 +832,13 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
               }
             ]}
           >
-            <Input bordered={false} className={styles.IntArrayInputValue} />
+            <Input
+              bordered={false}
+              onFocus={() => {
+                canDragBool(setCanDrag)
+              }}
+              className={styles.IntArrayInputValue}
+            />
           </Form.Item>
         </Tooltip>
       </Form>
