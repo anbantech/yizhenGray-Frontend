@@ -24,7 +24,7 @@ interface ListState {
 }
 
 const stepStore = create<ListState>(set => ({
-  current: 1,
+  current: 0,
   baseInfo: { name: '', desc: '' },
   btnStatus: true,
   excitationList: [],
