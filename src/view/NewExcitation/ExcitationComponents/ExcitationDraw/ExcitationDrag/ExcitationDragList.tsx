@@ -96,7 +96,10 @@ function ExcitationListMemo() {
 
           if (newList.length === result.data.total) {
             setHasMore(false)
+          } else {
+            setHasMore(true)
           }
+
           setRightList([...newList])
         }
       } catch (error) {
