@@ -227,7 +227,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
         <img src={dragImg} alt='' />
         <span className={styles.cloumnBodyCharts}>字符串 </span>
       </div>
-      <Form form={form} name='IntCompoents' layout='inline' onValuesChange={onValuesChange} className={styles.StringForm} initialValues={formData}>
+      <Form form={form} name='Compoents' layout='inline' onValuesChange={onValuesChange} className={styles.StringForm} initialValues={formData}>
         <Tooltip placement='bottom' title={formData.name}>
           <Form.Item
             name='name'
@@ -498,8 +498,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
               onFocus={() => {
                 canDragBool(setCanDrag)
               }}
-              bordered={false}
-              className={styles.IntInput}
+              className={styles.StringInput}
             />
           </Form.Item>
         </Tooltip>
@@ -778,8 +777,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
               onFocus={() => {
                 canDragBool(setCanDrag)
               }}
-              bordered={false}
-              className={styles.IntInput}
+              className={styles.StringInput}
             />
           </Form.Item>
         </Tooltip>
