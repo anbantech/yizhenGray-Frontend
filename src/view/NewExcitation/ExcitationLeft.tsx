@@ -149,6 +149,8 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
           }
           if (newList.length === result.data.total) {
             setHasMore(false)
+          } else {
+            setHasMore(true)
           }
           setExcitationList([...newList])
         }

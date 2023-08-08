@@ -185,6 +185,8 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
 
           if (newList.length === result.data.total) {
             setHasMore(false)
+          } else {
+            setHasMore(true)
           }
           setTaskList([...newList])
           InstancesDetail.setInstance(true)
