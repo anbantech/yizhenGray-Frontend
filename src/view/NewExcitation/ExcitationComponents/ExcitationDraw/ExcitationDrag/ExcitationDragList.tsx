@@ -284,13 +284,13 @@ function ExcitationListMemo() {
     confirm({
       icon: <ExclamationCircleOutlined style={{ color: '#262626' }} />,
       title: '导出失败',
-      content: '模板导出失败，请重新导出',
+      content: '激励导出失败，请重新导出',
       okText: '确认',
       cancelText: '取消'
     })
   }, [confirm])
 
-  // 导出单个模板
+  // 导出单个激励
   const exportTemplate = React.useCallback(
     async (templateIdList: number[]) => {
       if (templateIdList.length === 0) {
@@ -302,7 +302,7 @@ function ExcitationListMemo() {
         if (c < a) {
           notification.info({
             key: '1',
-            message: `模板正在下载中 ${c}/${a}`,
+            message: `激励正在下载中 ${c}/${a}`,
             placement: 'bottomLeft',
             duration: null
           })
