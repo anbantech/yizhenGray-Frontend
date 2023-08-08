@@ -61,7 +61,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
 
   const [form] = useForm()
   const { Option } = Select
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const charRef = useRef(false)
   const [params, setParams] = useState<Resparams>(request)
   // 弹窗
