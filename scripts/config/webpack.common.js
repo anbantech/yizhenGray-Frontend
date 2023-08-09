@@ -190,15 +190,15 @@ module.exports = {
   // },
   optimization: {
     minimize: !isDev,
-    minimizer: [
-      !isDev && new TerserPlugin({
-        extractComments: false,
-        terserOptions: {
-          compress: { pure_funcs: ['console.log'] }
-        }
-      }),
-      !isDev && new OptimizeCssAssetsPlugin()
-    ].filter(Boolean),
+    // minimizer: [
+    //   !isDev && new TerserPlugin({
+    //     extractComments: false,
+    //     terserOptions: {
+    //       compress: { pure_funcs: ['console.log'] }
+    //     }
+    //   }),
+    //   !isDev && new OptimizeCssAssetsPlugin()
+    // ].filter(Boolean),
     splitChunks: {
       chunks: 'all',
       minChunks: 1,
