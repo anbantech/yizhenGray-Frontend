@@ -148,27 +148,30 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     charRef.current = true
   }, [])
 
-  const getExcitationList = useCallback(async (value: Resparams) => {
-    console.log(scrollRef.current, pageRef.current)
-    if (scrollRef.current === pageRef.current) return
-    try {
-      const result = await excitationListFn(value)
-      if (result.data !== null && result.data !== undefined) {
-        scrollRef.current = result.data.total
-        setExcitationList((pre: projectInfoType[]) => {
-          if (result.data?.results) {
-            const list = pre.concat(result.data.results)
-            const uniquePersons = [...new Set(list.map(p => JSON.stringify(p)))].map(p => JSON.parse(p))
-            pageRef.current = list.length
-            return uniquePersons as projectInfoType[]
-          }
-          return []
-        })
+  const getExcitationList = useCallback(
+    async (value: Resparams) => {
+      if (scrollRef.current === pageRef.current) return
+      try {
+        const result = await excitationListFn(value)
+        if (result.data !== null && result.data !== undefined) {
+          scrollRef.current = result.data.total
+          setExcitationList((pre: projectInfoType[]) => {
+            if (result.data?.results) {
+              const list = pre.concat(result.data.results)
+              const uniquePersons = [...new Set(list.map(p => JSON.stringify(p)))].map(p => JSON.parse(p))
+              pageRef.current = list.length
+              return uniquePersons as projectInfoType[]
+            }
+            return []
+          })
+        }
+      } catch (error) {
+        message.error(error.message)
       }
-    } catch (error) {
-      message.error(error.message)
-    }
-  }, [])
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [excitationList]
+  )
 
   const onScrollData = (e: React.UIEvent) => {
     const target = e.target as HTMLLIElement
@@ -238,10 +241,10 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
 
   // 关闭弹窗
   const cancel = useCallback((val?: string) => {
-    console.log(val)
     if (val === 'result') {
-      // setExcitationList([])
-      // console.log('2', val)
+      setExcitationList([])
+      scrollRef.current = 0
+      pageRef.current = 0
       setParams({ ...request, page: 1 })
     }
     setOpen(false)
