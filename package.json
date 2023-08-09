@@ -116,6 +116,7 @@
     "webpackbar": "^4.0.0"
   },
   "dependencies": {
+    "@anban/iconfonts": "^1.1.1",
     "@ant-design/icons": "^4.6.2",
     "@ant-design/plots": "^1.0.9",
     "@sentry/react": "^6.13.3",

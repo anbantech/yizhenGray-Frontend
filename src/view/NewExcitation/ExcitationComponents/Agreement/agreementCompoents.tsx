@@ -573,6 +573,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
     setCanDrag(false)
     return Promise.reject(new Error('请输入字段名称'))
   }, [setCanDrag])
+
   const onToggleForbidDrag = React.useCallback(() => {
     setCanDrag(false)
     return Promise.reject(new Error('字段名称由汉字、数字、字母和下划线组成'))
@@ -582,9 +583,11 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
     setCanDrag(true)
     return Promise.resolve()
   }, [setCanDrag])
+
   const resvertValue = React.useCallback(() => {
     form.setFieldsValue({ value: 0 })
   }, [form])
+
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
