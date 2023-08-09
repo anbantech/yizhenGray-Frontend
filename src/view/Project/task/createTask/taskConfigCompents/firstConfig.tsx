@@ -149,6 +149,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   }, [])
 
   const getExcitationList = useCallback(async (value: Resparams) => {
+    console.log(scrollRef.current, pageRef.current)
     if (scrollRef.current === pageRef.current) return
     try {
       const result = await excitationListFn(value)
@@ -236,12 +237,12 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   }, [form, taskInfo.data, fromDataTask])
 
   // 关闭弹窗
-  const cancel = React.useCallback((val?: string) => {
+  const cancel = useCallback((val?: string) => {
+    console.log(val)
     if (val === 'result') {
-      setExcitationList([])
-      setParams((pre: Resparams) => {
-        return { ...pre, page: 1 }
-      })
+      // setExcitationList([])
+      // console.log('2', val)
+      setParams({ ...request, page: 1 })
     }
     setOpen(false)
   }, [])
