@@ -168,6 +168,7 @@ function ExcitationListMemo() {
           message.success('删除成功')
         }
         setSender_id(null)
+        setDragList_id(-1)
         setUpdateStatus(!updateStatus)
         setPage(1)
       }

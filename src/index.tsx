@@ -3,6 +3,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import App from './app'
+import '@anban/iconfonts/lib/react/index.css'
 import { initClientRunningEnvironment } from './util/env'
 
 export const ifNeedShowLogo = !!window.PROJECT_BASE_CONFIG.logo
