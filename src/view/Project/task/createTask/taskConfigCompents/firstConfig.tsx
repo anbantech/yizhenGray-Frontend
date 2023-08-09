@@ -243,7 +243,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   const cancel = useCallback((val?: string) => {
     if (val === 'result') {
       setExcitationList([])
-      scrollRef.current = 0
+      scrollRef.current = -1
       pageRef.current = 0
       setParams({ ...request, page: 1 })
     }
