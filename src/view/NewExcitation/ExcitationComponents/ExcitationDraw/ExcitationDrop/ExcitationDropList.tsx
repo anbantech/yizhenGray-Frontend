@@ -84,6 +84,7 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
     accept: 'DragDropItem',
     collect(monitor) {
       return {
+        isOver: monitor.isOver({ shallow: true }),
         handlerId: monitor.getHandlerId()
       }
     },
@@ -91,7 +92,9 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
       if (!ref.current) {
         return
       }
-      monitor.isOver({ shallow: true })
+      if (!monitor.isOver({ shallow: true })) {
+        return
+      }
       const dragIndex = item.index
       const hoverIndex = index
       // 拖拽元素下标与鼠标悬浮元素下标一致时，不进行操作
@@ -184,9 +187,6 @@ const Dropable = React.memo(DropableMemo)
 const ScrollingComponent = withScrolling('div')
 
 function ExcitationDropList() {
-  const [, drop] = useDrop(() => ({
-    accept: 'DragDropItem'
-  }))
   const checkAllList = checkListStore(state => state.checkAllList)
   const { checkAllSenderIdList, setCheckAll, setIndeterminate, clearCheckList } = checkListStore()
   // 列表元素
@@ -194,6 +194,17 @@ function ExcitationDropList() {
   const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
   const dragableDragingStatus = DragableDragingStatusStore(state => state.dragableDragingStatus)
+
+  const [, drop] = useDrop(
+    () => ({
+      accept: 'DragDropItem',
+      collect: monitor => ({
+        isOver: monitor.isOver(),
+        isOverCurrent: monitor.isOver({ shallow: true })
+      })
+    }),
+    [DropList]
+  )
 
   const moveCardHandler = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
@@ -247,7 +258,7 @@ function ExcitationDropList() {
     <ScrollingComponent className={StyleSheet.dropList_ListScroll}>
       <div ref={ref} className={StyleSheet.dropList_List}>
         <Checkbox.Group style={{ width: '100%' }} onChange={onChange} value={checkAllList}>
-          <div className={StyleSheet.dropList_List}>
+          <div>
             {DropList?.map((item, index: number) => {
               return <Dropable index={index} key={item.keys} DeleteCheckItem={DeleteCheckItem} moveCardHandler={moveCardHandler} Item={item} />
             })}
