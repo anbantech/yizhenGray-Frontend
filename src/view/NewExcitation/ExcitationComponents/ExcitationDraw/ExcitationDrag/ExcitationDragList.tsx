@@ -88,10 +88,12 @@ function ExcitationListMemo() {
       try {
         const result = await excitationListFn(value)
         if (result.data) {
+          if (result.data.results.length === 0) {
+            return setRightList([])
+          }
           const newList = [...result.data.results]
           if (newList.length === 0) {
             setHasMore(false)
-            return false
           }
 
           if (newList.length === result.data.total) {

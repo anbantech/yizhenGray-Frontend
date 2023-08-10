@@ -137,10 +137,12 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
       try {
         const result = await excitationListFn(value)
         if (result.data) {
-          const newList = [...result.data.results]
+          if (result.data.results.length === 0) {
+            return setExcitationList([])
+          }
+          const newList = result.data.results
           if (newList.length === 0) {
             setHasMore(false)
-            return false
           }
           if (sender_id) {
             keepCheckTask(sender_id as number)

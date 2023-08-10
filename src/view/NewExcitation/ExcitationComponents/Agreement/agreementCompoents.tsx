@@ -58,6 +58,10 @@ const canDragBool = (cb: (val: boolean) => void) => {
   cb(false)
 }
 
+const canIsDragBool = (cb: (val: boolean) => void) => {
+  cb(true)
+}
+
 const DeleteItem = (cb: (val: DragCmps[]) => void, val: DragCmps[], index: number, del: (index: number) => void) => {
   const pre = val
   pre.splice(index, 1)
@@ -260,6 +264,9 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
               onFocus={() => {
                 canDragBool(setCanDrag)
               }}
+              onBlur={() => {
+                canIsDragBool(setCanDrag)
+              }}
               className={styles.StringInput}
             />
           </Form.Item>
@@ -276,6 +283,9 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
               className={styles.StringInputValue}
               onFocus={() => {
                 canDragBool(setCanDrag)
+              }}
+              onBlur={() => {
+                canIsDragBool(setCanDrag)
               }}
             />
           </Form.Item>
@@ -498,6 +508,9 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
               onFocus={() => {
                 canDragBool(setCanDrag)
               }}
+              onBlur={() => {
+                canIsDragBool(setCanDrag)
+              }}
               className={styles.StringInput}
             />
           </Form.Item>
@@ -536,6 +549,9 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
               onFocus={() => {
                 canDragBool(setCanDrag)
               }}
+              onBlur={() => {
+                canIsDragBool(setCanDrag)
+              }}
             />
           </Form.Item>
         </Tooltip>
@@ -565,7 +581,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
     context: false,
     count: 10,
     skip: true,
-    length: 8
+    length: 1
   })
   const ref = React.useRef<HTMLDivElement>(null)
   const [isDragItem, setCanDrag] = React.useState(true)
@@ -780,6 +796,9 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
               onFocus={() => {
                 canDragBool(setCanDrag)
               }}
+              onBlur={() => {
+                canDragBool(setCanDrag)
+              }}
               className={styles.StringInput}
             />
           </Form.Item>
@@ -792,6 +811,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
           <Input
             onBlur={() => {
               onMax()
+              canIsDragBool(setCanDrag)
             }}
             onChange={e => {
               onChangeGu_time(e)
@@ -837,6 +857,9 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
               bordered={false}
               onFocus={() => {
                 canDragBool(setCanDrag)
+              }}
+              onBlur={() => {
+                canIsDragBool(setCanDrag)
               }}
               className={styles.IntArrayInputValue}
             />
