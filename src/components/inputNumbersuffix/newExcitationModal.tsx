@@ -25,14 +25,16 @@ function InputNumberModalMemo({ type }: porpsType) {
       <div
         role='time'
         className={StyleSheet.inputTop}
-        onClick={() => {
+        onClick={(e: any) => {
+          e.stopPropagation()
           operationUpFn(type)
         }}
       />
       <div
         role='time'
         className={StyleSheet.inputBottom}
-        onClick={() => {
+        onClick={(e: any) => {
+          e.preventDefault()
           operationDownFn(type)
         }}
       />

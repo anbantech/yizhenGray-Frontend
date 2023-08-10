@@ -260,6 +260,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
             ]}
           >
             <Input
+              autoComplete='off'
               placeholder='请输入字段名'
               onFocus={() => {
                 canDragBool(setCanDrag)
@@ -284,6 +285,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
               onFocus={() => {
                 canDragBool(setCanDrag)
               }}
+              autoComplete='off'
               onBlur={() => {
                 canIsDragBool(setCanDrag)
               }}
@@ -511,6 +513,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
               onBlur={() => {
                 canIsDragBool(setCanDrag)
               }}
+              autoComplete='off'
               className={styles.StringInput}
             />
           </Form.Item>
@@ -549,6 +552,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
               onFocus={() => {
                 canDragBool(setCanDrag)
               }}
+              autoComplete='off'
               onBlur={() => {
                 canIsDragBool(setCanDrag)
               }}
@@ -796,6 +800,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
               onFocus={() => {
                 canDragBool(setCanDrag)
               }}
+              autoComplete='off'
               onBlur={() => {
                 canDragBool(setCanDrag)
               }}
@@ -813,6 +818,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
               onMax()
               canIsDragBool(setCanDrag)
             }}
+            autoComplete='off'
             onChange={e => {
               onChangeGu_time(e)
             }}
@@ -854,6 +860,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
             ]}
           >
             <Input
+              autoComplete='off'
               bordered={false}
               onFocus={() => {
                 canDragBool(setCanDrag)
