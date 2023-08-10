@@ -91,6 +91,7 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
       if (!ref.current) {
         return
       }
+      monitor.isOver({ shallow: true })
       const dragIndex = item.index
       const hoverIndex = index
       // 拖拽元素下标与鼠标悬浮元素下标一致时，不进行操作
@@ -108,7 +109,6 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
 
       // 获取距顶部距离
       const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top
-
       /**
        * 只在鼠标越过一半物品高度时执行移动。
        *
@@ -190,7 +190,7 @@ function ExcitationDropList() {
   const checkAllList = checkListStore(state => state.checkAllList)
   const { checkAllSenderIdList, setCheckAll, setIndeterminate, clearCheckList } = checkListStore()
   // 列表元素
-
+  const ref = React.useRef<any>()
   const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
   const dragableDragingStatus = DragableDragingStatusStore(state => state.dragableDragingStatus)
@@ -242,11 +242,12 @@ function ExcitationDropList() {
     [DropList, checkAllList, checkAllSenderIdList, setCheckAll, setIndeterminate, setLeftList]
   )
 
+  drop(ref)
   return (
     <ScrollingComponent className={StyleSheet.dropList_ListScroll}>
-      <div ref={drop} className={StyleSheet.dropList_List}>
+      <div ref={ref} className={StyleSheet.dropList_List}>
         <Checkbox.Group style={{ width: '100%' }} onChange={onChange} value={checkAllList}>
-          <div ref={drop} className={StyleSheet.dropList_List}>
+          <div className={StyleSheet.dropList_List}>
             {DropList?.map((item, index: number) => {
               return <Dropable index={index} key={item.keys} DeleteCheckItem={DeleteCheckItem} moveCardHandler={moveCardHandler} Item={item} />
             })}

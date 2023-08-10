@@ -38,7 +38,7 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
         const useless = DropList.find((item: any) => item.sender_id === -1)
         // 拖拽开始时，向 cardList 数据源中插入一个占位的元素，如果占位元素已经存在，不再重复插入
         if (!useless) {
-          setLeftList([{ ...item, sender_id: -1, keys: generateUUID(), isItemDragging: true }, ...DropList])
+          setLeftList([...DropList, { ...item, sender_id: -1, keys: generateUUID(), isItemDragging: true }])
         }
         setDragableStatus(true)
         const Item = { ...item, keys: generateUUID() }
@@ -113,7 +113,11 @@ function ExcitationDragMemo({ onChange }: Props) {
     },
     [checkAllSenderIdList, rightDragList.length, setCheckAll, setIndeterminate]
   )
-
+  const up = React.useCallback(() => {
+    setCheckAll(checkAllSenderIdList.length === rightDragList.length)
+    setIndeterminate(!!checkAllSenderIdList.length && checkAllSenderIdList.length < rightDragList.length)
+    loadMoreData()
+  }, [checkAllSenderIdList.length, loadMoreData, rightDragList.length, setCheckAll, setIndeterminate])
   React.useEffect(() => {
     const resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
@@ -130,11 +134,12 @@ function ExcitationDragMemo({ onChange }: Props) {
       resizeObserver.disconnect()
     }
   }, [])
+
   return (
     <div className={StyleSheet.LISTScroll} ref={layoutRef}>
       <InfiniteScroll
         dataLength={rightDragList.length}
-        next={loadMoreData}
+        next={up}
         hasMore={hasMoreData}
         height={height - 50}
         loader={
