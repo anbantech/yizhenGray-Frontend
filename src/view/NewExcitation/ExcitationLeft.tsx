@@ -185,12 +185,14 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   const cancel = React.useCallback(
     (e: boolean, type: string) => {
       if (type === 'result') {
+        clearCheckList()
         setSender_id(null)
       }
       setParams({ ...params, key_word: '', page: 1 })
       setModalData({ ...modalData, fixTitle: false, isModalVisible: e })
+      openModalRef.current = false
     },
-    [modalData, params, setSender_id]
+    [clearCheckList, modalData, params, setSender_id]
   )
 
   const { visibility, chioceModalStatus } = useMenu()
@@ -216,6 +218,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
     },
     clearId: () => {
       sender_idRef.current = null
+      openModalRef.current = false
     },
     openModal: () => {
       if (openModalRef.current) {

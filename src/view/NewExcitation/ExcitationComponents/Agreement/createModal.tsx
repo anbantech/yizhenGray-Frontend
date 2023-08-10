@@ -8,7 +8,7 @@ import { generateUUID } from 'Src/util/common'
 import AgreementIndex from './agreementIndex'
 import StyleSheet from './agreementCompoents.less'
 import HeaderForm from './HeaderFrom'
-import { ArgeementDropListStore, GlobalStatusStore } from '../../ExcitaionStore/ExcitaionStore'
+import { ArgeementDropListStore, GlobalStatusStore, RightDragListStore } from '../../ExcitaionStore/ExcitaionStore'
 
 interface PropsType {
   visibility: boolean
@@ -22,6 +22,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
   const [spinning, setSpinning] = React.useState(false)
   const [visibilitys, setVisibility] = React.useState(false)
   const DropList = ArgeementDropListStore(state => state.DropList)
+  const clearCheckList = RightDragListStore(state => state.clearCheckList)
   const setHead = ArgeementDropListStore(state => state.setHead)
   //
   const setDrop = GlobalStatusStore(state => state.setDetailStatus)
@@ -149,9 +150,11 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
         if (res.name) {
           if (sender_id === -1) {
             const val = await createItem()
+            clearCheckList()
             return val
           }
           const val = await upadateItemInfo()
+          clearCheckList()
           return val
         }
         return res
