@@ -279,7 +279,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Tooltip placement='bottom' title={formData.value}>
+        <Tooltip placement='topLeft' title={formData.value}>
           <Form.Item name='value'>
             <Input
               bordered={false}
@@ -530,7 +530,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Tooltip placement='bottom' title={formData.value}>
+        <Tooltip placement='topLeft' title={formData.value}>
           <Form.Item
             className={styles.intFormItem}
             name='value'
@@ -843,7 +843,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Tooltip placement='bottom' title={formData.value}>
+        <Tooltip placement='topLeft' title={formData.value}>
           <Form.Item
             className={styles.intArrayFormItem}
             name='value'
