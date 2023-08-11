@@ -236,7 +236,6 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   return (
     <div className={styles.AnBan_main}>
       <div className={styles.AnBan_header}>
-        <span className={styles.AnBan_header_title}>项目管理</span>
         <div className={styles.AnBan_header_bottom}>
           <SearchInput className={inputStyle.searchInput} placeholder='根据名称搜索项目' onChangeValue={updateParams} />
           <CreateButton width='146px' name='新建项目' size='large' type='primary' onClick={createProjectModal} />
