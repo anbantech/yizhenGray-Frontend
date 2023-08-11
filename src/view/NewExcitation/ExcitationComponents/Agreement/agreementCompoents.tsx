@@ -39,19 +39,21 @@ interface PriceInputProps {
   onChange?: (value: PriceValue) => void
 }
 
-const RegCompare = (str: string, fn: any) => {
+const RegCompare = (str: string, fn: any, setFn: any) => {
   const isOctal = /^0o[0-7]+$/.test(str) || /^0O[0-7]+$/.test(str)
   const isDecimal = /^\d+$/.test(str)
   const isHexadecimal = /^0x[\dA-Fa-f]+$/.test(str) || /^0X[\dA-Fa-f]+$/.test(str)
   if (isOctal || isDecimal || isHexadecimal) {
     return Promise.resolve()
   }
-  return fn()
+  fn()
+  return setFn({ value: 0 })
 }
 
-const NoValCompare = (cb: (val: boolean) => void, fn: any) => {
+const NoValCompare = (cb: (val: boolean) => void, fn: any, setFn: any) => {
   cb(false)
   fn()
+  setFn({ value: 0 })
 }
 
 const canDragBool = (cb: (val: boolean) => void) => {
@@ -539,9 +541,9 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
                 validateTrigger: 'onBlur',
                 validator(_, value) {
                   if (value !== '') {
-                    return RegCompare(value, resvertValue)
+                    return RegCompare(value, resvertValue, setformData)
                   }
-                  return NoValCompare(setCanDrag, resvertValue)
+                  return NoValCompare(setCanDrag, resvertValue, setformData)
                 }
               }
             ]}
@@ -852,9 +854,9 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
                 validateTrigger: 'onBlur',
                 validator(_, value) {
                   if (value !== '') {
-                    return RegCompare(value, resvertValue)
+                    return RegCompare(value, resvertValue, setformData)
                   }
-                  return NoValCompare(setCanDrag, resvertValue)
+                  return NoValCompare(setCanDrag, resvertValue, setformData)
                 }
               }
             ]}

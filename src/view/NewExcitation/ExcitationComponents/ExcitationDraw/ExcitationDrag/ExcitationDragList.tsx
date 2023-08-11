@@ -272,9 +272,10 @@ function ExcitationListMemo() {
 
   // 取消新建
   const cancelNewCreate = React.useCallback(() => {
+    destoryEveryItem()
     setNewCreate(false)
     setPage(1)
-  }, [setPage])
+  }, [destoryEveryItem, setPage])
 
   // 打开新建弹窗 清除sender_id
   const opneModal = React.useCallback((value: boolean) => {
@@ -330,6 +331,12 @@ function ExcitationListMemo() {
     setPage(1)
   }, [destoryEveryItem, setPage])
 
+  React.useEffect(() => {
+    return () => {
+      clearCheckList()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   return (
     <div className={isClose ? StyleSheet.rightList : StyleSheet.rightListClose}>
       {isClose && (
