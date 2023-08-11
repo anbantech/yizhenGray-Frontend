@@ -18,7 +18,8 @@ function AgreementDrop() {
       if (dragableDragingStatus) {
         const dropCardListCopy = DropList
         const lessIndex = DropList.findIndex((item: any) => item.id === -1)
-        dropCardListCopy.splice(hoverIndex, 1, ...dropCardListCopy.splice(lessIndex, 1, dropCardListCopy[hoverIndex]))
+        const copy = dropCardListCopy.splice(lessIndex, 1)
+        dropCardListCopy.splice(hoverIndex, 0, ...copy)
         setLeftList([...dropCardListCopy])
       } else {
         const dropCardListCopy = DropList
