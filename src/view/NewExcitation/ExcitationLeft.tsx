@@ -39,6 +39,7 @@ type ResparamsType = Record<string, any>
 const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   const layoutRef = useRef<any>()
   const sender_idRef = useRef<number | null>()
+  const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const updateStatus = GlobalStatusStore(state => state.updateStatus)
   // const setUpdateStatus = GlobalStatusStore(state => state.setUpdateStatus)
   const sendBtnStatus = GlobalStatusStore(state => state.sendBtnStatus)
@@ -138,6 +139,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
         const result = await excitationListFn(value)
         if (result.data) {
           if (result.data.results.length === 0) {
+            setSendBtnStatus(true)
             return setExcitationList([])
           }
           const newList = result.data.results
@@ -160,7 +162,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
         throwErrorMessage(error, { 1004: '请求资源未找到' })
       }
     },
-    [keepCheckTask, sender_id]
+    [keepCheckTask, sender_id, setSendBtnStatus]
   )
 
   useEffect(() => {
