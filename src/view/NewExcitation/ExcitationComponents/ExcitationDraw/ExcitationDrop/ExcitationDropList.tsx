@@ -216,8 +216,9 @@ function ExcitationDropList() {
         dropCardListCopy.splice(hoverIndex, 0, ...copy)
         setLeftList([...dropCardListCopy])
       } else {
-        const dropCardListCopy = DropList
-        dropCardListCopy.splice(dragIndex, 1, ...dropCardListCopy.splice(hoverIndex, 1, dropCardListCopy[dragIndex]))
+        const dropCardListCopy = [...DropList]
+        const copy = dropCardListCopy.splice(dragIndex, 1)
+        dropCardListCopy.splice(hoverIndex, 0, ...copy)
         setLeftList([...dropCardListCopy])
       }
     },
