@@ -104,6 +104,7 @@ interface ExcitationListStateFn {
   setHasMore: (val: boolean) => void
   setPage: (val: number) => void
   setKeyWord: (val: string) => void
+  initData: () => void
   loadMoreData: () => void
 }
 
