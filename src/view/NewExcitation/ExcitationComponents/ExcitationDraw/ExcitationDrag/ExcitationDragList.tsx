@@ -55,7 +55,7 @@ function ExcitationListMemo() {
   const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
   const [sender_id, setDragList_id] = React.useState(-1)
-  const { params, setKeyWord, setHasMore, setPage } = useRequestStore()
+  const { params, setKeyWord, setHasMore, setPage, initData } = useRequestStore()
 
   const checkAllList = RightDragListStore(state => state.checkAllList)
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
@@ -333,6 +333,7 @@ function ExcitationListMemo() {
 
   React.useEffect(() => {
     return () => {
+      initData()
       clearCheckList()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
