@@ -24,6 +24,7 @@ const statusMap = {
   2: 'error',
   3: 'error'
 }
+
 function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunction: (val: number) => void }) {
   const [spinning, setSpinning] = React.useState(false)
   const [visibility, setVisibility] = React.useState(false)
@@ -180,13 +181,15 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
         setSendBtnStatus(false)
         setTitleorDesc(type, e.target.value)
       }
-      if (e.target.value.length <= 50 && type === 'desc') {
-        setSendBtnStatus(false)
-        setTitleorDesc(type, e.target.value)
-      }
     },
+
     [setSendBtnStatus, setTitleorDesc]
   )
+
+  const onChangeDesc = (e: any, type: string) => {
+    setSendBtnStatus(false)
+    setTitleorDesc(type, e.target.value)
+  }
 
   const doubleClick = (type: string) => {
     if (type === 'name') {
@@ -195,6 +198,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
       setInputStatus(true)
     }
   }
+
   React.useEffect(() => {
     return () => {
       setReg(1)
@@ -219,6 +223,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
             }}
             autoFocus={isEditing}
             bordered={false}
+            maxLength={20}
             onChange={e => {
               onChangeName(e, 'name')
             }}
@@ -255,14 +260,14 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
           {inputSatus ? (
             <Input
               className={StyleSheet.descInputHeader}
-              value={desc}
               onBlur={() => {
                 disableOnBlur('desc')
               }}
+              maxLength={50}
               autoFocus={inputSatus}
               bordered={false}
               onChange={e => {
-                onChangeName(e, 'desc')
+                onChangeDesc(e, 'desc')
               }}
             />
           ) : (
