@@ -357,7 +357,8 @@ const ThreeSteps = () => {
   const moveCardHandler = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
       const dropCardListCopy = excitationList
-      dropCardListCopy.splice(dragIndex, 1, ...dropCardListCopy.splice(hoverIndex, 1, dropCardListCopy[dragIndex]))
+      const copy = dropCardListCopy.splice(dragIndex, 1)
+      dropCardListCopy.splice(hoverIndex, 0, ...copy)
       setExcitation([...dropCardListCopy])
     },
     [excitationList, setExcitation]
