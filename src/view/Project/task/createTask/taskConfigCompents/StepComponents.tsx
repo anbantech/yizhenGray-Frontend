@@ -484,10 +484,12 @@ function StepComponents() {
     },
     [setHasMore]
   )
+
   React.useEffect(() => {
     getExcitationList(params)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params])
+
   const { Step } = Steps
   const steps = [
     {
