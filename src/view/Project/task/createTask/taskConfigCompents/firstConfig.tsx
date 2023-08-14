@@ -1,6 +1,6 @@
 import { Divider, Form, Input, message, Select, Space } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
-
+import { IconAdd } from '@anban/iconfonts'
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
@@ -9,7 +9,6 @@ import { excitationListFn } from 'Src/services/api/excitationApi'
 import { createTaskFn, getSimulateNode, updateTask } from 'Src/services/api/taskApi'
 import { sleep } from 'Src/util/baseFn'
 
-import addImage from 'Src/assets/Contents/icon_add.svg'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from './stepBaseConfig.less'
 import TaskExcitaionModal from './taskExcitation'
@@ -348,7 +347,8 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
                       jumpNewCreateTask()
                     }}
                   >
-                    <img src={addImage} alt='' />
+                    <IconAdd className={styles.addImg} />
+                    {/* <img src={addImage} alt='' /> */}
                     <span className={styles.sendlistTitle}>新建激励发送列表</span>
                   </div>
                 </Space>

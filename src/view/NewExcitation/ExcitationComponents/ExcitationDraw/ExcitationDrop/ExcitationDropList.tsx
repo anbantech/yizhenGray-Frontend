@@ -66,18 +66,14 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
       }),
       end(draggedItem, monitor) {
         if (monitor.didDrop()) {
-          if (position.index === draggedItem.index) {
-            setSendBtnStatus(true)
-          } else {
+          if (position.index !== draggedItem.index) {
             setParamsChange(true)
             setSendBtnStatus(false)
           }
-        } else {
-          setSendBtnStatus(true)
         }
       }
     }),
-    [sender_id, index, DropList]
+    [sender_id, index, DropList, position]
   )
 
   const [{ handlerId }, drop] = useDrop({
