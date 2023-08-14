@@ -169,6 +169,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
       if (type === 'name') {
         const reg = /^[\w\u4E00-\u9FA5]+$/
         const valLength = e.target.value.length
+        if (valLength > 50) return
         if (valLength >= 2 && valLength <= 20 && reg.test(e.target.value)) {
           setReg(1)
         } else if (valLength < 2 || valLength > 20) {
