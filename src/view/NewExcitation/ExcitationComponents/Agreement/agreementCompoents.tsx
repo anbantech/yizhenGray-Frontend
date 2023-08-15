@@ -39,23 +39,29 @@ interface PriceInputProps {
   onChange?: (value: PriceValue) => void
 }
 
-const RegCompare = (str: string, fn: any) => {
+const RegCompare = (str: string, fn: any, setFn: any) => {
   const isOctal = /^0o[0-7]+$/.test(str) || /^0O[0-7]+$/.test(str)
   const isDecimal = /^\d+$/.test(str)
   const isHexadecimal = /^0x[\dA-Fa-f]+$/.test(str) || /^0X[\dA-Fa-f]+$/.test(str)
   if (isOctal || isDecimal || isHexadecimal) {
     return Promise.resolve()
   }
-  return fn()
+  fn()
+  return setFn({ value: 0 })
 }
 
-const NoValCompare = (cb: (val: boolean) => void, fn: any) => {
+const NoValCompare = (cb: (val: boolean) => void, fn: any, setFn: any) => {
   cb(false)
   fn()
+  setFn({ value: 0 })
 }
 
 const canDragBool = (cb: (val: boolean) => void) => {
   cb(false)
+}
+
+const canIsDragBool = (cb: (val: boolean) => void) => {
+  cb(true)
 }
 
 const DeleteItem = (cb: (val: DragCmps[]) => void, val: DragCmps[], index: number, del: (index: number) => void) => {
@@ -256,9 +262,13 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
             ]}
           >
             <Input
+              autoComplete='off'
               placeholder='请输入字段名'
               onFocus={() => {
                 canDragBool(setCanDrag)
+              }}
+              onBlur={() => {
+                canIsDragBool(setCanDrag)
               }}
               className={styles.StringInput}
             />
@@ -269,13 +279,17 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Tooltip placement='bottom' title={formData.value}>
+        <Tooltip placement='topLeft' title={formData.value}>
           <Form.Item name='value'>
             <Input
               bordered={false}
               className={styles.StringInputValue}
               onFocus={() => {
                 canDragBool(setCanDrag)
+              }}
+              autoComplete='off'
+              onBlur={() => {
+                canIsDragBool(setCanDrag)
               }}
             />
           </Form.Item>
@@ -498,6 +512,10 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
               onFocus={() => {
                 canDragBool(setCanDrag)
               }}
+              onBlur={() => {
+                canIsDragBool(setCanDrag)
+              }}
+              autoComplete='off'
               className={styles.StringInput}
             />
           </Form.Item>
@@ -512,7 +530,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Tooltip placement='bottom' title={formData.value}>
+        <Tooltip placement='topLeft' title={formData.value}>
           <Form.Item
             className={styles.intFormItem}
             name='value'
@@ -523,9 +541,9 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
                 validateTrigger: 'onBlur',
                 validator(_, value) {
                   if (value !== '') {
-                    return RegCompare(value, resvertValue)
+                    return RegCompare(value, resvertValue, setformData)
                   }
-                  return NoValCompare(setCanDrag, resvertValue)
+                  return NoValCompare(setCanDrag, resvertValue, setformData)
                 }
               }
             ]}
@@ -535,6 +553,10 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
               className={styles.IntInputValue}
               onFocus={() => {
                 canDragBool(setCanDrag)
+              }}
+              autoComplete='off'
+              onBlur={() => {
+                canIsDragBool(setCanDrag)
               }}
             />
           </Form.Item>
@@ -565,7 +587,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
     context: false,
     count: 10,
     skip: true,
-    length: 8
+    length: 1
   })
   const ref = React.useRef<HTMLDivElement>(null)
   const [isDragItem, setCanDrag] = React.useState(true)
@@ -582,9 +604,11 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
     setCanDrag(true)
     return Promise.resolve()
   }, [setCanDrag])
+
   const resvertValue = React.useCallback(() => {
     form.setFieldsValue({ value: 0 })
   }, [form])
+
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
@@ -777,6 +801,10 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
               onFocus={() => {
                 canDragBool(setCanDrag)
               }}
+              autoComplete='off'
+              onBlur={() => {
+                canDragBool(setCanDrag)
+              }}
               className={styles.StringInput}
             />
           </Form.Item>
@@ -789,7 +817,9 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
           <Input
             onBlur={() => {
               onMax()
+              canIsDragBool(setCanDrag)
             }}
+            autoComplete='off'
             onChange={e => {
               onChangeGu_time(e)
             }}
@@ -812,7 +842,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Tooltip placement='bottom' title={formData.value}>
+        <Tooltip placement='topLeft' title={formData.value}>
           <Form.Item
             className={styles.intArrayFormItem}
             name='value'
@@ -823,17 +853,21 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
                 validateTrigger: 'onBlur',
                 validator(_, value) {
                   if (value !== '') {
-                    return RegCompare(value, resvertValue)
+                    return RegCompare(value, resvertValue, setformData)
                   }
-                  return NoValCompare(setCanDrag, resvertValue)
+                  return NoValCompare(setCanDrag, resvertValue, setformData)
                 }
               }
             ]}
           >
             <Input
+              autoComplete='off'
               bordered={false}
               onFocus={() => {
                 canDragBool(setCanDrag)
+              }}
+              onBlur={() => {
+                canIsDragBool(setCanDrag)
               }}
               className={styles.IntArrayInputValue}
             />

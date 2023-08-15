@@ -39,6 +39,7 @@ type ResparamsType = Record<string, any>
 const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   const layoutRef = useRef<any>()
   const sender_idRef = useRef<number | null>()
+  const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const updateStatus = GlobalStatusStore(state => state.updateStatus)
   // const setUpdateStatus = GlobalStatusStore(state => state.setUpdateStatus)
   const sendBtnStatus = GlobalStatusStore(state => state.sendBtnStatus)
@@ -137,10 +138,13 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
       try {
         const result = await excitationListFn(value)
         if (result.data) {
-          const newList = [...result.data.results]
+          if (result.data.results.length === 0) {
+            setSendBtnStatus(true)
+            return setExcitationList([])
+          }
+          const newList = result.data.results
           if (newList.length === 0) {
             setHasMore(false)
-            return false
           }
           if (sender_id) {
             keepCheckTask(sender_id as number)
@@ -158,7 +162,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
         throwErrorMessage(error, { 1004: '请求资源未找到' })
       }
     },
-    [keepCheckTask, sender_id]
+    [keepCheckTask, sender_id, setSendBtnStatus]
   )
 
   useEffect(() => {
@@ -183,12 +187,14 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
   const cancel = React.useCallback(
     (e: boolean, type: string) => {
       if (type === 'result') {
+        clearCheckList()
         setSender_id(null)
       }
       setParams({ ...params, key_word: '', page: 1 })
       setModalData({ ...modalData, fixTitle: false, isModalVisible: e })
+      openModalRef.current = false
     },
-    [modalData, params, setSender_id]
+    [clearCheckList, modalData, params, setSender_id]
   )
 
   const { visibility, chioceModalStatus } = useMenu()
@@ -214,6 +220,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
     },
     clearId: () => {
       sender_idRef.current = null
+      openModalRef.current = false
     },
     openModal: () => {
       if (openModalRef.current) {

@@ -220,7 +220,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   useEffect(() => {
     getTaskList({ ...params })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params, InstancesDetail?.task_detail?.status])
+  }, [params, InstancesDetail?.task_detail?.status, modalData?.taskId])
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver(entries => {

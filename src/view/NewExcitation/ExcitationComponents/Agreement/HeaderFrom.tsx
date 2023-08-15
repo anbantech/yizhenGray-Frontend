@@ -36,7 +36,6 @@ const GuCntInput: React.FC<any> = (props: any) => {
   return (
     <span>
       <Input
-        type='text'
         onBlur={onMax}
         value={value || gu_cnt0}
         onChange={onNumberChange}
@@ -47,7 +46,7 @@ const GuCntInput: React.FC<any> = (props: any) => {
   )
 }
 
-const GuW0Input: React.FC<any> = (props: any) => {
+const GuW0InputMemo: React.FC<any> = (props: any) => {
   const { detaileStatus, value, onChange } = props
   const setValue = ArgeementDropListStore(state => state.setValue)
   const gu_w0 = ArgeementDropListStore(state => state.gu_w0)
@@ -65,15 +64,15 @@ const GuW0Input: React.FC<any> = (props: any) => {
     setValue('gu_w0', newNumber)
     triggerChange(newNumber)
   }
-  const onMax = React.useCallback(() => {
+  const onMax = () => {
     const newValue = gu_w0 > 100 ? 100 : gu_w0
     setValue('gu_w0', newValue)
     triggerChange(newValue)
-  }, [gu_w0, setValue, triggerChange])
+  }
   return (
     <span>
       <Input
-        type='text'
+        tabIndex={0}
         onBlur={onMax}
         value={value || gu_w0}
         onChange={onNumberChange}
@@ -84,6 +83,7 @@ const GuW0Input: React.FC<any> = (props: any) => {
     </span>
   )
 }
+const GuW0Input = React.memo(GuW0InputMemo)
 
 const HeadForm = React.forwardRef((props, myRef) => {
   const [form] = Form.useForm<any>()
@@ -149,56 +149,54 @@ const HeadForm = React.forwardRef((props, myRef) => {
     return Promise.reject(new Error('请填写发送间隔'))
   }
   return (
-    <>
-      <Form form={form} name='horizontal_login' autoComplete='off' layout='inline' className={styles.headerForm} initialValues={initialValues}>
-        <Form.Item
-          name='name'
-          label='名称'
-          className={styles.nameSty}
-          validateFirst
-          validateTrigger={['onBlur']}
-          rules={[
-            { required: true, message: '请输入激励名称' },
-            { type: 'string', min: 2, max: 20, message: '激励名称长度为2到20个字符' },
-            {
-              validateTrigger: 'onBlur',
-              validator(_, value) {
-                const reg = /^[\w\u4E00-\u9FA5]+$/
-                if (reg.test(value)) {
-                  return Promise.resolve()
-                }
-                return Promise.reject(new Error('激励名称名称由汉字、数字、字母和下划线组成'))
+    <Form form={form} name='horizontal_login' autoComplete='off' layout='inline' className={styles.headerForm} initialValues={initialValues}>
+      <Form.Item
+        name='name'
+        label='名称'
+        className={styles.nameSty}
+        validateFirst
+        validateTrigger={['onBlur']}
+        rules={[
+          { required: true, message: '请输入激励名称' },
+          { type: 'string', min: 2, max: 20, message: '激励名称长度为2到20个字符' },
+          {
+            validateTrigger: 'onBlur',
+            validator(_, value) {
+              const reg = /^[\w\u4E00-\u9FA5]+$/
+              if (reg.test(value)) {
+                return Promise.resolve()
               }
+              return Promise.reject(new Error('激励名称名称由汉字、数字、字母和下划线组成'))
             }
-          ]}
-        >
-          <Input placeholder='请输入激励名称' className={styles.commonItem} />
-        </Form.Item>
-        <Form.Item name='gu_cnt0' label='发送次数' rules={[{ required: true, validator: checkGuCnt }]}>
-          <GuCntInput />
-        </Form.Item>
-        <Form.Item name='peripheral' label='外设' rules={[{ required: true, message: '请选择外设' }]}>
-          <Select placeholder='请选择外设' className={styles.commonItem}>
-            {
-              /**
-               * 下拉选择端口
-               */
-              portList?.map(rate => {
-                return (
-                  <Option key={rate} value={rate}>
-                    {rate}
-                  </Option>
-                )
-              })
-            }
-          </Select>
-        </Form.Item>
+          }
+        ]}
+      >
+        <Input placeholder='请输入激励名称' className={styles.commonItem} />
+      </Form.Item>
+      <Form.Item name='gu_cnt0' label='发送次数' rules={[{ required: true, validator: checkGuCnt }]}>
+        <GuCntInput />
+      </Form.Item>
+      <Form.Item name='peripheral' validateTrigger={['onBlur']} label='外设' rules={[{ required: true, message: '请选择外设' }]}>
+        <Select placeholder='请选择外设' className={styles.commonItem}>
+          {
+            /**
+             * 下拉选择端口
+             */
+            portList?.map(rate => {
+              return (
+                <Option key={rate} value={rate}>
+                  {rate}
+                </Option>
+              )
+            })
+          }
+        </Select>
+      </Form.Item>
 
-        <Form.Item name='gu_w0' label='发送间隔' rules={[{ required: true, validator: checkGuW0 }]}>
-          <GuW0Input />
-        </Form.Item>
-      </Form>
-    </>
+      <Form.Item name='gu_w0' label='发送间隔' rules={[{ required: true, validator: checkGuW0 }]}>
+        <GuW0Input />
+      </Form.Item>
+    </Form>
   )
 })
 

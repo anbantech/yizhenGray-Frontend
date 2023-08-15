@@ -8,7 +8,7 @@ import { generateUUID } from 'Src/util/common'
 import AgreementIndex from './agreementIndex'
 import StyleSheet from './agreementCompoents.less'
 import HeaderForm from './HeaderFrom'
-import { ArgeementDropListStore, GlobalStatusStore } from '../../ExcitaionStore/ExcitaionStore'
+import { ArgeementDropListStore, GlobalStatusStore, RightDragListStore } from '../../ExcitaionStore/ExcitaionStore'
 
 interface PropsType {
   visibility: boolean
@@ -22,6 +22,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
   const [spinning, setSpinning] = React.useState(false)
   const [visibilitys, setVisibility] = React.useState(false)
   const DropList = ArgeementDropListStore(state => state.DropList)
+  const clearCheckList = RightDragListStore(state => state.clearCheckList)
   const setHead = ArgeementDropListStore(state => state.setHead)
   //
   const setDrop = GlobalStatusStore(state => state.setDetailStatus)
@@ -69,12 +70,13 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
       const res = await saveExcitaionFn(params)
       if (res) {
         message.success('激励创建成功')
+        clearCheckList()
         onOk()
       }
     } catch (error) {
       message.error(error.message)
     }
-  }, [DropListRef, onOk])
+  }, [DropListRef, clearCheckList, onOk])
   // 更新元素 updateControl
   const updateItem = React.useCallback(async () => {
     const res = DropListRef.map((item: any) => {
@@ -126,16 +128,17 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
       .then(async res => {
         const res1 = await updateItem()
         if (res1) {
-          onOk()
+          clearCheckList()
           setSpinning(false)
           setDrop(!DropStatus)
+          onOk()
         }
         return res
       })
       .catch(() => {
         setSpinning(false)
       })
-  }, [CommonModleClose, DropStatus, checkItem, onOk, setDrop, updateItem])
+  }, [CommonModleClose, DropStatus, checkItem, clearCheckList, onOk, setDrop, updateItem])
 
   React.useEffect(() => {
     if (sender_id !== -1) {

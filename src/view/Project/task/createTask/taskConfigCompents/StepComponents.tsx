@@ -432,24 +432,26 @@ const ThreeSteps = () => {
         </div>
       </div>
 
-      <div className={StyleSheet.scrollDiv} style={{ height: 208 }} ref={drop}>
-        <CheckboxGroup onChange={onChange} style={{ width: '100%' }}>
-          {excitationList?.map((item: any, index: number) => {
-            return (
-              <Dropable
-                sender_id={item.sender_id}
-                key={`${item.sender_id}`}
-                DropList={excitationList}
-                moveCardHandler={moveCardHandler}
-                index={index}
-                DeleteCheckItem={DeleteCheckItem}
-                item={item}
-              />
-            )
-          })}
+      <div style={{ height: 208 }} ref={drop}>
+        <CheckboxGroup onChange={onChange} style={{ width: '100%' }} value={checkList}>
+          <div className={StyleSheet.scrollDiv} style={{ height: checkListMemo > 0 ? 170 : 208 }}>
+            {excitationList?.map((item: any, index: number) => {
+              return (
+                <Dropable
+                  sender_id={item.sender_id}
+                  key={`${item.sender_id}`}
+                  DropList={excitationList}
+                  moveCardHandler={moveCardHandler}
+                  index={index}
+                  DeleteCheckItem={DeleteCheckItem}
+                  item={item}
+                />
+              )
+            })}
+          </div>
         </CheckboxGroup>
+        {checkListMemo > 0 && <DeleteCompoentMemo number={checkListMemo} DeleteCheckItem={DeleteAllCheckItem} />}
       </div>
-      {checkListMemo > 0 && <DeleteCompoentMemo number={checkListMemo} DeleteCheckItem={DeleteAllCheckItem} />}
     </div>
   )
 }

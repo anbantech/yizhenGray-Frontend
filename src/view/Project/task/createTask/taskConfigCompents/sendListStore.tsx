@@ -23,7 +23,7 @@ interface ListState {
   deleteEverything: () => void
 }
 
-const stepStore = create<ListState>(set => ({
+const stepStore = create<ListState>((set, get) => ({
   current: 0,
   baseInfo: { name: '', desc: '' },
   btnStatus: true,
@@ -36,6 +36,10 @@ const stepStore = create<ListState>(set => ({
       current: state.current + 1
     })),
   preCurrent: () => {
+    const { setCheckList, current } = get()
+    if (current === 2) {
+      setCheckList([])
+    }
     set(state => ({
       current: state.current - 1
     }))

@@ -39,6 +39,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
   const setUpdateStatus = GlobalStatusStore(state => state.setUpdateStatus)
   const { name, desc, gu_cnt0, gu_w0, updated, paramsChange, setTitleorDesc, setParamsChange } = LeftDropListStore()
   const [isReg, setReg] = React.useState(1)
+  const [descInfo, setDesc] = React.useState('')
   const [isEditing, setIsEditing] = React.useState(false)
   const [inputSatus, setInputStatus] = React.useState(false)
   const CommonModleClose = React.useCallback((val: boolean) => {
@@ -179,21 +180,26 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
         setSendBtnStatus(false)
         setTitleorDesc(type, e.target.value)
       }
-      if (e.target.value.length <= 50 && type === 'desc') {
-        setSendBtnStatus(false)
-        setTitleorDesc(type, e.target.value)
-      }
     },
+
     [setSendBtnStatus, setTitleorDesc]
   )
+
+  const onChangeDesc = (e: any, type: string) => {
+    setDesc(e.target.value)
+    setSendBtnStatus(false)
+    setTitleorDesc(type, e.target.value)
+  }
 
   const doubleClick = (type: string) => {
     if (type === 'name') {
       setIsEditing(true)
     } else {
+      setDesc(desc)
       setInputStatus(true)
     }
   }
+
   React.useEffect(() => {
     return () => {
       setReg(1)
@@ -254,14 +260,15 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
           {inputSatus ? (
             <Input
               className={StyleSheet.descInputHeader}
-              value={desc}
               onBlur={() => {
                 disableOnBlur('desc')
               }}
+              value={descInfo}
+              maxLength={50}
               autoFocus={inputSatus}
               bordered={false}
               onChange={e => {
-                onChangeName(e, 'desc')
+                onChangeDesc(e, 'desc')
               }}
             />
           ) : (

@@ -66,29 +66,29 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
       }),
       end(draggedItem, monitor) {
         if (monitor.didDrop()) {
-          if (position.index === draggedItem.index) {
-            setSendBtnStatus(true)
-          } else {
+          if (position.index !== draggedItem.index) {
             setParamsChange(true)
             setSendBtnStatus(false)
           }
-        } else {
-          setSendBtnStatus(true)
         }
       }
     }),
-    [sender_id, index, DropList]
+    [sender_id, index, DropList, position]
   )
 
   const [{ handlerId }, drop] = useDrop({
     accept: 'DragDropItem',
     collect(monitor) {
       return {
+        isOver: monitor.isOver({ shallow: true }),
         handlerId: monitor.getHandlerId()
       }
     },
     hover(item: any, monitor: DropTargetMonitor) {
       if (!ref.current) {
+        return
+      }
+      if (!monitor.isOver({ shallow: true })) {
         return
       }
       const dragIndex = item.index
@@ -108,7 +108,6 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
 
       // 获取距顶部距离
       const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top
-
       /**
        * 只在鼠标越过一半物品高度时执行移动。
        *
@@ -184,16 +183,24 @@ const Dropable = React.memo(DropableMemo)
 const ScrollingComponent = withScrolling('div')
 
 function ExcitationDropList() {
-  const [, drop] = useDrop(() => ({
-    accept: 'DragDropItem'
-  }))
   const checkAllList = checkListStore(state => state.checkAllList)
   const { checkAllSenderIdList, setCheckAll, setIndeterminate, clearCheckList } = checkListStore()
   // 列表元素
-
+  const ref = React.useRef<any>()
   const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
   const dragableDragingStatus = DragableDragingStatusStore(state => state.dragableDragingStatus)
+
+  const [, drop] = useDrop(
+    () => ({
+      accept: 'DragDropItem',
+      collect: monitor => ({
+        isOver: monitor.isOver(),
+        isOverCurrent: monitor.isOver({ shallow: true })
+      })
+    }),
+    [DropList]
+  )
 
   const moveCardHandler = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
@@ -205,8 +212,9 @@ function ExcitationDropList() {
         dropCardListCopy.splice(hoverIndex, 0, ...copy)
         setLeftList([...dropCardListCopy])
       } else {
-        const dropCardListCopy = DropList
-        dropCardListCopy.splice(dragIndex, 1, ...dropCardListCopy.splice(hoverIndex, 1, dropCardListCopy[dragIndex]))
+        const dropCardListCopy = [...DropList]
+        const copy = dropCardListCopy.splice(dragIndex, 1)
+        dropCardListCopy.splice(hoverIndex, 0, ...copy)
         setLeftList([...dropCardListCopy])
       }
     },
@@ -242,11 +250,12 @@ function ExcitationDropList() {
     [DropList, checkAllList, checkAllSenderIdList, setCheckAll, setIndeterminate, setLeftList]
   )
 
+  drop(ref)
   return (
     <ScrollingComponent className={StyleSheet.dropList_ListScroll}>
-      <div ref={drop} className={StyleSheet.dropList_List}>
+      <div ref={ref} className={StyleSheet.dropList_List}>
         <Checkbox.Group style={{ width: '100%' }} onChange={onChange} value={checkAllList}>
-          <div ref={drop} className={StyleSheet.dropList_List}>
+          <div>
             {DropList?.map((item, index: number) => {
               return <Dropable index={index} key={item.keys} DeleteCheckItem={DeleteCheckItem} moveCardHandler={moveCardHandler} Item={item} />
             })}

@@ -55,7 +55,7 @@ function ExcitationListMemo() {
   const [dependenceInfo, setDependenceInfo] = useState({ id: '', name: '', parents: [] })
   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
   const [sender_id, setDragList_id] = React.useState(-1)
-  const { params, setKeyWord, setHasMore, setPage } = useRequestStore()
+  const { params, setKeyWord, setHasMore, setPage, initData } = useRequestStore()
 
   const checkAllList = RightDragListStore(state => state.checkAllList)
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
@@ -88,10 +88,12 @@ function ExcitationListMemo() {
       try {
         const result = await excitationListFn(value)
         if (result.data) {
+          if (result.data.results.length === 0) {
+            return setRightList([])
+          }
           const newList = [...result.data.results]
           if (newList.length === 0) {
             setHasMore(false)
-            return false
           }
 
           if (newList.length === result.data.total) {
@@ -168,6 +170,7 @@ function ExcitationListMemo() {
           message.success('删除成功')
         }
         setSender_id(null)
+        setDragList_id(-1)
         setUpdateStatus(!updateStatus)
         setPage(1)
       }
@@ -269,9 +272,10 @@ function ExcitationListMemo() {
 
   // 取消新建
   const cancelNewCreate = React.useCallback(() => {
+    destoryEveryItem()
     setNewCreate(false)
     setPage(1)
-  }, [setPage])
+  }, [destoryEveryItem, setPage])
 
   // 打开新建弹窗 清除sender_id
   const opneModal = React.useCallback((value: boolean) => {
@@ -327,6 +331,13 @@ function ExcitationListMemo() {
     setPage(1)
   }, [destoryEveryItem, setPage])
 
+  React.useEffect(() => {
+    return () => {
+      initData()
+      clearCheckList()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   return (
     <div className={isClose ? StyleSheet.rightList : StyleSheet.rightListClose}>
       {isClose && (

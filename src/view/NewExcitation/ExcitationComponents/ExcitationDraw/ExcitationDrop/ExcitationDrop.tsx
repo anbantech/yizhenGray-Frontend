@@ -87,6 +87,12 @@ function ExcitationDropMemo() {
     }
   }, [getExcitaionDeatilFunction, sender_id, detailStatus, setSendBtnStatus])
 
+  useEffect(() => {
+    return () => {
+      clearCheckList()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   return (
     <div className={StyleSheet.excitaionDrop_Body}>
       <DropHeader getExcitaionDeatilFunction={getExcitaionDeatilFunction} />

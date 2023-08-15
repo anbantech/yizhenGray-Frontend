@@ -313,6 +313,19 @@ const useRequestStore = create<ExcitationListStateFn & ExcitationListState>((set
     set(() => ({
       params: { ...params, page_size: newPage }
     }))
+  },
+  initData: () => {
+    set(() => ({
+      params: {
+        target_type: '1',
+        key_word: '',
+        status: null,
+        page: 1,
+        page_size: 20,
+        sort_field: 'create_time',
+        sort_order: 'descend'
+      }
+    }))
   }
 }))
 

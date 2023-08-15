@@ -1,6 +1,6 @@
 import { Divider, Form, Input, message, Select, Space } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
-
+import { IconAdd } from '@anban/iconfonts'
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
@@ -9,7 +9,6 @@ import { excitationListFn } from 'Src/services/api/excitationApi'
 import { createTaskFn, getSimulateNode, updateTask } from 'Src/services/api/taskApi'
 import { sleep } from 'Src/util/baseFn'
 
-import addImage from 'Src/assets/Contents/icon_add.svg'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from './stepBaseConfig.less'
 import TaskExcitaionModal from './taskExcitation'
@@ -148,26 +147,30 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     charRef.current = true
   }, [])
 
-  const getExcitationList = useCallback(async (value: Resparams) => {
-    if (scrollRef.current === pageRef.current) return
-    try {
-      const result = await excitationListFn(value)
-      if (result.data !== null && result.data !== undefined) {
-        scrollRef.current = result.data.total
-        setExcitationList((pre: projectInfoType[]) => {
-          if (result.data?.results) {
-            const list = pre.concat(result.data.results)
-            const uniquePersons = [...new Set(list.map(p => JSON.stringify(p)))].map(p => JSON.parse(p))
-            pageRef.current = list.length
-            return uniquePersons as projectInfoType[]
-          }
-          return []
-        })
+  const getExcitationList = useCallback(
+    async (value: Resparams) => {
+      if (scrollRef.current === pageRef.current) return
+      try {
+        const result = await excitationListFn(value)
+        if (result.data !== null && result.data !== undefined) {
+          scrollRef.current = result.data.total
+          setExcitationList((pre: projectInfoType[]) => {
+            if (result.data?.results) {
+              const list = pre.concat(result.data.results)
+              const uniquePersons = [...new Set(list.map(p => JSON.stringify(p)))].map(p => JSON.parse(p))
+              pageRef.current = list.length
+              return uniquePersons as projectInfoType[]
+            }
+            return []
+          })
+        }
+      } catch (error) {
+        message.error(error.message)
       }
-    } catch (error) {
-      message.error(error.message)
-    }
-  }, [])
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [excitationList]
+  )
 
   const onScrollData = (e: React.UIEvent) => {
     const target = e.target as HTMLLIElement
@@ -236,12 +239,12 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   }, [form, taskInfo.data, fromDataTask])
 
   // 关闭弹窗
-  const cancel = React.useCallback((val?: string) => {
+  const cancel = useCallback((val?: string) => {
     if (val === 'result') {
       setExcitationList([])
-      setParams((pre: Resparams) => {
-        return { ...pre, page: 1 }
-      })
+      scrollRef.current = -1
+      pageRef.current = 0
+      setParams({ ...request, page: 1 })
     }
     setOpen(false)
   }, [])
@@ -344,7 +347,8 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
                       jumpNewCreateTask()
                     }}
                   >
-                    <img src={addImage} alt='' />
+                    <IconAdd className={styles.addImg} />
+                    {/* <img src={addImage} alt='' /> */}
                     <span className={styles.sendlistTitle}>新建激励发送列表</span>
                   </div>
                 </Space>
