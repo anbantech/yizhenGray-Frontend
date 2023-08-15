@@ -356,12 +356,13 @@ const ThreeSteps = () => {
 
   const moveCardHandler = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
+      setCheckList([])
       const dropCardListCopy = excitationList
       const copy = dropCardListCopy.splice(dragIndex, 1)
       dropCardListCopy.splice(hoverIndex, 0, ...copy)
       setExcitation([...dropCardListCopy])
     },
-    [excitationList, setExcitation]
+    [excitationList, setCheckList, setExcitation]
   )
 
   const DeleteCheckItem = React.useCallback(
@@ -434,7 +435,7 @@ const ThreeSteps = () => {
       </div>
 
       <div style={{ height: 208 }} ref={drop}>
-        <CheckboxGroup onChange={onChange} style={{ width: '100%' }}>
+        <CheckboxGroup onChange={onChange} style={{ width: '100%' }} value={checkList}>
           <div className={StyleSheet.scrollDiv} style={{ height: checkListMemo > 0 ? 170 : 208 }}>
             {excitationList?.map((item: any, index: number) => {
               return (

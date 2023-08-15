@@ -6,7 +6,8 @@ import {
   RightDragListStore,
   DragableDragingStatusStore,
   useRequestStore,
-  GlobalStatusStore
+  GlobalStatusStore,
+  checkListStore
 } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import { Tooltip } from 'antd'
 import { isEqual } from 'lodash'
@@ -18,17 +19,25 @@ import { generateUUID } from 'Src/util/common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import StyleSheet from '../excitationDraw.less'
 
-type DragableType = { sender_id: number; name: string; item: Record<string, any>; onChange: (val: string, id: number) => void }
+type DragableType = {
+  sender_id: number
+  setMenuId: any
+  menuId: number
+  name: string
+  item: Record<string, any>
+  onChange: (val: string, id: number) => void
+}
 type Props = { onChange: (val: string, id: number) => void }
 
 // 拖拽列表的item
-const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
+const Dragable = ({ sender_id, name, item, setMenuId, menuId, onChange }: DragableType) => {
   const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
   const LeftDragIndexFn = LeftDropListStore(state => state.LeftDragIndexFn)
   const setDragableStatus = DragableDragingStatusStore(state => state.setDragableStatus)
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const clearCheckList = RightDragListStore(state => state.clearCheckList)
+  const DropClearCheckList = checkListStore(state => state.clearCheckList)
   const { setParamsChange } = LeftDropListStore()
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -53,6 +62,7 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
         if (monitor.didDrop()) {
           dropCardListCopy.splice(uselessIndex, 1, item)
           setLeftList([...dropCardListCopy])
+          DropClearCheckList()
           setSendBtnStatus(false)
           setParamsChange(true)
         } else {
@@ -62,18 +72,18 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
         setDragableStatus(false)
       }
     }),
-    [DropList, setDragableStatus, item, clearCheckList]
+    [DropList, setDragableStatus, item, clearCheckList, DropClearCheckList]
   )
-  const myRef = React.useRef<any>()
+
   return (
     <div
       ref={drag}
+      onClick={() => {
+        setMenuId(-1)
+      }}
       role='time'
       key={item.sender_id}
       style={{ opacity: isDragging ? 0.5 : 1, cursor: 'move' }}
-      onMouseLeave={() => {
-        myRef.current?.closeMenu()
-      }}
       className={StyleSheet.excitationItem}
     >
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -87,7 +97,15 @@ const Dragable = ({ sender_id, name, item, onChange }: DragableType) => {
           </Tooltip>
         </span>
       </div>
-      <OmitExcitation ref={myRef} onChange={onChange} id={sender_id} />
+      <div
+        onClick={(e: any) => {
+          e.stopPropagation()
+          setMenuId(menuId === sender_id ? -1 : sender_id)
+        }}
+        role='time'
+      >
+        <OmitExcitation menuId={menuId} onChange={onChange} id={sender_id} />
+      </div>
     </div>
   )
 }
@@ -103,6 +121,7 @@ function ExcitationDragMemo({ onChange }: Props) {
   const setCheckAll = RightDragListStore(state => state.setCheckAll)
   const hasMoreData = useRequestStore(state => state.hasMoreData)
   const loadMoreData = useRequestStore(state => state.loadMoreData)
+  const [menuId, setMenuId] = React.useState(-1)
   // 动态设置虚拟列表高度
   const [height, setHeight] = React.useState(0)
   const onChanges = React.useCallback(
@@ -158,7 +177,17 @@ function ExcitationDragMemo({ onChange }: Props) {
       >
         <Checkbox.Group style={{ width: '100%' }} onChange={onChanges} value={checkAllList}>
           {rightDragList?.map((item: any) => {
-            return <DragableMemo sender_id={item.sender_id} onChange={onChange} name={item.name} item={item} key={item.sender_id} />
+            return (
+              <DragableMemo
+                sender_id={item.sender_id}
+                setMenuId={setMenuId}
+                menuId={menuId}
+                onChange={onChange}
+                name={item.name}
+                item={item}
+                key={item.sender_id}
+              />
+            )
           })}
         </Checkbox.Group>
       </InfiniteScroll>
