@@ -249,8 +249,8 @@ const LeftNav: React.FC = () => {
             </div>
           ) : (
             <div style={{ position: 'absolute', bottom: '0', margin: '0px 24px', fontSize: '12px', color: '#99999' }}>
-              {license && <p>到期时间：{license}</p>}
-              <p>版本：{process.env.VERSION?.slice(0, 17)}</p>
+              <p>版本号：{process.env.VERSION?.slice(0, 17)}</p>
+              {license && <p>有效期：{license}</p>}
             </div>
           )}
         </>
