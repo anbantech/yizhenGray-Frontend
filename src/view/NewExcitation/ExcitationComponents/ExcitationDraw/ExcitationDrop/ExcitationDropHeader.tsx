@@ -172,7 +172,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
         const reg = /^[\w\u4E00-\u9FA5]+$/
         const valLength = e.target.value.length
         if (valLength > 50) return
-        if (valLength >= 2 && valLength <= 20 && reg.test(e.target.value)) {
+        if (valLength >= 2 && valLength <= 20 && reg.test(e.target.value.replace(/[\u2018\u2019]/g, ''))) {
           setReg(1)
         } else if (valLength < 2 || valLength > 20) {
           setReg(3)
@@ -180,7 +180,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
           setReg(2)
         }
         setSendBtnStatus(false)
-        setTitleorDesc(type, e.target.value)
+        setTitleorDesc(type, e.target.value.trim().replace(/'/g, ''))
       }
     },
 
@@ -226,7 +226,6 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
             }}
             autoFocus={isEditing}
             bordered={false}
-            maxLength={20}
             onChange={e => {
               onChangeName(e, 'name')
             }}
