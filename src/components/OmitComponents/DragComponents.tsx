@@ -8,14 +8,9 @@ const menuMap = [
   { type: 'delete', title: '删除', StyleSheet: style.delete, styleImage: style.taskListLeft_detailImg }
 ]
 
-function DragComponentsMemo({ setOpen, onChange, id }: any) {
+function DragComponentsMemo({ onChange, id }: any) {
   return (
-    <div
-      onMouseLeave={() => {
-        setOpen(false)
-      }}
-      className={style.ItemBodyMenu}
-    >
+    <div className={style.ItemBodyMenu}>
       {menuMap.map(item => {
         return (
           <div
