@@ -38,11 +38,14 @@ const Dragable = ({ sender_id, name, item, setMenuId, menuId, onChange }: Dragab
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   const clearCheckList = RightDragListStore(state => state.clearCheckList)
   const DropClearCheckList = checkListStore(state => state.clearCheckList)
+  const [position, setPosition] = React.useState(0)
+
   const { setParamsChange } = LeftDropListStore()
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'DragDropItem',
       item() {
+        setMenuId(-1)
         clearCheckList()
         const useless = DropList.find((item: any) => item.sender_id === -1)
         // 拖拽开始时，向 cardList 数据源中插入一个占位的元素，如果占位元素已经存在，不再重复插入
@@ -100,11 +103,13 @@ const Dragable = ({ sender_id, name, item, setMenuId, menuId, onChange }: Dragab
       <div
         onClick={(e: any) => {
           e.stopPropagation()
+          const { clientY } = e
+          setPosition(clientY)
           setMenuId(menuId === sender_id ? -1 : sender_id)
         }}
         role='time'
       >
-        <OmitExcitation menuId={menuId} onChange={onChange} id={sender_id} />
+        <OmitExcitation menuId={menuId} position={position} onChange={onChange} id={sender_id} />
       </div>
     </div>
   )
@@ -157,10 +162,20 @@ function ExcitationDragMemo({ onChange }: Props) {
   }, [])
 
   return (
-    <div className={StyleSheet.LISTScroll} ref={layoutRef}>
+    <div
+      className={StyleSheet.LISTScroll}
+      onMouseLeave={() => {
+        setMenuId(-1)
+      }}
+      role='time'
+      ref={layoutRef}
+    >
       <InfiniteScroll
         dataLength={rightDragList.length}
         next={up}
+        onScroll={() => {
+          setMenuId(-1)
+        }}
         hasMore={hasMoreData}
         height={height - 50}
         loader={
