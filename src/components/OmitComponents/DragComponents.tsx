@@ -8,9 +8,27 @@ const menuMap = [
   { type: 'delete', title: '删除', StyleSheet: style.delete, styleImage: style.taskListLeft_detailImg }
 ]
 
-function DragComponentsMemo({ onChange, id }: any) {
+function DragComponentsMemo({ onChange, id, position }: any) {
+  React.useEffect(() => {
+    const handleStopWheel = (e: any) => {
+      e.preventDefault()
+    }
+
+    window.addEventListener('wheel', handleStopWheel, {
+      passive: false
+    })
+    window.addEventListener('onKeyDown', handleStopWheel, {
+      passive: false
+    })
+
+    return () => {
+      window.removeEventListener('wheel', handleStopWheel)
+      window.removeEventListener('onKeyDown', handleStopWheel)
+    }
+  }, [])
+
   return (
-    <div className={style.ItemBodyMenu}>
+    <div className={style.ItemBodyMenu} style={{ top: position - 40 }}>
       {menuMap.map(item => {
         return (
           <div

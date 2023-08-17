@@ -10,14 +10,18 @@ interface MenuTypes {
   onChange: (val: string, id: number) => void
   id: number
   menuId: number
+  position: number
 }
 
 const OmitExcitation = (props: MenuTypes) => {
-  const { onChange, id, menuId } = props
+  const positionRef = React.useRef<any>()
+
+  const { onChange, id, menuId, position } = props
+
   return (
-    <div style={{ cursor: 'pointer' }} className={styles.omitCompoentsTarget} role='time'>
+    <div style={{ cursor: 'pointer' }} ref={positionRef} className={styles.omitCompoentsTarget} role='time'>
       <div className={styles.omitRounds}>{menuId === id ? <img src={more_hover} alt='' /> : <img src={more} alt='' />}</div>
-      {menuId === id ? <DragComponents onChange={onChange} id={id} /> : null}
+      {menuId === id ? <DragComponents onChange={onChange} position={position} id={id} /> : null}
     </div>
   )
 }
