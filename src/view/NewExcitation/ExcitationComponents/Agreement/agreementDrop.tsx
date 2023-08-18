@@ -9,6 +9,7 @@ function AgreementDrop() {
   const [, drop] = useDrop(() => ({
     accept: 'DragDropItem'
   }))
+
   const DropList = ArgeementDropListStore(state => state.DropList)
   const setDropListRef = ArgeementDropListStore(state => state.setDropListRef)
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
@@ -46,7 +47,6 @@ function AgreementDrop() {
 
   return (
     <div ref={drop} className={styles.agreementDropTop}>
-      {/* <div> */}
       <ScrollingComponent className={styles.agreementDrop}>
         {DropList?.map((item, index: number) => {
           return (
@@ -65,7 +65,6 @@ function AgreementDrop() {
         })}
       </ScrollingComponent>
     </div>
-    // </div>
   )
 }
 
