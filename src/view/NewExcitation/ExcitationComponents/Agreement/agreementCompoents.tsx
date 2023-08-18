@@ -234,7 +234,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
         <span className={styles.cloumnBodyCharts}>字符串 </span>
       </div>
       <Form form={form} name='Compoents' layout='inline' onValuesChange={onValuesChange} className={styles.StringForm} initialValues={formData}>
-        <Tooltip placement='bottom' title={formData.name}>
+        <Tooltip placement='topLeft' overlayClassName={styles.magicToolTipStyle} title={formData.name}>
           <Form.Item
             name='name'
             validateFirst
@@ -279,7 +279,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Tooltip placement='topLeft' title={formData.value}>
+        <Tooltip placement='topLeft' overlayClassName={styles.magicToolTipStyle} title={formData.value}>
           <Form.Item name='value'>
             <Input
               bordered={false}
@@ -480,7 +480,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
         <span className={styles.cloumnBodyCharts}>整数 </span>
       </div>
       <Form form={form} name='IntCompoents' className={styles.StringForm} onValuesChange={onValuesChange} layout='inline' initialValues={formData}>
-        <Tooltip placement='bottom' title={formData.name}>
+        <Tooltip placement='topLeft' overlayClassName={styles.magicToolTipStyle} title={formData.name}>
           <Form.Item
             name='name'
             validateFirst
@@ -530,7 +530,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Tooltip placement='topLeft' title={formData.value}>
+        <Tooltip placement='topLeft' overlayClassName={styles.magicToolTipStyle} title={formData.value}>
           <Form.Item
             className={styles.intFormItem}
             name='value'
@@ -770,7 +770,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
       </div>
 
       <Form form={form} name='IntArrayCompoents' className={styles.StringForm} onValuesChange={onValuesChange} initialValues={formData}>
-        <Tooltip placement='bottom' title={formData.name}>
+        <Tooltip placement='topLeft' overlayClassName={styles.magicToolTipStyle} title={formData.name}>
           <Form.Item
             name='name'
             validateFirst
@@ -843,7 +843,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Tooltip placement='topLeft' title={formData.value}>
+        <Tooltip placement='topLeft' overlayClassName={styles.magicToolTipStyle} title={formData.value}>
           <Form.Item
             className={styles.intArrayFormItem}
             name='value'
