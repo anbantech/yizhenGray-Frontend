@@ -38,13 +38,16 @@ const DeleteCompoentMemo = React.memo(DeleteCompoent)
 function ExcitationDropMemo() {
   const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
+  // 设置状态详情
   const setDetailData = LeftDropListStore(state => state.setDetailData)
   // sender_id
   const sender_id = useExicitationSenderId(state => state.sender_id)
   // 筛选逻辑
   const checkAllList = checkListStore(state => state.checkAllList)
+  // 清除筛选,框筛选条件
   const clearCheckList = checkListStore(state => state.clearCheckList)
   const { setParamsChange } = LeftDropListStore()
+  // 按钮状态
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   // 实例状态是否更新
   const detailStatus = GlobalStatusStore(state => state.detailStatus)
@@ -93,6 +96,7 @@ function ExcitationDropMemo() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
   return (
     <div className={StyleSheet.excitaionDrop_Body}>
       <DropHeader getExcitaionDeatilFunction={getExcitaionDeatilFunction} />

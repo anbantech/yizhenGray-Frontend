@@ -119,8 +119,11 @@ const DragableMemo = React.memo(Dragable, isEqual)
 // 拖拽区
 function ExcitationDragMemo({ onChange }: Props) {
   const layoutRef = React.useRef<any>()
+  // 右侧拖拽
   const rightDragList = RightDragListStore(state => state.DragList)
+  // 全选
   const checkAllList = RightDragListStore(state => state.checkAllList)
+  // 全选状态
   const setIndeterminate = RightDragListStore(state => state.setIndeterminate)
   const checkAllSenderIdList = RightDragListStore(state => state.checkAllSenderIdList)
   const setCheckAll = RightDragListStore(state => state.setCheckAll)
