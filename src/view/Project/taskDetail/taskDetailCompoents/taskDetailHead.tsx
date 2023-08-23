@@ -10,9 +10,8 @@ import monitor from 'Image/monitor.svg'
 // import DeleteCourse from 'Image/DeleteCourse.svg'
 import report from 'Image/report.svg'
 import over from 'Image/overTask.svg'
-// import { throwErrorMessage } from 'Src/util/message'
 import { bgTest, rePlayTask, stopcontuine, stoppaused, stoptest } from 'Src/services/api/taskApi'
-
+import { throwErrorMessage } from 'Src/util/message'
 import NewTaskInstance from 'Src/components/Modal/taskModal/newTaskInstance'
 import styles from '../taskDetail.less'
 import { taskDetailInfoType } from '../taskDetail'
@@ -73,7 +72,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       try {
         res = await stoppaused({ instance_id: id })
       } catch (error) {
-        message.error(error.message)
+        throwErrorMessage(error, { 2003: '任务正在暂停中,请稍后在试', 1007: '操作频繁', 2007: '暂停失败' })
         setSpinStatus(false)
       }
     } else {
@@ -82,7 +81,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       try {
         res = await stopcontuine({ instance_id: id })
       } catch (error) {
-        message.error(error.message)
+        throwErrorMessage(error, { 1007: '操作频繁' })
         setSpinStatus(false)
       }
     }
@@ -101,7 +100,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       try {
         res = await stoptest({ instance_id: id })
       } catch (error) {
-        message.error(error.message)
+        throwErrorMessage(error, { 2003: '任务正在停止中,请稍后在试', 1007: '操作频繁', 2007: '停止失败' })
         setSpinStatus(false)
       }
     }
@@ -110,7 +109,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       try {
         res = await rePlayTask({ instance_id: id })
       } catch (error) {
-        message.error(error.message)
+        throwErrorMessage(error, { 2009: '重放失败', 1007: '操作频繁', 3002: '仿真连接失败', 2007: '停止失败' })
         setSpinStatus(false)
       }
     }
@@ -128,7 +127,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
     try {
       res = await bgTest({ instance_id: id as number })
     } catch (error) {
-      message.error(error.message)
+      throwErrorMessage(error, { 2011: '任务运行数量超出限制', 2005: '任务启动失败', 3002: '仿真链接失败', 9000: '系统异常', 1007: '操作频繁' })
       setSpinStatus(false)
     }
     if (res) {

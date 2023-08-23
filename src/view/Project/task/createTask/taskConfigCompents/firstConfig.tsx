@@ -68,6 +68,10 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   //  删除弹出框
   const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
   const [nodeList, setNodeList] = useState<number[]>([])
+
+  // 下拉菜单
+
+  const [dropDownOpen, setDropDownOpen] = useState(false)
   const scrollRef = useRef(-1)
   const pageRef = useRef(0)
   // 删除弹出框函数
@@ -110,7 +114,13 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         }
       }
     } catch (error) {
-      message.error(error.message)
+      throwErrorMessage(error, {
+        1004: '该任务不存在',
+        1005: '任务名称重复，请修改',
+        1006: '任务参数校验失败',
+        1007: '操作频繁',
+        1015: taskInfo?.editTaskMode ? '任务更新失败' : '任务创建失败'
+      })
       await sleep(300)
       setModalData({ ...modalData, spinning: false })
       CommonModleClose(false)
@@ -138,7 +148,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         setNodeList(result.data)
       }
     } catch (error) {
-      throwErrorMessage(error, {})
+      throwErrorMessage(error, { 3002: '仿真连接失败', 3001: '未找到可用仿真节点', 3000: '仿真通讯异常' })
     }
   }
 
@@ -165,7 +175,9 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           })
         }
       } catch (error) {
-        message.error(error.message)
+        throwErrorMessage(error, {
+          1004: '获取激励列表失败'
+        })
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -331,6 +343,8 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
             placeholder='请选择激励发送列表'
             showSearch
             onSearch={onSearch}
+            open={dropDownOpen}
+            onDropdownVisibleChange={visible => setDropDownOpen(visible)}
             optionFilterProp='children'
             onPopupScroll={e => {
               onScrollData(e)
@@ -344,6 +358,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
                     className={styles.selectRender}
                     role='time'
                     onClick={() => {
+                      setDropDownOpen(false)
                       jumpNewCreateTask()
                     }}
                   >

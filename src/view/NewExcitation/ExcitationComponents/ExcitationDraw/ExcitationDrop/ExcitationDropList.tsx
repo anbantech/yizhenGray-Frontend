@@ -202,23 +202,27 @@ function ExcitationDropList() {
     [DropList]
   )
 
+  const updateList = React.useCallback(
+    (DropList, hoverIndex, itemIndex) => {
+      const dropCardListCopy = DropList
+      const copy = dropCardListCopy.splice(itemIndex, 1)
+      dropCardListCopy.splice(hoverIndex, 0, ...copy)
+      setLeftList([...dropCardListCopy])
+    },
+    [setLeftList]
+  )
+
   const moveCardHandler = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
       clearCheckList()
       if (dragableDragingStatus) {
-        const dropCardListCopy = DropList
-        const lessIndex = dropCardListCopy.findIndex((item: any) => item.sender_id === -1)
-        const copy = dropCardListCopy.splice(lessIndex, 1)
-        dropCardListCopy.splice(hoverIndex, 0, ...copy)
-        setLeftList([...dropCardListCopy])
+        const lessIndex = DropList.findIndex((item: any) => item.sender_id === -1)
+        updateList(DropList, hoverIndex, lessIndex)
       } else {
-        const dropCardListCopy = [...DropList]
-        const copy = dropCardListCopy.splice(dragIndex, 1)
-        dropCardListCopy.splice(hoverIndex, 0, ...copy)
-        setLeftList([...dropCardListCopy])
+        updateList(DropList, hoverIndex, dragIndex)
       }
     },
-    [DropList, clearCheckList, dragableDragingStatus, setLeftList]
+    [DropList, clearCheckList, dragableDragingStatus, updateList]
   )
 
   const onChange = React.useCallback(
@@ -251,6 +255,7 @@ function ExcitationDropList() {
   )
 
   drop(ref)
+
   return (
     <ScrollingComponent className={StyleSheet.dropList_ListScroll}>
       <div ref={ref} className={StyleSheet.dropList_List}>
