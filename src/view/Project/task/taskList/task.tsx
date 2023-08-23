@@ -161,7 +161,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       CommonModleClose(false)
     } catch (error) {
       CommonModleClose(false)
-      throwErrorMessage(error, { 1009: '任务删除失败' })
+      throwErrorMessage(error, { 1009: '任务删除失败', 1007: '操作频繁' })
     }
   }
 
@@ -193,7 +193,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
         }
         return result
       } catch (error) {
-        throwErrorMessage(error)
+        throwErrorMessage(error, { 1008: '服务异常' })
       }
     },
     [InstancesDetail, keepCheckTask, modalData.taskId]

@@ -99,7 +99,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
       setCheckAll(false)
       setCheckAllCrash(false)
       setDisabledStatus(true)
-      message.error('新建实例失败')
+      throwErrorMessage(error, { 1005: '实例新建失败' })
       return error
     }
   }, [carshObj, choiceModal, form, task_id])

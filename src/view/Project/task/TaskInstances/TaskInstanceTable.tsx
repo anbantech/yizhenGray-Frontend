@@ -175,7 +175,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         message.success('实例删除成功')
       }
     } catch (error) {
-      message.error(error.message)
+      throwErrorMessage(error, { 1009: '实例删除失败' })
     }
   }, [InstancesDetail, modalData, params])
 

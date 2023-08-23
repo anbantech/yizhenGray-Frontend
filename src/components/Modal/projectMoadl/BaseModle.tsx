@@ -28,7 +28,7 @@ function ModalpPop(props: any) {
       message.success('项目新建成功')
       return data
     } catch (error) {
-      throwErrorMessage(error, { 1005: '项目名称重复，请修改' })
+      throwErrorMessage(error, { 1004: '该项目不存在', 1005: '项目名称重复，请修改', 1007: '操作频繁' })
       return error
     }
   }
@@ -50,7 +50,7 @@ function ModalpPop(props: any) {
       }
     } catch (error) {
       setDisabledStatus(true)
-      throwErrorMessage(error, { 1005: '项目名称重复，请修改' })
+      throwErrorMessage(error, { 1004: '该项目不存在', 1005: '项目名称重复，请修改', 1007: '操作频繁' })
       return error
     }
   }

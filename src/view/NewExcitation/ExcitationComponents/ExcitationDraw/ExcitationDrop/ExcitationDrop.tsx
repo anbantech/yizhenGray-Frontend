@@ -36,6 +36,7 @@ const DeleteCompoent = ({ number, DeleteCheckItem }: { number: number; DeleteChe
 const DeleteCompoentMemo = React.memo(DeleteCompoent)
 
 function ExcitationDropMemo() {
+  // 拖拽数据 存储
   const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
   // 设置状态详情
@@ -46,6 +47,7 @@ function ExcitationDropMemo() {
   const checkAllList = checkListStore(state => state.checkAllList)
   // 清除筛选,框筛选条件
   const clearCheckList = checkListStore(state => state.clearCheckList)
+  // 更新数据
   const { setParamsChange } = LeftDropListStore()
   // 按钮状态
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
