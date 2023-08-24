@@ -77,7 +77,7 @@ export function lookUpDependencePeripheral(id: number) {
   return request.get<any>(`/api/v1.0/temp_and_sti/peripheral/relevance/query/${id}`)
 }
 
-// 更新外设信息
+// 更新端口信息
 
 export function updateOneExcitaionList(id: number, params: UpdateOneExcitaionListParams) {
   return request.put<any>(`/api/v1.0/temp_and_sti/update/sti/${id}`, params)
@@ -100,7 +100,7 @@ export function updatFourWork(id: number, params: doubleExcitationParams) {
   return request.put<any>(`/api/v1.0/temp_and_sti/update/work/${id}`, params)
 }
 
-// 删除外设
+// 删除端口
 export function deleteneExcitaionList(id: string) {
   return request.delete<any>('/api/v1.0/temp_and_sti/remove/sti', { params: { stimulus: id } })
 }

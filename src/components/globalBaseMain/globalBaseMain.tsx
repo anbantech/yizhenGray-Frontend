@@ -23,13 +23,13 @@ interface ContextProps {
 }
 
 const routerMap = {
-  one: '修改外设',
+  one: '修改端口',
   two: '修改激励单元',
   three: '修改激励嵌套',
   four: '修改交互'
 }
 const deleteMap = {
-  one: '外设删除',
+  one: '端口删除',
   two: '激励单元删除',
   three: '激励嵌套删除',
   four: '交互删除'

@@ -35,7 +35,7 @@ function ExcitationDropHeader() {
       <div className={StyleSheet.dropList_HeaderCheckBoxRight}>
         <span className={StyleSheet.excitationChart}>序号</span>
         <span className={StyleSheet.excitationChart}>名称</span>
-        <span className={StyleSheet.excitationChart}>外设</span>
+        <span className={StyleSheet.excitationChart}>端口</span>
         <span className={StyleSheet.excitationChart}>发送次数</span>
         <span className={StyleSheet.excitationChart}>发送间隔</span>
         <span className={StyleSheet.excitationChart}>操作</span>
