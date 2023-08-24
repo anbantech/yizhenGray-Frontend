@@ -333,7 +333,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           </Select>
         </Form.Item>
         <Form.Item
-          label='激励发送列表'
+          label='激励序列'
           name='sender_id'
           validateFirst
           validateTrigger={['onBlur']}

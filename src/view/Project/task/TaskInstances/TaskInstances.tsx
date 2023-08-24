@@ -48,7 +48,7 @@ const HeaderComponets: React.FC = () => {
               <div className={styles.cloumnLine} />
               <span>仿真节点 : {InstancesDetail.task_detail.simu_instance_id} </span>
               <div className={styles.cloumnLine} />
-              <span>激励发送列表 : {InstancesDetail.task_detail.group_name} </span>
+              <span>激励序列 : {InstancesDetail.task_detail.group_name} </span>
             </div>
           </div>
           <div className={styles.headerright}>

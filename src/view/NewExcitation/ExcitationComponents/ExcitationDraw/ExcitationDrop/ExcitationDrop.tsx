@@ -48,7 +48,7 @@ function ExcitationDropMemo() {
   // 清除筛选,框筛选条件
   const clearCheckList = checkListStore(state => state.clearCheckList)
   // 更新数据
-  const { setParamsChange } = LeftDropListStore()
+  const { setParamsChange, setDestoryEverything } = LeftDropListStore()
   // 按钮状态
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   // 实例状态是否更新
@@ -75,6 +75,7 @@ function ExcitationDropMemo() {
     async (id: number) => {
       try {
         const res = await getExcitaionDeatilFn(id)
+
         if (res.data) {
           setDetailData(res.data)
         }
@@ -82,18 +83,19 @@ function ExcitationDropMemo() {
         message.error(error.message)
       }
     },
+
     [setDetailData]
   )
 
   useEffect(() => {
     if (sender_id) {
-      setSendBtnStatus(true)
       getExcitaionDeatilFunction(sender_id)
     }
   }, [getExcitaionDeatilFunction, sender_id, detailStatus, setSendBtnStatus])
 
   useEffect(() => {
     return () => {
+      setDestoryEverything()
       clearCheckList()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

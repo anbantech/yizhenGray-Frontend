@@ -270,7 +270,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
           width='100%'
           height='36px'
           borderRadius='4px'
-          name='新建激励发送列表'
+          name='新建激励序列'
           size='small'
           type='primary'
           onClick={createNewExcitationList}
@@ -341,7 +341,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
             CommonModleClose={CommonModleClose}
             ing='删除中'
             btnName='删除'
-            name='删除激励发送列表'
+            name='删除激励序列'
             concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
           />
         )}
@@ -351,7 +351,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
         {visibility && (
           <LookUpDependence
             visibility={visibility as boolean}
-            name='激励发送列表关联信息'
+            name='激励序列关联信息'
             data={dependenceInfo}
             choiceModal={chioceModalStatus}
             width='520px'
