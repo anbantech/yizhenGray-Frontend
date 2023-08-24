@@ -56,7 +56,7 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
       width={632}
       visible={open}
       className={StyleSheet.taskExcitaionModal}
-      title='新建激励发送列表'
+      title='新建激励序列'
       onCancel={() => {
         deleteEverything()
         cancel()

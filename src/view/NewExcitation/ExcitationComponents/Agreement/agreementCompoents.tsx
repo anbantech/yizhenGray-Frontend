@@ -82,6 +82,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
   const onValuesChange = React.useCallback((changedValues: any, allValues: any) => {
     setformData(allValues)
   }, [])
+
   const onToggleForbidDrag = React.useCallback(() => {
     setCanDrag(false)
     return Promise.reject(new Error('字段名称由汉字、数字、字母和下划线组成'))

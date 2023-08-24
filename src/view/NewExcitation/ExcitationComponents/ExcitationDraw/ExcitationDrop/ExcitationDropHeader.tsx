@@ -129,7 +129,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
       }
     } catch (error) {
       close()
-      throwErrorMessage(error, { 1005: '激励发送列表名称重复，请修改' })
+      throwErrorMessage(error, { 1005: '激励序列名称重复，请修改' })
     }
   }, [isReg, DropList, updated, name, gu_cnt0, gu_w0, desc, close, sender_id, callback, clearCheckList])
 
@@ -338,7 +338,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
           ing='保存中'
           name='保存配置'
           btnName='确定'
-          concent='修改激励发送列表配置，会停止关联任务，并清空关联任务的测试数据，是否确认保存？'
+          concent='修改激励序列配置，会停止关联任务，并清空关联任务的测试数据，是否确认保存？'
         />
       )}
     </div>
