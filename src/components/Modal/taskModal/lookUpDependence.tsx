@@ -26,7 +26,7 @@ interface mapType {
 }
 
 const TypeMap = {
-  0: '外设',
+  0: '端口',
   1: '激励',
   3: '激励序列',
   4: '模板',

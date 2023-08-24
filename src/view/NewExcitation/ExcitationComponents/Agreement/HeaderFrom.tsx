@@ -176,8 +176,8 @@ const HeadForm = React.forwardRef((props, myRef) => {
       <Form.Item name='gu_cnt0' label='发送次数' rules={[{ required: true, validator: checkGuCnt }]}>
         <GuCntInput />
       </Form.Item>
-      <Form.Item name='peripheral' validateTrigger={['onBlur']} label='外设' rules={[{ required: true, message: '请选择外设' }]}>
-        <Select placeholder='请选择外设' className={styles.commonItem}>
+      <Form.Item name='peripheral' validateTrigger={['onBlur']} label='端口' rules={[{ required: true, message: '请选择端口' }]}>
+        <Select placeholder='请选择端口' className={styles.commonItem}>
           {
             /**
              * 下拉选择端口

@@ -32,7 +32,6 @@ export function exportReport(id: number) {
 }
 
 // 新建任务
-
 export function createTaskFn(params: taskParamsFn) {
   return request.post<any>('/api/v1.0/tasks/save', params)
 }
@@ -56,13 +55,11 @@ export function stoptest(params: any) {
 }
 
 // 手动继续测试
-
 export function stopcontuine(params: any) {
   return request.post<null>('/api/v1.0/tasks/continue', params)
 }
 
 // 测试日志导出
-
 export function testLog(id: number, params: exportTestLog) {
   return request.post<any>(`/api/v1.0/test-logs/download/${id}`, params, { responseType: 'blob', timeout: 0 })
 }
@@ -71,8 +68,8 @@ export function testLog(id: number, params: exportTestLog) {
 export function testLogs(id: number, params: exportTestLog) {
   return request.post<any>(`/api/v1.0/test-logs/logs/download/${id}`, params, { responseType: 'blob', timeout: 0 })
 }
-// 诊断
 
+// 诊断
 export function diagnose(id: string, log_index: number) {
   return request.get<any>(`/api/v1.0/test-logs/diagnose/${id}?log_index=${log_index}`)
 }
@@ -91,10 +88,12 @@ export function findTask(params: any) {
 export function taskStatus(id: number | string) {
   return request.get(`/api/v1.0/tasks/status?tasks=${id}`)
 }
+
 // 删除实例
 export function deleteExampleTask(task_id: any, instances_id: string) {
   return request.delete<any>('/api/v1.0/instances/remove', { params: { task_id, instances: instances_id } })
 }
+
 // 更新任务信息
 export function updateTask(id: number, params: taskParamsFn) {
   return request.put<any>(`/api/v1.0/tasks/update/${id}`, params)
@@ -104,8 +103,8 @@ export function updateTask(id: number, params: taskParamsFn) {
 export function simulate(params: simulateParams) {
   return request.get<any>(`/api/v1.0/simulate/status`, { params })
 }
-// 寄存器/内存信息查询
 
+// 寄存器/内存信息查询
 export function simulateOption(params: simulateParams) {
   return request.get<any>(`/api/v1.0/simulate/action`, { params })
 }
@@ -121,7 +120,6 @@ export function getSimulateNode() {
 }
 
 // 用例生成详情
-
 export function getUseCase(params: any) {
   return request.get<any>(`/api/v1.0/instances/cases`, { params })
 }
@@ -148,7 +146,6 @@ export function createTaskInstance(params: InstanceParams) {
 }
 
 // 实例详情
-
 export function instanceDetail(id: string) {
   return request.get<any>(` /api/v1.0/instances/get/${id}`)
 }

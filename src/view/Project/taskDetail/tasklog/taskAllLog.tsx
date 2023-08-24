@@ -150,7 +150,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       dataIndex: ' msg_index',
       key: 'msg_index',
       ellipsis: true,
-      width: '10%',
+      width: '8%',
       render: (text: any, record: any) => {
         return (
           <div className={styles.recv_data} key={record.id}>
@@ -195,7 +195,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       dataIndex: 'recv_data',
       key: 'recv_data',
       ellipsis: true,
-      width: '12.5%',
+      width: '10%',
       render: (text: any, record: any) => (
         <div className={styles.recv_data} key={record.id}>
           {record.recv_data ? (
@@ -220,7 +220,6 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       },
       dataIndex: 'case_type',
       key: 'case_type',
-      ellipsis: true,
       render: (text: any, record: any) => (
         <div className={styles.checkDetail} key={record.id}>
           {record.case_type ? '是' : '否'}
