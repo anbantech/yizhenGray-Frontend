@@ -13,6 +13,7 @@ function CheckCompoents(props: propsType) {
     <div className={detailStyle.checkend}>
       <div className={detailStyle.checked} role='time'>
         <span className={detailStyle.CheckName}>筛选进制</span>
+        <span className={detailStyle.colon}> : </span>
         <Check Checked={Checked} positionErrorFrameData={system} getPopupContainer={(triggerNode: any) => triggerNode.parentNode} />
       </div>
     </div>

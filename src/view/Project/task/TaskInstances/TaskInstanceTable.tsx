@@ -10,7 +10,7 @@ import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'reac
 import zhCN from 'antd/lib/locale/zh_CN'
 import deleteImage from 'Src/assets/image/icon_delete.svg'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
-import { statusList, statusMap } from 'Src/util/DataMap/dataMap'
+import { reset_mode_Map, statusList, statusMap } from 'Src/util/DataMap/dataMap'
 import { DownOutlined } from '@ant-design/icons/lib/icons'
 import { deleteExampleTask, taskTest } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
@@ -224,17 +224,17 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
     },
     {
       width: '8%',
-      title: '设定数量',
-      dataIndex: 'crash_num',
-      key: 'crash_num',
+      title: '复位方式',
+      dataIndex: 'reset_mode',
+      key: 'reset_mode',
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
-        return <span>{`${row.crash_num}`}</span>
+        return <span>{reset_mode_Map[row.crash_num as keyof typeof reset_mode_Map]}</span>
       }
     },
     {
       width: '8%',
-      title: '发现数量',
+      title: '缺陷数量',
       dataIndex: 'error_num',
       key: 'error_num'
     },

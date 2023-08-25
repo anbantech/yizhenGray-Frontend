@@ -39,6 +39,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     sort_field: 'create_time',
     sort_order: 'descend',
     system: 'hex',
+    level: null,
     statement_coverage: '',
     branch_coverage: '',
     diagnosis: ''
@@ -157,6 +158,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
                 <DetailTestingTable params={RequsetParams} taskDetailInfo={taskDetailInfo} status={updateStatus} />
               ) : (
                 <DetailTestedTable
+                  level={depData.level}
                   system={depData.system}
                   status={updateStatus}
                   Checked={checked}

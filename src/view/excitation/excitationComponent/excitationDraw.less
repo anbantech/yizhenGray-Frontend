@@ -147,3 +147,19 @@
   right: 15px;
   top: 20px;
 }
+
+
+.levelTooltip{
+  display: flex;
+  flex-direction: column;
+}
+
+.overlay {
+  max-width: 500px;
+  overflow-x: scroll;
+  flex-direction: column;
+  :global(.ant-tooltip-inner) {
+    padding-bottom: 0px !important;
+    white-space: pre-line;
+  }
+}

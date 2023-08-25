@@ -202,3 +202,9 @@ export const CodeMap = {
   9004: '容器不存在',
   9005: '容器内容服务异常'
 }
+
+export const reset_mode_Map = {
+  0: '不复位',
+  1: '硬复位',
+  2: '软复位'
+}
