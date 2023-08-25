@@ -17,6 +17,7 @@ import styles from '../taskDetailUtil/Detail.less'
 import { taskDetailInfoType } from '../taskDetail'
 import { projectInfoType } from '../../task/taskList/task'
 import CheckCompoents from '../taskDetailCompoents/CheckCompoents'
+import CheckCrashLevelCompoents from '../taskDetailCompoents/CheckCrashLevelCompoents'
 
 interface taskDetailType<S, T> {
   projectInfo: T
@@ -39,6 +40,7 @@ interface propsType {
   Checked: (value: string) => void
   BranchSort: (value: string) => void
   StatementSort: (value: string) => void
+  level: null | number
 }
 
 interface DataType {
@@ -59,10 +61,11 @@ interface DataType {
   sent_cnt: number
   statement_coverage: string
   branch_coverage: string
+  level: null | number
 }
 type Detail_Type = Record<string, any>
 const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
-  const { task_id, params, total, system, Checked, status, logData, StatementSort, BranchSort, changePage, testTimeSort, caseSort } = props
+  const { task_id, params, total, system, Checked, status, logData, level, StatementSort, BranchSort, changePage, testTimeSort, caseSort } = props
   const { taskInfo, projectInfo, instanceInfo } = props.infoMap
 
   const history = useHistory()
@@ -212,7 +215,10 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     <div className={styles.tableList}>
       <div className={styles.tableListleftq}>
         <span className={styles.log}>测试详情</span>
-        <CheckCompoents system={system} Checked={Checked} />
+        <div className={styles.doubleCheck}>
+          <CheckCrashLevelCompoents system={level} Checked={Checked} />
+          <CheckCompoents system={system} Checked={Checked} />
+        </div>
       </div>
       <div className={styles.container}>
         <div className={styles.Header}>
@@ -315,7 +321,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     <div>
                       <div className={styles.dataInfoContainer}>
                         <Tooltip title={item.recv_data[0]} placement='bottom' overlayClassName={styles.overlay}>
-                          <span>{item.recv_data[0] || '-'}</span>
+                          <span>{item.recv_data[0] || '暂无数据'}</span>
                         </Tooltip>
                         {item.recv_data[0] && (
                           <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(item.recv_data[0])}>
@@ -329,7 +335,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                             return (
                               <div className={styles.dataShowItem} key={`${recv_data}_${Math.random()}`}>
                                 <Tooltip title={recv_data} placement='bottom' overlayClassName={styles.overlay}>
-                                  <span>{recv_data || '-'}</span>
+                                  <span>{recv_data || '暂无数据'}</span>
                                 </Tooltip>
                                 {/* <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(recv_data)}>
                                   <img src={errorFrameCopy} alt='' />

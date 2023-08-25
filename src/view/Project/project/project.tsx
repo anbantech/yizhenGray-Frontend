@@ -201,7 +201,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
       render: (_: any, row: any) => {
         return (
           <Tooltip title={row.name} placement='bottomLeft' overlayClassName={styles.overlay}>
-            <span>{row.desc ? row.desc : '-'}</span>
+            <span>{row.desc ? row.desc : '暂无描述'}</span>
           </Tooltip>
         )
       }
