@@ -77,6 +77,8 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
     count
   } = config
 
+  const [hoverImgStatus, setHoverImgStatus] = useState(false)
+
   const generateRouterList = useCallback((routerList: SideBarRoute[], role: string | string[], isSubItem?: boolean) => {
     role = (typeof role === 'string' ? [role] : role) || ['common']
     return routerList
@@ -126,6 +128,7 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
               _router.isActive = true
               _router.isOpen = !_router.isOpen
             } else {
+              setHoverImgStatus(false)
               _router.isActive = false
             }
             if (_router.children.length > 0) {
@@ -183,6 +186,14 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
   const styleImageFn = useCallback(() => {
     return isClose ? styles.sideNav_img : styles.sideNav_imgClose
   }, [isClose])
+
+  const hoverImg = useCallback(
+    (bol: boolean, isHovering) => {
+      if (bol) return
+      setHoverImgStatus(isHovering)
+    },
+    [hoverImgStatus]
+  )
   const generateRouterListJsx = useCallback(
     (routerList: Required<SideBarRouteExtension>[]) => {
       return routerList.map(router => {
@@ -192,12 +203,23 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
               className={styleMemoFn(router)}
               style={router.isSubItem ? { paddingLeft: '64px' } : {}}
               role='button'
-              tabIndex={0}
               onClick={() => switchRouter(router)}
+              onMouseEnter={() => {
+                hoverImg(router.isActive, true)
+              }}
+              onMouseLeave={() => {
+                hoverImg(router.isActive, false)
+              }}
+              tabIndex={0}
             >
               {!!router.activeImageURL && (
-                <img className={styleImageFn()} src={router.isActive ? router.activeImageURL : router.inactiveImageURL} alt={router.name} />
+                <img
+                  className={styleImageFn()}
+                  src={router.isActive || hoverImgStatus ? router.activeImageURL : router.inactiveImageURL}
+                  alt={router.name}
+                />
               )}
+
               {isClose && (
                 <span className={styles.sideNav_chart}>
                   {router.name} {router.name === '异常信息' && +count > 0 && <span className={styles.errorMessageCue} />}
@@ -210,7 +232,7 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
         )
       })
     },
-    [styleMemoFn, styleImageFn, isClose, count, switchRouter]
+    [styleMemoFn, styleImageFn, isClose, count, switchRouter, hoverImgStatus, hoverImg]
   )
 
   return <>{generateRouterListJsx(routerList2Render)}</>

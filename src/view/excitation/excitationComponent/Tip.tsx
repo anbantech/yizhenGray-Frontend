@@ -5,7 +5,7 @@ import StyleSheet from './excitationDraw.less'
 
 const Tip = () => {
   return (
-    <div className={StyleSheet.Tip}>
+    <div className={StyleSheet.Tip} style={{ cursor: 'pointer' }}>
       <Tooltip title='（节拍单元默认200毫秒）' placement='bottom'>
         <QuestionCircleOutlined style={{ marginLeft: '-20px' }} />
       </Tooltip>
@@ -15,7 +15,7 @@ const Tip = () => {
 
 const StepTip = () => {
   return (
-    <div className={StyleSheet.stepTip}>
+    <div className={StyleSheet.stepTip} style={{ cursor: 'pointer' }}>
       <Tooltip title='交互规则：发送阶段、准备阶段+发送阶段、准备阶段+发送阶段+销毁阶段、发送阶段+销毁阶段' placement='bottom'>
         <QuestionCircleOutlined style={{ fontSize: '18px' }} />
       </Tooltip>
@@ -25,7 +25,7 @@ const StepTip = () => {
 
 const WarnTip = () => {
   return (
-    <div className={StyleSheet.stepTip}>
+    <div className={StyleSheet.stepTip} style={{ cursor: 'pointer' }}>
       <Tooltip title='缺陷结果包含错误信息,警告信息(警告信息不是异常用例)' placement='bottom'>
         <QuestionCircleOutlined style={{ fontSize: '15px' }} />
       </Tooltip>
@@ -35,7 +35,7 @@ const WarnTip = () => {
 
 const InfoTip = () => {
   return (
-    <div className={StyleSheet.stepInfoTip}>
+    <div className={StyleSheet.stepInfoTip} style={{ cursor: 'pointer' }}>
       <Tooltip title='填写crash数量后，任务运行中只要运行时长或crash数量达到设置即可停止' placement='bottom'>
         <QuestionCircleOutlined style={{ fontSize: '15px' }} />
       </Tooltip>
@@ -45,7 +45,7 @@ const InfoTip = () => {
 
 const CrashTip = () => {
   return (
-    <div className={StyleSheet.crashInfoTip}>
+    <div className={StyleSheet.crashInfoTip} style={{ cursor: 'pointer' }}>
       <Tooltip title='所有易复内置缺陷，默认为crash类型' placement='bottom'>
         <QuestionCircleOutlined style={{ fontSize: '15px' }} />
       </Tooltip>
@@ -55,7 +55,7 @@ const CrashTip = () => {
 
 const DropTip = () => {
   return (
-    <div>
+    <div style={{ cursor: 'pointer' }}>
       <Tooltip title='单位为节拍，一个节拍默认为200ms' placement='bottom'>
         <QuestionCircleOutlined style={{ fontSize: '16px', color: '#CCCCCC', marginLeft: '16px' }} />
       </Tooltip>
@@ -65,7 +65,7 @@ const DropTip = () => {
 
 const TipComponents = () => {
   return (
-    <div className={StyleSheet.levelTooltip}>
+    <div className={StyleSheet.levelTooltip} style={{ cursor: 'pointer' }}>
       <span>致命缺陷 : 非法指令、程序跑飞</span>
       <span>
         严重缺陷 :
@@ -79,7 +79,7 @@ const TipComponents = () => {
 
 const CrashLevelTip = () => {
   return (
-    <Tooltip title={<TipComponents />} placement='bottom' overlayClassName={StyleSheet.overlay}>
+    <Tooltip title={<TipComponents />} placement='bottom' overlayClassName={StyleSheet.overlay} style={{ cursor: 'pointer' }}>
       <QuestionCircleOutlined style={{ fontSize: '15px' }} />
     </Tooltip>
   )

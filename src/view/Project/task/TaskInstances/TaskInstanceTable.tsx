@@ -242,7 +242,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       width: '10%',
       // eslint-disable-next-line react/display-name
       title: () => (
-        <div className={styles.statusList_boby}>
+        <div className={styles.statusList_boby} style={{ cursor: 'pointer' }}>
           <div
             role='button'
             tabIndex={0}

@@ -220,6 +220,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
           <div className={styles.Opera_detaile}>
             <span
               style={{ marginLeft: '10px', marginRight: '30px' }}
+              className={styles.Opera_hover}
               role='button'
               tabIndex={0}
               onClick={() => {

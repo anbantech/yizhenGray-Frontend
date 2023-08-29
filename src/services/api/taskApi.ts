@@ -149,3 +149,7 @@ export function createTaskInstance(params: InstanceParams) {
 export function instanceDetail(id: string) {
   return request.get<any>(` /api/v1.0/instances/get/${id}`)
 }
+
+export function downloadPDFReport(id: number | string, { onDownloadProgress }: any) {
+  return request.get<any>(`/api/v1.0/instances/pdf-report/${id}`, { responseType: 'blob', onDownloadProgress, timeout: 0 })
+}

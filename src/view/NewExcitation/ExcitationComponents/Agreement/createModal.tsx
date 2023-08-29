@@ -159,14 +159,12 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
             const val = await createItem()
             return val
           }
-          const val = await upadateItemInfo()
-
-          return val
+          CommonModleClose(true)
         }
         return res
       })
       .catch(() => {})
-  }, [checkItem, createItem, sender_id, upadateItemInfo])
+  }, [sender_id, checkItem, createItem, CommonModleClose])
   return (
     <Modal
       width={720}
