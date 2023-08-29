@@ -136,7 +136,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
   function IsWrongDownMenu() {
     return (
       <Dropdown overlay={menu}>
-        <Space>
+        <Space style={{ cursor: 'pointer' }}>
           异常用例
           <DownOutlined />
         </Space>

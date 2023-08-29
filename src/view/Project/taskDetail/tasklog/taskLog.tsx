@@ -126,7 +126,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   function IsWrongDownMenu() {
     return (
       <Dropdown overlay={menu}>
-        <Space>
+        <Space style={{ cursor: 'pointer' }}>
           异常用例
           <DownOutlined />
         </Space>

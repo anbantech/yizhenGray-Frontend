@@ -3,12 +3,28 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import axios from 'axios'
 import JSZip from 'jszip'
-import { message } from 'antd'
-import CancelButton from 'Src/components/Button/commonButton'
+import { Button, Dropdown, Menu, message, notification } from 'antd'
+
 import { throwErrorMessage } from 'Src/util/message'
-import { exportReport } from 'Src/services/api/taskApi'
+import { warn } from 'Src/util/common'
+import { downloadPDFReport, exportReport } from 'Src/services/api/taskApi'
 import style from './Report.less'
 import ReportLoading from './reportLoading'
+
+// 纯前端创建文件下载
+const browserDownload = {
+  ifHasDownloadAPI: 'download' in document.createElement('a'),
+  createFrontendDownloadAction(name: string, content: Blob) {
+    if ('download' in document.createElement('a')) {
+      const link = document.createElement('a')
+      link.download = `${name}`
+      link.href = URL.createObjectURL(content)
+      link.click()
+    } else {
+      warn(true, '您的浏览器不支持下载方法，请更新您的浏览器到最新版本')
+    }
+  }
+}
 
 function Report(props: any) {
   const { search } = props.location
@@ -89,13 +105,57 @@ function Report(props: any) {
     }
   }
 
+  const exportReportPDF = React.useCallback(async () => {
+    notification.info({
+      key: 'pdf-report',
+      message: `PDF 报告正在生成中...`,
+      placement: 'bottomLeft',
+      duration: null
+    })
+    try {
+      const id = search.split('?')[1].split('=')
+      const res = (await downloadPDFReport(id, {
+        onDownloadProgress() {
+          notification.info({
+            key: 'pdf-report',
+            message: 'PDF 报告正在下载中...',
+            placement: 'bottomLeft'
+          })
+        }
+      })) as any
+      if (res.data) {
+        browserDownload.createFrontendDownloadAction(decodeURIComponent(res.fileName), new Blob([res.data]))
+      }
+      notification.close('pdf-report')
+    } catch (error) {
+      message.error(error)
+    }
+  }, [search])
+
+  const menuItems = (
+    <Menu>
+      <Menu.Item key='html'>
+        <p style={{ marginBottom: 0 }} onClick={exportReportZip}>
+          下载 HTML 报告
+        </p>
+      </Menu.Item>
+      <Menu.Item key='pdf'>
+        <p style={{ marginBottom: 0 }} onClick={exportReportPDF}>
+          下载 PDF 报告
+        </p>
+      </Menu.Item>
+    </Menu>
+  )
+
   return (
     <>
       {loading ? (
         reportData.length !== 0 && (
           <div className={style.report}>
             <div className={style.positionBtn}>
-              <CancelButton buttonStyle={style.step_button} name='下载报告' type='default' onClick={exportReportZip} />
+              <Dropdown overlay={menuItems} placement='bottom'>
+                <Button>下载报告</Button>
+              </Dropdown>
             </div>
             <iframe id='reportData' src='/onLineReporting/index.html' width='100%' height='100%' allowFullScreen frameBorder='0' title='报告' />
           </div>
