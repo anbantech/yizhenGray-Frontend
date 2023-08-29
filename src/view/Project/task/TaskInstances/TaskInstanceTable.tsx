@@ -293,6 +293,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
             <span
               style={{ marginLeft: '10px', marginRight: '30px' }}
               role='button'
+              className={styles.hoverOpera}
               tabIndex={0}
               onClick={() => {
                 jumpTasksDetail(row)
