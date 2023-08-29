@@ -57,8 +57,8 @@ export const statusMap = {
   //   color: styles.roundStatusReplay
   // },
   10: {
-    label: '未知',
-    color: styles.roundStatusBlue
+    label: '固件启动异常',
+    color: styles.roundStatusErrorPaused
   }
 }
 type CrashInfoType = Record<number, string>
@@ -192,6 +192,7 @@ export const CodeMap = {
   7012: '仿真硬件已经复位',
   7013: '仿真节点已运行',
   7014: '清除覆盖率失败',
+  7015: '固件初始化异常',
   8000: '用户异常',
   8001: '用户数量已达上限',
   8002: '用户登录失败',

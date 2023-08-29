@@ -502,7 +502,7 @@ function StepComponents() {
       content: <TwoSteps List={List} />
     },
     {
-      title: '编辑发送列表',
+      title: '编辑发送序列',
       content: <ThreeSteps />
     }
   ]
