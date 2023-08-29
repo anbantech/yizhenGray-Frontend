@@ -16,6 +16,7 @@ import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import inputStyle from 'Src/components/Input/searchInput/searchInput.less'
 import styles from './project.less'
+import { NoTask } from '../../NewExcitation/ExcitationComponents/ExcitationDraw/ExcitationDraw'
 
 const customizeRender = () => <DefaultValueTips content='暂无项目' />
 
@@ -252,14 +253,24 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
           <CreateButton width='146px' name='新建项目' size='large' type='primary' onClick={createProjectModal} />
         </div>
       </div>
-      <div className={styles.tableConcent}>
-        <ConfigProvider locale={zhCN} renderEmpty={customizeRender}>
-          <Table rowKey='id' dataSource={projectList} columns={columns} pagination={false} />
-        </ConfigProvider>
-      </div>
-      <div className={styles.AnBan_PaginationsAge}>
-        <PaginationsAge length={total} num={params.page_size} getParams={changePage} pagenums={params.page} />
-      </div>
+      <>
+        {projectList.length >= 1 ? (
+          <div>
+            <div className={styles.tableConcent}>
+              <ConfigProvider locale={zhCN} renderEmpty={customizeRender}>
+                <Table rowKey='id' dataSource={projectList} columns={columns} pagination={false} />
+              </ConfigProvider>
+            </div>
+            <div className={styles.AnBan_PaginationsAge}>
+              <PaginationsAge length={total} num={params.page_size} getParams={changePage} pagenums={params.page} />
+            </div>
+          </div>
+        ) : (
+          <div style={{ height: '700px', display: 'flex' }}>
+            <NoTask />
+          </div>
+        )}
+      </>
       <ModalpPop
         visible={modalData.isModalVisible}
         hideModal={cancel}

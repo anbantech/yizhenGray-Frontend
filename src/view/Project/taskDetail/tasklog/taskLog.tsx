@@ -5,7 +5,7 @@ import globalStyle from 'Src/view/Project/project/project.less'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { getTime } from 'Src/util/baseFn'
 import { WarnTip } from 'Src/view/excitation/excitationComponent/Tip'
-import { copyText } from 'Src/util/common'
+import { copyText, throwErrorMessage } from 'Src/util/common'
 import SortIconComponent from 'Src/components/SortIcon/sortIcon'
 import NoData from 'Src/view/404/NoData/NoData'
 import { rePlayTask } from 'Src/services/api/taskApi'
@@ -141,6 +141,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   const changeReplayStatus = (id: number) => {
     setReplayId(id)
   }
+
   // 单个用例的重放
   const oneCaseReplay = async (taskID: number, caseID: number) => {
     const idArray = {
@@ -151,7 +152,13 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
       const res = await rePlayTask(idArray)
       return res
     } catch (error) {
-      message.error(error.message)
+      throwErrorMessage(error, {
+        2009: '重放失败',
+        1007: '操作频繁',
+        3002: '仿真终端无响应，请重启并检查网络',
+        2007: '停止失败',
+        7015: '固件初始化异常，更多信息请查看状态详情'
+      })
     }
   }
 

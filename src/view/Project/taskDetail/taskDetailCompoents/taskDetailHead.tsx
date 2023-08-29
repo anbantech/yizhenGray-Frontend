@@ -109,7 +109,13 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       try {
         res = await rePlayTask({ instance_id: id })
       } catch (error) {
-        throwErrorMessage(error, { 2009: '重放失败', 1007: '操作频繁', 3002: '仿真连接失败', 2007: '停止失败' })
+        throwErrorMessage(error, {
+          2009: '重放失败',
+          1007: '操作频繁',
+          3002: '仿真终端无响应，请重启并检查网络',
+          2007: '停止失败',
+          7015: '固件初始化异常，更多信息请查看状态详情'
+        })
         setSpinStatus(false)
       }
     }
@@ -127,7 +133,14 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
     try {
       res = await bgTest({ instance_id: id as number })
     } catch (error) {
-      throwErrorMessage(error, { 2011: '任务运行数量超出限制', 2005: '任务启动失败', 3002: '仿真链接失败', 9000: '系统异常', 1007: '操作频繁' })
+      throwErrorMessage(error, {
+        2011: '任务运行数量超出限制',
+        2005: '任务启动失败',
+        3002: '仿真终端无响应，请重启并检查网络',
+        9000: '系统异常',
+        1007: '操作频繁',
+        7015: '固件初始化异常，更多信息请查看状态详情'
+      })
       setSpinStatus(false)
     }
     if (res) {

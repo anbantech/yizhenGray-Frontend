@@ -337,10 +337,10 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           name='sender_id'
           validateFirst
           validateTrigger={['onBlur']}
-          rules={[{ required: true, message: '请选择激励发送列表' }]}
+          rules={[{ required: true, message: '请选择激励序列' }]}
         >
           <Select
-            placeholder='请选择激励发送列表'
+            placeholder='请选择激励序列'
             showSearch
             onSearch={onSearch}
             open={dropDownOpen}
@@ -364,7 +364,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
                   >
                     <IconAdd className={styles.addImg} />
                     {/* <img src={addImage} alt='' /> */}
-                    <span className={styles.sendlistTitle}>新建激励发送列表</span>
+                    <span className={styles.sendlistTitle}>新建激励序列 </span>
                   </div>
                 </Space>
               </div>

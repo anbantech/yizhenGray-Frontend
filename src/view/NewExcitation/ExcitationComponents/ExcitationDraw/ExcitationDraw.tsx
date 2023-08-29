@@ -7,7 +7,7 @@ import ExcitationList from './ExcitationDrag/ExcitationDragList'
 import StyleSheet from './excitationDraw.less'
 import ExcitationDrop from './ExcitationDrop/ExcitationDrop'
 
-const NoTask = React.memo(() => {
+export const NoTask = React.memo(() => {
   return (
     <div className={StyleSheet.No} style={{ margin: 'auto', paddingTop: '0' }}>
       <img className={StyleSheet.imageNo} src={img_empty} alt='' />
