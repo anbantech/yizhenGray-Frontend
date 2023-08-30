@@ -13,13 +13,14 @@ function TaskDetailModal(props: any) {
     const splitArray = value.split('\\')
     return splitArray[splitArray.length - 1]
   }
+
   return (
     <div className={TaskStyles.taskMain}>
       <div className={TaskStyles.taskMain_header}>
         <span className={TaskStyles.taskMain_title}>{name}</span>
       </div>
 
-      <div className={styles.bottomBody}>
+      <div className={value?.caseType ? styles.bottomBody : styles.bottomAll}>
         {Object.keys(value.crash_info).map(item => {
           return (
             <div className={styles.background} key={item}>

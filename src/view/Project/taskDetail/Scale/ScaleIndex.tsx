@@ -188,7 +188,7 @@ function Scale(props: any) {
           {[0, 1, 4].includes(loopStatus) ? (
             <NoScaleData loopStatus={loopStatus} />
           ) : (
-            <div className={styles.DetailHead}>
+            <div className={styles.DetailHead} style={{ display: data?.case_type || isTesting ? '' : ' none' }}>
               <Tabs defaultActiveKey={isTesting ? 'Memory' : 'Register'} style={{ width: '100%' }} onChange={changeCurrentType}>
                 {isTesting && (
                   <TabPane

@@ -164,7 +164,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
         <div className={styles.taskDetailHead_Main_left_footer}>
           <span>
             {' '}
-            {[0, 1].includes(status) ? (
+            {[0, 1, 10].includes(status) ? (
               <span>
                 {' '}
                 开始时间 : {getTime(start_time)}
@@ -178,7 +178,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
         </div>
       </div>
       <div className={styles.taskDetailHead_Main_right}>
-        {[0, 1].includes(status) && (
+        {[0, 1, 10].includes(status) && (
           <Link to={`/OnlineReporting?id=${id}?name=${num}`} target='_blank' style={{ color: '#000000' }}>
             <div role='button' className={styles.ImageContioner} tabIndex={0}>
               <img className={styles.ImageSize} src={report} alt='stopCourse' />
@@ -233,7 +233,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
           </div>
         )}
 
-        {!display && [0, 1, 5].includes(status) && (
+        {!display && [0, 1, 5, 10].includes(status) && (
           <div
             role='button'
             className={styles.ImageContioner}
@@ -242,7 +242,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
               beginTests()
             }}
           >
-            {[0, 1, 5].includes(status) && (
+            {[0, 1, 5, 10].includes(status) && (
               <>
                 <Tooltip placement='bottom' title='开始测试当前任务'>
                   <Spin spinning={spinStatus && index === 3} indicator={antIcon}>

@@ -252,7 +252,6 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
           </div>
           <div style={{ textAlign: 'left' }} className={styles.Header_Main}>
             <span>缺陷结果</span>
-            <WarnTip />
           </div>
           {(statusMemo === 1 || statusMemo === 0) && (
             <div className={styles.Header_Main}>
