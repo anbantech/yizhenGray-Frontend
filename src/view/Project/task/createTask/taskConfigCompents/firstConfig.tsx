@@ -340,7 +340,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           rules={[{ required: true, message: '请选择激励序列' }]}
         >
           <Select
-            placeholder='请选择激励序列'
+            placeholder='激励序列'
             showSearch
             onSearch={onSearch}
             open={dropDownOpen}

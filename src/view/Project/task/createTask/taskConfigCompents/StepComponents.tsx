@@ -1,4 +1,4 @@
-import { Checkbox, Form, Input, Steps } from 'antd'
+import { Checkbox, Form, Input, Steps, Tooltip } from 'antd'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import { useHistory, withRouter } from 'react-router'
 import { DndProvider, DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd'
@@ -12,11 +12,10 @@ import dragImg from 'Src/assets/drag/icon_drag.png'
 import { useRequestStore } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import { DropTip } from 'Src/view/excitation/excitationComponent/Tip'
 import InputNumberSuffixModal from 'Src/components/inputNumbersuffix/inputNumberModal'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import styles from 'Src/view/Project/task/taskList/task.less'
 import stepStore from './sendListStore'
-
 import StyleSheetOther from '../../../../NewExcitation/ExcitationComponents/ExcitationDraw/excitationDraw.less'
-
 import StyleSheet from './stepBaseConfig.less'
 
 const layout = {
@@ -112,39 +111,81 @@ const TwoSteps = ({ List }: Record<string, any>) => {
   const excitationList = stepStore(state => state.excitationList)
   const current = stepStore(state => state.current)
   const { hasMoreData, loadMoreData } = useRequestStore()
-  const [checkListItem, setListMemo] = useState<any[]>([])
   const CheckboxGroup = Checkbox.Group
+
+  const twoCheckList = stepStore(state => state.twoCheckList)
+  const twoindeterminate = stepStore(state => state.twoindeterminate)
+  const twoAll = stepStore(state => state.twoAll)
   const setExcitation = stepStore(state => state.setExcitation)
+  const setTwoCheckList = stepStore(state => state.setTwoCheckList)
+  const setTwoindeterminate = stepStore(state => state.setTwoindeterminate)
+  const setTwoAll = stepStore(state => state.setTwoAll)
 
   const GetCheckList = React.useCallback(() => {
     const list = excitationList.map((item: any) => {
       return item.sender_id
     })
-    setListMemo([...list])
-  }, [excitationList])
+    if (list.length === 0) {
+      setTwoAll(false)
+      setTwoindeterminate(false)
+    }
+    setTwoCheckList([...list])
+  }, [excitationList, setTwoAll, setTwoCheckList, setTwoindeterminate])
+
+  const up = React.useCallback(() => {
+    setTwoAll(twoCheckList.length === List.length)
+    setTwoindeterminate(!!twoCheckList.length && twoCheckList.length < List.length)
+    loadMoreData()
+  }, [List.length, loadMoreData, setTwoAll, setTwoindeterminate, twoCheckList.length])
 
   React.useEffect(() => {
     GetCheckList()
-  }, [excitationList, current, GetCheckList])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current])
 
-  const onChange = (list: CheckboxValueType[]) => {
-    const listArray = list
-    setListMemo(list)
-    const array = List.filter((item: any) => {
-      return listArray.includes(Number(item.sender_id))
-    })
-    setExcitation([...array])
-  }
+  const onChange = React.useCallback(
+    (checkedValues: CheckboxValueType[]) => {
+      setTwoCheckList([...checkedValues])
+      setTwoAll(checkedValues.length === List.length)
+      setTwoindeterminate(!!checkedValues.length && checkedValues.length < List.length)
+      setExcitation([...checkedValues])
+
+      const listArray = checkedValues
+      const array = List.filter((item: any) => {
+        return listArray.includes(Number(item.sender_id))
+      })
+      setExcitation([...array])
+    },
+    [List, setExcitation, setTwoAll, setTwoCheckList, setTwoindeterminate]
+  )
+
+  const onCheckAllChange = React.useCallback(
+    (e: CheckboxChangeEvent) => {
+      const listArray = List.map((item: any) => {
+        return item.sender_id
+      })
+      setTwoCheckList(e.target.checked ? [...listArray] : [])
+      setTwoindeterminate(false)
+      setTwoAll(e.target.checked)
+      setExcitation(e.target.checked ? [...List] : [])
+    },
+    [List, setExcitation, setTwoAll, setTwoCheckList, setTwoindeterminate]
+  )
 
   return (
     <div className={StyleSheet.twoSteps}>
-      <span className={StyleSheet.StepTitle}>激励列表</span>
+      <div className={StyleSheet.twoStepHeader}>
+        <span className={StyleSheet.StepTitle}>激励列表</span>
+        <Tooltip title='全选' placement='bottom' style={{ width: '100px' }} overlayClassName={StyleSheet.overlay}>
+          <Checkbox indeterminate={twoindeterminate} onChange={onCheckAllChange} checked={twoAll} />
+        </Tooltip>
+      </div>
       {List.length > 0 ? (
         <div id='scrollableDiv' className={StyleSheet.scrollDiv} style={{ height: 208 }}>
-          <CheckboxGroup onChange={onChange} style={{ width: '100%' }} value={checkListItem}>
+          <CheckboxGroup onChange={onChange} style={{ width: '100%' }} value={twoCheckList}>
             <InfiniteScroll
               dataLength={List.length}
-              next={loadMoreData}
+              next={up}
               hasMore={hasMoreData}
               scrollableTarget='scrollableDiv'
               loader={
@@ -299,12 +340,46 @@ const DropableMemo = ({ index, item, moveCardHandler, sender_id, DropList, Delet
 const Dropable = React.memo(DropableMemo)
 
 const DeleteCompoent = ({ number, DeleteCheckItem }: { number: number; DeleteCheckItem: () => void }) => {
+  const setCheckList = stepStore(state => state.setCheckList)
+  const excitationList = stepStore(state => state.excitationList)
+  const setThreeAll = stepStore(state => state.setThreeAll)
+  const setThreeindeterminate = stepStore(state => state.setThreeindeterminate)
+  const threeAll = stepStore(state => state.threeAll)
+  const threeindeterminatel = stepStore(state => state.threeindeterminate)
+
+  const onCheckAllChange = React.useCallback(
+    (e: CheckboxChangeEvent) => {
+      const list = excitationList.map((item: any) => {
+        return item.sender_id
+      })
+      setCheckList(e.target.checked ? [...list] : [])
+      setThreeindeterminate(false)
+      setThreeAll(e.target.checked)
+    },
+    [excitationList, setCheckList, setThreeAll, setThreeindeterminate]
+  )
+
+  React.useEffect(() => {
+    if (number > 0) {
+      setThreeAll(number === excitationList.length)
+      setThreeindeterminate(!!number && number < excitationList.length)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [number, excitationList])
+
   return (
     <div className={StyleSheet.DelCompoents}>
-      <div role='time' className={StyleSheet.bottomBtn} onClick={DeleteCheckItem}>
-        批量删除
+      <div className={StyleSheet.leftComponents}>
+        <Tooltip title='全选' placement='bottom' style={{ width: '100px' }} overlayClassName={StyleSheet.overlay}>
+          <Checkbox indeterminate={threeindeterminatel} onChange={onCheckAllChange} checked={threeAll} />
+        </Tooltip>
       </div>
-      <span className={StyleSheet.DelCompoentsCharts}>{`已选 ${number} 项`}</span>
+      <div className={StyleSheet.rightDelComponents}>
+        <div role='time' className={StyleSheet.bottomBtn} onClick={DeleteCheckItem}>
+          批量删除
+        </div>
+        <span className={StyleSheet.DelCompoentsCharts}>{`已选 ${number} 项`}</span>
+      </div>
     </div>
   )
 }
@@ -312,6 +387,8 @@ const DeleteCompoentMemo = React.memo(DeleteCompoent)
 
 const ThreeSteps = () => {
   const excitationList = stepStore(state => state.excitationList)
+  const setThreeAll = stepStore(state => state.setThreeAll)
+  const setThreeindeterminate = stepStore(state => state.setThreeindeterminate)
   const CheckboxGroup = Checkbox.Group
   const [, drop] = useDrop(() => ({
     accept: 'DragDropItem'
@@ -386,9 +463,14 @@ const ThreeSteps = () => {
     setCheckList([])
   }, [checkList, excitationList, setCheckList, setExcitation])
 
-  const onChange = (list: any[]) => {
-    setCheckList([...list])
-  }
+  const onChange = React.useCallback(
+    (list: any[]) => {
+      setThreeAll(checkList.length === excitationList.length)
+      setThreeindeterminate(!!checkList.length && checkList.length < excitationList.length)
+      setCheckList([...list])
+    },
+    [checkList.length, excitationList.length, setCheckList, setThreeAll, setThreeindeterminate]
+  )
 
   return (
     <div className={StyleSheet.twoSteps}>

@@ -33,7 +33,7 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
     if (current === 2) {
       return excitationList.length === 0
     }
-  }, [current, btnStatus, excitationList.length])
+  }, [current, btnStatus, excitationList])
   const createExcitation = React.useCallback(async () => {
     const listArray = excitationList.map((item: any) => {
       return item.sender_id

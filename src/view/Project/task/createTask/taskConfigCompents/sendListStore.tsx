@@ -15,12 +15,22 @@ interface ListState {
   gu_cnt0: number
   gu_w0: number
   checkList: any[]
+  twoindeterminate: boolean
+  twoCheckList: any[]
+  twoAll: boolean
+  threeindeterminate: boolean
+  threeAll: boolean
   setExcitation: (val: any) => void
   setCheckList: (val: any) => void
   increase: (type: string) => void
   decrease: (type: string) => void
   setValue: (type: string, val: number) => void
   deleteEverything: () => void
+  setTwoCheckList: (val: any) => void
+  setTwoindeterminate: (val: boolean) => void
+  setTwoAll: (val: boolean) => void
+  setThreeindeterminate: (val: boolean) => void
+  setThreeAll: (val: boolean) => void
 }
 
 const stepStore = create<ListState>((set, get) => ({
@@ -31,10 +41,42 @@ const stepStore = create<ListState>((set, get) => ({
   gu_cnt0: 1,
   gu_w0: 1,
   checkList: [],
-  setCurrent: () =>
+  twoCheckList: [],
+  twoindeterminate: false,
+  twoAll: false,
+  threeindeterminate: false,
+  threeAll: false,
+  setTwoCheckList: (val: any) => {
+    set(() => ({
+      twoCheckList: val
+    }))
+  },
+
+  setThreeindeterminate: (val: boolean) => {
+    set(() => ({
+      threeindeterminate: val
+    }))
+  },
+  setThreeAll: (val: boolean) => {
+    set(() => ({
+      threeAll: val
+    }))
+  },
+  setTwoindeterminate: (val: boolean) => {
+    set(() => ({
+      twoindeterminate: val
+    }))
+  },
+  setTwoAll: (val: boolean) => {
+    set(() => ({
+      twoAll: val
+    }))
+  },
+  setCurrent: () => {
     set(state => ({
       current: state.current + 1
-    })),
+    }))
+  },
   preCurrent: () => {
     const { setCheckList, current } = get()
     if (current === 2) {
@@ -101,6 +143,7 @@ const stepStore = create<ListState>((set, get) => ({
       checkList: val
     }))
   },
+
   deleteEverything: () =>
     set({
       current: 0,
@@ -109,7 +152,12 @@ const stepStore = create<ListState>((set, get) => ({
       excitationList: [],
       checkList: [],
       gu_cnt0: 1,
-      gu_w0: 1
+      gu_w0: 1,
+      twoCheckList: [],
+      twoindeterminate: false,
+      twoAll: false,
+      threeindeterminate: false,
+      threeAll: false
     })
 }))
 
