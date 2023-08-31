@@ -142,9 +142,7 @@ function ExcitationDragMemo({ onChange }: Props) {
   )
   const up = React.useCallback(() => {
     setCheckAll(checkAllList.length === rightDragList.length)
-
     setIndeterminate(!!checkAllList.length && checkAllList.length < rightDragList.length)
-
     loadMoreData()
   }, [checkAllList.length, loadMoreData, rightDragList.length, setCheckAll, setIndeterminate])
   React.useEffect(() => {
