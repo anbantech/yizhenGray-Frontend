@@ -46,7 +46,7 @@ const InfoTip = () => {
 const CrashTip = () => {
   return (
     <div className={StyleSheet.crashInfoTip} style={{ cursor: 'pointer' }}>
-      <Tooltip title='所有易复内置缺陷，默认为crash类型' placement='bottom'>
+      <Tooltip title={<TipComponents />} placement='bottom'>
         <QuestionCircleOutlined style={{ fontSize: '15px' }} />
       </Tooltip>
     </div>

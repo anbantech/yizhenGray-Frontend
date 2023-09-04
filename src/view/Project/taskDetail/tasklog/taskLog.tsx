@@ -1,5 +1,4 @@
-import { DownOutlined } from '@ant-design/icons'
-import { Dropdown, Menu, message, Space, Tooltip } from 'antd'
+import { message, Tooltip } from 'antd'
 import { useHistory } from 'react-router'
 import globalStyle from 'Src/view/Project/project/project.less'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
@@ -31,7 +30,6 @@ interface propsType {
   total: number | undefined
   changePage: (page: number, pageSize: number) => void
   testTimeSort: (value: string) => void
-  caseSort: (value: string) => void
   infoMap: taskDetailType<taskDetailInfoType, projectInfoType>
   status: number
   // cancelMenu: (e: React.MouseEvent<HTMLDivElement>) => void
@@ -64,7 +62,7 @@ interface DataType {
 }
 type Detail_Type = Record<string, any>
 const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
-  const { task_id, params, total, system, Checked, status, logData, level, StatementSort, BranchSort, changePage, testTimeSort, caseSort } = props
+  const { task_id, params, total, system, Checked, status, logData, level, StatementSort, BranchSort, changePage, testTimeSort } = props
   const { taskInfo, projectInfo, instanceInfo } = props.infoMap
 
   const history = useHistory()
@@ -72,7 +70,6 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
 
   const [replayId, setReplayId] = useState<number>(-1)
 
-  const [currentType, setCurrentType] = useState('')
   const [isType, setType] = useState('time')
   const setOperation = (value1?: any, type?: string, value2?: any) => {
     switch (type) {
@@ -82,9 +79,6 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
       case 'time':
         setType(type as string)
         testTimeSort(value1)
-        break
-      case 'case_type':
-        caseSort(value1)
         break
       case 'Statement':
         setType(type as string)
@@ -99,39 +93,9 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     }
   }
 
-  const changeCurrentType = (e: any) => {
-    setCurrentType(e.key)
-    setOperation(e.key, 'case_type')
-  }
-
   const statusMemo = useMemo(() => {
     return status
   }, [status])
-
-  const menu = (
-    <Menu selectable onClick={changeCurrentType} selectedKeys={[currentType]}>
-      <Menu.Item key='' style={{ textAlign: 'center' }}>
-        默认
-      </Menu.Item>
-      <Menu.Item key={1} style={{ textAlign: 'center' }}>
-        是
-      </Menu.Item>
-      <Menu.Item key={0} style={{ textAlign: 'center' }}>
-        否
-      </Menu.Item>
-    </Menu>
-  )
-
-  function IsWrongDownMenu() {
-    return (
-      <Dropdown overlay={menu}>
-        <Space style={{ cursor: 'pointer' }}>
-          异常用例
-          <DownOutlined />
-        </Space>
-      </Dropdown>
-    )
-  }
 
   const changeToggleStatus = (id: number) => {
     setCurrentOpenId(id === currentOpenId ? -1 : id)
@@ -237,9 +201,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
           <div className={styles.Header_Main}>
             <span>接收数据</span>
           </div>
-          <div className={styles.Header_Main}>
-            <IsWrongDownMenu />
-          </div>
+
           <div className={styles.Header_Main}>
             <SortIconComponent title='发送时间' key='2' onChange={setOperation} type='time' isType={isType} />
           </div>
@@ -350,7 +312,6 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                           })}
                       </div>
                     </div>
-                    <div>{item.case_type ? '是' : '否'}</div>
                     <div>{getTime(item.update_time)}</div>
                     <div>{item.branch_coverage}</div>
                     <div>{item.statement_coverage}</div>
