@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
-import { Button, Checkbox, Form, Input, message, Modal } from 'antd'
+import { Button, Checkbox, Form, Input, message, Modal, Radio, RadioChangeEvent } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { throwErrorMessage } from 'Src/util/message'
-import { CrashTip, InfoTip } from 'Src/view/excitation/excitationComponent/Tip'
+import { CrashTip } from 'Src/view/excitation/excitationComponent/Tip'
 import { createTaskInstance } from 'Src/services/api/taskApi'
+import { generateUUID } from 'Src/util/common'
 import { CrashInfoMap } from 'Src/util/DataMap/dataMap'
 import styles from '../BaseModle.less'
 
@@ -50,8 +51,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
   const { visibility, task_id, choiceModal, width, isDetail, data } = props
   const [form] = Form.useForm<FormInstance>()
   const [isDisableStatus, setDisabledStatus] = useState(true)
-  const [indeterminate, setIndeterminate] = useState(false)
-  const [checkAll, setCheckAll] = useState(false)
+  const [reset_modeValue, setValue] = useState(1)
   const [indeterminateCrash, setIndeterminateCrash] = useState(false)
   const [checkAllCrash, setCheckAllCrash] = useState(false)
   const [carshObj, setCrashObj] = useState<CrashObjType | Record<string, unknown>>({})
@@ -79,11 +79,11 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
   const validateForm = useCallback(async () => {
     try {
       const value = await form.validateFields()
-      const { work_time, crash_num } = value
+      const { work_time } = value
       const copyItem = {
         task_id,
         work_time,
-        crash_num,
+        reset_mode: reset_modeValue,
         crash_config: filterData(carshObj)
       }
       if (work_time) {
@@ -96,13 +96,13 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
       }
     } catch (error) {
       setCrashObj({})
-      setCheckAll(false)
+
       setCheckAllCrash(false)
       setDisabledStatus(true)
       throwErrorMessage(error, { 1005: '实例新建失败' })
       return error
     }
-  }, [carshObj, choiceModal, form, task_id])
+  }, [carshObj, choiceModal, form, task_id, reset_modeValue])
 
   const formVali = () => {
     setDisabledStatus(true)
@@ -138,11 +138,8 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
     const ObjArray = Object.values(obj)
     const isEqual = ObjArray.every((val, i, arr) => val === arr[0])
     const isEqual1 = ObjArray.some(val => val === '1')
-    const isEqual2 = ObjArray.some(val => val === '0')
     setCheckAllCrash(isEqual && ObjArray[0] === '1' && Object.keys(obj).length === Object.keys(CrashInfoMap).length)
-    setCheckAll(isEqual && ObjArray[0] === '0' && Object.keys(obj).length === Object.keys(CrashInfoMap).length)
     setIndeterminateCrash(isEqual1)
-    setIndeterminate(isEqual2)
     setCrashObj({ ...obj })
   }
 
@@ -151,50 +148,42 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
     Object.keys(CrashInfoMap).forEach((item: string) => {
       if (type === 'Crash') {
         objData[item] = '1'
-      } else {
-        objData[item] = '0'
       }
     })
     setCrashObj(isChecked ? { ...objData } : {})
-  }
-
-  const onCheckAllChange = (e: CheckboxChangeEvent) => {
-    setKindOfType('Warn', e.target.checked)
-    setIndeterminate(false)
-    if (e.target.checked) {
-      setCheckAllCrash(false)
-      setIndeterminateCrash(false)
-    }
-    setCheckAll(e.target.checked)
   }
 
   const onCheckAllChangeCrash = (e: CheckboxChangeEvent) => {
     setKindOfType('Crash', e.target.checked)
     setIndeterminateCrash(false)
     if (e.target.checked) {
-      setCheckAll(false)
-      setIndeterminate(false)
+      setCheckAllCrash(false)
+      setIndeterminateCrash(false)
     }
     setCheckAllCrash(e.target.checked)
   }
 
   useEffect(() => {
     if (data) {
-      const { work_time, crash_num, crash_config } = data
+      const { work_time, crash_config } = data
       // cause backend will auto add prefix for queue name
       // thus remove prefix of queue name when editing
-      const formData = { work_time, crash_num }
+      const formData = { work_time }
       form.setFieldsValue(formData)
       setCrashObj({ ...crash_config })
     }
     return () => {
       if (!visibility) {
         form.resetFields()
-        setCheckAll(false)
         setCheckAllCrash(false)
+        setIndeterminateCrash(false)
       }
     }
   }, [data, form, visibility])
+
+  const checkRadio = React.useCallback((e: RadioChangeEvent) => {
+    setValue(e.target.value)
+  }, [])
 
   return (
     <Modal
@@ -254,6 +243,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
           label='运行时长'
           name='work_time'
           validateFirst
+          className={styles.workTime}
           validateTrigger={['onBlur']}
           rules={[
             {
@@ -262,40 +252,17 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value >= 1 && value <= 48) {
+                  if (value >= 1) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('请输入 1-48 之间的整数'))
+                  return Promise.reject(new Error('请输入大于0的整数'))
                 }
-                return Promise.reject(new Error('请输入 1-48 之间的整数'))
+                return Promise.reject(new Error('请输入大于0的整数'))
               }
             }
           ]}
         >
           <Input disabled={Boolean(isDetail)} placeholder='请输入运行时长' suffix='小时' />
-        </Form.Item>
-        <Form.Item
-          label='Crash数量'
-          name='crash_num'
-          rules={[
-            {
-              validator(_, value) {
-                if (!value) {
-                  return Promise.resolve()
-                }
-                const reg = /^\d+$/
-                if (reg.test(value)) {
-                  if (value >= 1 && value <= 100) {
-                    return Promise.resolve()
-                  }
-                  return Promise.reject(new Error('请输入 1-100 之间的整数'))
-                }
-                return Promise.reject(new Error('请输入 1-100 之间的整数'))
-              }
-            }
-          ]}
-        >
-          <Input disabled={Boolean(isDetail)} placeholder='请输入Crash数量' suffix={<InfoTip />} />
         </Form.Item>
       </Form>
       <div className={styles.CrashTableBody}>
@@ -309,44 +276,43 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         </div>
       </div>
       <div className={styles.CrashTableBody}>
+        <span> 内置缺陷 </span>
+        <span style={{ padding: '0px 8px 0px 10px' }}> : </span>
+        <div className={styles.crashDes}>
+          <Radio.Group onChange={checkRadio} value={reset_modeValue}>
+            <Radio value={1}>硬复位</Radio>
+            <Radio value={2}>软复位</Radio>
+            <Radio value={0}>不复位</Radio>
+          </Radio.Group>
+          <CrashTip />
+        </div>
+      </div>
+
+      <div className={styles.CrashTableBody}>
         <span> 缺陷类型 </span>
         <span style={{ padding: '0px 8px 0px 10px' }}> : </span>
         <div className={styles.crashTable}>
           <div className={styles.crashTable_header}>
-            <span className={styles.crashTable_headerLeft}> 缺陷类型 </span>
+            <span className={styles.crashTable_headerLeft}> 请选择上报缺陷类型 </span>
             <div className={styles.crashTable_headerRight}>
-              <div className={styles.Checkbox1}>
-                <Checkbox indeterminate={indeterminateCrash} disabled={Boolean(isDetail)} onChange={onCheckAllChangeCrash} checked={checkAllCrash}>
-                  Crash
-                </Checkbox>
-              </div>
               <div className={styles.Checkbox2}>
-                <Checkbox indeterminate={indeterminate} disabled={Boolean(isDetail)} onChange={onCheckAllChange} checked={checkAll}>
-                  Warn
-                </Checkbox>
+                <Checkbox indeterminate={indeterminateCrash} disabled={Boolean(isDetail)} onChange={onCheckAllChangeCrash} checked={checkAllCrash} />
               </div>
             </div>
           </div>
           <div className={styles.tableFooterList}>
             {Object.keys(CrashInfoMap).map((value: string) => {
               return (
-                <div className={styles.tableFooter} key={value}>
+                <div className={styles.tableFooter} key={generateUUID()}>
                   <div className={styles.crashTable_headerLeft}>{CrashInfoMap[+value]}</div>
-                  <Checkbox.Group style={{ width: '42%' }} value={carshObj[value] as string[]} disabled={Boolean(isDetail)}>
+                  <Checkbox.Group value={carshObj[value] as string[]} disabled={Boolean(isDetail)}>
                     <Checkbox
                       value='1'
                       onClick={e => {
                         handleCancel(e, value)
                       }}
                       className={styles.leftCheckbox}
-                      style={{ lineHeight: '39px', width: '75px', paddingLeft: '4px' }}
-                    />
-                    <Checkbox
-                      value='0'
-                      onClick={e => {
-                        handleCancel(e, value)
-                      }}
-                      style={{ lineHeight: '39px', marginLeft: '8px' }}
+                      style={{ lineHeight: '39px', width: '38px', paddingLeft: '12px' }}
                     />
                   </Checkbox.Group>
                 </div>

@@ -68,11 +68,6 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     depCollect(true, { sort_order: value, page: 1, statement_coverage: '', branch_coverage: '' })
   }
 
-  // 筛选异常用例
-  const caseSort = (value: string) => {
-    depCollect(true, { case_type: value, page: 1 })
-  }
-
   const statementSort = (value: string) => {
     depCollect(true, { sort_order: 'descend', statement_coverage: value, branch_coverage: '', page: 1 })
   }
@@ -165,7 +160,6 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
                   task_id={+instanceInfo.id}
                   infoMap={props.location?.state}
                   testTimeSort={testTimeSort}
-                  caseSort={caseSort}
                   changePage={changePage}
                   total={total as number}
                   params={depData}
