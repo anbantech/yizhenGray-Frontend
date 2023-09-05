@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 
 // 参数:bassData:默认数据
 // 功能:在一定时间内,收集用户点击的信息,然后返回一个对象
@@ -13,16 +13,19 @@ function useDepCollect(baseData: any) {
   // 判断时间是否超过
   const [isClose, setIsClose] = useState<boolean>(false)
 
-  const depCollection = (isCollection: boolean, info: Info) => {
-    setIsClose(false)
-    clearTimeout(timerRef.current)
-    timerRef.current = setTimeout(() => {
-      setIsClose(true)
-    }, 300)
-    if (isCollection) {
-      setDepData({ ...depData, ...info })
-    }
-  }
+  const depCollection = React.useCallback(
+    (isCollection: boolean, info: Info) => {
+      setIsClose(false)
+      clearTimeout(timerRef.current)
+      timerRef.current = setTimeout(() => {
+        setIsClose(true)
+      }, 300)
+      if (isCollection) {
+        setDepData({ ...depData, ...info })
+      }
+    },
+    [depData]
+  )
   return [isClose, depCollection, depData]
 }
 

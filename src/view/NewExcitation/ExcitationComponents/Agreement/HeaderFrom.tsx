@@ -39,7 +39,7 @@ const GuCntInput: React.FC<any> = (props: any) => {
         onBlur={onMax}
         value={value || gu_cnt0}
         onChange={onNumberChange}
-        style={{ width: 232 }}
+        style={{ width: 232, height: 34 }}
         suffix={<NewInputNumberSuffixModal type='gu_cnt0' />}
       />
     </span>
@@ -77,7 +77,7 @@ const GuW0InputMemo: React.FC<any> = (props: any) => {
         value={value || gu_w0}
         onChange={onNumberChange}
         disabled={detaileStatus}
-        style={{ width: 232 }}
+        style={{ width: 232, height: 34 }}
         suffix={<NewInputNumberSuffixModal type='gu_w0' />}
       />
     </span>

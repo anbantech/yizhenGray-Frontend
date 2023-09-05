@@ -39,7 +39,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     sort_field: 'create_time',
     sort_order: 'descend',
     system: 'hex',
-    level: null,
+    level: '',
     statement_coverage: '',
     branch_coverage: '',
     diagnosis: ''
@@ -56,12 +56,12 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   const [display, setDisplay] = React.useState(false)
   const updateRef = useRef<any>()
 
-  const getInstanceDetail = async (value: string) => {
+  const getInstanceDetail = React.useCallback(async (value: string) => {
     const getTaskDetails = await instanceDetail(value)
     if (getTaskDetails.data) {
       setTaskDetailInfo(getTaskDetails.data)
     }
-  }
+  }, [])
 
   // 测试降序
   const testTimeSort = (value: string) => {
@@ -92,6 +92,10 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     depCollect(true, { system: value, page: 1 })
   }
 
+  const checkCrashLevel = (value: string) => {
+    depCollect(true, { level: value, page: 1 })
+  }
+
   const getMessageStatus = React.useCallback(() => {
     if (messageInfo && messageInfo.instance_id) {
       if (+messageInfo.instance_id === +instanceInfo.id) {
@@ -105,7 +109,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
         getInstanceDetail(instanceInfo.id)
       }
     }
-  }, [instanceInfo.id, messageInfo, updateStatus])
+  }, [getInstanceDetail, instanceInfo.id, messageInfo, updateStatus])
 
   useEffect(() => {
     getMessageStatus()
@@ -157,6 +161,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
                   system={depData.system}
                   status={updateStatus}
                   Checked={checked}
+                  checkCrashLevel={checkCrashLevel}
                   task_id={+instanceInfo.id}
                   infoMap={props.location?.state}
                   testTimeSort={testTimeSort}

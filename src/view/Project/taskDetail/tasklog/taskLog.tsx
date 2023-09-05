@@ -38,6 +38,7 @@ interface propsType {
   BranchSort: (value: string) => void
   StatementSort: (value: string) => void
   level: null | number
+  checkCrashLevel: (value: string) => void
 }
 
 interface DataType {
@@ -62,7 +63,21 @@ interface DataType {
 }
 type Detail_Type = Record<string, any>
 const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
-  const { task_id, params, total, system, Checked, status, logData, level, StatementSort, BranchSort, changePage, testTimeSort } = props
+  const {
+    task_id,
+    params,
+    total,
+    system,
+    Checked,
+    checkCrashLevel,
+    status,
+    logData,
+    level,
+    StatementSort,
+    BranchSort,
+    changePage,
+    testTimeSort
+  } = props
   const { taskInfo, projectInfo, instanceInfo } = props.infoMap
 
   const history = useHistory()
@@ -186,7 +201,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
       <div className={styles.tableListleftq}>
         <span className={styles.log}>测试详情</span>
         <div className={styles.doubleCheck}>
-          <CheckCrashLevelCompoents system={level} Checked={Checked} />
+          <CheckCrashLevelCompoents system={level} Checked={checkCrashLevel} />
           <CheckCompoents system={system} Checked={Checked} />
         </div>
       </div>

@@ -11,23 +11,23 @@ function CheckCrashLevel(props: checkDetail) {
   const { Checked, getPopupContainer, positionErrorFrameData } = props
   const options = [
     {
-      value: -1,
+      value: '-1',
       label: '全部'
     },
     {
-      value: 0,
+      value: '0',
       label: '致命'
     },
     {
-      value: 1,
+      value: '1',
       label: '严重'
     },
     {
-      value: 2,
+      value: '2',
       label: '一般'
     },
     {
-      value: 3,
+      value: '3',
       label: '建议'
     }
   ]
@@ -41,7 +41,7 @@ function CheckCrashLevel(props: checkDetail) {
       <Cascader
         allowClear={false}
         options={options}
-        value={positionErrorFrameData === null ? -1 : positionErrorFrameData}
+        value={positionErrorFrameData === '' ? '-1' : positionErrorFrameData}
         onChange={onChange}
         placeholder='请选择'
         className={styles.Cascader}
