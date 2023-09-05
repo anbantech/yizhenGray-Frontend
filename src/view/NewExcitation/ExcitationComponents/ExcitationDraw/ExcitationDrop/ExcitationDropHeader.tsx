@@ -208,7 +208,13 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
       setInputStatus(false)
     }
   }, [sender_id])
+  const styleFnTop = React.useMemo(() => {
+    return gu_w0 === 100 || gu_w0 === 0
+  }, [gu_w0])
 
+  const styleFnDown = React.useMemo(() => {
+    return gu_cnt0 === 1 || gu_cnt0 === 20
+  }, [gu_cnt0])
   return (
     <div className={StyleSheet.DropHeader}>
       <Button disabled={!BtnStatus} type='primary' onClick={updateOrCreate} className={StyleSheet.saveBtn}>
@@ -296,7 +302,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
           </span>
 
           <Input
-            className={StyleSheet.numberInput}
+            className={styleFnDown ? StyleSheet.numberInputDisabled : StyleSheet.numberInput}
             value={gu_cnt0}
             onBlur={() => {
               onMax('gu_cnt0')
@@ -314,7 +320,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
           </span>
 
           <Input
-            className={StyleSheet.numberInput}
+            className={styleFnTop ? StyleSheet.numberInputDisabled : StyleSheet.numberInput}
             onChange={e => {
               onChangeGu_time('gu_w0', e)
             }}

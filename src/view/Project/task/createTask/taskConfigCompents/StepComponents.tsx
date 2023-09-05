@@ -471,7 +471,13 @@ const ThreeSteps = () => {
     },
     [checkList.length, excitationList.length, setCheckList, setThreeAll, setThreeindeterminate]
   )
+  const styleFnTop = React.useMemo(() => {
+    return gu_w0 === 100 || gu_w0 === 0
+  }, [gu_w0])
 
+  const styleFnDown = React.useMemo(() => {
+    return gu_cnt0 === 1 || gu_cnt0 === 20
+  }, [gu_cnt0])
   return (
     <div className={StyleSheet.twoSteps}>
       <div className={StyleSheet.ThreeStepTitle}>
@@ -482,7 +488,7 @@ const ThreeSteps = () => {
               发送次数:
             </span>
             <Input
-              className={StyleSheetOther.numberInput}
+              className={styleFnDown ? StyleSheetOther.numberInputDisabled : StyleSheetOther.numberInput}
               value={gu_cnt0}
               onBlur={() => {
                 onMax('gu_cnt0')
@@ -500,7 +506,7 @@ const ThreeSteps = () => {
             </span>
 
             <Input
-              className={StyleSheetOther.numberInput}
+              className={styleFnTop ? StyleSheetOther.numberInputDisabled : StyleSheetOther.numberInput}
               onChange={e => {
                 onChangeGu_time('gu_w0', e)
               }}
