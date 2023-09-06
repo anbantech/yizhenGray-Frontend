@@ -101,16 +101,19 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   }
 
   //  更改页码
-  const loadMoreData = () => {
+  const loadMoreData = React.useCallback(() => {
     const newPage = params.page_size + 10
     setParams({ ...params, page_size: newPage })
-  }
+  }, [params])
 
   // 更新右侧列表
-  const updateInstanceList = (id: string) => {
-    setModalData({ ...modalData, taskId: id })
-    checkInstances(id)
-  }
+  const updateInstanceList = React.useCallback(
+    (id: string) => {
+      setModalData({ ...modalData, taskId: id })
+      checkInstances(id)
+    },
+    [checkInstances, modalData]
+  )
 
   // 实列详情返回任务列表,左侧任务列表,与实列列表保持一致
   // 通过维护task_id,且通过路由,或者任务列表第一个数据拿值,并且判断taskList长度是否为空
@@ -124,14 +127,17 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     [checkInstances, modalData]
   )
   // 页面加载时 调用
-  const backWebTask = (taskListOne_id: string) => {
-    if (taskListOne_id) {
-      setModalData({ ...modalData, taskId: taskListOne_id })
-      checkInstances(taskListOne_id)
-      return true
-    }
-    return false
-  }
+  const backWebTask = React.useCallback(
+    (taskListOne_id: string) => {
+      if (taskListOne_id) {
+        setModalData({ ...modalData, taskId: taskListOne_id })
+        checkInstances(taskListOne_id)
+        return true
+      }
+      return false
+    },
+    [checkInstances, modalData]
+  )
 
   useEffect(() => {
     backWebTask(taskListOne_id)

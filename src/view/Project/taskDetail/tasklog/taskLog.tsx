@@ -45,7 +45,7 @@ interface DataType {
   status: number
   case_content: string
   case_type: number
-  crash_info: string
+  crash_type: any
   create_time: string
   create_user: string
   id: number
@@ -166,9 +166,9 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
           if ((status === 8 && replayId === item.id) || item.status === 1) {
             return styles.footerError
           }
-          if (Object.keys(item.crash_info)[0] && !item.case_type) {
-            return styles.warninfo
-          }
+          // if (Object.keys(item.crash_type)[0] && !item.case_type) {
+          //   return styles.warninfo
+          // }
           return null
         case 1:
           if ((status === 8 && replayId === item.id) || item.status === 1) {
@@ -332,10 +332,10 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     <div>{item.statement_coverage}</div>
                     <div style={{ textAlign: 'left' }}>
                       <div className={styles.dataLongInfoResult}>
-                        {Object.keys(item.crash_info).map(item => {
+                        {Object.keys(item.crash_type).map(item => {
                           return (
                             <div key={item} className={styles.crash_infoTitle}>
-                              <Tooltip title={CrashInfoMapLog[+item]} placement='bottom' style={{ width: '100px' }} overlayClassName={styles.overlay}>
+                              <Tooltip title={CrashInfoMapLog[+item]} placement='bottom' style={{ width: '100px' }}>
                                 <span>{CrashInfoMapLog[+item]}</span>
                               </Tooltip>
                             </div>
@@ -345,7 +345,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     </div>
                     {[0, 1].includes(status) && (
                       <div className={styles.Opera_detaile}>
-                        {Object.keys(item.crash_info)[0] ? (
+                        {Object.keys(item.crash_type)[0] ? (
                           <span
                             className={styles.operate_containers}
                             role='button'
