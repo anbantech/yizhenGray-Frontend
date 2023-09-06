@@ -37,6 +37,19 @@ const RegisterSvg = (props: propsType) => {
     </>
   )
 }
+
+const PerformanceSvg = (props: propsType) => {
+  const key = props.type || 0
+  return (
+    <>
+      {key === 'PerformanceSvg' ? (
+        <img style={{ width: 18, height: 18, marginRight: 8, marginBottom: 4 }} src={yz_performance_select} alt='' />
+      ) : (
+        <img style={{ width: 18, height: 18, marginRight: 8, marginBottom: 4 }} src={yz_performance_unselect} alt='' />
+      )}
+    </>
+  )
+}
 type propsNo = {
   loopStatus: number
 }
@@ -62,18 +75,6 @@ const TrackSvg = (props: propsType) => {
         <img style={{ width: 18, height: 18, marginRight: 8, marginBottom: 4 }} src={yz_trace_select} alt='' />
       ) : (
         <img style={{ width: 18, height: 18, marginRight: 8, marginBottom: 4 }} src={yz_trace_unselect} alt='' />
-      )}
-    </>
-  )
-}
-const PerformanceSvg = (props: propsType) => {
-  const key = props.type || 0
-  return (
-    <>
-      {key === 'PerformanceSvg' ? (
-        <img style={{ width: 18, height: 18, marginRight: 8, marginBottom: 4 }} src={yz_performance_select} alt='' />
-      ) : (
-        <img style={{ width: 18, height: 18, marginRight: 8, marginBottom: 4 }} src={yz_performance_unselect} alt='' />
       )}
     </>
   )

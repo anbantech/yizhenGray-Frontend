@@ -41,9 +41,12 @@ const TaskIndex: React.FC<RouteComponentProps<any, StaticContext, projectPropsTy
   const [isInStance, setInstance] = React.useState(false)
 
   // 查看实例信息
-  const checkInstances = (taskId: string) => {
-    getDetail(taskId)
-  }
+  const checkInstances = React.useCallback(
+    (taskId: string) => {
+      getDetail(taskId)
+    },
+    [getDetail]
+  )
 
   return (
     <div className={styles.TaskIndexBody}>
