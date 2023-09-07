@@ -306,6 +306,11 @@ const ArgeementDropListStore = create<ArgeementAction & ArgeementActionState>((s
       DropListRef: [...DropListRefCopy]
     }))
   },
+  deleteAllDropListRef: () => {
+    set(() => ({
+      DropListRef: []
+    }))
+  },
   destoryEveryItem: () => {
     set(() => ({
       DropList: [],
