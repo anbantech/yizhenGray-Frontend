@@ -55,6 +55,7 @@ type ArgeementAction = {
   setHead: (val: Record<string, any>) => void
   setDeatilStatus: (val: boolean) => void
   deleteDropListRef: (index: number) => void
+  deleteAllDropListRef: () => void
 }
 
 interface ArgeementActionState {

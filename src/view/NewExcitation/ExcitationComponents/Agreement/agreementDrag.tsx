@@ -99,12 +99,22 @@ const Draggable = ({ item }: ItemType) => {
 }
 
 function AgreementDrag() {
+  const setLeftList = ArgeementDropListStore(state => state.setLeftList)
+  const deleteAllDropListRef = ArgeementDropListStore(state => state.deleteAllDropListRef)
+  const clearDropList = React.useCallback(() => {
+    setLeftList([])
+    deleteAllDropListRef()
+  }, [setLeftList, deleteAllDropListRef])
   return (
     <div className={styles.agreeFooter}>
       <span> 新增协议数据: </span>
       {ComponentsArray?.map(item => {
         return <Draggable key={`${new Date()}${Math.random()}`} item={item} />
       })}
+      <span className={styles.clearBtn} role='time' onClick={clearDropList}>
+        {' '}
+        清空数据{' '}
+      </span>
     </div>
   )
 }
