@@ -9,6 +9,7 @@ import cardStyles from './taskCard.less'
 interface propsResTaskDetailType<T> {
   taskDetailInfo: T
   lookLog: () => void
+  InitTask: () => void
 }
 
 interface cardProps {
@@ -22,6 +23,11 @@ interface cardPropsCommon {
   concent: string
 }
 
+interface CardStatus {
+  value: string | number | null
+  concent: string
+  InitTask: () => void
+}
 export const statusMap = {
   0: {
     label: '正常结束',
@@ -89,8 +95,7 @@ const TestNumComponentsMemo = (props: cardProps) => {
         <span className={styles.cardTaskDetail}>{value}</span>
       </div>
       <div
-        className={styles.taskDetailCard_Main_left_footer_detail}
-        style={{ marginRight: '20px' }}
+        className={[styles.taskDetailCard_Main_left_footer_detail, cardStyles.rightDetail].join(' ')}
         role='log'
         onClick={() => {
           lookLog()
@@ -133,11 +138,18 @@ const CoverageCardMemo = (porps: Record<string, ResTaskDetail>) => {
 }
 const CoverageCard = React.memo(CoverageCardMemo)
 
-const StatusCardComponentsMemo = (props: cardPropsCommon) => {
-  const { value, concent } = props
+const StatusCardComponentsMemo = (props: CardStatus) => {
+  const { value, concent, InitTask } = props
   return (
     <div className={[cardStyles.commonCardConcent, cardStyles.commonCard].join(' ')}>
-      <span className={styles.cardConcent}>{concent}</span>
+      <div className={cardStyles.cardErrorDetail}>
+        <span className={styles.cardConcent}>{concent}</span>
+        <div className={[styles.taskDetailCard_Main_left_footer_detail, cardStyles.rightDetail].join(' ')} role='time' onClick={InitTask}>
+          <span>查看详情</span>
+          <RightOutlined />
+        </div>
+      </div>
+
       <span className={statusMap[(value as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 10) || 0]?.color}>
         {statusMap[(value as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 10) || 0].label}
       </span>
@@ -148,7 +160,7 @@ const StatusCardComponents = React.memo(StatusCardComponentsMemo)
 
 function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
   const taskMapInfo = props.taskDetailInfo
-  const { lookLog } = props
+  const { lookLog, InitTask } = props
 
   return (
     <div className={styles.taskDetailCard}>
@@ -164,7 +176,11 @@ function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
             ) : item === 'coverage' ? (
               <CoverageCard taskMapInfo={taskMapInfo} />
             ) : item === 'status' ? (
-              <StatusCardComponents concent={showTitleMap[item as keyof typeof showTitleMap]} value={taskMapInfo[item as keyof typeof taskMapInfo]} />
+              <StatusCardComponents
+                InitTask={InitTask}
+                concent={showTitleMap[item as keyof typeof showTitleMap]}
+                value={taskMapInfo[item as keyof typeof taskMapInfo]}
+              />
             ) : (
               <CommonComponents concent={showTitleMap[item as keyof typeof showTitleMap]} value={taskMapInfo[item as keyof typeof taskMapInfo]} />
             )}

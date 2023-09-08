@@ -12,6 +12,7 @@ import yz_performance_select from 'Src/assets/scale/yz_performance_select.svg'
 import RegisterDetail from 'Src/view/Project/taskDetail/Scale/ScaleComponent/RegisterDetail'
 import PerformanceDetail from 'Src/view/Project/taskDetail/Scale/ScaleComponent/PerformanceDetail'
 import NoShowSizeChangerPagina from 'Src/components/Pagination/NoShowSizeChangerPagina'
+
 import styles from '../BaseModle.less'
 import OneUtilCardStyles from './TaskErrorDetail.less'
 
@@ -62,6 +63,7 @@ const Open = () => {
   )
 }
 const { TabPane } = Tabs
+
 const convertTo2DArray = (arr: any[], length: number) => {
   const result = []
   const oldData = [...arr]
@@ -72,9 +74,9 @@ const convertTo2DArray = (arr: any[], length: number) => {
   }
   return result
 }
+
 const TabsComponetns = (props: Record<string, any>) => {
   const { registeData, performanceData } = props
-
   const [registeDataPage, setRegisteDataPage] = useState(1)
   const [performanceDataPage, setPerformanceDataPage] = useState(1)
   const R1 = React.useMemo(() => {
@@ -86,7 +88,6 @@ const TabsComponetns = (props: Record<string, any>) => {
     const length = performanceData
     return length.length
   }, [performanceData])
-
   const registeData2DAarray = React.useMemo(() => {
     const data = convertTo2DArray(registeData, 20)
     return data
@@ -149,31 +150,21 @@ const TabsComponetns = (props: Record<string, any>) => {
         </TabPane>
       </Tabs>
       <div className={OneUtilCardStyles.TabsCompoentsPageFooter}>
-        {P1 >= 1 || R1 >= 1 ? (
-          <NoShowSizeChangerPagina
-            length={currentType === 'Register' ? R1 : P1}
-            num={currentType === 'Register' ? 20 : 5}
-            getParams={changePage}
-            pagenums={currentType === 'Register' ? registeDataPage : performanceDataPage}
-          />
-        ) : null}
+        <NoShowSizeChangerPagina
+          length={currentType === 'Register' ? R1 : P1}
+          num={currentType === 'Register' ? 20 : 5}
+          getParams={changePage}
+          pagenums={currentType === 'Register' ? registeDataPage : performanceDataPage}
+        />
       </div>
     </div>
   )
 }
-
-function TaskDetailModalMemo(props: any) {
+function InitTaskInfoMemo(props: any) {
   const { value, item, msg_index, create_time } = props
   const { register, performance } = value
   const [isOpen, setOpen] = useState(true)
 
-  const registerMemo = React.useMemo(() => {
-    return register
-  }, [register])
-
-  const performanceMemo = React.useMemo(() => {
-    return performance
-  }, [performance])
   return (
     <div className={OneUtilCardStyles.oneUnitCard} style={{ marginBottom: '16px' }}>
       <div className={styles.concent_layout} style={{ backgroundColor: '#fff', border: 'none' }}>
@@ -236,7 +227,7 @@ function TaskDetailModalMemo(props: any) {
         </div>
       </div>
       <div className={isOpen ? OneUtilCardStyles.cardOpen : OneUtilCardStyles.cardClose}>
-        <TabsComponetns registeData={registerMemo} performanceData={performanceMemo} />
+        <TabsComponetns registeData={register} performanceData={performance} />
       </div>
       <div
         role='time'
@@ -250,5 +241,5 @@ function TaskDetailModalMemo(props: any) {
     </div>
   )
 }
-const TaskDetailModal = React.memo(TaskDetailModalMemo)
-export default TaskDetailModal
+const InitTaskInfo = React.memo(InitTaskInfoMemo)
+export default InitTaskInfo

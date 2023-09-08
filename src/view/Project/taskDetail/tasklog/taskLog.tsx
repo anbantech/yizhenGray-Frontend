@@ -229,7 +229,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
           <div style={{ textAlign: 'left' }} className={styles.Header_Main}>
             <span>缺陷结果</span>
           </div>
-          {(statusMemo === 1 || statusMemo === 0) && (
+          {(statusMemo === 1 || statusMemo === 0 || statusMemo === 10) && (
             <div className={styles.Header_Main}>
               <span style={{ width: '100%' }}>操作</span>
             </div>
@@ -343,7 +343,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                         })}
                       </div>
                     </div>
-                    {[0, 1].includes(status) && (
+                    {[0, 1, 10].includes(status) && (
                       <div className={styles.Opera_detaile}>
                         {Object.keys(item.crash_type)[0] ? (
                           <span
@@ -357,13 +357,13 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                             详情
                           </span>
                         ) : null}
-                        {item.send_data.length > 1 && [0, 1].includes(status) && (
+                        {item.send_data.length > 1 && [0, 1, 10].includes(status) && (
                           <span role='button' tabIndex={0} className={styles.operate_container} onClick={() => changeToggleStatus(item.id)}>
                             {currentOpenId === item.id ? '收起' : '展开'}
                           </span>
                         )}
 
-                        {[0, 1].includes(status) ? (
+                        {[0, 1, 10].includes(status) ? (
                           <span
                             className={styles.operate_container}
                             role='button'

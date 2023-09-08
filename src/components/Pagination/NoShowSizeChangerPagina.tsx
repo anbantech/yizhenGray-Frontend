@@ -24,7 +24,7 @@ function NoShowSizeChangerPagina(props: any) {
       {length > 0 ? (
         <div className={styles.pagePosition}>
           <ConfigProvider locale={zhCN}>
-            <Pagination pageSize={nums} total={length} pageSizeOptions={[10]} showQuickJumper current={pagenums} onChange={onPage} showSizeChanger />
+            <Pagination pageSize={nums} total={length} pageSizeOptions={[num]} showQuickJumper current={pagenums} onChange={onPage} showSizeChanger />
           </ConfigProvider>
           <div className={styles.total}>
             <span>总共 {length} 条</span>

@@ -6,7 +6,7 @@ import detailStyle from '../taskDetailUtil/Detail.less'
 interface propsType {
   //   cancelMenu: (e: React.MouseEvent<HTMLDivElement>) => void
   Checked: (value: string) => void
-  system: number | null
+  system: number | null | string
 }
 function CheckCrashLevelCompoents(props: propsType) {
   const { system, Checked } = props

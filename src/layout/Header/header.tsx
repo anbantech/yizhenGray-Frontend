@@ -163,6 +163,7 @@ function Header(props: any) {
     '/projects/Tasks/Detail/TaskLog': '日志',
     '/projects/Tasks/Detail/Scale': '动态监控',
     '/projects/Tasks/Detail/ScaleDetail': '缺陷详情',
+    '/projects/Tasks/Detail/InitTask': '缺陷详情',
     '/Excitataions': '激励配置'
     // '/TwoExcitationList': '激励单元管理',
     // '/ThreeExcitationList': '激励嵌套管理',
