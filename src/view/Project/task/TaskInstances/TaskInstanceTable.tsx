@@ -132,7 +132,12 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   // 状态菜单
   const StatusMenuComponents = React.useCallback(() => {
     return (
-      <div className={styles.statusMenu}>
+      <div
+        className={styles.statusMenu}
+        onMouseLeave={() => {
+          setStatusOperationStatus(false)
+        }}
+      >
         {statusList.map((item: statusItemType) => {
           return (
             <div key={item.value} className={styles.size}>
@@ -239,7 +244,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       key: 'error_num'
     },
     {
-      width: '10%',
+      width: '11%',
       // eslint-disable-next-line react/display-name
       title: () => (
         <div className={styles.statusList_boby} style={{ cursor: 'pointer' }}>
@@ -278,7 +283,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       }
     },
     {
-      width: '13%',
+      width: '12%',
 
       // eslint-disable-next-line react/display-name
       title: () => {
@@ -291,7 +296,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         return (
           <div className={globalStyle.Opera_detaile}>
             <span
-              style={{ marginLeft: '10px', marginRight: '30px' }}
+              style={{ marginLeft: '10px', marginRight: '20px' }}
               role='button'
               className={styles.hoverOpera}
               tabIndex={0}
