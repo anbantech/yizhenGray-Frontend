@@ -153,3 +153,7 @@ export function instanceDetail(id: string) {
 export function downloadPDFReport(id: number | string, { onDownloadProgress }: any) {
   return request.get<any>(`/api/v1.0/instances/pdf-report/${id}`, { responseType: 'blob', onDownloadProgress, timeout: 0 })
 }
+
+export function initDetailError(id: string) {
+  return request.get<any>(`/api/v1.0/instances/get_crash/${id}`)
+}

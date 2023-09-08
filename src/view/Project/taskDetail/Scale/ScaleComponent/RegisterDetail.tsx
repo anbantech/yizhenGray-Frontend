@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { generateUUID } from 'Src/util/common'
 import 'antd/dist/antd.css'
 import styles from '../Scale.less'
 
@@ -39,12 +40,12 @@ const RegisterDetailMemo: React.FC<any> = props => {
   }, [registeData])
   return (
     <div className={styles.rowTableDetail}>
-      {registerData?.map((item: any, index: number) => {
+      {registerData?.map((item: any) => {
         return (
-          <div key={`${index}${Math.random()}`} className={styles.register_cloumns}>
+          <div key={generateUUID()} className={styles.register_cloumns}>
             {item?.map((ele: any) => {
               return (
-                <div key={`${Math.random()}`} className={styles.register_row}>
+                <div key={generateUUID()} className={styles.register_row}>
                   <div className={styles.register_row_data}>
                     <span style={{ color: ele.flag === '11' ? 'red' : '' }}>{ele.name} </span>
                     <div className={styles.register_line} />

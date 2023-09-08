@@ -84,6 +84,13 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const InitTask = React.useCallback(() => {
+    history.push({
+      pathname: '/projects/Tasks/Detail/InitTask',
+      state: { projectInfo, taskInfo, instanceInfo }
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const changePage = (page: number, pageSize: number) => {
     depCollect(true, { page, page_size: pageSize })
   }
@@ -152,7 +159,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
                 display={display}
                 RequsetParams={RequsetParams}
               />
-              <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
+              <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} InitTask={InitTask} />
               {taskDetailInfo?.status === 2 ? (
                 <DetailTestingTable params={RequsetParams} taskDetailInfo={taskDetailInfo} status={updateStatus} />
               ) : (

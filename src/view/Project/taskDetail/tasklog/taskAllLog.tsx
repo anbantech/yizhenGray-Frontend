@@ -1,7 +1,6 @@
 /* eslint-disable indent */
 /* eslint-disable react/display-name */
-import { DownOutlined } from '@ant-design/icons'
-import { Dropdown, Menu, Space, Table, TableColumnProps, Tooltip } from 'antd'
+import { Table, TableColumnProps, Tooltip } from 'antd'
 import { getAllTestingLog } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
@@ -17,6 +16,7 @@ import styles from '../taskDetailUtil/Detail.less'
 import tableStyle from '../taskDetail.less'
 import { projectInfoType } from '../../task/taskList/task'
 import CheckCompoents from '../taskDetailCompoents/CheckCompoents'
+import CheckCrashLevelCompoents from '../taskDetailCompoents/CheckCrashLevelCompoents'
 
 interface T {
   align: string
@@ -43,7 +43,6 @@ interface taskDetailType<S, T> {
 }
 
 const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskDetailType<taskDetailInfoType, projectInfoType>>> = props => {
-  const [currentType, setCurrentType] = useState('all')
   const { instanceInfo } = props.location.state
   const RequsetParams = {
     instance_id: +instanceInfo.id,
@@ -54,13 +53,13 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
     case_type: '',
     system: 'hex',
     statement_coverage: '',
-    branch_coverage: ''
+    branch_coverage: '',
+    level: ''
   }
   const [params, setParams] = useState(RequsetParams)
 
-  const changeCurrentType = (e: any) => {
-    setCurrentType(e.key)
-    setParams({ ...params, page: 1, case_type: e.key })
+  const checkCrashLevel = (value: string) => {
+    setParams({ ...params, level: value })
   }
 
   const [total, setTotal] = React.useState(-1)
@@ -119,30 +118,6 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       </div>
     )
   }
-  const menu = (
-    <Menu selectable onClick={changeCurrentType} selectedKeys={[currentType]}>
-      <Menu.Item key='' style={{ textAlign: 'center' }}>
-        默认
-      </Menu.Item>
-      <Menu.Item key={1} style={{ textAlign: 'center' }}>
-        是
-      </Menu.Item>
-      <Menu.Item key={0} style={{ textAlign: 'center' }}>
-        否
-      </Menu.Item>
-    </Menu>
-  )
-
-  function IsWrongDownMenu() {
-    return (
-      <Dropdown overlay={menu}>
-        <Space style={{ cursor: 'pointer' }}>
-          异常用例
-          <DownOutlined />
-        </Space>
-      </Dropdown>
-    )
-  }
 
   const columns = [
     {
@@ -150,7 +125,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       dataIndex: ' msg_index',
       key: 'msg_index',
       ellipsis: true,
-      width: '8%',
+      width: '10%',
       render: (text: any, record: any) => {
         return (
           <div className={styles.recv_data} key={record.id}>
@@ -164,7 +139,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       dataIndex: 'send_data',
       key: 'send_data',
       ellipsis: true,
-      width: '12.5%',
+      width: '10%',
       render: (text: any, record: any) => {
         return (
           <div className={styles.recv_data} key={record.id}>
@@ -214,19 +189,6 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
         </div>
       )
     },
-    {
-      title: () => {
-        return <IsWrongDownMenu />
-      },
-      dataIndex: 'case_type',
-      key: 'case_type',
-      render: (text: any, record: any) => (
-        <div className={styles.checkDetail} key={record.id}>
-          {record.case_type ? '是' : '否'}
-        </div>
-      ),
-      width: '10%'
-    },
 
     {
       title: () => {
@@ -267,7 +229,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
           {getTime(record.update_time)}
         </div>
       ),
-      width: '15%'
+      width: '10%'
     },
     {
       title: () => {
@@ -281,7 +243,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       dataIndex: 'crash_info',
       key: 'crash_info',
       ellipsis: true,
-      width: '12.5%',
+      width: '10%',
       render: (text: any, record: any) => (
         <div className={styles.dataLongInfoResult}>
           {Object.keys(record.crash_info).map(item => {
@@ -302,7 +264,10 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
     <div className={styles.Detail}>
       <div className={styles.DetailHeader_allLog}>
         <span className={styles.useCaseTitle}>日志</span>
-        <CheckCompoents system={params.system} Checked={checked} />
+        <div className={styles.doubleCheck}>
+          <CheckCrashLevelCompoents system={params.level} Checked={checkCrashLevel} />
+          <CheckCompoents system={params.system} Checked={checked} />
+        </div>
       </div>
       <div style={{ marginTop: '24px' }} className={styles.tableBoby}>
         <Table rowKey={(record: any) => `${record.id}_${new Date()}`} pagination={false} dataSource={logData} columns={columns as any} bordered />
