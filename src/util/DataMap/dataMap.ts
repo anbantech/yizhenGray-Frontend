@@ -10,9 +10,9 @@ export const statusList = [
   { lable: '准备中', value: 5 },
   // { lable: '待测试', value: 6 },
   { lable: '停止中', value: 7 },
-  { lable: '重放中', value: 8 }
+  { lable: '重放中', value: 8 },
   // { lable: '重放暂停', value: 9 }a
-  // { lable: '离线', value: 5 },
+  { lable: '固件启动异常', value: 5 }
 ]
 
 export const statusMap = {
@@ -52,10 +52,6 @@ export const statusMap = {
     label: '重放中',
     color: styles.roundStatusReplay
   },
-  // 9: {
-  //   label: '重放暂停',
-  //   color: styles.roundStatusReplay
-  // },
   10: {
     label: '固件启动异常',
     color: styles.roundStatusErrorPaused
