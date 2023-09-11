@@ -41,7 +41,7 @@ export default {
             default:''
         }
     },
-     created() {
+   created() {
         this.cloumnType === 'homeDataTestOverviewType' ?
             this.homeData = [{ 'platform': '测试平台' }, { 'test_time': '测试时间' }, { 'create_time': '报告生成' }]
             : this.cloumnType === 'homeDataTestPlanType'

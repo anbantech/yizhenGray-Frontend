@@ -256,7 +256,7 @@ export default class App extends Vue {
 }
 .concentBody{
   padding-bottom:48px;
-  width: 790px;
+  width: 1001px;
   margin: 0 auto;
   background-color:#fff;
 }
@@ -265,7 +265,7 @@ export default class App extends Vue {
 }
 .main{
   width :100%;
-  padding:32px 32px 0px 32px;
+  margin-bottom:32px;
   display:flex;
   justify-content:space-between;
   background-color: #FAFAFA;
@@ -273,6 +273,7 @@ export default class App extends Vue {
 .left_nav{
    position:fixed;
    top:111px;
+   left:32px;
 }
 .left_nav_title{
   display:inline-block;
