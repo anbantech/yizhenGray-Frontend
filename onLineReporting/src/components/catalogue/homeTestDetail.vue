@@ -74,10 +74,10 @@ export default {
         },
 
         async injectTc() {
-            const ec = this.tableData[0] ? this.tableData[0].total_error_frames : [];
+            const ec = this.tableData[0] ? this.tableData[0].this_time_error_cases : [];
             for (let i = 0; i < ec.length; i++) {
                 if (this.stop) return
-                this.totalCases.push(ec[i]);
+                this.errorCases.push(ec[i]);
                 await this.sleep(20)
             }
         },
