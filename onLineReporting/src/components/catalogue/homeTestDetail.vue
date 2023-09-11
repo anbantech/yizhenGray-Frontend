@@ -27,7 +27,7 @@
             </el-table-column>
             <el-table-column prop="time" label="发送时间" width="200%">
             </el-table-column>
-            <el-table-column prop="frames" label="发送数据" width="200%">
+            <el-table-column prop="frames" label="发送数据" width="400%">
                 <template slot-scope="scope">
                     <div v-for="(item, index) in scope.row.frames" :key='index'>
                         {{ item }}
