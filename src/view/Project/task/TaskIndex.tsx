@@ -49,7 +49,7 @@ const TaskIndex: React.FC<RouteComponentProps<any, StaticContext, projectPropsTy
   )
 
   return (
-    <div className={styles.TaskIndexBody}>
+    <div className={styles.TaskIndexBody} style={{ display: 'flex' }}>
       <InstancesContext.Provider value={{ task_detail, setInstance, getDetail }}>
         <TaskList checkInstances={checkInstances} />
         {isInStance && task_detail ? <TaskInstances /> : <NoTask />}

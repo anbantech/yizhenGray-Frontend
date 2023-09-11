@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 
 import axios from 'axios'
 import JSZip from 'jszip'
@@ -26,65 +26,85 @@ const browserDownload = {
   }
 }
 
+/**
+ * 解析 URL 中的参数
+ */
+function parseURL<T>() {
+  const urlSearchParams = new URLSearchParams(window.location.search)
+  const searchParams = {} as Record<string, unknown>
+  urlSearchParams.forEach((value, key) => {
+    searchParams[key] = value
+  })
+
+  return searchParams as T
+}
+
+interface ReportURLParams {
+  id: string
+  name: string
+}
+
 function Report(props: any) {
+  const reportURLParams = parseURL<ReportURLParams>()
   const { search } = props.location
   const [reportData, setReportData] = useState([])
-  const [loading, setLoading] = useState(false)
-  const getReportData = async (id: number) => {
-    try {
-      const reportData = await exportReport(id)
-      if (reportData.code === 0) {
-        setLoading(true)
-        return reportData
-      }
-      setLoading(false)
-    } catch (error) {
-      setLoading(false)
-      throwErrorMessage(error)
-      return error
-    }
-  }
+  const [loadingStatus, setLoadingStatus] = useState<'none' | 'fetching' | 'done' | 'error'>('none')
+  const [hasRendered, setHasRendered] = useState(false)
   const loopRef = useRef<any>()
 
-  const getData = async (id: number) => {
-    const res = await getReportData(id)
-    if (res?.code === 2016) return
-    setReportData(res.data)
-    return res
-  }
-  useEffect(() => {
-    const id = search.split('?')[1].split('=')
-    if (loading) {
-      getData(id[1])
-        .then(res => {
-          const reportDataElement = document.querySelector('#reportData') as HTMLIFrameElement
-          if (reportDataElement && res.data) {
-            reportDataElement.addEventListener('load', () => {
-              reportDataElement.style.overflowX = 'hidden'
-              reportDataElement.contentWindow?.postMessage(JSON.stringify(res.data), '*')
-            })
-          }
-          return res
+  const postMessageToIframe = useCallback(
+    reportData => {
+      const reportDataElement = document.querySelector('#reportData') as HTMLIFrameElement
+      if (reportDataElement && reportData) {
+        reportDataElement.addEventListener('load', () => {
+          reportDataElement.style.overflowX = 'hidden'
+          reportDataElement.contentWindow?.postMessage(JSON.stringify(reportData), '*')
         })
-        .catch(() => {})
+        window.addEventListener('message', message => {
+          if (message.data === '__AB_REPORT_DONE__') {
+            setHasRendered(true)
+          }
+        })
+      }
+    },
+    [reportData]
+  )
+
+  const getReportData = useCallback(async (): Promise<void> => {
+    const { id } = reportURLParams
+    if (!id || ['fetching', 'done'].includes(loadingStatus)) return
+    try {
+      setLoadingStatus('fetching')
+      const res = await exportReport(id)
+      if (res.code === 0) {
+        setLoadingStatus('done')
+        setReportData(res.data)
+        postMessageToIframe(res.data)
+        return
+      }
+      setLoadingStatus('error')
+    } catch (error) {
+      setLoadingStatus('error')
+      throwErrorMessage(error)
     }
-  }, [loading])
+  }, [loadingStatus])
+
   useEffect(() => {
-    const id = search.split('?')[1].split('=')
-    if (!loading) {
-      loopRef.current = setInterval(() => {
-        if (id) {
-          getReportData(id[1])
-        }
-      }, 3000)
-    }
+    loopRef.current = setInterval(getReportData, 5000)
+
     return () => {
       clearInterval(loopRef.current)
     }
-  }, [loading])
-  // 下载报告
+  }, [getReportData])
 
+  // 下载报告
   const exportReportZip = async () => {
+    notification.info({
+      key: 'html-report',
+      message: `HTML 报告正在生成中...`,
+      placement: 'bottomLeft',
+      duration: null
+    })
     const name = decodeURIComponent(search).split('?')[2].split('=')
     const datajsFileString = `const reportData=${JSON.stringify(reportData)};window.reportData=reportData;`
     const datajsFileBlob = new Blob([datajsFileString], { type: 'application/javascript' })
@@ -105,7 +125,7 @@ function Report(props: any) {
     }
   }
 
-  const exportReportPDF = React.useCallback(async () => {
+  const exportReportPDF = async () => {
     notification.info({
       key: 'pdf-report',
       message: `PDF 报告正在生成中...`,
@@ -113,7 +133,7 @@ function Report(props: any) {
       duration: null
     })
     try {
-      const id = search.split('?')[1].split('=')
+      const { id } = reportURLParams
       const res = (await downloadPDFReport(id, {
         onDownloadProgress() {
           notification.info({
@@ -130,7 +150,7 @@ function Report(props: any) {
     } catch (error) {
       message.error(error)
     }
-  }, [search])
+  }
 
   const menuItems = (
     <Menu>
@@ -149,20 +169,17 @@ function Report(props: any) {
 
   return (
     <>
-      {loading ? (
-        reportData.length !== 0 && (
-          <div className={style.report}>
-            <div className={style.positionBtn}>
-              <Dropdown overlay={menuItems} placement='bottom'>
-                <Button>下载报告</Button>
-              </Dropdown>
-            </div>
-            <iframe id='reportData' src='/onLineReporting/index.html' width='100%' height='100%' allowFullScreen frameBorder='0' title='报告' />
+      {loadingStatus === 'done' && reportData.length !== 0 && (
+        <div className={style.report}>
+          <div className={style.positionBtn}>
+            <Dropdown overlay={menuItems} placement='bottom'>
+              <Button>下载报告</Button>
+            </Dropdown>
           </div>
-        )
-      ) : (
-        <ReportLoading value='报告正在加载中' />
+          <iframe id='reportData' src='/onLineReporting/index.html' width='100%' height='100%' allowFullScreen frameBorder='0' title='报告' />
+        </div>
       )}
+      {!hasRendered && <ReportLoading value='报告正在生成中' />}
     </>
   )
 }

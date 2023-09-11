@@ -234,14 +234,14 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       key: 'reset_mode',
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
-        return <span>{reset_mode_Map[row.crash_num as keyof typeof reset_mode_Map]}</span>
+        return <span>{reset_mode_Map[row.reset_mode as keyof typeof reset_mode_Map]}</span>
       }
     },
     {
       width: '8%',
       title: '缺陷数量',
-      dataIndex: 'error_num',
-      key: 'error_num'
+      dataIndex: 'defects_count',
+      key: 'defects_count'
     },
     {
       width: '11%',
