@@ -238,24 +238,24 @@ export default class App extends Vue {
 </script>
 
 <style lang="stylus" scoped>
-#app {  
+#app {
   margin: 0;
   padding:0;
    background-color:#fff;
 }
 .concentBody{
   padding-bottom:48px;
-  width: 790px;
+  // max-width: 1000px;
+  width: 1001px;
   margin: 0 auto;
   background-color:#fff;
 }
 .statistics{
-  padding:0 48px;
+  // padding:0 48px;
 }
 .main{
   width :100%;
-  padding:32px 32px 0px 32px;
-  margin-bottom:32px;
+  padding-top: 128px;
   display:flex;
   justify-content:space-between;
   background-color: #FAFAFA;
@@ -263,6 +263,7 @@ export default class App extends Vue {
 .left_nav{
    position:fixed;
    top:111px;
+   left: 20px;
 }
 .left_nav_title{
   display:inline-block;
@@ -294,4 +295,25 @@ export default class App extends Vue {
 .left_nav_menu_title{
   margin-left:28px;
 }
-</style>
+
+.main {
+  background: white!important;
+}
+
+.reportHomeTitle, .report_bottom {
+  margin-top: 0 !important;
+}
+
+@media print {
+  .reportColumn {
+      page-break-before: auto;
+  }
+
+  .reportHeader, .left_nav {
+    display: none !important;
+  }
+
+  .main {
+    padding-top: 32px;
+  }
+}

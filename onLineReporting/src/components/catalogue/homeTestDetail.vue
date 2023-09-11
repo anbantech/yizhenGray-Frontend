@@ -23,13 +23,11 @@
         <el-table :data="errorCases" style="width: 100%; margin-top: 12px" border
             header-row-class-name="statisticsTableHeader" :header-cell-style="{ background: '#F0F0F0 !important' }"
             header-cell-class-name="statisticsTableCell">
-            <el-table-column prop="num" label="用例编号" width="200%">
+            <el-table-column prop="num" label="用例编号" width="100%">
             </el-table-column>
             <el-table-column prop="time" label="发送时间" width="200%">
             </el-table-column>
-            <el-table-column prop="time" label="发送数据" width="200%">
-            </el-table-column>
-            <el-table-column prop="frames" label="发送数据">
+            <el-table-column prop="frames" label="发送数据" width="200%">
                 <template slot-scope="scope">
                     <div v-for="(item, index) in scope.row.frames" :key='index'>
                         {{ item }}
