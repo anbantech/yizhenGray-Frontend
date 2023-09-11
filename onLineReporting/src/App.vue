@@ -113,7 +113,7 @@ export default class App extends Vue {
   urlList = ''
   titleArray = ['一、测试概述','二、测试方案','三、测试总结','四、测试详情']
   titleMenuArray = ['1、覆盖统计表', '2、性能统计表', '3、内存统计表', '4、跟踪统计表', '5、静态度量表', '6、动态调用图']
-  isShow = true
+  isShow = false
   mounted(){
    window.onload = () => {
      this.update()
@@ -132,11 +132,16 @@ export default class App extends Vue {
           this.tableData = JSON.parse(e.data)?.tableData
           this.isShow = Object.keys(JSON.parse(e.data).tableData)?.length > 0
           this.urlList = JSON.parse(e.data)?.tableData.dynamicCallGraph
+           this.$nextTick(() => {
+            setTimeout(() => {
+              window.parent.postMessage('__AB_REPORT_DONE__', "*")
+            }, 5000);
+          })
         }
       })
     })
   }
-   scroll(index:number){
+  scroll(index:number){
       if(index === 0){
         const ele = document.querySelector('#one')
         if(!!ele){
@@ -175,7 +180,7 @@ export default class App extends Vue {
           })
         }
       }
-   }
+  }
   menuScroll(index:number){
     if(index===0){
       const ele = document.querySelector('#first')
