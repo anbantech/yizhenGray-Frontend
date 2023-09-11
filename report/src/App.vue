@@ -39,7 +39,7 @@
               cloumnType="homeDataTestSummaryType" />
           </div>
           <div id='four' style="padding-top: 70px;margin-top: -70px;">
-            <HomeTestDetail :table-data="homeDataTestDetail" title="四、测试详情" />
+            <HomeTestDetail :table-data="homeDataTestDetail" :progress.sync="progress" title="四、测试详情" />
           </div>
         </div>
         <div class="statistics" v-if='isShow'>
@@ -112,7 +112,8 @@ export default class App extends Vue {
   urlList = ''
   titleArray = ['一、测试概述','二、测试方案','三、测试总结','四、测试详情']
   titleMenuArray = ['1、覆盖统计表', '2、性能统计表', '3、内存统计表', '4、跟踪统计表', '5、静态度量表', '6、动态调用图']
-  isShow = true
+  isShow = false
+  progress = 0
   mounted(){
    this.homeData = window.reportData.cover
    this.homeDataTestOverview = window.reportData.testOverview
@@ -122,6 +123,34 @@ export default class App extends Vue {
    this.tableData = window.reportData.tableData
    this.isShow = Object.keys(window.reportData.tableData)?.length > 0 
    this.urlList = window.reportData.tableData.dynamicCallGraph
+   this.insertLoadedFlag()
+  }
+    insertLoadedFlag() {
+    function checkLoadingStatus(this: App, clear: () => void) {
+      console.log(this.progress)
+      if (Math.round(this.progress) >= 100) {
+        if (document.querySelector('#__STATIC_REPORT_LOADED__')) {
+          clear()
+          return
+        }
+        setTimeout(() => {
+          const d = document.createElement('div')
+          d.id = '__STATIC_REPORT_LOADED__'
+          document.body.append(d)
+        }, 3000)
+        clear()
+      }
+    }
+
+    const interval = setInterval(
+      checkLoadingStatus.bind(this, () => {
+        clearInterval(interval)
+      }),
+      3000
+    )
+    this.$once('hook:beforeDestroy', () => {
+      clearInterval(interval)
+    })
   }
    scroll(index:number){
       if(index === 0){
