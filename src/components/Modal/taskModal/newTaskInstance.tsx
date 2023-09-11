@@ -120,7 +120,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
 
   const onValuesChange = (changedValues: any, allValues: any) => {
     const { work_time } = allValues
-    if (work_time >= 1 && work_time <= 48) {
+    if (work_time >= 1) {
       setDisabledStatus(false)
     } else {
       setDisabledStatus(true)

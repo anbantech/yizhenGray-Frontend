@@ -27,7 +27,7 @@ export function TaskDetail(id: string) {
 }
 
 // 导出报告
-export function exportReport(id: number) {
+export function exportReport(id: number | string) {
   return request.get<any>(`/api/v1.0/instances/report/${id}`)
 }
 

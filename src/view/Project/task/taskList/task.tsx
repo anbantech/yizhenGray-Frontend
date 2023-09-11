@@ -272,16 +272,16 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
           hasMore={hasMoreData}
           height={height}
           loader={
-            <p style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: 'center' }}>
               <div className={styles.listLine} />
               <div className={styles.concentList}>内容已经加载完毕</div>
-            </p>
+            </div>
           }
           endMessage={
-            <p style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: 'center' }}>
               <div className={styles.listLine} />
               <div className={styles.concentList}>内容已经加载完毕</div>
-            </p>
+            </div>
           }
         >
           {taskLists.map((item: any) => {
