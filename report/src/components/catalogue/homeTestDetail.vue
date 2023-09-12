@@ -87,7 +87,7 @@ export default {
             for (let i = 0; i < ec.length; i = i + 100) {
                 if (this.stop) return
                 this.errorCases.push(ec.slice(i, i + 100));
-                this.reflectProgress += ((i + 100 > ec.length ? ec.length - i : 100) / ec.length) * 50
+                this.reflectProgress += ((i + 100 > ec.length ? ec.length - i : 100) / ec.length) * 100
                 this.$emit('update:progress', this.reflectProgress)
                 await this.sleep(20)
             }
