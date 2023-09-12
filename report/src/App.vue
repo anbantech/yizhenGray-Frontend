@@ -274,6 +274,7 @@ export default class App extends Vue {
    position:fixed;
    top:111px;
    left:32px;
+   display:none
 }
 .left_nav_title{
   display:inline-block;
@@ -304,5 +305,19 @@ export default class App extends Vue {
 }
 .left_nav_menu_title{
   margin-left:28px;
+}
+
+@media print {
+  .reportColumn {
+      page-break-before: auto;
+  }
+
+  .reportHeader, .left_nav {
+    display: none !important;
+  }
+
+  .main {
+    padding-top: 32px;
+  }
 }
 </style>
