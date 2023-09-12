@@ -9,23 +9,23 @@
 <template>
   <div style="margin-top: 24px">
     <h1 class="tableTitle">3、内存统计表</h1>
-    <el-table :data="tableData" :header-cell-style="{ background:'#F0F0F0 !important'}"
-      style="width: 100%; margin-top: 12px" border header-row-class-name="statisticsTableHeader"
-      header-cell-class-name="statisticsTableCell">
-      <el-table-column type="index" :index="indexMethod" label="序号" width="80"> </el-table-column>
-      <el-table-column width="160%" prop="functionName" label="函数名称"> </el-table-column>
-      <el-table-column prop="flieName" label="文件名"> </el-table-column>
-      <el-table-column prop="rowCount" label="行数"> </el-table-column>
-      <el-table-column prop="freeOrAllocation" label="分配/释放"> </el-table-column>
-      <el-table-column prop="address" label="地址"> </el-table-column>
-      <el-table-column prop="maxByte" label="最小字节数"> </el-table-column>
-      <el-table-column prop="minByte" label="最大字节数"> </el-table-column>
-      <el-table-column prop="successCount" label="成功次数"> </el-table-column>
-      <el-table-column prop="failCount" label="失败次数"> </el-table-column>
-      <el-table-column prop="byteCount" label="当前字节数"> </el-table-column>
-      <el-table-column prop="isFree" label="是否释放"> </el-table-column>
-      <el-table-column prop="total" label="总字节数"> </el-table-column>
-    </el-table>
+      <el-table :data="tableData" :header-cell-style="{ background: '#F0F0F0 !important' }"
+        style="width: 100%; margin-top: 12px" border header-row-class-name="statisticsTableHeader"
+        header-cell-class-name="statisticsTableCell">
+        <el-table-column type="index" :index="indexMethod" label="序号" width="70px"> </el-table-column>
+        <el-table-column prop="functionName" label="函数名称" width="70px"> </el-table-column>
+        <el-table-column prop="fileName" label="文件名" width="72px"> </el-table-column>
+        <el-table-column prop="rowCount" label="行数" width="70px"> </el-table-column>
+        <el-table-column prop="freeOrAllocation" label="分配/释放" width="70px"> </el-table-column>
+        <el-table-column prop="address" label="地址" width="70px"> </el-table-column>
+        <el-table-column prop="maxByte" label="最小字节数" width="70px"> </el-table-column>
+        <el-table-column prop="minByte" label="最大字节数" width="70px"> </el-table-column>
+        <el-table-column prop="successCount" label="成功次数" width="70px"> </el-table-column>
+        <el-table-column prop="failCount" label="失败次数" width="70px"> </el-table-column>
+        <el-table-column prop="byteCount" label="当前字节数" width="70px"> </el-table-column>
+        <el-table-column prop="isFree" label="是否释放" width="70px"> </el-table-column>
+        <el-table-column prop="total" label="总字节数" width="70px"> </el-table-column>
+      </el-table>
   </div>
 </template>
 

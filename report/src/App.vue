@@ -10,20 +10,6 @@
   <div id="app">
     <reportHeader />
     <div class="main">
-      <div class="left_nav">
-        <span class="left_nav_title">易复测试报告</span>
-        <div v-for="(value,index) in titleArray" style="cursor: pointer;">
-          <span class="title_menu" :key='index' @click="scroll(index)">{{value}}</span>
-        </div>
-        <div style="cursor: pointer;" v-if='isShow'>
-          <span class="title_menu" @click="scroll(4)">五、测试结果统计</span>
-        </div>
-        <div class="left_nav_menu_title" v-if='isShow'>
-          <div v-for="(value,index) in titleMenuArray" style="cursor: pointer;">
-            <span class="title_menu" :key='index' @click="menuScroll(index)">{{value}}</span>
-          </div>
-        </div>
-      </div>
       <div class="concentBody">
         <Home :homeDataTestOverview='homeData' />
         <div>
