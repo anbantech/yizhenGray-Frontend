@@ -80,7 +80,7 @@ export default {
             const ec = this.tableData[0] ? this.tableData[0].this_time_error_cases : [];
             if (ec.length === 0) {
                 this.errorCases.push([])
-                this.reflectProgress += 50
+                this.reflectProgress += 100
                 this.$emit('update:progress', this.reflectProgress)
                 return
             }
