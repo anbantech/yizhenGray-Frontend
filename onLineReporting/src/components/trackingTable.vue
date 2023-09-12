@@ -13,7 +13,7 @@
       :header-cell-style="{ background:'#F0F0F0 !important'}" header-row-class-name="statisticsTableHeader"
       header-cell-class-name="statisticsTableCell">
       <el-table-column type="index" :index="indexMethod" label="序号" width="80"> </el-table-column>
-      <el-table-column prop="flieName" label="文件名"> </el-table-column>
+      <el-table-column prop="fileName" label="文件名"> </el-table-column>
       <el-table-column width="160%" prop="functionName" label="函数名称"> </el-table-column>
       <el-table-column prop="codeCount" label="代码行"> </el-table-column>
       <el-table-column prop="timeUs" label="运行时间(ms)"> </el-table-column>
