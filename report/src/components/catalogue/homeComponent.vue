@@ -8,7 +8,7 @@
 -->
 <template>
     <div class='reportColumn'>
-        <span class="reportColumn_title">{{ title }}</span>
+        <h1 class="reportColumn_title">{{ title }}</h1>
         <div v-for="(item, index) in homeData" :key="index" class="reportConcent">
             <div v-for="(key,value,number) in item" :key='number' class="reportConcent_row">
                 <span>
