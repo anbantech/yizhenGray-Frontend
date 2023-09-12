@@ -11,9 +11,9 @@
     <reportHeader />
     <div class="main">
       <div class="concentBody">
-        <Home :homeDataTestOverview='homeData' />
+        <!-- <Home :homeDataTestOverview='homeData' /> -->
         <div>
-          <div id='one' style="padding-top: 70p'x;margin-top: -70px;">
+          <div id='one' style="padding-top: 70px;margin-top: -70px;">
             <HomeComponent :homeDataTestOverview='homeDataTestOverview' title="一、测试概述"
               cloumnType="homeDataTestOverviewType" />
           </div>
@@ -48,10 +48,6 @@
           <div id="fifth" style="padding-top: 70px;margin-top: -70px;">
             <staticTable :table-data="tableData.staticData"></staticTable>
           </div>
-          <div id="sixth" style="padding-top: 70px;margin-top: -70px;">
-            <imageList v-if='urlList !== "" ' :url-list="urlList"></imageList>
-          </div>
-
         </div>
       </div>
     </div>
