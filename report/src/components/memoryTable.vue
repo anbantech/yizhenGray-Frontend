@@ -8,14 +8,14 @@
 -->
 <template>
   <div style="margin-top: 24px">
-    <h1 class="tableTitle">3、内存统计表</h1>
+    <h2 class="tableTitle">3、内存统计表</h2>
       <el-table :data="tableData" :header-cell-style="{ background: '#F0F0F0 !important' }"
         style="width: 100%; margin-top: 12px" border header-row-class-name="statisticsTableHeader"
         header-cell-class-name="statisticsTableCell">
-        <el-table-column type="index" :index="indexMethod" label="序号" width="70px"> </el-table-column>
+        <el-table-column type="index" :index="indexMethod" label="序号" width="65px"> </el-table-column>
         <el-table-column prop="functionName" label="函数名称" width="70px"> </el-table-column>
         <el-table-column prop="fileName" label="文件名" width="72px"> </el-table-column>
-        <el-table-column prop="rowCount" label="行数" width="70px"> </el-table-column>
+        <el-table-column prop="rowCount" label="行数" width="65px"> </el-table-column>
         <el-table-column prop="freeOrAllocation" label="分配/释放" width="70px"> </el-table-column>
         <el-table-column prop="address" label="地址" width="70px"> </el-table-column>
         <el-table-column prop="maxByte" label="最小字节数" width="70px"> </el-table-column>

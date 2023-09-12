@@ -20,7 +20,8 @@
             </el-table-column>
         </el-table>
         <span class="title">本次异常用例</span>
-        <el-table :data="errorCases" style="width: 100%; margin-top: 12px" border
+        <div  v-for="(ls, key) in errorCases" :key="key + 'cr'">
+        <el-table :data="ls" style="width: 100%; margin-top: 12px" border
             header-row-class-name="statisticsTableHeader" :header-cell-style="{ background: '#F0F0F0 !important' }"
             header-cell-class-name="statisticsTableCell">
             <el-table-column prop="num" label="用例编号" width="100%">
@@ -42,6 +43,7 @@
                 </template>
             </el-table-column>
         </el-table>
+        </div>
     </div>
 </template>
 

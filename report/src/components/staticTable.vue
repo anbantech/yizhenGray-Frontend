@@ -8,7 +8,7 @@
 -->
 <template>
   <div style="margin-top: 24px">
-    <h1 class="tableTitle">5、静态度量表</h1>
+    <h2 class="tableTitle">5、静态度量表</h2>
     <el-table :data="tableData" style="width: 100%; margin-top: 12px" border
         :header-cell-style="{ background: '#F0F0F0 !important' }" header-row-class-name="statisticsTableHeader"
         header-cell-class-name="statisticsTableCell">
