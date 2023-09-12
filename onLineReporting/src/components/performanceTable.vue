@@ -14,7 +14,7 @@
       :header-cell-style="{ background:'#F0F0F0 !important'}">
       <el-table-column type="index" :index="indexMethod" label="序号" width="80"> </el-table-column>
       <el-table-column width="160%" prop="functionName" label="函数名称"> </el-table-column>
-      <el-table-column prop="flieName" label="文件名"> </el-table-column>
+      <el-table-column prop="fileName" label="文件名"> </el-table-column>
       <el-table-column prop="count" label="调用次数"> </el-table-column>
       <el-table-column prop="currentUs" label="当前值(ms)"> </el-table-column>
       <el-table-column prop="minUs" label="最小值(ms)"> </el-table-column>
