@@ -327,7 +327,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                           })}
                       </div>
                     </div>
-                    <div>{getTime(item.update_time)}</div>
+                    <div>{getTime(item.create_time)}</div>
                     <div>{item.branch_coverage}</div>
                     <div>{item.statement_coverage}</div>
                     <div style={{ textAlign: 'left' }}>

@@ -190,7 +190,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
       className={styles.formNewInstanceModal}
       width={width}
       visible={visibility}
-      title={isDetail ? '停止条件' : '新建实例'}
+      title={isDetail ? '实例配置' : '新建实例'}
       onCancel={() => {
         choiceModal()
       }}
@@ -279,7 +279,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         <span> 内置缺陷 </span>
         <span style={{ padding: '0px 8px 0px 10px' }}> : </span>
         <div className={styles.crashDes}>
-          <Radio.Group onChange={checkRadio} value={reset_modeValue}>
+          <Radio.Group onChange={checkRadio} disabled={Boolean(isDetail)} value={reset_modeValue}>
             <Radio value={1}>硬复位</Radio>
             <Radio value={2}>软复位</Radio>
             <Radio value={0}>不复位</Radio>

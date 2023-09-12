@@ -100,7 +100,8 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   }
 
   const checkCrashLevel = (value: string) => {
-    depCollect(true, { level: value, page: 1 })
+    const val = value === '-1' ? null : value
+    depCollect(true, { level: val, page: 1 })
   }
 
   const getMessageStatus = React.useCallback(() => {

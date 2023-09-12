@@ -59,7 +59,8 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
   const [params, setParams] = useState(RequsetParams)
 
   const checkCrashLevel = (value: string) => {
-    setParams({ ...params, level: value })
+    const val = value === '-1' ? '' : value
+    setParams({ ...params, level: val })
   }
 
   const [total, setTotal] = React.useState(-1)
@@ -221,12 +222,12 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       title: () => {
         return <SortIconComponent title='发送时间' key='2' onChange={changeTimeType} type='time' isType={isType} />
       },
-      dataIndex: 'update_time',
-      key: 'update_time',
+      dataIndex: 'create_time',
+      key: 'create_time',
       ellipsis: true,
       render: (text: any, record: any) => (
         <div className={styles.checkDetail} key={record.id}>
-          {getTime(record.update_time)}
+          {getTime(record.create_time)}
         </div>
       ),
       width: '10%'
@@ -240,13 +241,13 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
           </div>
         )
       },
-      dataIndex: 'crash_info',
-      key: 'crash_info',
+      dataIndex: 'crash_type',
+      key: 'crash_type',
       ellipsis: true,
       width: '10%',
       render: (text: any, record: any) => (
         <div className={styles.dataLongInfoResult}>
-          {Object.keys(record.crash_info).map(item => {
+          {Object.keys(record.crash_type).map(item => {
             return (
               <div key={item} className={styles.crash_infoTitle}>
                 <Tooltip title={CrashInfoMapLog[+item]} placement='bottom' overlayClassName={styles.overlay}>
