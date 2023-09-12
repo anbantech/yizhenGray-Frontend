@@ -35,7 +35,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
   }, [params])
 
   useEffect(() => {
-    if (status === 2 && (taskDetailInfo.test_num || taskDetailInfo.error_num || taskDetailInfo.warning_count)) {
+    if (status === 2 && (taskDetailInfo.total || taskDetailInfo.defects_count || taskDetailInfo.error_count)) {
       getlog()
         .then(res => {
           setSpinning(false)
@@ -46,7 +46,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, taskDetailInfo.test_num, taskDetailInfo.error_num, taskDetailInfo.warning_count])
+  }, [status, taskDetailInfo.total, taskDetailInfo.defects_count, taskDetailInfo.error_count])
 
   const columns = [
     {
@@ -80,24 +80,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
         </div>
       )
     },
-    {
-      title: () => {
-        return (
-          <div>
-            <span> 异常用例</span>
-          </div>
-        )
-      },
-      dataIndex: 'case_type',
-      key: 'case_type',
-      ellipsis: true,
-      render: (text: any, record: any) => (
-        <div className={styles.checkDetail} key={record.id}>
-          {record.case_type ? '是' : '否'}
-        </div>
-      ),
-      width: '11%'
-    },
+
     {
       title: () => {
         return (
@@ -106,12 +89,12 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
           </div>
         )
       },
-      dataIndex: 'update_time',
-      key: 'update_time',
+      dataIndex: 'create_time',
+      key: 'create_time',
       ellipsis: true,
       render: (text: any, record: any) => (
         <div className={styles.checkDetail} key={record.id}>
-          {getTime(record.update_time)}
+          {getTime(record.create_time)}
         </div>
       ),
       width: '15%'
@@ -161,13 +144,13 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
           </div>
         )
       },
-      dataIndex: 'crash_info',
-      key: 'crash_info',
+      dataIndex: 'crash_type',
+      key: 'crash_type',
       ellipsis: true,
       width: '12.5%',
       render: (text: any, record: any) => (
         <div className={styles.dataLongInfoResult}>
-          {Object.keys(record.crash_info).map(item => {
+          {Object.keys(record.crash_type).map(item => {
             return (
               <div key={item} className={styles.crash_infoTitle}>
                 <Tooltip title={CrashInfoMapLog[+item]} placement='bottom' overlayClassName={styles.overlay}>
@@ -190,9 +173,9 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
           rowKey={record => record.id}
           columns={columns}
           rowClassName={record => {
-            return record.case_type && Object.keys(record.crash_info)[0]
+            return record.case_type && Object.keys(record.crash_type)[0]
               ? `${styles.tableStyleBackground}`
-              : Object.keys(record.crash_info)[0] && !record.case_type
+              : Object.keys(record.crash_type)[0] && !record.case_type
               ? `${styles.warninfo}`
               : ''
           }}

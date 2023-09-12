@@ -3,6 +3,7 @@ import { RightOutlined } from '@ant-design/icons'
 // import { Badge } from 'antd'
 import * as React from 'react'
 import { ResTaskDetail } from 'Src/globalType/Response'
+import { generateUUID } from 'Src/util/common'
 import styles from '../taskDetail.less'
 import cardStyles from './taskCard.less'
 
@@ -28,6 +29,7 @@ interface CardStatus {
   concent: string
   InitTask: () => void
 }
+
 export const statusMap = {
   0: {
     label: '正常结束',
@@ -78,8 +80,8 @@ export const statusMap = {
 
 type stringKey = Record<string, string>
 const showTitleMap = {
-  test_num: '用例总数(条)',
-  error_num: '缺陷数量',
+  total: '用例总数(条)',
+  defects_count: '缺陷数量',
   coverage: '覆盖率',
   test_speed: '测试速率(帧/秒)',
   test_time: '运行时长',
@@ -166,8 +168,8 @@ function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
     <div className={styles.taskDetailCard}>
       {Object.keys(showTitleMap).map((item: string) => {
         return (
-          <>
-            {item === 'test_num' ? (
+          <React.Fragment key={generateUUID()}>
+            {item === 'total' ? (
               <TestNumComponents
                 lookLog={lookLog}
                 concent={showTitleMap[item as keyof typeof showTitleMap]}
@@ -184,7 +186,7 @@ function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
             ) : (
               <CommonComponents concent={showTitleMap[item as keyof typeof showTitleMap]} value={taskMapInfo[item as keyof typeof taskMapInfo]} />
             )}
-          </>
+          </React.Fragment>
         )
       })}
     </div>

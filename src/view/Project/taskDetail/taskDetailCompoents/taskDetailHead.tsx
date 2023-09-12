@@ -156,7 +156,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
           <span className={styles.taskDetailHead_Main_left_title}>{`${num}`}</span>
           <div style={{ marginTop: '6px' }} className={styles.taskDetailCard_Main_left_footer_detail}>
             <span role='time' onClick={choiceModal}>
-              查看停止条件
+              查看实例配置
             </span>
             <RightOutlined />
           </div>
@@ -291,7 +291,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
           </div>
         ) : null} */}
       </div>
-      <NewTaskInstance visibility={visibility} isDetail={1} task_id={id} data={props.taskDetailInfo} choiceModal={choiceModal} width='522px' />
+      <NewTaskInstance visibility={visibility} isDetail={1} task_id={id} data={props.taskDetailInfo} choiceModal={choiceModal} width='532px' />
     </div>
   )
 }

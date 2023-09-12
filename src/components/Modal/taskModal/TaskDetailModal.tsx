@@ -72,11 +72,13 @@ const convertTo2DArray = (arr: any[], length: number) => {
   }
   return result
 }
+
 const TabsComponetns = (props: Record<string, any>) => {
   const { registeData, performanceData } = props
 
   const [registeDataPage, setRegisteDataPage] = useState(1)
   const [performanceDataPage, setPerformanceDataPage] = useState(1)
+
   const R1 = React.useMemo(() => {
     const length = registeData
     return length.length
@@ -91,6 +93,7 @@ const TabsComponetns = (props: Record<string, any>) => {
     const data = convertTo2DArray(registeData, 20)
     return data
   }, [registeData])
+
   const performanceDataData2DAarray = React.useMemo(() => {
     const data = convertTo2DArray(performanceData, 5)
     return data
@@ -133,7 +136,7 @@ const TabsComponetns = (props: Record<string, any>) => {
           }
           key='Register'
         >
-          {registeData2DAarray.length > 0 && <RegisterDetail registeData={registeData2DAarray[pageReg - 1]} />}
+          {registeData2DAarray.length > 0 && <RegisterDetail registeAllData={registeData} registeData={registeData2DAarray[pageReg - 1]} />}
         </TabPane>
 
         <TabPane

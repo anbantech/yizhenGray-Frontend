@@ -4,11 +4,11 @@ import 'antd/dist/antd.css'
 import styles from '../Scale.less'
 
 const RegisterDetailMemo: React.FC<any> = props => {
-  const { registeData } = props
+  const { registeData, registeAllData } = props
   const [registerData, setRegisterData] = useState([])
   const appendData = (value: string[]) => {
     const dimensionArray = new Array(Math.ceil(value.length / 5)).fill([])
-    const val = value
+    const val = [...value]
     dimensionArray.forEach((item: string[], index: number) => {
       dimensionArray[index] = val.splice(0, 5)
     })
@@ -20,9 +20,9 @@ const RegisterDetailMemo: React.FC<any> = props => {
       if (registerData.length === 0) {
         appendData(value)
       } else {
-        const flagValue = value
-        flagValue.flat().forEach((item: any, index: number) => {
-          if (item.name === (registerData.flat(1)[index] as any).name && item.value !== (registerData.flat(1)[index] as any).value) {
+        const flagValue = [...value]
+        registeAllData.flat().forEach((item: any, index: number) => {
+          if (item.name === (flagValue.flat(1)[index] as any)?.name && item.value !== (flagValue.flat(1)[index] as any)?.value) {
             const ele = item
             ele.flag = '11'
           }
@@ -30,7 +30,7 @@ const RegisterDetailMemo: React.FC<any> = props => {
         appendData(flagValue)
       }
     },
-    [registerData]
+    [registerData, registeAllData]
   )
   useEffect(() => {
     if (registeData) {
@@ -42,7 +42,7 @@ const RegisterDetailMemo: React.FC<any> = props => {
     <div className={styles.rowTableDetail}>
       {registerData?.map((item: any) => {
         return (
-          <div key={generateUUID()} className={styles.register_cloumns}>
+          <div key={`${Math.random()}${generateUUID()}`} className={styles.register_cloumns}>
             {item?.map((ele: any) => {
               return (
                 <div key={generateUUID()} className={styles.register_row}>
