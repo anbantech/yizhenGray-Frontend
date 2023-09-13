@@ -224,7 +224,6 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       },
       dataIndex: 'create_time',
       key: 'create_time',
-      ellipsis: true,
       render: (text: any, record: any) => (
         <div className={styles.checkDetail} key={record.id}>
           {getTime(record.create_time)}

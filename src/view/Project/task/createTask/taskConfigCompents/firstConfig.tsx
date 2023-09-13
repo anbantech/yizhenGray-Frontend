@@ -119,6 +119,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         1005: '任务名称重复，请修改',
         1006: '任务参数校验失败',
         1007: '操作频繁',
+        2013: '激励序列至少包含一个激励',
         1015: taskInfo?.editTaskMode ? '任务更新失败' : '任务创建失败'
       })
       await sleep(300)

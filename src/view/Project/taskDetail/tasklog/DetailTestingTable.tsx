@@ -60,12 +60,17 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       title: '发送数据',
       dataIndex: 'send_data',
       key: 'send_data',
-      ellipsis: true,
       width: '12%',
       render: (text: any, record: any) => (
-        <p className={styles.checkDetail} key={record.id}>
-          {typeof record.send_data === 'string' ? record.send_data : record.send_data[0] || ''}
-        </p>
+        <Tooltip
+          title={typeof record.send_data === 'string' ? record.send_data : record.send_data[0] || ''}
+          placement='bottomLeft'
+          overlayClassName={styles.overlay}
+        >
+          <p className={styles.checkDetail} key={record.id}>
+            {typeof record.send_data === 'string' ? record.send_data : record.send_data[0] || ''}
+          </p>
+        </Tooltip>
       )
     },
     {
