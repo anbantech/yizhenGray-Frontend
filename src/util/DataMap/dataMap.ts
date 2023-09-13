@@ -12,7 +12,7 @@ export const statusList = [
   { lable: '停止中', value: 7 },
   { lable: '重放中', value: 8 },
   // { lable: '重放暂停', value: 9 }a
-  { lable: '固件启动异常', value: 5 }
+  { lable: '固件初始化失败', value: 5 }
 ]
 
 export const statusMap = {
@@ -53,7 +53,7 @@ export const statusMap = {
     color: styles.roundStatusReplay
   },
   10: {
-    label: '固件启动异常',
+    label: '固件初始化失败',
     color: styles.roundStatusErrorPaused
   }
 }
@@ -80,8 +80,8 @@ export const CrashInfoMap: CrashInfoType = {
   0xe305: '定点数溢出',
   0xe401: '中断嵌套',
   0xe403: '死循环',
-  0xe404: '看门狗超时',
-  0xe405: '系统复位错误',
+  // 0xe404: '看门狗超时',
+  // 0xe405: '系统复位错误',
   // 0xef01: '隐式整型符号转换 ',
   // 0xef02: '隐式整型截取',
   // 0xef03: '隐式无符号整型截取',

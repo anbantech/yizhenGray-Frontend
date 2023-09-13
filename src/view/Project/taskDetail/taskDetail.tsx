@@ -100,7 +100,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   }
 
   const checkCrashLevel = (value: string) => {
-    const val = value === '-1' ? null : value
+    const val = value === '-1' ? '' : value
     depCollect(true, { level: val, page: 1 })
   }
 

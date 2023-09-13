@@ -242,9 +242,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
               {logData.map((item: DataType) => {
                 return (
                   <div key={`${item.id}${item.msg_index}${item.create_time}`} className={`${styles.Table_concent} ${styleFn(item)}`}>
-                    <Tooltip title={item.msg_index} placement='bottomLeft'>
-                      <div>{item.msg_index}</div>
-                    </Tooltip>
+                    <div>{item.msg_index}</div>
                     <div>
                       <div className={styles.dataInfoContainer}>
                         <Tooltip

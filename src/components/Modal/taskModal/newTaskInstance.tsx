@@ -120,7 +120,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
 
   const onValuesChange = (changedValues: any, allValues: any) => {
     const { work_time } = allValues
-    if (work_time >= 1) {
+    if (work_time >= 1 && work_time <= 9000) {
       setDisabledStatus(false)
     } else {
       setDisabledStatus(true)
@@ -252,12 +252,12 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
               validator(_, value) {
                 const reg = /^\d+$/
                 if (reg.test(value)) {
-                  if (value >= 1) {
+                  if (value >= 1 && value <= 9000) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('请输入大于0的整数'))
+                  return Promise.reject(new Error('请输入大于0的整数且小于9000的整数'))
                 }
-                return Promise.reject(new Error('请输入大于0的整数'))
+                return Promise.reject(new Error('请输入大于0的整数且小于9000的整数'))
               }
             }
           ]}
@@ -270,7 +270,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         <span style={{ padding: '0px 8px 0px 10px' }}> : </span>
         <div className={styles.crashDes}>
           <span>
-            FLASH区向上溢出、FLASH区向下溢出、RAM区向上溢出、RAM区向下溢出、ROM区向上溢出、ROM区向下溢出、写入保护区域、非法指令、程序跑飞、读取保护区域、堆栈溢出、代码区破坏错误
+            FLASH区向上溢出、FLASH区向下溢出、RAM区向上溢出、RAM区向下溢出、ROM区向上溢出、ROM区向下溢出、写入保护区域、非法指令、程序跑飞、读取保护区域、堆栈溢出、代码区破坏错误、看门狗超时、系统复位错误
           </span>
           <CrashTip />
         </div>
