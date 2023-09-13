@@ -137,8 +137,8 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
     }
     const ObjArray = Object.values(obj)
     const isEqual = ObjArray.every((val, i, arr) => val === arr[0])
-    const isEqual1 = ObjArray.some(val => val === '1')
-    setCheckAllCrash(isEqual && ObjArray[0] === '1' && Object.keys(obj).length === Object.keys(CrashInfoMap).length)
+    const isEqual1 = ObjArray.some(val => val === '0')
+    setCheckAllCrash(isEqual && ObjArray[0] === '0' && Object.keys(obj).length === Object.keys(CrashInfoMap).length)
     setIndeterminateCrash(isEqual1)
     setCrashObj({ ...obj })
   }
@@ -147,7 +147,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
     const objData: Record<string, string> = {}
     Object.keys(CrashInfoMap).forEach((item: string) => {
       if (type === 'Crash') {
-        objData[item] = '1'
+        objData[item] = '0'
       }
     })
     setCrashObj(isChecked ? { ...objData } : {})
@@ -307,7 +307,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
                   <div className={styles.crashTable_headerLeft}>{CrashInfoMap[+value]}</div>
                   <Checkbox.Group value={carshObj[value] as string[]} disabled={Boolean(isDetail)}>
                     <Checkbox
-                      value='1'
+                      value='0'
                       onClick={e => {
                         handleCancel(e, value)
                       }}
