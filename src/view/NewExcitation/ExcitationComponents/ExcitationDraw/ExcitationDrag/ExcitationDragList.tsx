@@ -32,7 +32,7 @@ const BottomFooterDrag = ({ DeleteCheckItem, exportAll, saveConfig }: any) => {
   return (
     <div className={StyleSheet.BottomFooterDragBody}>
       <div className={StyleSheet.buleButton} role='time' onClick={saveConfig}>
-        添加到发送列表
+        添加到激励序列
       </div>
       <div className={StyleSheet.exportButtn} role='time' onClick={exportAll}>
         导出
