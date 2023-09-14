@@ -2,7 +2,7 @@ import { LoadingOutlined, RightOutlined } from '@ant-design/icons'
 import * as React from 'react'
 import { ResTaskDetail } from 'Src/globalType/Response'
 import { getTime } from 'Src/util/baseFn'
-import { Spin, Tooltip } from 'antd'
+import { message, Spin, Tooltip } from 'antd'
 import { Link, useHistory } from 'react-router-dom'
 import stopCourse from 'Image/stopCourse.svg'
 import Begin from 'Image/BeginCourse.svg'
@@ -132,6 +132,10 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
     let res
     try {
       res = await bgTest({ instance_id: id as number })
+      if (res.message === '固件启动异常') {
+        setSpinStatus(false)
+        message.error('固件初始化异常，更多信息请查看状态详情')
+      }
     } catch (error) {
       throwErrorMessage(error, {
         2011: '任务运行数量超出限制',

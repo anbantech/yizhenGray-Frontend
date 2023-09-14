@@ -399,7 +399,7 @@ const ThreeSteps = () => {
   const setValue = stepStore(state => state.setValue)
   const checkList = stepStore(state => state.checkList)
   const setExcitation = stepStore(state => state.setExcitation)
-
+  const setTwoCheckList = stepStore(state => state.setTwoCheckList)
   const checkListMemo = React.useMemo(() => {
     return checkList.length
   }, [checkList])
@@ -453,15 +453,17 @@ const ThreeSteps = () => {
       // const copyList = excitationList.filter((item: any) => !checkList.includes(item.sender_id))
       setExcitation([...DropListFilter])
       setCheckList([...CheckListFilter])
+      setTwoCheckList([...CheckListFilter])
     },
-    [checkList, excitationList, setCheckList, setExcitation]
+    [checkList, excitationList, setCheckList, setExcitation, setTwoCheckList]
   )
 
   const DeleteAllCheckItem = React.useCallback(() => {
     const copyList = excitationList.filter((item: any) => !checkList.includes(item.sender_id))
     setExcitation([...copyList])
+    setTwoCheckList([])
     setCheckList([])
-  }, [checkList, excitationList, setCheckList, setExcitation])
+  }, [checkList, excitationList, setCheckList, setExcitation, setTwoCheckList])
 
   const onChange = React.useCallback(
     (list: any[]) => {
