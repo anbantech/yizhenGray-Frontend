@@ -218,6 +218,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       ),
       width: '10%'
     },
+
     {
       title: () => {
         return <SortIconComponent title='发送时间' key='2' onChange={changeTimeType} type='time' isType={isType} />
@@ -231,6 +232,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       ),
       width: '10%'
     },
+
     {
       title: () => {
         return (
