@@ -270,8 +270,10 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         <span style={{ padding: '0px 8px 0px 10px' }}> : </span>
         <div className={styles.crashDes}>
           <span>
-            FLASH区向上溢出、FLASH区向下溢出、RAM区向上溢出、RAM区向下溢出、ROM区向上溢出、ROM区向下溢出、写入保护区域、非法指令、程序跑飞、读取保护区域、堆栈溢出、代码区破坏错误、看门狗超时、系统复位错误
+            {' '}
+            非法指令、程序跑飞、看门狗超时、系统复位错误、堆栈溢出、RAM区向下溢出、RAM区向上溢出、FLASH区向下溢、FLASH区向上溢、ROM区向下溢、ROM区向上溢、读取保护区域、写入保护区域、代码区破坏错误
           </span>
+
           <CrashTip />
         </div>
       </div>
