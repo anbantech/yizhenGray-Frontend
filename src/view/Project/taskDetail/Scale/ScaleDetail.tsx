@@ -11,7 +11,7 @@ function ScaleDetail(props: any) {
         {Object.keys(data.crash_type).map(item => {
           return (
             <div key={generateUUID()}>
-              {item && <TaskDetailModal value={data.crash_type?.[item]} item={item} msg_index={data.msg_index} create_time={data.create_time} />}
+              {item && <TaskDetailModal value={data.crash_type?.[item]} item={item} msg_index={data.msg_index} create_time={data.discovery_time} />}
             </div>
           )
         })}
