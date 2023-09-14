@@ -9,6 +9,7 @@ import Paused from 'Src/assets/instanceImage/img_暂停@2x.png'
 import errorPaused from 'Src/assets/instanceImage/img_异常暂停@2x.png'
 import errorStop from 'Src/assets/instanceImage/img_异常结束@2x.png'
 import readying from 'Src/assets/instanceImage/img_准备中@2x.png'
+import initError from 'Src/assets/instanceImage/img_固件初始化@2x.png'
 import { InstancesContext } from '../TaskIndex'
 
 import styles from './TaskInstance.less'
@@ -26,7 +27,8 @@ const ImageMap = {
   4: errorPaused,
   5: readying,
   7: stoping,
-  8: replaying
+  8: replaying,
+  10: initError
 }
 
 const HeaderComponets: React.FC = () => {
