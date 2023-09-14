@@ -255,9 +255,9 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
                   if (value >= 1 && value <= 9000) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('请输入大于0的整数且小于9000的整数'))
+                  return Promise.reject(new Error('请输入1到9000的整数'))
                 }
-                return Promise.reject(new Error('请输入大于0的整数且小于9000的整数'))
+                return Promise.reject(new Error('请输入1到9000的整数'))
               }
             }
           ]}

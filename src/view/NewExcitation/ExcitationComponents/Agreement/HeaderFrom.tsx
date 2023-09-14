@@ -53,7 +53,7 @@ const GuCntInput: React.FC<any> = (props: any) => {
 }
 
 const GuW0InputMemo: React.FC<any> = (props: any) => {
-  const { detaileStatus, value, onChange } = props
+  const { detaileStatus, onChange } = props
   const setValue = ArgeementDropListStore(state => state.setValue)
   const gu_w0 = ArgeementDropListStore(state => state.gu_w0)
   const styleFnTop = React.useMemo(() => {
@@ -85,7 +85,7 @@ const GuW0InputMemo: React.FC<any> = (props: any) => {
         tabIndex={0}
         onBlur={onMax}
         className={styleFnTop ? StyleSheetOther.numberInputDisabled : StyleSheetOther.numberInput}
-        value={gu_w0 || value}
+        value={gu_w0}
         onChange={onNumberChange}
         disabled={detaileStatus}
         style={{ width: 232, height: 34 }}
