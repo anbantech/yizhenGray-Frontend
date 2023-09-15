@@ -2,7 +2,7 @@
  * @Author: youjiaqi 2430284055@qq.com
  * @Date: 2022-07-21 14:14:25
  * @LastEditors: youjiaqi 2430284055@qq.com
- * @LastEditTime: 2022-09-26 10:39:13
+ * @LastEditTime: 2022-09-26 10:39:41
  * @FilePath: /yizhen-frontend/report/src/App.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -103,45 +103,27 @@ import Home from './components/catalogue/home.vue'
   },
 })
 export default class App extends Vue {
-  homeData = []
+  homeData = [] 
   homeDataTestOverview = []
   homeDataTestPlan = []
   homeDataTestSummary = []
   homeDataTestDetail = []
-  tableData = {}
-  allData = {}
+  tableData = window.reportData.tableData
   urlList = ''
   titleArray = ['一、测试概述','二、测试方案','三、测试总结','四、测试详情']
   titleMenuArray = ['1、覆盖统计表', '2、性能统计表', '3、内存统计表', '4、跟踪统计表', '5、静态度量表', '6、动态调用图']
-  isShow = false
+  isShow = true
   mounted(){
-   window.onload = () => {
-     this.update()
-    }
+   this.homeData = window.reportData.cover
+   this.homeDataTestOverview = window.reportData.testOverview
+   this.homeDataTestPlan = window.reportData.testPlan
+   this.homeDataTestSummary = window.reportData.testSummary
+   this.homeDataTestDetail = [window.reportData.testDetail]
+   this.tableData = window.reportData.tableData
+   this.isShow = Object.keys(window.reportData.tableData)?.length > 0 
+   this.urlList = window.reportData.tableData.dynamicCallGraph
   }
-  update() {
-    this.$nextTick(() => {
-      window.addEventListener('message', (e) => {
-        if (typeof e.data === 'string') {
-          this.allData = JSON.parse(e.data);
-          this.homeData = JSON.parse(e.data)?.cover
-          this.homeDataTestOverview = JSON.parse(e.data)?.testOverview
-          this.homeDataTestPlan = JSON.parse(e.data)?.testPlan
-          this.homeDataTestSummary = JSON.parse(e.data)?.testSummary
-          this.homeDataTestDetail = [JSON.parse(e.data).testDetail] as any
-          this.tableData = JSON.parse(e.data)?.tableData
-          this.isShow = Object.keys(JSON.parse(e.data).tableData)?.length > 0
-          this.urlList = JSON.parse(e.data)?.tableData.dynamicCallGraph
-           this.$nextTick(() => {
-            setTimeout(() => {
-              window.parent.postMessage('__AB_REPORT_DONE__', "*")
-            }, 5000);
-          })
-        }
-      })
-    })
-  }
-  scroll(index:number){
+   scroll(index:number){
       if(index === 0){
         const ele = document.querySelector('#one')
         if(!!ele){
@@ -180,7 +162,7 @@ export default class App extends Vue {
           })
         }
       }
-  }
+   }
   menuScroll(index:number){
     if(index===0){
       const ele = document.querySelector('#first')
@@ -245,7 +227,7 @@ export default class App extends Vue {
 }
 .concentBody{
   padding-bottom:48px;
-  width: 1001px;
+  width: 790px;
   margin: 0 auto;
   background-color:#fff;
 }
@@ -254,7 +236,7 @@ export default class App extends Vue {
 }
 .main{
   width :100%;
-  margin-bottom:32px;
+  padding:32px 32px 0px 32px;
   display:flex;
   justify-content:space-between;
   background-color: #FAFAFA;
@@ -262,7 +244,6 @@ export default class App extends Vue {
 .left_nav{
    position:fixed;
    top:111px;
-   left:32px;
 }
 .left_nav_title{
   display:inline-block;
