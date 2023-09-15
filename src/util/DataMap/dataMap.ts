@@ -12,7 +12,7 @@ export const statusList = [
   { lable: '停止中', value: 7 },
   { lable: '重放中', value: 8 },
   // { lable: '重放暂停', value: 9 }a
-  { lable: '固件初始化失败', value: 5 }
+  { lable: '固件初始化失败', value: 10 }
 ]
 
 export const statusMap = {
