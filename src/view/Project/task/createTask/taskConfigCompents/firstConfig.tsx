@@ -2,12 +2,12 @@ import { Divider, Form, Input, message, Select, Space } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import { IconAdd } from '@anban/iconfonts'
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { excitationListFn } from 'Src/services/api/excitationApi'
 import { createTaskFn, getSimulateNode, updateTask } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
 import styles from './stepBaseConfig.less'
 import TaskExcitaionModal from './taskExcitation'
+import FixTaskModal from './fixTaskModal'
 
 const layout = {
   labelCol: { span: 4 },
@@ -113,31 +113,27 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         }
       }
     } catch (error) {
-      message.config({
-        top: 100,
-        duration: 2,
-        maxCount: 3,
-        getContainer: getContainer() as any,
-        rtl: true,
-        prefixCls: 'my-message'
+      throwErrorMessage(error, {
+        1004: '该任务不存在',
+        1005: '任务名称重复，请修改',
+        1006: '任务参数校验失败',
+        1007: '操作频繁',
+        2013: '激励序列至少包含一个激励',
+        1015: taskInfo?.editTaskMode ? '任务更新失败' : '任务创建失败'
       })
-      // throwErrorMessage(error, {
-      //   1004: '该任务不存在',
-      //   1005: '任务名称重复，请修改',
-      //   1006: '任务参数校验失败',
-      //   1007: '操作频繁',
-      //   2013: '激励序列至少包含一个激励',
-      //   1015: taskInfo?.editTaskMode ? '任务更新失败' : '任务创建失败'
-      // })
       setModalData({ ...modalData, spinning: false })
-      // CommonModleClose(false)
       return error
     }
-  }, [cancenlForm, form, id, modalData, taskInfo.data.id, taskInfo?.editTaskMode])
+  }, [cancenlForm, form, id, modalData, taskInfo?.data?.id, taskInfo?.editTaskMode])
 
   const matchItem = React.useCallback(async () => {
     setModalData({ ...modalData, isModalVisible: true })
   }, [modalData])
+
+  const getFormData = React.useCallback(async () => {
+    const values = await form.validateFields()
+    return values
+  }, [form])
 
   useImperativeHandle(myRef, () => ({
     save: () => {
@@ -200,37 +196,15 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     }
   }
 
-  const onFieldsChange = useCallback(
-    async (changedFields?: any, allFields?: any) => {
-      // avoid outOfDate bug, sleep 300ms
-      await new Promise<void>(resolve => setTimeout(() => resolve(), 300))
-
-      if (!changedFields && !allFields) {
-        // eslint-disable-next-line no-param-reassign
-        allFields = form.getFieldsValue()
-      }
-      let allFinished = true
-      // eslint-disable-next-line no-restricted-syntax
-      for (const [fieldName, fieldValue] of Object.entries(allFields)) {
-        if (fieldName !== 'description' && fieldName !== 'rxid' && typeof fieldValue === 'undefined') {
-          allFinished = false
-          break
-        }
-      }
-      if (!allFinished) {
-        onChange(true)
-        return
-      }
-      let values
-      try {
-        values = await form.validateFields()
-      } catch (error) {
-        message.error(error)
-      }
-      onChange(!values)
-    },
-    [form, onChange]
-  )
+  const onValuesChange = async (changedValues: any, allValues: any) => {
+    const name = allValues.name?.length >= 2 && allValues.name.length <= 20 && /^[\w\u4E00-\u9FA5]+$/.test(allValues.name)
+    const { sender_id, simu_instance_id } = allValues
+    if (name && sender_id && simu_instance_id) {
+      onChange(false)
+    } else {
+      onChange(true)
+    }
+  }
 
   useEffect(() => {
     getExcitationList(params)
@@ -252,7 +226,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
       }
       form.setFieldsValue(formData)
       getExcitationList({ ...params, key_word: group_name })
-      onFieldsChange()
+      // onFieldsChange()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, taskInfo.data, fromDataTask])
@@ -274,7 +248,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
 
   return (
     <div className={styles.stepBaseMain} id='myContainer'>
-      <Form name='basic' className={styles.stepBaseMain_Form} {...layout} onValuesChange={onFieldsChange} autoComplete='off' form={form} size='large'>
+      <Form name='basic' className={styles.stepBaseMain_Form} {...layout} onValuesChange={onValuesChange} autoComplete='off' form={form} size='large'>
         <Form.Item
           label='任务名称'
           name='name'
@@ -403,16 +377,20 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           />
         </Form.Item>
       </Form>
-      <CommonModle
-        IsModalVisible={modalData.isModalVisible}
-        spinning={modalData.spinning}
-        deleteProjectRight={createOneExcitationFn}
-        CommonModleClose={CommonModleClose}
-        btnName='修改'
-        ing='修改中'
-        name='修改任务'
-        concent='修改除名称、描述以外的配置项，会停止关联任务，并清空关联任务的测试数据，是否确认修改？'
-      />
+      {modalData.isModalVisible && (
+        <FixTaskModal
+          IsModalVisible={modalData.isModalVisible}
+          spinning={modalData.spinning}
+          CommonModleClose={CommonModleClose}
+          btnName='修改'
+          id={id}
+          ing='修改中'
+          getFormData={getFormData}
+          taskId={taskInfo.data.id}
+          name='修改任务'
+          concent='修改除名称、描述以外的配置项，会停止关联任务，并清空关联任务的测试数据，是否确认修改？'
+        />
+      )}
       {open && <TaskExcitaionModal open={open} cancel={cancel} getContainer={getContainer} />}
     </div>
   )

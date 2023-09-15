@@ -99,12 +99,6 @@ function Report(props: any) {
 
   // 下载报告
   const exportReportZip = async () => {
-    notification.info({
-      key: 'html-report',
-      message: `HTML 报告正在生成中...`,
-      placement: 'bottomLeft',
-      duration: null
-    })
     const name = decodeURIComponent(search).split('?')[2].split('=')
     const datajsFileString = `const reportData=${JSON.stringify(reportData)};window.reportData=reportData;`
     const datajsFileBlob = new Blob([datajsFileString], { type: 'application/javascript' })
