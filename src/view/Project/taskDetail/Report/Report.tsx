@@ -108,8 +108,8 @@ function Report(props: any) {
     const name = decodeURIComponent(search).split('?')[2].split('=')
     const datajsFileString = `const reportData=${JSON.stringify(reportData)};window.reportData=reportData;`
     const datajsFileBlob = new Blob([datajsFileString], { type: 'application/javascript' })
-    const htmlFileBlob = (await axios.get('/HtmlReport/index.html', { responseType: 'blob' })).data
-    const bundlejsFileBlob = (await axios.get('/HtmlReport/lib/bundle.js', { responseType: 'blob' })).data
+    const htmlFileBlob = (await axios.get('/HtmlPDF/index.html', { responseType: 'blob' })).data
+    const bundlejsFileBlob = (await axios.get('/HtmlPDF/lib/bundle.js', { responseType: 'blob' })).data
     const zipInstance = new JSZip()
     zipInstance.file('index.html', htmlFileBlob)
     zipInstance.folder('lib')!.file('data.js', datajsFileBlob)
