@@ -81,7 +81,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       width: '10%',
       render: (text: any, record: any) => (
         <div key={record.id} className={styles.recv_datalog}>
-          <p key={record.id}>{record.recv_data || '暂无数据'}</p>
+          <p key={record.id}>{record.recv_data || '-'}</p>
         </div>
       )
     },
