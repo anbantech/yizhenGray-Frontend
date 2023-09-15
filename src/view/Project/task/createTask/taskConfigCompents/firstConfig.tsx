@@ -2,13 +2,9 @@ import { Divider, Form, Input, message, Select, Space } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import { IconAdd } from '@anban/iconfonts'
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
-
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { excitationListFn } from 'Src/services/api/excitationApi'
-
 import { createTaskFn, getSimulateNode, updateTask } from 'Src/services/api/taskApi'
-import { sleep } from 'Src/util/baseFn'
-
 import { throwErrorMessage } from 'Src/util/message'
 import styles from './stepBaseConfig.less'
 import TaskExcitaionModal from './taskExcitation'
@@ -26,6 +22,7 @@ const request = {
   sort_field: 'create_time',
   sort_order: 'descend'
 }
+
 interface projectInfoType {
   id: number
   sender_id: number
@@ -57,7 +54,9 @@ interface propsFn {
 }
 const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   const { onChange, id, taskInfo, cancenlForm, fromDataTask } = props
-
+  const getContainer = () => {
+    return document.querySelector('#myContainer') // 替换为你想要绑定的 DOM 元素的选择器
+  }
   const [form] = useForm()
   const { Option } = Select
   const [open, setOpen] = useState(false)
@@ -114,20 +113,27 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         }
       }
     } catch (error) {
-      throwErrorMessage(error, {
-        1004: '该任务不存在',
-        1005: '任务名称重复，请修改',
-        1006: '任务参数校验失败',
-        1007: '操作频繁',
-        2013: '激励序列至少包含一个激励',
-        1015: taskInfo?.editTaskMode ? '任务更新失败' : '任务创建失败'
+      message.config({
+        top: 100,
+        duration: 2,
+        maxCount: 3,
+        getContainer: getContainer() as any,
+        rtl: true,
+        prefixCls: 'my-message'
       })
-      await sleep(300)
+      // throwErrorMessage(error, {
+      //   1004: '该任务不存在',
+      //   1005: '任务名称重复，请修改',
+      //   1006: '任务参数校验失败',
+      //   1007: '操作频繁',
+      //   2013: '激励序列至少包含一个激励',
+      //   1015: taskInfo?.editTaskMode ? '任务更新失败' : '任务创建失败'
+      // })
       setModalData({ ...modalData, spinning: false })
-      CommonModleClose(false)
+      // CommonModleClose(false)
       return error
     }
-  }, [CommonModleClose, cancenlForm, form, id, modalData, taskInfo?.data?.id, taskInfo?.editTaskMode])
+  }, [cancenlForm, form, id, modalData, taskInfo.data.id, taskInfo?.editTaskMode])
 
   const matchItem = React.useCallback(async () => {
     setModalData({ ...modalData, isModalVisible: true })
@@ -266,9 +272,6 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     setOpen(true)
   }
 
-  const getContainer = () => {
-    return document.querySelector('#myContainer') // 替换为你想要绑定的 DOM 元素的选择器
-  }
   return (
     <div className={styles.stepBaseMain} id='myContainer'>
       <Form name='basic' className={styles.stepBaseMain_Form} {...layout} onValuesChange={onFieldsChange} autoComplete='off' form={form} size='large'>
@@ -364,8 +367,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
                     }}
                   >
                     <IconAdd className={styles.addImg} />
-                    {/* <img src={addImage} alt='' /> */}
-                    <span className={styles.sendlistTitle}>新建激励序列 </span>
+                    <div className={styles.sendlistTitle}>新建激励序列 </div>
                   </div>
                 </Space>
               </div>
