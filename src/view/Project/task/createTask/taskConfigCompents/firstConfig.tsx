@@ -226,7 +226,6 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
       }
       form.setFieldsValue(formData)
       getExcitationList({ ...params, key_word: group_name })
-      // onFieldsChange()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, taskInfo.data, fromDataTask])
