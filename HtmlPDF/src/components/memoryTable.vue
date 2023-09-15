@@ -14,7 +14,7 @@
       header-cell-class-name="statisticsTableCell">
         <el-table-column type="index" :index="indexMethod" label="序号" width="70px"> </el-table-column>
         <el-table-column prop="functionName" label="函数名" width="80px"> </el-table-column>
-        <el-table-column prop="fileName" label="文件名" width="190px"> </el-table-column>
+        <el-table-column prop="fileName" label="文件名" width="193px"> </el-table-column>
         <el-table-column prop="rowCount" label="行号" width="70px"> </el-table-column>
         <el-table-column prop="freeOrAllocation" label="分配/释放" width="90px"> </el-table-column>
         <el-table-column prop="maxByte" label="最小字节数" width="80px"> </el-table-column>
