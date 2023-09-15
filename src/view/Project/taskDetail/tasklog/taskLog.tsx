@@ -301,7 +301,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                     <div>
                       <div className={styles.dataInfoContainer}>
                         <Tooltip title={item.recv_data[0]} placement='bottom' overlayClassName={styles.overlay}>
-                          <span>{item.recv_data[0] || '暂无数据'}</span>
+                          <span>{item.recv_data[0] || '-'}</span>
                         </Tooltip>
                         {item.recv_data[0] && (
                           <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(item.recv_data[0])}>
@@ -315,7 +315,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                             return (
                               <div className={styles.dataShowItem} key={`${recv_data}_${Math.random()}`}>
                                 <Tooltip title={recv_data} placement='bottom' overlayClassName={styles.overlay}>
-                                  <span>{recv_data || '暂无数据'}</span>
+                                  <span>{recv_data || '-'}</span>
                                 </Tooltip>
                                 {/* <span role='button' tabIndex={0} className={styles.footerSpanSend_copy} onClick={copyTextFn(recv_data)}>
                                   <img src={errorFrameCopy} alt='' />

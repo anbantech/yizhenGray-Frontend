@@ -185,7 +185,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
               )
             })
           ) : (
-            <span>暂无数据</span>
+            <span>-</span>
           )}
         </div>
       )
