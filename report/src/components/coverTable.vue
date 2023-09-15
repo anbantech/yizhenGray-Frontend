@@ -12,15 +12,12 @@
     <el-table :data="tableData" style="width: 100%; margin-top: 12px" border
       :header-cell-style="{ background:'#F0F0F0 !important'}" header-row-class-name="statisticsTableHeader"
       header-cell-class-name="statisticsTableCell">
-      <el-table-column type="index" :index="indexMethod" label="序号" width="80"> </el-table-column>
-      <el-table-column width="160%" prop="functionName" label="函数名称"> </el-table-column>
-      <el-table-column prop="fileName" label="文件名"> </el-table-column>
-      <el-table-column prop="statementsNumber" label="语句数"> </el-table-column>
-      <el-table-column prop="statementsCover" label="语句覆盖"> </el-table-column>
-      <el-table-column prop="statementsPercent" label="语句覆盖率(%)"> </el-table-column>
-      <el-table-column prop="branchNumber" label="分支数"> </el-table-column>
-      <el-table-column prop="branchCover" label="分支覆盖"> </el-table-column>
-      <el-table-column prop="branchPercent" label="分支覆盖率(%)"> </el-table-column>
+      <el-table-column width="160%" prop="functionName" label="函数名"> </el-table-column>
+          <el-table-column prop="fileName" label="文件名"> </el-table-column>
+          <el-table-column prop="statementsNumber" label="语句数"> </el-table-column>
+          <el-table-column prop="statementsPercent" label="语句覆盖率(%)"> </el-table-column>
+          <el-table-column prop="branchNumber" label="分支数"> </el-table-column>
+          <el-table-column prop="branchPercent" label="分支覆盖率(%)"> </el-table-column>
     </el-table>
   </div>
 </template>

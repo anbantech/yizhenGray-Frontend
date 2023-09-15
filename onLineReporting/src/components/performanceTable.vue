@@ -13,7 +13,7 @@
       header-row-class-name="statisticsTableHeader" header-cell-class-name="statisticsTableCell"
       :header-cell-style="{ background:'#F0F0F0 !important'}">
       <el-table-column type="index" :index="indexMethod" label="序号" width="80"> </el-table-column>
-      <el-table-column width="160%" prop="functionName" label="函数名称"> </el-table-column>
+      <el-table-column width="160%" prop="functionName" label="函数名"> </el-table-column>
       <el-table-column prop="fileName" label="文件名"> </el-table-column>
       <el-table-column prop="count" label="调用次数"> </el-table-column>
       <el-table-column prop="currentUs" label="当前值(ms)"> </el-table-column>
@@ -21,7 +21,6 @@
       <el-table-column prop="maxUs" label="最大值(ms)"> </el-table-column>
       <el-table-column prop="avgUs" label="平均值(ms)"> </el-table-column>
       <el-table-column prop="totalUs" label="累计值(ms)"> </el-table-column>
-      <el-table-column prop="totalPercent" label="总百分比(%)"> </el-table-column>
     </el-table>
   </div>
 </template>
