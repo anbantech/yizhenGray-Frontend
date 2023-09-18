@@ -44,9 +44,8 @@ interface ReportURLParams {
   name: string
 }
 
-function Report(props: any) {
+function Report() {
   const reportURLParams = parseURL<ReportURLParams>()
-  const { search } = props.location
   const [reportData, setReportData] = useState([])
   const [loadingStatus, setLoadingStatus] = useState<'none' | 'fetching' | 'done' | 'error'>('none')
   const [hasRendered, setHasRendered] = useState(false)
@@ -99,7 +98,6 @@ function Report(props: any) {
 
   // 下载报告
   const exportReportZip = async () => {
-    const name = decodeURIComponent(search).split('?')[2].split('=')
     const datajsFileString = `const reportData=${JSON.stringify(reportData)};window.reportData=reportData;`
     const datajsFileBlob = new Blob([datajsFileString], { type: 'application/javascript' })
     const htmlFileBlob = (await axios.get('/HtmlPDF/index.html', { responseType: 'blob' })).data
@@ -111,7 +109,7 @@ function Report(props: any) {
     const content = await zipInstance.generateAsync({ type: 'blob' })
     if ('download' in document.createElement('a')) {
       const link = document.createElement('a')
-      link.download = `${name[1]}.zip`
+      link.download = '易复测试报告.zip'
       link.href = URL.createObjectURL(content)
       link.click()
     } else {

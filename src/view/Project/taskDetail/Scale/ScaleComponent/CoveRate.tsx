@@ -61,7 +61,7 @@ const CoveRate: React.FC<any> = forwardRef((props, ref) => {
       key: 'index'
     },
     {
-      title: '函数名称',
+      title: '函数名',
       dataIndex: 'func_name',
       key: 'func_name'
     },
