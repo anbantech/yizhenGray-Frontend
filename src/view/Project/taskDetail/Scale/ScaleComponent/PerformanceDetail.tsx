@@ -13,7 +13,7 @@ const PerformanceDetailMemo: React.FC<any> = props => {
       key: 'index'
     },
     {
-      title: '函数名称',
+      title: '函数名',
       dataIndex: 'func_name',
       key: 'func_name'
     },
