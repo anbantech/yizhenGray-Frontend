@@ -3,7 +3,6 @@
 import { ConfigProvider, message, Table, Tooltip } from 'antd'
 import React, { useCallback, useEffect } from 'react'
 import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
-import { WarnTip } from 'Src/view/excitation/excitationComponent/Tip'
 import { getTestingLog } from 'Src/services/api/taskApi'
 import { CrashInfoMapLog } from 'Utils/DataMap/dataMap'
 import { getTime } from 'Src/util/baseFn'
@@ -145,7 +144,6 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
         return (
           <div style={{ display: 'flex' }}>
             <span> 缺陷结果</span>
-            <WarnTip />
           </div>
         )
       },
