@@ -9,7 +9,6 @@ import React, { useEffect, useState } from 'react'
 import SortIconComponent from 'Src/components/SortIcon/sortIcon'
 import { getTime } from 'Src/util/baseFn'
 import { testAlllogs } from 'Src/globalType/Param'
-import { WarnTip } from 'Src/view/excitation/excitationComponent/Tip'
 import { CrashInfoMapLog } from 'Src/util/DataMap/dataMap'
 import style from 'Src/view/Project/project/project.less'
 import styles from '../taskDetailUtil/Detail.less'
@@ -238,7 +237,6 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
         return (
           <div style={{ display: 'flex' }}>
             <span> 缺陷结果</span>
-            <WarnTip />
           </div>
         )
       },
