@@ -278,7 +278,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         </div>
       </div>
       <div className={styles.CrashTableBody}>
-        <span> 内置缺陷 </span>
+        <span> 复位方式 </span>
         <span style={{ padding: '0px 8px 0px 10px' }}> : </span>
         <div className={styles.crashDes}>
           <Radio.Group onChange={checkRadio} disabled={Boolean(isDetail)} value={reset_modeValue}>
