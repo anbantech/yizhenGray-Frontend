@@ -169,7 +169,6 @@ function TaskDetailModalMemo(props: any) {
   const { value, item, msg_index, create_time } = props
   const { register, performance } = value
   const [isOpen, setOpen] = useState(true)
-
   const registerMemo = React.useMemo(() => {
     return register
   }, [register])

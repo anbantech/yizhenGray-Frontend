@@ -3,7 +3,7 @@ import 'antd/dist/antd.css'
 import { Button, Checkbox, Form, Input, message, Modal, Radio, RadioChangeEvent } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { throwErrorMessage } from 'Src/util/message'
-import { CrashTip } from 'Src/view/excitation/excitationComponent/Tip'
+import { CrashTip, TipAllComponents } from 'Src/view/excitation/excitationComponent/Tip'
 import { createTaskInstance } from 'Src/services/api/taskApi'
 import { generateUUID } from 'Src/util/common'
 import { CrashInfoMap } from 'Src/util/DataMap/dataMap'
@@ -49,6 +49,7 @@ type CrashObjType = Record<string, string>
 
 function NewTaskInstance(props: NEWTaskInstanceType) {
   const { visibility, task_id, choiceModal, width, isDetail, data } = props
+
   const [form] = Form.useForm<FormInstance>()
   const [isDisableStatus, setDisabledStatus] = useState(true)
   const [reset_modeValue, setValue] = useState(1)
@@ -274,7 +275,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
             非法指令、程序跑飞、看门狗超时、系统复位错误、堆栈溢出、RAM区向下溢出、RAM区向上溢出、FLASH区向下溢、FLASH区向上溢出、ROM区向下溢出、ROM区向上溢出、读取保护区域、写入保护区域、代码区破坏错误
           </span>
 
-          <CrashTip />
+          <TipAllComponents />
         </div>
       </div>
       <div className={styles.CrashTableBody}>

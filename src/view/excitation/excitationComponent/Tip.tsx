@@ -77,6 +77,14 @@ const TipComponents = () => {
   )
 }
 
+const TipAllComponents = () => {
+  return (
+    <div className={StyleSheet.levelTooltip} style={{ cursor: 'pointer' }}>
+      <span>默认上报所有内置缺陷</span>
+    </div>
+  )
+}
+
 const CrashLevelTip = () => {
   return (
     <Tooltip title={<TipComponents />} placement='bottom' overlayClassName={StyleSheet.overlay} style={{ cursor: 'pointer' }}>
@@ -85,4 +93,4 @@ const CrashLevelTip = () => {
   )
 }
 
-export { Tip, StepTip, WarnTip, InfoTip, CrashTip, DropTip, CrashLevelTip }
+export { Tip, StepTip, WarnTip, InfoTip, CrashTip, DropTip, CrashLevelTip, TipAllComponents }
