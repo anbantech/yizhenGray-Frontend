@@ -111,7 +111,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       } catch (error) {
         throwErrorMessage(error, {
           2009: '重放失败',
-          1007: '操作频繁',
+          1007: '开始操作频繁,请稍后在试',
           3002: '仿真终端无响应，请重启并检查网络',
           2007: '停止失败',
           7015: '固件初始化异常，更多信息请查看状态详情'
@@ -142,7 +142,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
         2005: '任务启动失败',
         3002: '仿真终端无响应，请重启并检查网络',
         2014: '任务不在可测状态',
-        2015: '任务关联的所有激励协议数据需要一个变异的字段',
+        2015: `${error.message.split(':').join('')}`,
         2016: '任务未处于暂停状态',
         9000: '系统异常',
         1007: '操作频繁',
