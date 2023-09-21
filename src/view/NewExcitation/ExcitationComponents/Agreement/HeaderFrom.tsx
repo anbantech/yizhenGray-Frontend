@@ -41,6 +41,7 @@ const GuCntInput: React.FC<any> = (props: any) => {
   return (
     <span>
       <Input
+        spellCheck='false'
         onBlur={onMax}
         className={styleFnDown ? StyleSheetOther.numberInputDisabled : StyleSheetOther.numberInput}
         value={gu_cnt0 || value}
@@ -82,6 +83,7 @@ const GuW0InputMemo: React.FC<any> = (props: any) => {
   return (
     <span>
       <Input
+        spellCheck='false'
         tabIndex={0}
         onBlur={onMax}
         className={styleFnTop ? StyleSheetOther.numberInputDisabled : StyleSheetOther.numberInput}
@@ -182,7 +184,7 @@ const HeadForm = React.forwardRef((props, myRef) => {
           }
         ]}
       >
-        <Input placeholder='请输入激励名称' className={styles.commonItem} />
+        <Input spellCheck='false' placeholder='请输入激励名称' className={styles.commonItem} />
       </Form.Item>
       <Form.Item name='gu_cnt0' label='发送次数' rules={[{ required: true, validator: checkGuCnt }]}>
         <GuCntInput />

@@ -102,7 +102,7 @@ const TaskForm = (props: PropType) => {
             }
           ]}
         >
-          <Input disabled placeholder='请输入2到20个字符' />
+          <Input spellCheck='false' disabled placeholder='请输入2到20个字符' />
         </Form.Item>
 
         <Form.Item
@@ -127,7 +127,7 @@ const TaskForm = (props: PropType) => {
             }
           ]}
         >
-          <Input disabled placeholder='请输入整数,最大48' suffix='小时' />
+          <Input spellCheck='false' disabled placeholder='请输入整数,最大48' suffix='小时' />
         </Form.Item>
         <Form.Item
           label='Crash数量'
@@ -150,7 +150,7 @@ const TaskForm = (props: PropType) => {
           <Input disabled placeholder='请输入Crash数量' />
         </Form.Item>
         <Form.Item label='节拍单元' name='beat_unit' initialValue={200}>
-          <Input disabled placeholder='请输入节拍单元' suffix='毫秒' />
+          <Input spellCheck='false' disabled placeholder='请输入节拍单元' suffix='毫秒' />
         </Form.Item>
         <Form.Item
           label='仿真节点'
@@ -191,6 +191,7 @@ const TaskForm = (props: PropType) => {
           rules={[{ message: '请输入任务描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
           <Input.TextArea
+            spellCheck='false'
             disabled
             placeholder='任务描述'
             autoSize={{ minRows: 4, maxRows: 5 }}

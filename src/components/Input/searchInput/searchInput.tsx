@@ -70,6 +70,7 @@ const SearchInput = React.forwardRef((props: searchTypes, myRef) => {
   return (
     <div className={className}>
       <Input
+        spellCheck='false'
         value={nowValue}
         prefix={<Search />}
         suffix={<ClearSuffix inputValue={nowValue} onChangeValue={controlRate} />}

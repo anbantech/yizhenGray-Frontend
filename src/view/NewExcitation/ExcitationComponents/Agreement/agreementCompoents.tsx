@@ -295,6 +295,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
           >
             <Input
               autoComplete='off'
+              spellCheck='false'
               placeholder='请输入字段名'
               onFocus={() => {
                 canDragBool(setCanDrag)
@@ -314,6 +315,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
         <Tooltip placement='topLeft' overlayClassName={styles.magicToolTipStyle} title={formData.value}>
           <Form.Item name='value'>
             <Input
+              spellCheck='false'
               bordered={false}
               className={styles.StringInputValue}
               onFocus={() => {
@@ -540,6 +542,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
             ]}
           >
             <Input
+              spellCheck='false'
               placeholder='请输入字段名'
               onFocus={() => {
                 canDragBool(setCanDrag)
@@ -581,6 +584,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
             ]}
           >
             <Input
+              spellCheck='false'
               bordered={false}
               className={styles.IntInputValue}
               onFocus={() => {
@@ -817,6 +821,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
             ]}
           >
             <Input
+              spellCheck='false'
               placeholder='请输入字段名'
               onFocus={() => {
                 canDragBool(setCanDrag)
@@ -868,6 +873,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
             ]}
           >
             <Input
+              spellCheck='false'
               autoComplete='off'
               bordered={false}
               onFocus={() => {
