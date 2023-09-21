@@ -382,6 +382,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           IsModalVisible={modalData.isModalVisible}
           spinning={modalData.spinning}
           CommonModleClose={CommonModleClose}
+          cancenlForm={cancenlForm}
           btnName='修改'
           id={id}
           ing='修改中'

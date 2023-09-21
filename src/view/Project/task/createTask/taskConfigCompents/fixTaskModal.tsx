@@ -7,7 +7,7 @@ import { throwErrorMessage } from 'Src/util/message'
 import { updateTask } from 'Src/services/api/taskApi'
 
 function FixTaskModal(props: any) {
-  const { IsModalVisible, CommonModleClose, btnName, ing, getFormData, taskId, id, spinning, concent, name } = props
+  const { IsModalVisible, CommonModleClose, btnName, ing, getFormData, taskId, id, spinning, cancenlForm, concent, name } = props
   const Title = () => {
     return (
       <div>
@@ -41,6 +41,7 @@ function FixTaskModal(props: any) {
       if (res?.data) {
         message.success('任务修改成功')
         CommonModleClose(false)
+        cancenlForm()
       }
     } catch (error) {
       throwErrorMessage(error, {
