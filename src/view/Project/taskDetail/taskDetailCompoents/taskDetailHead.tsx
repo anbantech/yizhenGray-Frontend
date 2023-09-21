@@ -3,6 +3,7 @@ import * as React from 'react'
 import { ResTaskDetail } from 'Src/globalType/Response'
 import { getTime } from 'Src/util/baseFn'
 import { message, Spin, Tooltip } from 'antd'
+import { useDebounceFn } from 'ahooks-v2'
 import { Link, useHistory } from 'react-router-dom'
 import stopCourse from 'Image/stopCourse.svg'
 import Begin from 'Image/BeginCourse.svg'
@@ -36,32 +37,21 @@ interface InfoType {
   task_status: number
 }
 
+interface ChildComponents {
+  status: number
+  index: number
+  setIndex: (value: number) => void
+  depCollect: any
+  RequsetParams: Record<any, any>
+  id: number
+}
+interface FatherComponents extends ChildComponents {
+  display: boolean
+}
 const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
-function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
-  const { taskInfo, projectInfo, instanceInfo } = props.infoMap
-  const { display, depCollect, RequsetParams } = props
-  const { num, start_time, end_time, status, id } = props.taskDetailInfo
+const BeginComponent = (props: ChildComponents) => {
   const [spinStatus, setSpinStatus] = React.useState(false)
-
-  const [index, setIndex] = React.useState(0)
-  const history = useHistory()
-  const inScale = () => {
-    history.push({
-      pathname: '/projects/Tasks/Detail/Scale',
-      state: { taskInfo, projectInfo, instanceInfo, test_Id: id, isTesting: true }
-    })
-  }
-  React.useEffect(() => {
-    if (status) {
-      setSpinStatus(false)
-    }
-  }, [status])
-  // 控制新建实列modal
-  const [visibility, setVisibility] = React.useState(false)
-  const choiceModal = () => {
-    setVisibility(!visibility)
-  }
-
+  const { status, index, id, setIndex, depCollect, RequsetParams } = props
   const continueOrStop = React.useCallback(async () => {
     setSpinStatus(true)
     if (spinStatus) return
@@ -89,8 +79,41 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       depCollect(true, { ...RequsetParams })
       setSpinStatus(false)
     }
-  }, [RequsetParams, depCollect, id, spinStatus, status])
+  }, [RequsetParams, depCollect, id, setIndex, spinStatus, status])
 
+  const { run } = useDebounceFn(continueOrStop, {
+    wait: 500
+  })
+  React.useEffect(() => {
+    if (status) {
+      setSpinStatus(false)
+    }
+  }, [status])
+  return (
+    <>
+      {[2, 3, 4].includes(status) && (
+        <div className={styles.ImageContioner} role='button' tabIndex={0} onClick={run}>
+          {[2].includes(status) ? (
+            <Spin spinning={spinStatus && index === 4} indicator={antIcon}>
+              <img className={styles.ImageSize} src={stopCourse} alt='stopCourse' />
+            </Spin>
+          ) : [3, 4].includes(status) ? (
+            <Spin spinning={spinStatus && index === 5} indicator={antIcon}>
+              <img src={Begin} className={styles.ImageSize} alt='stopCourse' />
+            </Spin>
+          ) : null}
+          <span>{[2, 8].includes(status) ? '暂停任务' : '继续任务'}</span>
+        </div>
+      )}
+    </>
+  )
+}
+
+const BeginComponentMemo = React.memo(BeginComponent)
+
+const OverComponent = (props: ChildComponents) => {
+  const [spinStatus, setSpinStatus] = React.useState(false)
+  const { status, index, id, setIndex, depCollect, RequsetParams } = props
   const beginOrOver = React.useCallback(async () => {
     setSpinStatus(true)
     if (spinStatus) return
@@ -123,8 +146,51 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       depCollect(true, { ...RequsetParams })
       setSpinStatus(false)
     }
-  }, [RequsetParams, depCollect, id, spinStatus, status])
+  }, [RequsetParams, depCollect, id, setIndex, spinStatus, status])
 
+  const { run } = useDebounceFn(beginOrOver, {
+    wait: 500
+  })
+  React.useEffect(() => {
+    if (status) {
+      setSpinStatus(false)
+    }
+  }, [status])
+  return (
+    <>
+      {[2, 3, 4, 8, 9].includes(status) && (
+        <div role='button' className={styles.ImageContioner} tabIndex={0} onClick={run}>
+          {
+            [2, 3, 4, 8, 9].includes(status) && (
+              <>
+                <Spin spinning={spinStatus && index === 1} indicator={antIcon}>
+                  <img className={styles.ImageSize} src={over} alt='stopCourse' />
+                </Spin>
+                <span>结束任务</span>
+              </>
+            )
+            //  [0, 1].includes(status) &&(
+            //   <>
+            //     <Tooltip placement='bottom' title='重新测试当前任务（重新发送已经测试过的用例）'>
+            //       <Spin spinning={spinStatus && index === 2} indicator={antIcon}>
+            //         <img className={styles.ImageSize} src={Begin} alt='beginCourse' />
+            //       </Spin>
+            //     </Tooltip>
+            //     <span>重测任务</span>
+            //   </>
+            // )
+          }
+        </div>
+      )}
+    </>
+  )
+}
+
+const OverComponentMemo = React.memo(OverComponent)
+
+const StartBeginComponent = (props: FatherComponents) => {
+  const [spinStatus, setSpinStatus] = React.useState(false)
+  const { status, index, id, setIndex, depCollect, RequsetParams, display } = props
   const beginTests = React.useCallback(async () => {
     setSpinStatus(true)
     if (spinStatus) return
@@ -154,7 +220,57 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       depCollect(true, { ...RequsetParams })
       setSpinStatus(false)
     }
-  }, [RequsetParams, depCollect, id, spinStatus])
+  }, [RequsetParams, depCollect, id, setIndex, spinStatus])
+
+  const { run } = useDebounceFn(beginTests, {
+    wait: 500
+  })
+  React.useEffect(() => {
+    if (status) {
+      setSpinStatus(false)
+    }
+  }, [status])
+  return (
+    <>
+      {!display && [0, 1, 5, 10].includes(status) && (
+        <div role='button' className={styles.ImageContioner} tabIndex={0} onClick={run}>
+          {[0, 1, 5, 10].includes(status) && (
+            <>
+              <Tooltip placement='bottom' title='开始测试当前任务'>
+                <Spin spinning={spinStatus && index === 3} indicator={antIcon}>
+                  <img className={styles.ImageSize} src={Begin} alt='beginCourse' />
+                </Spin>
+              </Tooltip>
+              <span>开始测试</span>
+            </>
+          )}
+        </div>
+      )}
+    </>
+  )
+}
+
+const StartBeginComponentMemo = React.memo(StartBeginComponent)
+
+function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
+  const { taskInfo, projectInfo, instanceInfo } = props.infoMap
+  const { display, depCollect, RequsetParams } = props
+  const { num, start_time, end_time, status, id } = props.taskDetailInfo
+
+  const [index, setIndex] = React.useState(0)
+  const history = useHistory()
+  const inScale = () => {
+    history.push({
+      pathname: '/projects/Tasks/Detail/Scale',
+      state: { taskInfo, projectInfo, instanceInfo, test_Id: id, isTesting: true }
+    })
+  }
+
+  // 控制新建实列modal
+  const [visibility, setVisibility] = React.useState(false)
+  const choiceModal = () => {
+    setVisibility(!visibility)
+  }
 
   return (
     <div className={styles.taskDetailHead_Main}>
@@ -186,7 +302,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
       </div>
       <div className={styles.taskDetailHead_Main_right}>
         {[0, 1].includes(status) && (
-          <Link to={`/OnlineReporting?id=${id}?name=${num}`} target='_blank' style={{ color: '#000000' }}>
+          <Link to={`/OnlineReporting?id=${id}?name=${num}`} target='_blank' style={{ color: '#333333' }}>
             <div role='button' className={styles.ImageContioner} tabIndex={0}>
               <img className={styles.ImageSize} src={report} alt='stopCourse' />
               <span>查看报告</span>
@@ -208,81 +324,18 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
           </div>
         )}
 
-        {[2, 3, 4, 8, 9].includes(status) && (
-          <div
-            role='button'
-            className={styles.ImageContioner}
-            tabIndex={0}
-            onClick={() => {
-              beginOrOver()
-            }}
-          >
-            {
-              [2, 3, 4, 8, 9].includes(status) && (
-                <>
-                  <Spin spinning={spinStatus && index === 1} indicator={antIcon}>
-                    <img className={styles.ImageSize} src={over} alt='stopCourse' />
-                  </Spin>
-                  <span>结束任务</span>
-                </>
-              )
-              //  [0, 1].includes(status) &&(
-              //   <>
-              //     <Tooltip placement='bottom' title='重新测试当前任务（重新发送已经测试过的用例）'>
-              //       <Spin spinning={spinStatus && index === 2} indicator={antIcon}>
-              //         <img className={styles.ImageSize} src={Begin} alt='beginCourse' />
-              //       </Spin>
-              //     </Tooltip>
-              //     <span>重测任务</span>
-              //   </>
-              // )
-            }
-          </div>
-        )}
+        <OverComponentMemo status={status} index={index} setIndex={setIndex} depCollect={depCollect} RequsetParams={RequsetParams} id={id} />
 
-        {!display && [0, 1, 5, 10].includes(status) && (
-          <div
-            role='button'
-            className={styles.ImageContioner}
-            tabIndex={0}
-            onClick={() => {
-              beginTests()
-            }}
-          >
-            {[0, 1, 5, 10].includes(status) && (
-              <>
-                <Tooltip placement='bottom' title='开始测试当前任务'>
-                  <Spin spinning={spinStatus && index === 3} indicator={antIcon}>
-                    <img className={styles.ImageSize} src={Begin} alt='beginCourse' />
-                  </Spin>
-                </Tooltip>
-                <span>开始测试</span>
-              </>
-            )}
-          </div>
-        )}
-
-        {[2, 3, 4].includes(status) && (
-          <div
-            className={styles.ImageContioner}
-            role='button'
-            tabIndex={0}
-            onClick={() => {
-              continueOrStop()
-            }}
-          >
-            {[2].includes(status) ? (
-              <Spin spinning={spinStatus && index === 4} indicator={antIcon}>
-                <img className={styles.ImageSize} src={stopCourse} alt='stopCourse' />
-              </Spin>
-            ) : [3, 4].includes(status) ? (
-              <Spin spinning={spinStatus && index === 5} indicator={antIcon}>
-                <img src={Begin} className={styles.ImageSize} alt='stopCourse' />
-              </Spin>
-            ) : null}
-            <span>{[2, 8].includes(status) ? '暂停任务' : '继续任务'}</span>
-          </div>
-        )}
+        <StartBeginComponentMemo
+          status={status}
+          index={index}
+          setIndex={setIndex}
+          depCollect={depCollect}
+          RequsetParams={RequsetParams}
+          id={id}
+          display={display}
+        />
+        <BeginComponentMemo status={status} index={index} setIndex={setIndex} depCollect={depCollect} RequsetParams={RequsetParams} id={id} />
 
         {/* {[-1].includes(status) ? (
           <div

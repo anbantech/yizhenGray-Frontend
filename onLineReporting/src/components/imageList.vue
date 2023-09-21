@@ -71,7 +71,7 @@ export default {
   font-size: 6px;
   line-height: 150%;
   text-align: center;
-  color: #000000;
+  color: #333333;
 }
 .img{
   width:100%;

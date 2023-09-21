@@ -1,7 +1,7 @@
 {
   "name": "yizhen-grey",
-  "version": "v1.0.000.20230417",
-  "templateVersion": "v1.0.000.20230128",
+  "version": "v1.0.333333.20230417",
+  "templateVersion": "v1.0.333333.20230128",
   "main": "index.js",
   "description": "yizhen-frontend",
   "author": "AnbanTech/Anban-Vue-Group",
@@ -123,6 +123,7 @@
     "@sentry/tracing": "^6.13.3",
     "@sentry/webpack-plugin": "^1.18.1",
     "@types/react-router-dom": "^5.1.7",
+    "ahooks-v2": "^2.10.15",
     "antd": "^4.15.6",
     "axios": "^0.21.1",
     "colorette": "^2.0.17",

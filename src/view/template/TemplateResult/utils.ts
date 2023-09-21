@@ -511,8 +511,8 @@ const responseTemplateChecker = (responseTemplateList: DefaultResponseTemplateLi
     return flag
   }
   /**
-   * v2.4.000.20220701 新增匹配规则组的概念，校验时把规则组打平
-   * v2.4.000.20220701 之前的版本没有匹配规则，数组里直接是对象，对象里也没有 rules
+   * v2.4.333333.20220701 新增匹配规则组的概念，校验时把规则组打平
+   * v2.4.333333.20220701 之前的版本没有匹配规则，数组里直接是对象，对象里也没有 rules
    */
   const flattedResponseTemplateList = responseTemplateList.flat()
   flattedResponseTemplateList.forEach(rt => {

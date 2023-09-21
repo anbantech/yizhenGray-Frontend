@@ -93,7 +93,7 @@ const Dragable = ({ sender_id, name, item, setMenuId, menuId, onChange }: Dragab
         <img className={StyleSheet.img_Body} src={dragImg} alt='' />
         <Checkbox value={sender_id} />
 
-        <span className={StyleSheet.dragItem_name} style={{ marginRight: '6px' }}>
+        <span className={StyleSheet.dragItem_name} style={{ marginRight: '6px', color: '#333333' }}>
           <Tooltip placement='bottom' title={name}>
             {' '}
             {name}

@@ -868,7 +868,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 1
       },
@@ -879,8 +879,8 @@ const data = {
         currentUs: '0',
         minUs: '0',
         maxUs: '0',
-        avgUs: '0.000000',
-        totalUs: '0.000000',
+        avgUs: '0.333333',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 2
       },
@@ -891,8 +891,8 @@ const data = {
         currentUs: '0',
         minUs: '0',
         maxUs: '0',
-        avgUs: '0.000000',
-        totalUs: '0.000000',
+        avgUs: '0.333333',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 3
       },
@@ -927,8 +927,8 @@ const data = {
         currentUs: '0',
         minUs: '0',
         maxUs: '0',
-        avgUs: '0.000000',
-        totalUs: '0.000000',
+        avgUs: '0.333333',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 6
       },
@@ -951,8 +951,8 @@ const data = {
         currentUs: '0',
         minUs: '0',
         maxUs: '0',
-        avgUs: '0.000000',
-        totalUs: '0.000000',
+        avgUs: '0.333333',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 8
       },
@@ -963,8 +963,8 @@ const data = {
         currentUs: '0',
         minUs: '0',
         maxUs: '0',
-        avgUs: '0.000000',
-        totalUs: '0.000000',
+        avgUs: '0.333333',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 9
       },
@@ -988,7 +988,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 11
       },
@@ -1048,7 +1048,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 16
       },
@@ -1060,7 +1060,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 17
       },
@@ -1072,7 +1072,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 18
       },
@@ -1084,7 +1084,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 19
       },
@@ -1096,7 +1096,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 20
       },
@@ -1108,7 +1108,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 21
       },
@@ -1120,7 +1120,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 22
       },
@@ -1240,7 +1240,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 32
       },
@@ -1251,8 +1251,8 @@ const data = {
         currentUs: '0',
         minUs: '0',
         maxUs: '0',
-        avgUs: '0.000000',
-        totalUs: '0.000000',
+        avgUs: '0.333333',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 33
       },
@@ -1264,7 +1264,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 34
       },
@@ -1276,7 +1276,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 35
       },
@@ -1287,8 +1287,8 @@ const data = {
         currentUs: '0',
         minUs: '0',
         maxUs: '0',
-        avgUs: '0.000000',
-        totalUs: '0.000000',
+        avgUs: '0.333333',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 36
       },
@@ -1300,7 +1300,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 37
       },
@@ -1312,7 +1312,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 38
       },
@@ -1324,7 +1324,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 39
       },
@@ -1336,7 +1336,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 40
       },
@@ -1359,8 +1359,8 @@ const data = {
         currentUs: '0',
         minUs: '0',
         maxUs: '0',
-        avgUs: '0.000000',
-        totalUs: '0.000000',
+        avgUs: '0.333333',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 42
       },
@@ -1372,7 +1372,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 43
       },
@@ -1384,7 +1384,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 44
       },
@@ -1395,8 +1395,8 @@ const data = {
         currentUs: '0',
         minUs: '0',
         maxUs: '0',
-        avgUs: '0.000000',
-        totalUs: '0.000000',
+        avgUs: '0.333333',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 45
       },
@@ -1408,7 +1408,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 46
       },
@@ -1420,7 +1420,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 47
       },
@@ -1432,7 +1432,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 48
       },
@@ -1444,7 +1444,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 49
       },
@@ -1456,7 +1456,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 50
       },
@@ -1468,7 +1468,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 51
       },
@@ -1528,7 +1528,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 56
       },
@@ -1540,7 +1540,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 57
       },
@@ -1552,7 +1552,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 58
       },
@@ -1564,7 +1564,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 59
       },
@@ -1576,7 +1576,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 60
       },
@@ -1588,7 +1588,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 61
       },
@@ -1600,7 +1600,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 62
       },
@@ -1612,7 +1612,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 63
       },
@@ -1624,7 +1624,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 64
       },
@@ -1636,7 +1636,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 65
       },
@@ -1647,8 +1647,8 @@ const data = {
         currentUs: '0',
         minUs: '0',
         maxUs: '0',
-        avgUs: '0.000000',
-        totalUs: '0.000000',
+        avgUs: '0.333333',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 66
       },
@@ -1659,8 +1659,8 @@ const data = {
         currentUs: '0',
         minUs: '0',
         maxUs: '0',
-        avgUs: '0.000000',
-        totalUs: '0.000000',
+        avgUs: '0.333333',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 67
       },
@@ -1671,8 +1671,8 @@ const data = {
         currentUs: '0',
         minUs: '0',
         maxUs: '0',
-        avgUs: '0.000000',
-        totalUs: '0.000000',
+        avgUs: '0.333333',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 68
       },
@@ -1744,7 +1744,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 74
       },
@@ -1756,7 +1756,7 @@ const data = {
         minUs: '0',
         maxUs: '0',
         avgUs: '0.00',
-        totalUs: '0.000000',
+        totalUs: '0.333333',
         totalPercent: '0.00',
         index: 75
       }
