@@ -259,8 +259,10 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
     }
 
     return () => {
+      setSender_id(null)
       resizeObserver.disconnect()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
