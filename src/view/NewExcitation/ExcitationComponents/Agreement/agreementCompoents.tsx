@@ -96,7 +96,15 @@ const ItemNumberMemo: React.FC<any> = (props: any) => {
   }
   return (
     <span>
-      <Input tabIndex={0} className={styles.IntArrayInput} onFocus={onFocus} onBlur={onMax} value={value || count} onChange={onNumberChange} />
+      <Input
+        spellCheck='false'
+        tabIndex={0}
+        className={styles.IntArrayInput}
+        onFocus={onFocus}
+        onBlur={onMax}
+        value={value || count}
+        onChange={onNumberChange}
+      />
     </span>
   )
 }

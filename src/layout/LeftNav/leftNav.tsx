@@ -1,9 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import items from 'Image/projectLeftNav.svg'
+import items from 'Image/items.svg'
 import configImage from 'Image/config.svg'
-import ac_items from 'Image/ac_items.svg'
+import ac_items from 'Image/projectsActive.svg'
 import ac_configImage from 'Image/ac_config.svg'
 import Arge from 'Image/Arge.svg'
 import ac_Arge from 'Image/excititation.svg'

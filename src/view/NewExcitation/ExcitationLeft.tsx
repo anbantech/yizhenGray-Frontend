@@ -310,7 +310,7 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
                 }}
                 key={item.sender_id}
               >
-                <span>{item.name}</span>
+                <span style={{ color: '#333333' }}>{item.name}</span>
                 <div className={Leftstyles.icon_layout}>
                   <div
                     role='time'

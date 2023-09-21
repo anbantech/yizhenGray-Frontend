@@ -128,6 +128,9 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     }
     try {
       const res = await rePlayTask(idArray)
+      if (res.message === '固件启动异常') {
+        return message.error('固件初始化异常，更多信息请查看状态详情')
+      }
       return res
     } catch (error) {
       throwErrorMessage(error, {
