@@ -1,12 +1,12 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import items from 'Image/items.svg'
+import items from 'Image/projectLeftNav.svg'
 import configImage from 'Image/config.svg'
 import ac_items from 'Image/ac_items.svg'
 import ac_configImage from 'Image/ac_config.svg'
 import Arge from 'Image/Arge.svg'
-import ac_Arge from 'Image/ac_Arge.svg'
+import ac_Arge from 'Image/excititation.svg'
 import { getLicense } from 'Src/services/api/loginApi'
 import { useHistory, withRouter } from 'react-router-dom'
 import { UpOutlined } from '@ant-design/icons'
@@ -187,13 +187,10 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
     return isClose ? styles.sideNav_img : styles.sideNav_imgClose
   }, [isClose])
 
-  const hoverImg = useCallback(
-    (bol: boolean, isHovering) => {
-      if (bol) return
-      setHoverImgStatus(isHovering)
-    },
-    [hoverImgStatus]
-  )
+  const hoverImg = useCallback((bol: boolean, isHovering) => {
+    if (bol) return
+    setHoverImgStatus(isHovering)
+  }, [])
   const generateRouterListJsx = useCallback(
     (routerList: Required<SideBarRouteExtension>[]) => {
       return routerList.map(router => {
