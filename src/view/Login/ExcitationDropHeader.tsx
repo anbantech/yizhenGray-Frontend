@@ -223,7 +223,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
 
       {isEditing ? (
         <div className={StyleSheet.headerInput}>
-          <Input
+         函数名
             className={StyleSheet.numberInputHeader}
             value={name}
             spellCheck='false'
@@ -266,8 +266,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
           {' '}
           描述:
           {inputSatus ? (
-            <Input
-              spellCheck='false'
+           函数名
               className={StyleSheet.descInputHeader}
               onBlur={() => {
                 disableOnBlur('desc')
@@ -303,8 +302,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
             发送次数:
           </span>
 
-          <Input
-            spellCheck='false'
+         函数名
             className={styleFnDown ? StyleSheet.numberInputDisabled : StyleSheet.numberInput}
             value={gu_cnt0}
             onBlur={() => {
@@ -322,8 +320,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
             发送间隔:
           </span>
 
-          <Input
-            spellCheck='false'
+         函数名
             className={styleFnTop ? StyleSheet.numberInputDisabled : StyleSheet.numberInput}
             onChange={e => {
               onChangeGu_time('gu_w0', e)

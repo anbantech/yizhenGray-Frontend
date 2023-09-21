@@ -281,11 +281,11 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
             }
           ]}
         >
-          <Input placeholder='请输入任务名称' />
+          <Input spellCheck='false' placeholder='请输入任务名称' />
         </Form.Item>
 
         <Form.Item label='节拍单元' name='beat_unit' initialValue={200}>
-          <Input placeholder='请输入节拍单元' disabled suffix='毫秒' />
+          <Input spellCheck='false' placeholder='请输入节拍单元' disabled suffix='毫秒' />
         </Form.Item>
         <Form.Item
           label='仿真节点'
@@ -366,6 +366,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           rules={[{ message: '请输入任务描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
           <Input.TextArea
+            spellCheck='false'
             placeholder='任务描述'
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{

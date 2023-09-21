@@ -138,10 +138,11 @@ function ModalpPop(props: any) {
             }
           ]}
         >
-          <Input placeholder='请输入项目名称' />
+          <Input spellCheck='false' placeholder='请输入项目名称' />
         </Form.Item>
         <Form.Item name='desc' label='项目描述' rules={[{ type: 'string', max: 50, message: '字数不能超过50个' }]}>
           <TextArea
+            spellCheck='false'
             placeholder='请添加针对项目的相关描述'
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{

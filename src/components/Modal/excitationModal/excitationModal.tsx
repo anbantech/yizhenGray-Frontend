@@ -116,7 +116,7 @@ function ExcitationModal(props: any) {
             }
           ]}
         >
-          <Input placeholder='请输入激励序列名称' />
+          <Input spellCheck='false' placeholder='请输入激励序列名称' />
         </Form.Item>
         <Form.Item name='desc' label='描述' rules={[{ type: 'string', max: 50, message: '字数不能超过50个' }]}>
           <TextArea
