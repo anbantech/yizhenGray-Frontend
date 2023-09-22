@@ -6,7 +6,7 @@ import JSZip from 'jszip'
 import { Button, Dropdown, Menu, message, notification } from 'antd'
 
 import { throwErrorMessage } from 'Src/util/message'
-import { warn } from 'Src/util/common'
+import { sleep, warn } from 'Src/util/common'
 import { downloadPDFReport, exportReport } from 'Src/services/api/taskApi'
 import style from './Report.less'
 import ReportLoading from './reportLoading'
@@ -57,6 +57,7 @@ function Report() {
       if (reportDataElement && reportData) {
         reportDataElement.addEventListener('load', () => {
           reportDataElement.style.overflowX = 'hidden'
+          reportDataElement.style.overflowY = 'hidden'
           reportDataElement.contentWindow?.postMessage(JSON.stringify(reportData), '*')
         })
         window.addEventListener('message', message => {
@@ -76,8 +77,9 @@ function Report() {
       setLoadingStatus('fetching')
       const res = await exportReport(id)
       if (res.code === 0) {
-        setLoadingStatus('done')
         setReportData(res.data)
+        await sleep(3000)
+        setLoadingStatus('done')
         postMessageToIframe(res.data)
         return
       }
@@ -89,7 +91,7 @@ function Report() {
   }, [loadingStatus])
 
   useEffect(() => {
-    loopRef.current = setInterval(getReportData, 2000)
+    loopRef.current = setInterval(getReportData, 5000)
     return () => {
       clearInterval(loopRef.current)
     }
@@ -170,7 +172,7 @@ function Report() {
           <iframe id='reportData' src='/onLineReporting/index.html' width='100%' height='100%' allowFullScreen frameBorder='0' title='报告' />
         </div>
       )}
-      {!hasRendered && <ReportLoading value='报告正在生成中' />}
+      {!hasRendered && loadingStatus !== 'done' ? <ReportLoading value='报告正在生成中' /> : null}
     </>
   )
 }
