@@ -76,7 +76,7 @@ export default {
             for (let i = 0; i < ec.length; i++) {
                 if (this.stop) return
                 this.errorCases.push(ec[i]);
-                await this.sleep(20)
+                await this.sleep(100)
             }
         },
         async init() {
