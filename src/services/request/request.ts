@@ -90,7 +90,7 @@ instance.interceptors.response.use(
      * 后端接口异常，直接抛出服务异常
      */
     if (error.message === 'Network Error') {
-      return Promise.reject(new Error('“网络连接失败，请检查网络'))
+      return Promise.reject(new Error('网络连接失败，请检查网络'))
     }
     if (error.response?.status >= 500) {
       if (dataBaseUpdateController.isUpdating()) {
