@@ -340,7 +340,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
                     }}
                   >
                     <IconAdd className={styles.addImg} />
-                    <div className={styles.sendlistTitle}>新建激励序列 </div>
+                    <span className={styles.sendlistTitle}>新建激励序列 </span>
                   </div>
                 </Space>
               </div>
