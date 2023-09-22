@@ -132,10 +132,10 @@ export default class App extends Vue {
           this.tableData = JSON.parse(e.data)?.tableData
           this.isShow = Object.keys(JSON.parse(e.data).tableData)?.length > 0
           this.urlList = JSON.parse(e.data)?.tableData.dynamicCallGraph
-           this.$nextTick(() => {
+          this.$nextTick(() => {
             setTimeout(() => {
               window.parent.postMessage('__AB_REPORT_DONE__', "*")
-            }, 5000);
+            }, 6000);
           })
         }
       })
