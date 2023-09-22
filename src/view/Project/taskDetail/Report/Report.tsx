@@ -89,8 +89,7 @@ function Report() {
   }, [loadingStatus])
 
   useEffect(() => {
-    loopRef.current = setInterval(getReportData, 5000)
-
+    loopRef.current = setInterval(getReportData, 2000)
     return () => {
       clearInterval(loopRef.current)
     }
