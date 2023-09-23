@@ -375,10 +375,10 @@ const DeleteCompoent = ({ number, DeleteCheckItem }: { number: number; DeleteChe
         </Tooltip>
       </div>
       <div className={StyleSheet.rightDelComponents}>
-        <div role='time' className={StyleSheet.bottomBtn} onClick={DeleteCheckItem}>
+        <span className={StyleSheet.DelCompoentsCharts}>{`已选中 ${number} 项`}</span>
+        <div role='time' className={StyleSheet.bottomBtn} style={{ marginLeft: '10px' }} onClick={DeleteCheckItem}>
           批量删除
         </div>
-        <span className={StyleSheet.DelCompoentsCharts}>{`已选 ${number} 项`}</span>
       </div>
     </div>
   )

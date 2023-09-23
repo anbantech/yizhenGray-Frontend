@@ -11,7 +11,7 @@ interface OpenType {
   getContainer: any
 }
 
-const StepTitle = ['选择激励', '添加到发送序列', '新建']
+const StepTitle = ['选择激励 ', '添加到发送序列 ', '创建新建序列']
 
 function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
   const current = stepStore(state => state.current)
@@ -53,6 +53,7 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
   }, [baseInfo.desc, baseInfo.name, cancel, deleteEverything, excitationList, gu_cnt0, gu_w0])
   return (
     <Modal
+      centered={Boolean(1)}
       width={632}
       visible={open}
       className={StyleSheet.taskExcitaionModal}
@@ -66,7 +67,7 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
       footer={[
         <>
           {current > 0 && (
-            <Button key='back' className={StyleSheet.preBtn} onClick={preCurrent}>
+            <Button key='back' style={{ borderRadius: '4px' }} className={StyleSheet.preBtn} onClick={preCurrent}>
               上一步
             </Button>
           )}
@@ -75,6 +76,7 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
           {' '}
           <Button
             key='back'
+            style={{ borderRadius: '4px' }}
             onClick={() => {
               deleteEverything()
               cancel()
@@ -82,7 +84,13 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
           >
             取消
           </Button>
-          <Button key='submit' type='primary' disabled={btnStatusMemo()} onClick={current === 2 ? createExcitation : setCurrent}>
+          <Button
+            key='submit'
+            type='primary'
+            style={{ borderRadius: '4px' }}
+            disabled={btnStatusMemo()}
+            onClick={current === 2 ? createExcitation : setCurrent}
+          >
             {StepTitle[current]}
           </Button>
         </div>

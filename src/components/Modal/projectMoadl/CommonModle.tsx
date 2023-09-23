@@ -23,6 +23,7 @@ function ModalpPop(props: any) {
   }, [CommonModleClose, spinning])
   return (
     <Modal
+      centered={Boolean(1)}
       className={styles.modleStyle}
       visible={IsModalVisible}
       width='400px'

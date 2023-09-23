@@ -85,6 +85,14 @@ const TipAllComponents = () => {
   )
 }
 
+const CrashTipAllComponents = () => {
+  return (
+    <Tooltip title={<TipAllComponents />} placement='bottom' overlayClassName={StyleSheet.overlay} style={{ cursor: 'pointer' }}>
+      <QuestionCircleOutlined style={{ fontSize: '15px' }} />
+    </Tooltip>
+  )
+}
+
 const CrashLevelTip = () => {
   return (
     <Tooltip title={<TipComponents />} placement='bottom' overlayClassName={StyleSheet.overlay} style={{ cursor: 'pointer' }}>
@@ -93,4 +101,4 @@ const CrashLevelTip = () => {
   )
 }
 
-export { Tip, StepTip, WarnTip, InfoTip, CrashTip, DropTip, CrashLevelTip, TipAllComponents }
+export { Tip, StepTip, WarnTip, InfoTip, CrashTip, DropTip, CrashLevelTip, CrashTipAllComponents }

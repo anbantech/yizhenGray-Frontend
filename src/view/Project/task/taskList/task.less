@@ -136,9 +136,9 @@
 }
 
 .roundStatusTesting {
-  width: 8px;
-  height: 8px;
-  margin-right: 2px;
+  width: 6px;
+  height: 6px;
+margin-right: 6px;
   background-color: #33be63;
   font-weight: 400;
   font-size: 20px;
@@ -149,9 +149,9 @@
 }
 
 .roundStatusNormalEnd {
-  width: 8px;
-  height: 8px;
-  margin-right: 2px;
+  width: 6px;
+  height: 6px;
+margin-right: 6px;
   background-color: #333333;
   font-weight: 400;
   font-size: 20px;
@@ -162,8 +162,8 @@
 }
 
 .roundStatusPaused {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   margin-right: 2px;
   background-color: #bfbfbf;
   font-weight: 400;
@@ -175,9 +175,9 @@
 }
 
 .roundStatusErrorPaused {
-  width: 8px;
-  height: 8px;
-  margin-right: 2px;
+  width: 6px;
+  height: 6px;
+margin-right: 6px;;
   background-color: #ff4455;
   font-weight: 400;
   font-size: 20px;
@@ -188,9 +188,9 @@
 }
 
 .roundStatusErrorEnd {
-  width: 8px;
-  height: 8px;
-  margin-right: 2px;
+  width: 6px;
+    height: 6px;
+margin-right: 6px;
   background-color: #ff4455;
   font-weight: 400;
   font-size: 20px;
@@ -201,8 +201,8 @@
 }
 
 .roundStatusWaitTesting {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+    height: 6px;
   margin-right: 2px;
   background-color: #ffbb00;
   font-weight: 400;
@@ -214,9 +214,9 @@
 }
 
 .roundStatusStoping {
-  width: 8px;
-  height: 8px;
-  margin-right: 2px;
+  width: 6px;
+    height: 6px;
+margin-right: 6px;
   background-color: #d9d9d9;
   font-weight: 400;
   font-size: 20px;
@@ -226,9 +226,9 @@
 }
 
 .roundStatusReplay {
-  width: 8px;
-  height: 8px;
-  margin-right: 2px;
+  width: 6px;
+  height: 6px;
+margin-right: 6px;
   background-color: #4880FF;
   font-weight: 400;
   font-size: 20px;
@@ -239,9 +239,9 @@
 }
 
 .roundStatusReady {
-  width: 8px;
-  height: 8px;
-  margin-right: 2px;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
   background-color: #8800ff;
   font-weight: 400;
   font-size: 20px;
@@ -283,8 +283,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 16px 12px 12px 12px;
-  border-top: 1px solid #e9e9e9;
+  padding: 10px 12px;
   border-bottom: 1px solid #e9e9e9;
 }
 
@@ -320,6 +319,9 @@
   &:hover {
     background-color: #f5f5f5;
   }
+  &:hover>div {
+       display: flex;
+  }
 }
 
 .itemActive {
@@ -331,6 +333,7 @@
   border-radius: 4px;
   margin-bottom: 12px;
   cursor: pointer;
+  font-weight: 700;
   justify-content: space-between;
   align-items: center;
   & > span {
@@ -342,6 +345,9 @@
     color: #4880ff;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+   &:hover>div {
+     display: flex;
   }
 }
 
@@ -364,7 +370,7 @@
 
 .icon_layout {
   width: 55px;
-  display: flex;
+  display: none;
   justify-content: space-between;
   padding-right: 13px;
 }
