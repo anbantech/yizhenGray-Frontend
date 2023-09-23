@@ -30,7 +30,8 @@
 }
 
 .HeaderBread {
-  margin-left: 24px;
+  display: flex;
+//   margin-left: 24px;
 }
 
 .HeaderUser {
@@ -39,6 +40,15 @@
   > div {
     padding-right: 18px;
   }
+}
+
+.BreadcrumbStyle{
+  :global(.ant-breadcrumb-separator){
+    margin: 0 12px
+  }
+}
+.BreadcrumItem{
+  color: #333333 !important;
 }
 
 .sys {

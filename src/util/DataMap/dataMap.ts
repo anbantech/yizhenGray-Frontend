@@ -12,7 +12,8 @@ export const statusList = [
   { lable: '停止中', value: 7 },
   { lable: '重放中', value: 8 },
   // { lable: '重放暂停', value: 9 }a
-  { lable: '固件初始化失败', value: 10 }
+  { lable: '固件初始化失败', value: 10 },
+  { lable: '测试环境验证中', value: 11 }
 ]
 
 export const statusMap = {
@@ -54,6 +55,10 @@ export const statusMap = {
   },
   10: {
     label: '固件初始化失败',
+    color: styles.roundStatusErrorPaused
+  },
+  11: {
+    label: '测试环境验证中',
     color: styles.roundStatusErrorPaused
   }
 }

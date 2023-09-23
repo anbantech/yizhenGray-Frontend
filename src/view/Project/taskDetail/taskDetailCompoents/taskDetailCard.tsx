@@ -75,6 +75,10 @@ export const statusMap = {
   10: {
     label: '固件启动异常',
     color: styles.roundStatusErrorEnd
+  },
+  11: {
+    label: '测试环境验证中',
+    color: styles.roundStatusReady
   }
 }
 
