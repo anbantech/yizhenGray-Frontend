@@ -92,12 +92,14 @@ instance.interceptors.response.use(
     if (error.message === 'Network Error') {
       return Promise.reject(new Error('网络连接失败，请检查网络'))
     }
+
     if (error.response?.status >= 500) {
       if (dataBaseUpdateController.isUpdating()) {
         return {}
       }
       return Promise.reject(new Error('服务异常'))
     }
+
     // 没有 token 401
     // token 错误 403
     if (error.response?.status === 401 || error.response?.status === 403) {
