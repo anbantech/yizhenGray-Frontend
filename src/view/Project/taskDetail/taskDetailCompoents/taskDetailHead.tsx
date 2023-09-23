@@ -288,12 +288,12 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
           <span>
             {' '}
             {[0, 1, 10].includes(status) ? (
-              <span>
+              <div className={styles.textTitle}>
                 {' '}
-                开始时间 : {getTime(start_time)}
-                <span className={styles.cloumnLine}> </span>
+                <span> 开始时间 : {getTime(start_time)}</span>
+                <div className={styles.cloumnLine} />
                 <span> 结束时间 : {getTime(end_time)}</span>
-              </span>
+              </div>
             ) : [2, 3, 4].includes(status) ? (
               `开始时间 : ${getTime(start_time)}`
             ) : null}{' '}
@@ -351,7 +351,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
           </div>
         ) : null} */}
       </div>
-      <NewTaskInstance visibility={visibility} isDetail={1} task_id={id} data={props.taskDetailInfo} choiceModal={choiceModal} width='532px' />
+      <NewTaskInstance visibility={visibility} isDetail={1} task_id={id} data={props.taskDetailInfo} choiceModal={choiceModal} width='592px' />
     </div>
   )
 }

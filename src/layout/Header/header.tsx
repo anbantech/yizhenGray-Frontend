@@ -7,8 +7,9 @@ import { GlobalContext } from 'Src/globalContext/globalContext'
 // import { IconAdd } from '@anban/iconfonts'
 import { logout as logoutService, resetPassword } from 'Src/services/api/loginApi'
 import { ifNeedShowLogo } from 'Src/index'
-import sidebarLogo from 'Image/yifu_logo.svg'
+import sidebarLogo from 'Image/logo.svg'
 import { throwErrorMessage } from 'Src/util/message'
+import taskStyle from 'Src/view/Project/task/TaskInstances/TaskInstance.less'
 import styles from './header.less'
 
 interface ResetPasswordDialogProps {
@@ -246,11 +247,18 @@ function Header(props: any) {
       <Logo />
       <div className={styles.HeaderRight_Layout}>
         <div className={styles.HeaderBread}>
-          <Breadcrumb>
+          <div className={taskStyle.headerCloumnLine} />
+          <Breadcrumb style={{ marginLeft: '5px' }} className={styles.BreadcrumbStyle}>
             {extraBreadcrumbItems.map((item: string, index: number) => {
               return (
                 <Breadcrumb.Item key={item}>
-                  <span style={{ cursor: 'pointer' }} role='button' tabIndex={index} onClick={() => jumpTest(item)}>
+                  <span
+                    style={{ cursor: 'pointer', color: '#999999' }}
+                    className={index === extraBreadcrumbItems.length - 1 ? styles.BreadcrumItem : null}
+                    role='button'
+                    tabIndex={index}
+                    onClick={() => jumpTest(item)}
+                  >
                     {name[item]}
                   </span>
                 </Breadcrumb.Item>
