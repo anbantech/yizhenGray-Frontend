@@ -35,15 +35,24 @@
   }
 }
 
-.formModal {
-  :global(.ant-modal-body) {
-    padding-left: 18px !important;
+ :global(.ant-modal-footer) {
+   padding: 12px 16px !important;
+   height: 56px;
+   line-height: 28px;
+ }
+
+  :global(.ant-modal) {
+    border-radius: 4px;
   }
-}
+
+  .formModal {
+    :global(.ant-modal-body) {
+      padding-left: 18px !important;
+    }
+  }
 
 .BeginTest {
   height: 100%;
-
   :global(.ant-modal-header) {
     display: flex;
     align-items: center;
@@ -1541,7 +1550,7 @@
 
 .modleDeatilStyle {
   :global(.ant-modal-footer) {
-    padding: 10px 16px;
+    padding: 12px 16px;
     text-align: right;
     background: transparent;
     border-top: 1px solid #f0f0f0 !important;
@@ -1581,7 +1590,7 @@
 }
 
 .crashTable {
-  width: 390px;
+  width: 450px;
   height: 258px;
   background: #ffffff;
   border: 1px solid #bfbfbf;
@@ -1590,7 +1599,7 @@
 }
 
 .crashDes {
-  width: 390px;
+  width: 450px;
   background: #ffffff;
   border-radius: 2px;
   overflow: hidden;
@@ -1598,7 +1607,7 @@
   position: relative;
 }
 .crashDes > span > {
-  width: 350px;
+  width: 450px;
   display: inline-block;
 }
 
@@ -1665,23 +1674,23 @@
 }
 
 .CrashTableBody {
-  width: 100%;
+  width: 564px;
   display: flex;
   margin-bottom: 20px;
 }
 
 .CrashTableBody > span:nth-child(1) {
-  margin-left: 24px;
+  margin-left: 16px;
 }
 
 .taskCrashForm {
-  width: 490px;
+  width: 550px;
 }
 
 .formNewInstanceModal {
   :global(.ant-modal-body) {
     margin: 0;
-    padding-left: 7px;
+    padding-left: 17px;
   }
 }
 .btn_createCrashTable {

@@ -69,6 +69,7 @@ function ExcitationModal(props: any) {
 
   return (
     <Modal
+      centered={Boolean(1)}
       className={styles.excitaionCreateModal}
       width={480}
       visible={visible}

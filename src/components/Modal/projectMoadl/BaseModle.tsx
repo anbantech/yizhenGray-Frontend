@@ -91,6 +91,7 @@ function ModalpPop(props: any) {
 
   return (
     <Modal
+      centered={Boolean(1)}
       className={styles.formModal}
       width={width}
       visible={visible}
@@ -144,7 +145,7 @@ function ModalpPop(props: any) {
           <TextArea
             spellCheck='false'
             placeholder='请添加针对项目的相关描述'
-            autoSize={{ minRows: 4, maxRows: 5 }}
+            autoSize={{ minRows: 3, maxRows: 4 }}
             showCount={{
               formatter({ count }) {
                 return `${count}/50`

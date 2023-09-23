@@ -167,6 +167,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
   }, [sender_id, checkItem, createItem, CommonModleClose])
   return (
     <Modal
+      centered={Boolean(1)}
       width={720}
       className={StyleSheet.excitaionModal}
       visible={visibility}

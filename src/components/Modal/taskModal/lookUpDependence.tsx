@@ -156,11 +156,11 @@ function LookUpDependence(props: NewTaskInstanceType) {
 
   return (
     <Modal
+      centered={Boolean(1)}
       className={styles.lookUpDependenceModal}
       width={width}
       visible={visibility}
       title={name}
-      centered
       onCancel={() => {
         choiceModal(false)
       }}

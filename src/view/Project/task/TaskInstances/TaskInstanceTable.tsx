@@ -18,7 +18,9 @@ import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import globalStyle from 'Src/view/Project/project/project.less'
 import NewTaskInstance from 'Src/components/Modal/taskModal/newTaskInstance'
 import { getTime } from 'Src/util/baseFn'
+
 import styles from '../taskList/task.less'
+import TaskInstancesStyle from './TaskInstance.less'
 import { InstancesContext } from '../TaskIndex'
 
 const customizeRender = () => <DefaultValueTips content='暂无实例' />
@@ -234,7 +236,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       key: 'reset_mode',
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
-        return <span>{reset_mode_Map[row.reset_mode as keyof typeof reset_mode_Map]}</span>
+        return <span style={{ color: '#333333' }}>{reset_mode_Map[row.reset_mode as keyof typeof reset_mode_Map]}</span>
       }
     },
     {
@@ -267,7 +269,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         return (
           <div className={styles.status}>
             <span className={statusMap[row.status].color} />
-            <span>{statusMap[row.status].label}</span>
+            <span style={{ color: '#333333' }}>{statusMap[row.status].label}</span>
           </div>
         )
       }
@@ -279,7 +281,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       key: 'create_time',
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
-        return <span>{getTime(row.create_time)}</span>
+        return <span style={{ color: '#333333' }}>{getTime(row.create_time)}</span>
       }
     },
     {
@@ -360,7 +362,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       <div className={styles.instance_header}>
         <div className={styles.instanceListLeft}>
           <span>实例列表</span>
-          <SearchInput ref={inputRef} placeholder='根据实例编号搜索实例' className={styles.taskInput} onChangeValue={updateParams} />
+          <SearchInput ref={inputRef} placeholder='根据实例编号搜索实例' className={TaskInstancesStyle.Inputs} onChangeValue={updateParams} />
         </div>
         <CreateButton
           width='146px'
@@ -376,7 +378,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       </div>
       <div className={globalStyle.tableConcent}>
         <ConfigProvider locale={zhCN} renderEmpty={customizeRender}>
-          <Table rowKey='id' dataSource={taskLists} columns={columns} pagination={false} />
+          <Table rowKey='id' className={TaskInstancesStyle.table} dataSource={taskLists} columns={columns} pagination={false} />
         </ConfigProvider>
       </div>
       <div className={globalStyle.AnBan_PaginationsAge}>
@@ -392,7 +394,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         concent='是否确认删除？'
       />
       {visibility ? (
-        <NewTaskInstance visibility={visibility} isDetail={0} task_id={InstancesDetail.task_detail.id} choiceModal={choiceModal} width='532px' />
+        <NewTaskInstance visibility={visibility} isDetail={0} task_id={InstancesDetail.task_detail.id} choiceModal={choiceModal} width='592px' />
       ) : null}
     </div>
   )
