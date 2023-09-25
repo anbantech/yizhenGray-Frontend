@@ -10,6 +10,7 @@ function Login() {
   // const year = date.getFullYear()
   const [form] = Form.useForm()
   const history = useHistory()
+  const [loading, setLoading] = useState(false)
   const [isDisableStatus, setDisabledStatus] = useState(true)
   const onValuesChange = (changedValues: any, allValues: any) => {
     const bol = allValues.username !== undefined && allValues.username.length > 0 && allValues.password !== undefined && allValues.password.length > 0
@@ -21,6 +22,7 @@ function Login() {
   }
 
   const loginCallback = async () => {
+    setLoading(true)
     const values = await form.validateFields()
     if (values) {
       try {
@@ -32,10 +34,13 @@ function Login() {
             pathname: '/projects'
           })
           message.success('登录成功')
+          setLoading(false)
         } else {
+          setLoading(false)
           message.error('系统数据正在导入中，请稍等')
         }
       } catch (error) {
+        setLoading(false)
         message.error(error.message)
       }
     }
@@ -70,12 +75,13 @@ function Login() {
             <Form.Item>
               <Button
                 type='primary'
+                loading={loading}
                 disabled={isDisableStatus}
                 htmlType='submit'
                 onClick={loginCallback}
                 style={{ width: '100%', marginTop: '30px' }}
               >
-                登录
+                {loading ? '登录中' : '登录'}
               </Button>
             </Form.Item>
           </Form>

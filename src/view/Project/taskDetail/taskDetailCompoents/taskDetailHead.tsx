@@ -8,7 +8,6 @@ import { Link, useHistory } from 'react-router-dom'
 import stopCourse from 'Image/stopCourse.svg'
 import Begin from 'Image/BeginCourse.svg'
 import monitor from 'Image/monitor.svg'
-// import DeleteCourse from 'Image/DeleteCourse.svg'
 import report from 'Image/report.svg'
 import over from 'Image/overTask.svg'
 import { bgTest, rePlayTask, stopcontuine, stoppaused, stoptest } from 'Src/services/api/taskApi'
@@ -62,7 +61,7 @@ const BeginComponent = (props: ChildComponents) => {
       try {
         res = await stoppaused({ instance_id: id })
       } catch (error) {
-        throwErrorMessage(error, { 2003: '任务正在暂停中,请稍后在试', 1007: '操作频繁', 2007: '暂停失败' })
+        throwErrorMessage(error, { 2003: '任务正在暂停中,请稍后在试', 2007: '暂停失败' })
         setSpinStatus(false)
       }
     } else {
@@ -71,7 +70,7 @@ const BeginComponent = (props: ChildComponents) => {
       try {
         res = await stopcontuine({ instance_id: id })
       } catch (error) {
-        throwErrorMessage(error, { 1007: '操作频繁' })
+        throwErrorMessage(error)
         setSpinStatus(false)
       }
     }
@@ -123,7 +122,7 @@ const OverComponent = (props: ChildComponents) => {
       try {
         res = await stoptest({ instance_id: id })
       } catch (error) {
-        throwErrorMessage(error, { 2003: '任务正在停止中,请稍后在试', 1007: '操作频繁', 2007: '停止失败' })
+        throwErrorMessage(error, { 2003: '任务正在停止中,请稍后在试', 2007: '停止失败' })
         setSpinStatus(false)
       }
     }
@@ -134,7 +133,6 @@ const OverComponent = (props: ChildComponents) => {
       } catch (error) {
         throwErrorMessage(error, {
           2009: '重放失败',
-          1007: '开始操作频繁,请稍后在试',
           3002: '仿真终端无响应，请重启并检查网络',
           2007: '停止失败',
           7015: '固件初始化异常，更多信息请查看状态详情'
@@ -211,7 +209,6 @@ const StartBeginComponent = (props: FatherComponents) => {
         2015: `${error.message.split(':').join('')}`,
         2016: '任务未处于暂停状态',
         9000: '系统异常',
-        1007: '操作频繁',
         7015: '固件初始化异常，更多信息请查看状态详情'
       })
       setSpinStatus(false)

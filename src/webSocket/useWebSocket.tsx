@@ -52,7 +52,6 @@ const UseWebsocket = (id?: number) => {
   }, [createWsInstance, id])
   useBindEventListener(wsInstance, 'message', messageEventListener)
   //   useBindEventListener(wsInstance, 'close', closeEventListener)
-
   return [messageInfo]
 }
 

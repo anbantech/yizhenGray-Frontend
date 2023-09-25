@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useEffect, useRef } from 'react'
+import { message } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory } from 'react-router'
 import { ResTaskDetail } from 'Src/globalType/Response'
 import UseWebsocket from 'Src/webSocket/useWebSocket'
@@ -50,11 +51,12 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   const [updateStatus, setUpdateStatus] = React.useState(0)
   const timer = useRef<any>()
   const [messageInfo] = UseWebsocket(+instanceInfo.id)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [status, depCollect, depData] = useDepCollect(RequsetParams)
   const [total, logData] = UseGetTestLog(depData, updateStatus)
-  const [spinning, setSpinning] = React.useState(true)
+  // const [spinning, setSpinning] = React.useState(true)
   const [display, setDisplay] = React.useState(false)
-  const updateRef = useRef<any>()
+  // const updateRef = useRef<any>()
 
   const getInstanceDetail = React.useCallback(async (value: string) => {
     const getTaskDetails = await instanceDetail(value)
@@ -110,8 +112,8 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
         if (updateStatus !== messageInfo.task_status) {
           setUpdateStatus(messageInfo.task_status)
           setDisplay(messageInfo.dispaly)
-          if ([1, 4].includes(messageInfo.task_status)) {
-            setSpinning(true)
+          if ([10].includes(messageInfo.task_status)) {
+            message.error('仿真终端无响应，请重启并检查网络')
           }
         }
         getInstanceDetail(instanceInfo.id)
@@ -121,31 +123,19 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
 
   useEffect(() => {
     getMessageStatus()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getMessageStatus, status, taskInfo.task_id, updateStatus])
+  }, [getMessageStatus, taskDetailInfo?.status, taskInfo.task_id, updateStatus])
 
   useEffect(() => {
-    if ([1, 4].includes(updateStatus)) {
-      updateRef.current = setTimeout(() => {
-        setSpinning(false)
-      }, 5000)
-      return () => {
-        clearTimeout(updateRef.current)
-      }
-    }
-  }, [updateStatus, spinning])
-
-  useEffect(() => {
-    if (taskInfo.task_id && updateStatus === 2) {
+    if (taskInfo.task_id && [2].includes(updateStatus)) {
       timer.current = setInterval(() => {
         getInstanceDetail(instanceInfo.id)
-      }, 1000)
+      }, 1500)
     }
     return () => {
       clearInterval(timer.current)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [instanceInfo?.status, instanceInfo.id, updateStatus])
+  }, [instanceInfo.id, updateStatus, taskDetailInfo?.status])
 
   return (
     <>
