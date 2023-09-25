@@ -1,6 +1,6 @@
 <template>
     <div class='reportColumn'>
-        <span class="reportColumn_title" style="display:block">{{ title }}</span>
+        <h1 class="reportColumn_title" style="display:block">{{ title }}</h1>
         <span class="title">本次测试详情</span>
         <el-table :data="tableData" style="width: 100%; margin-top: 12px" border
             :header-cell-style="{ background: '#F0F0F0 !important' }" header-row-class-name="statisticsTableHeader"

@@ -30,7 +30,7 @@
         </div>
         <div class="statistics" v-if='isShow'>
           <div id="five" style="padding-top: 70px;margin-top: -70px;"></div>
-          <span class="result">五、测试统计结果</span>
+          <h1 class="result">五、测试统计结果</h1>
           <div id="first" style="padding-top: 70px;margin-top: -70px;">
             <coverTable  :table-data="tableData.coverData"></coverTable>
           </div>
