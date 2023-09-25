@@ -483,7 +483,7 @@ const ThreeSteps = () => {
   return (
     <div className={StyleSheet.twoSteps}>
       <div className={StyleSheet.ThreeStepTitle}>
-        <span className={StyleSheet.StepTitleHeader}>激励列表</span>
+        <span className={StyleSheet.StepTitleHeader}>发送序列</span>
         <div style={{ display: 'flex', width: '400px', alignItems: 'center' }}>
           <div className={StyleSheetOther.inputEdit} style={{ display: 'flex', alignItems: 'center' }}>
             <span className={StyleSheetOther.headerDesc} style={{ marginRight: '8px', display: 'flex', width: 65 }}>

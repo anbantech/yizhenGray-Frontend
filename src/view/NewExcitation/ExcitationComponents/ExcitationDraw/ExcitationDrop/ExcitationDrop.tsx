@@ -105,7 +105,7 @@ function ExcitationDropMemo() {
     <div className={StyleSheet.excitaionDrop_Body}>
       <DropHeader getExcitaionDeatilFunction={getExcitaionDeatilFunction} />
       <Line />
-      <span className={StyleSheet.sendListTitle}>发送列表</span>
+      <span className={StyleSheet.sendListTitle}>发送序列</span>
       <MemoExcitationListHeader />
       {DropListLength ? <ExcitationDropList /> : <NoTask />}
       {checkListMemo ? <DeleteCompoentMemo number={checkListMemo} DeleteCheckItem={DeleteCheckItem} /> : null}
