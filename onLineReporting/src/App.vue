@@ -16,7 +16,7 @@
           <span class="title_menu" :key='index' @click="scroll(index)">{{value}}</span>
         </div>
         <div style="cursor: pointer;" v-if='isShow'>
-          <span class="title_menu" @click="scroll(4)">五、测试结果统计</span>
+          <span class="title_menu" @click="scroll(4)">五、测试统计结果</span>
         </div>
         <div class="left_nav_menu_title" v-if='isShow'>
           <div v-for="(value,index) in titleMenuArray" style="cursor: pointer;">
