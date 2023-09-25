@@ -6,6 +6,7 @@ import stoping from 'Src/assets/instanceImage/img_停止中@2x.png'
 import replaying from 'Src/assets/instanceImage/img_重放中@2x.png'
 import stop from 'Src/assets/instanceImage/img_正常结束@2x.png'
 import Paused from 'Src/assets/instanceImage/img_暂停@2x.png'
+import ready from 'Src/assets/instanceImage/img_测试环境验证中@2x.png'
 import errorPaused from 'Src/assets/instanceImage/img_异常暂停@2x.png'
 import errorStop from 'Src/assets/instanceImage/img_异常结束@2x.png'
 import readying from 'Src/assets/instanceImage/img_准备中@2x.png'
@@ -28,7 +29,8 @@ const ImageMap = {
   5: readying,
   7: stoping,
   8: replaying,
-  10: initError
+  10: initError,
+  11: ready
 }
 
 const HeaderComponets: React.FC = () => {
