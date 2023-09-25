@@ -72,7 +72,7 @@ const TipComponents = () => {
         看门狗超时、系统复位错误、堆栈溢出、RAM区向下溢出、RAM区向上溢出、FLASH区向下溢出、FLASH区向上溢出、ROM区向下溢出、ROM区向上溢出、读取保护区域、写入保护区域、代码区破坏错误
       </span>
       <span>一般缺陷 : malloc分配失败、calloc分配失败、realloc分配失败、双重释放、未释放重分配、非法数据、浮点数溢出</span>
-      <span>建议 : 死循环、中断嵌套、定点数溢出、无符号整型溢出 </span>
+      <span>建议 : 死循环、中断嵌套、无符号整型溢出 </span>
     </div>
   )
 }
