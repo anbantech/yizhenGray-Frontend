@@ -122,6 +122,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
 
   // 单个用例的重放
   const oneCaseReplay = async (taskID: number, caseID: number) => {
+    changeReplayStatus(caseID)
     const idArray = {
       instance_id: taskID,
       error_id: caseID
@@ -370,7 +371,6 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                             role='button'
                             tabIndex={0}
                             onClick={() => {
-                              changeReplayStatus(item.id)
                               oneCaseReplay(task_id, item.id)
                             }}
                           >
