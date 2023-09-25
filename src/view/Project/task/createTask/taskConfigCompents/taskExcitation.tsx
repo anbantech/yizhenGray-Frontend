@@ -11,7 +11,7 @@ interface OpenType {
   getContainer: any
 }
 
-const StepTitle = ['选择激励 ', '添加到发送序列 ', '创建新建序列']
+const StepTitle = ['选择激励 ', '添加到发送序列 ', '创建发送序列']
 
 function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
   const current = stepStore(state => state.current)

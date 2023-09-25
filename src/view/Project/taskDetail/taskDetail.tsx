@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useEffect, useRef } from 'react'
-import { message } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory } from 'react-router'
 import { ResTaskDetail } from 'Src/globalType/Response'
 import UseWebsocket from 'Src/webSocket/useWebSocket'
@@ -112,9 +111,6 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
         if (updateStatus !== messageInfo.task_status) {
           setUpdateStatus(messageInfo.task_status)
           setDisplay(messageInfo.dispaly)
-          if ([10].includes(messageInfo.task_status)) {
-            message.error('仿真终端无响应，请重启并检查网络')
-          }
         }
         getInstanceDetail(instanceInfo.id)
       }
