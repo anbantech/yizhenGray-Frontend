@@ -1,5 +1,5 @@
 import { Button, Form, Input, message } from 'antd'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { loginIn } from 'Src/services/api/loginApi'
 import LoginImg from 'Image/bg.png'
 import { useHistory, withRouter } from 'react-router-dom'
@@ -40,7 +40,7 @@ function Login() {
       }
     }
   }
-  useEffect(() => {}, [])
+
   return (
     <div className={styles.loginBody}>
       <div className={styles.loginLeftBody}>
