@@ -8,10 +8,18 @@ function ScaleDetail(props: any) {
   return (
     <div className={StyleSheet.ScaleDetailBodys}>
       <div className={StyleSheet.ScaleDetailBody}>
-        {Object.keys(data.crash_type).map(item => {
+        {Object.keys(data.crash_type).map((item, index) => {
           return (
             <div key={generateUUID()}>
-              {item && <TaskDetailModal value={data.crash_type?.[item]} item={item} msg_index={data.msg_index} create_time={data.create_time} />}
+              {item && (
+                <TaskDetailModal
+                  value={data.crash_type?.[item]}
+                  item={item}
+                  index={index}
+                  msg_index={data.msg_index}
+                  create_time={data.create_time}
+                />
+              )}
             </div>
           )
         })}

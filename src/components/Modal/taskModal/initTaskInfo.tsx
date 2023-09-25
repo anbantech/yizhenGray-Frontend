@@ -161,9 +161,9 @@ const TabsComponetns = (props: Record<string, any>) => {
   )
 }
 function InitTaskInfoMemo(props: any) {
-  const { value, item, msg_index, create_time } = props
+  const { value, item, msg_index, create_time, index } = props
   const { register, performance } = value
-  const [isOpen, setOpen] = useState(true)
+  const [isOpen, setOpen] = useState(index !== 0)
 
   return (
     <div className={OneUtilCardStyles.oneUnitCard} style={{ marginBottom: '16px' }}>

@@ -166,9 +166,9 @@ const TabsComponetns = (props: Record<string, any>) => {
 }
 
 function TaskDetailModalMemo(props: any) {
-  const { value, item, msg_index, create_time } = props
+  const { value, item, msg_index, create_time, index } = props
   const { register, performance } = value
-  const [isOpen, setOpen] = useState(true)
+  const [isOpen, setOpen] = useState(index !== 0)
   const registerMemo = React.useMemo(() => {
     return register
   }, [register])

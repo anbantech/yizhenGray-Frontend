@@ -136,7 +136,7 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     } catch (error) {
       throwErrorMessage(error, {
         2009: '重放失败',
-        1007: '操作频繁',
+
         3002: '仿真终端无响应，请重启并检查网络',
         2007: '停止失败',
         7015: '固件初始化异常，更多信息请查看状态详情'

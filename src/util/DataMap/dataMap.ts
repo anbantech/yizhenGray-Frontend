@@ -59,7 +59,7 @@ export const statusMap = {
   },
   11: {
     label: '测试环境验证中',
-    color: styles.roundStatusErrorPaused
+    color: styles.roundStatusReady
   }
 }
 type CrashInfoType = Record<number, string>

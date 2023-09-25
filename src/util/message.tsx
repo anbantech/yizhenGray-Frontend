@@ -1,5 +1,6 @@
 import { ElementOf, tuple } from 'antd/lib/_util/type'
 import { message } from 'antd'
+import { CodeMap } from './DataMap/dataMap'
 
 const paramsTypes = tuple('string', 'number', 'boolean', 'object')
 
@@ -38,7 +39,7 @@ export function throwErrorMessage(errorMessage: ErrorMessage, defaultErrorMessag
   }
   // 没有自定义错误对象，直接抛出后端异常 message
   if (!defaultErrorMessage) {
-    popErrorMessage(errorMessage.message, pop)
+    popErrorMessage(CodeMap[+errorMessage.code as keyof typeof CodeMap], pop)
     return errorMessage.message
   }
 
@@ -53,6 +54,6 @@ export function throwErrorMessage(errorMessage: ErrorMessage, defaultErrorMessag
   }
 
   // 遍历完自定义错误码对象，没有捕获到与 errorMessage 相同的错误码，直接抛出后端异常 message
-  popErrorMessage(errorMessage.message, pop)
+  popErrorMessage(CodeMap[+errorMessage.code as keyof typeof CodeMap], pop)
   return errorMessage.message
 }

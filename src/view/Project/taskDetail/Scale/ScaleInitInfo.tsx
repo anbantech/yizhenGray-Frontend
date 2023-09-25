@@ -28,10 +28,12 @@ function ScaleInitInfo(props: any) {
     <div className={StyleSheet.ScaleDetailBodys}>
       {data && (
         <div className={StyleSheet.ScaleDetailBody}>
-          {Object.keys(data.crash_type).map(item => {
+          {Object.keys(data.crash_type).map((item, index) => {
             return (
               <div key={generateUUID()}>
-                {item && <InitTaskInfo value={data.crash_type?.[item]} item={item} msg_index={data.msg_index} create_time={data.create_time} />}
+                {item && (
+                  <InitTaskInfo index={index} value={data.crash_type?.[item]} item={item} msg_index={data.msg_index} create_time={data.create_time} />
+                )}
               </div>
             )
           })}
