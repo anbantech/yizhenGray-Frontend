@@ -93,11 +93,11 @@ const BeginComponent = (props: ChildComponents) => {
       {[2, 3, 4].includes(status) && (
         <div className={styles.ImageContioner} role='button' tabIndex={0} onClick={run}>
           {[2].includes(status) ? (
-            <Spin spinning={spinStatus && index === 4} indicator={antIcon}>
+            <Spin spinning={spinStatus && index === 4} indicator={antIcon} className={styles.spin}>
               <img className={styles.ImageSize} src={stopCourse} alt='stopCourse' />
             </Spin>
           ) : [3, 4].includes(status) ? (
-            <Spin spinning={spinStatus && index === 5} indicator={antIcon}>
+            <Spin spinning={spinStatus && index === 5} indicator={antIcon} className={styles.spin}>
               <img src={Begin} className={styles.ImageSize} alt='stopCourse' />
             </Spin>
           ) : null}
@@ -157,28 +157,29 @@ const OverComponent = (props: ChildComponents) => {
   return (
     <>
       {[2, 3, 4, 8, 9].includes(status) && (
-        <div role='button' className={styles.ImageContioner} tabIndex={0} onClick={run}>
-          {
-            [2, 3, 4, 8, 9].includes(status) && (
-              <>
-                <Spin spinning={spinStatus && index === 1} indicator={antIcon}>
+        <Spin spinning={spinStatus && index === 1} indicator={antIcon} className={styles.spin}>
+          <div role='button' className={styles.ImageContioner} tabIndex={0} onClick={run}>
+            {
+              [2, 3, 4, 8, 9].includes(status) && (
+                <>
                   <img className={styles.ImageSize} src={over} alt='stopCourse' />
-                </Spin>
-                <span>结束任务</span>
-              </>
-            )
-            //  [0, 1].includes(status) &&(
-            //   <>
-            //     <Tooltip placement='bottom' title='重新测试当前任务（重新发送已经测试过的用例）'>
-            //       <Spin spinning={spinStatus && index === 2} indicator={antIcon}>
-            //         <img className={styles.ImageSize} src={Begin} alt='beginCourse' />
-            //       </Spin>
-            //     </Tooltip>
-            //     <span>重测任务</span>
-            //   </>
-            // )
-          }
-        </div>
+
+                  <span>结束任务</span>
+                </>
+              )
+              //  [0, 1].includes(status) &&(
+              //   <>
+              //     <Tooltip placement='bottom' title='重新测试当前任务（重新发送已经测试过的用例）'>
+              //       <Spin spinning={spinStatus && index === 2} indicator={antIcon}>
+              //         <img className={styles.ImageSize} src={Begin} alt='beginCourse' />
+              //       </Spin>
+              //     </Tooltip>
+              //     <span>重测任务</span>
+              //   </>
+              // )
+            }
+          </div>
+        </Spin>
       )}
     </>
   )
@@ -209,6 +210,7 @@ const StartBeginComponent = (props: FatherComponents) => {
         2015: `${error.message.split(':').join('')}`,
         2016: '任务未处于暂停状态',
         9000: '系统异常',
+
         7015: '固件初始化异常，更多信息请查看状态详情'
       })
       setSpinStatus(false)
@@ -230,18 +232,18 @@ const StartBeginComponent = (props: FatherComponents) => {
   return (
     <>
       {!display && [0, 1, 5, 10].includes(status) && (
-        <div role='button' className={styles.ImageContioner} tabIndex={0} onClick={run}>
-          {[0, 1, 5, 10].includes(status) && (
-            <>
-              <Tooltip placement='bottom' title='开始测试当前任务'>
-                <Spin spinning={spinStatus && index === 3} indicator={antIcon}>
+        <Spin spinning={spinStatus && index === 3} indicator={antIcon} className={styles.spin}>
+          <div role='button' className={styles.ImageContioner} tabIndex={0} onClick={run}>
+            {[0, 1, 5, 10].includes(status) && (
+              <>
+                <Tooltip placement='bottom' title='开始测试当前任务'>
                   <img className={styles.ImageSize} src={Begin} alt='beginCourse' />
-                </Spin>
-              </Tooltip>
-              <span>开始测试</span>
-            </>
-          )}
-        </div>
+                </Tooltip>
+                <span>开始测试</span>
+              </>
+            )}
+          </div>
+        </Spin>
       )}
     </>
   )

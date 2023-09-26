@@ -76,6 +76,7 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
           {' '}
           <Button
             key='back'
+            className={StyleSheet.Btn}
             style={{ borderRadius: '4px' }}
             onClick={() => {
               deleteEverything()
@@ -85,6 +86,7 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
             取消
           </Button>
           <Button
+            className={StyleSheet.Btn}
             key='submit'
             type='primary'
             style={{ borderRadius: '4px' }}
