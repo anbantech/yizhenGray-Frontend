@@ -41,12 +41,15 @@ const TaskIndex: React.FC<RouteComponentProps<any, StaticContext, projectPropsTy
   const [isInStance, setInstance] = React.useState(false)
 
   // 查看实例信息
-  const checkInstances = (taskId: string) => {
-    getDetail(taskId)
-  }
+  const checkInstances = React.useCallback(
+    (taskId: string) => {
+      getDetail(taskId)
+    },
+    [getDetail]
+  )
 
   return (
-    <div className={styles.TaskIndexBody}>
+    <div className={styles.TaskIndexBody} style={{ display: 'flex' }}>
       <InstancesContext.Provider value={{ task_detail, setInstance, getDetail }}>
         <TaskList checkInstances={checkInstances} />
         {isInStance && task_detail ? <TaskInstances /> : <NoTask />}

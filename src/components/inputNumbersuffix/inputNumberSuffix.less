@@ -7,7 +7,7 @@
     flex-direction: column;
 } 
 
-.inputTop {
+.inputTopLast {
    width: 22px;
    border-bottom: 0.5px solid #BFBFBF;
    height: 16px;
@@ -16,10 +16,25 @@
    background-position: 2px;
    background-repeat: no-repeat;
    background-image: url(../../assets/drag/icon_up_caret.svg); 
+   pointer-events: none;
+   cursor: not-allowed;
+}
+
+.inputTopLast:hover {
+  width: 22px;
+  border-bottom: 0.5px solid #BFBFBF;
+  height: 16px;
+  border-left: 1px solid #BFBFBF;
+  background-size: 18px 18px;
+  background-position: 2px;
+  background-repeat: no-repeat;
+  background-image: url(../../assets/drag/icon_up_caret.svg);
+  pointer-events: none;
+  cursor: not-allowed;
 }
 
 
-.inputTop:hover{
+.inputTop{
   width: 22px;
   height: 16px;
   border-bottom: 0.5px solid #BFBFBF;
@@ -27,25 +42,67 @@
   background-size: 18px 18px;
   background-position: 2px;
   background-repeat: no-repeat;
+  cursor: pointer;
   background-image: url(../../assets/drag/icon_up_caret_black.svg);
 }
 
+.inputTop:hover{
+  background-color: #e6f7ff;
+  width: 22px;
+  height: 16px;
+  border-bottom: 0.5px solid #BFBFBF;
+  border-left: 1px solid #BFBFBF;
+  background-size: 18px 18px;
+  background-position: 2px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  background-image: url(../../assets/drag/icon_up_caret_black.svg);
+}
 
-.inputBottom{
+.inputBottom:hover {
+  background-color: #e6f7ff;
+  width: 22px;
+  height: 16px;
+  cursor: pointer;
+  border-top: 0.5px solid #BFBFBF;
+  border-left: 1px solid #BFBFBF;
+  height: 16px;
+  background-size: 18px 18px;
+  background-position: 2px;
+  background-repeat: no-repeat;
+  background-image: url(../../assets/drag/icon_down_caret_black.svg);
+}
+
+.inputBottomLower{
   width: 22px;
   height: 16px;
   border-top: 0.5px solid #BFBFBF;
   border-left: 1px solid #BFBFBF;
   background-size: 18px 18px;
   background-position: 2px;
+  pointer-events: none;
+  cursor: not-allowed;
   background-repeat: no-repeat;
   background-image: url(../../assets/drag/icon_down_caret.svg);
 }
 
-.inputBottom:hover{
+.inputBottom{
   width: 22px;
+  height: 16px;
+  cursor: pointer;
   border-top: 0.5px solid #BFBFBF;
   border-left: 1px solid #BFBFBF;  
+  height: 16px;
+  background-size: 18px 18px;
+  background-position: 2px;
+  background-repeat: no-repeat;
+  background-image: url(../../assets/drag/icon_down_caret_black.svg);
+}
+
+.inputBottom:hover {
+  width: 22px;
+  border-top: 0.5px solid #BFBFBF;
+  border-left: 1px solid #BFBFBF;
   height: 16px;
   background-size: 18px 18px;
   background-position: 2px;

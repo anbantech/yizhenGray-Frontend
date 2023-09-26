@@ -28,7 +28,7 @@ function ModalpPop(props: any) {
       message.success('项目新建成功')
       return data
     } catch (error) {
-      throwErrorMessage(error, { 1005: '项目名称重复，请修改' })
+      throwErrorMessage(error, { 1004: '该项目不存在', 1005: '项目名称重复，请修改', 1007: '操作频繁' })
       return error
     }
   }
@@ -50,7 +50,7 @@ function ModalpPop(props: any) {
       }
     } catch (error) {
       setDisabledStatus(true)
-      throwErrorMessage(error, { 1005: '项目名称重复，请修改' })
+      throwErrorMessage(error, { 1004: '该项目不存在', 1005: '项目名称重复，请修改', 1007: '操作频繁' })
       return error
     }
   }
@@ -91,6 +91,7 @@ function ModalpPop(props: any) {
 
   return (
     <Modal
+      centered={Boolean(1)}
       className={styles.formModal}
       width={width}
       visible={visible}
@@ -138,12 +139,13 @@ function ModalpPop(props: any) {
             }
           ]}
         >
-          <Input placeholder='请输入项目名称' />
+          <Input spellCheck='false' placeholder='请输入项目名称' />
         </Form.Item>
         <Form.Item name='desc' label='项目描述' rules={[{ type: 'string', max: 50, message: '字数不能超过50个' }]}>
           <TextArea
+            spellCheck='false'
             placeholder='请添加针对项目的相关描述'
-            autoSize={{ minRows: 4, maxRows: 5 }}
+            autoSize={{ minRows: 3, maxRows: 4 }}
             showCount={{
               formatter({ count }) {
                 return `${count}/50`

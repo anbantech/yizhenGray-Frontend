@@ -7,8 +7,9 @@ import { GlobalContext } from 'Src/globalContext/globalContext'
 // import { IconAdd } from '@anban/iconfonts'
 import { logout as logoutService, resetPassword } from 'Src/services/api/loginApi'
 import { ifNeedShowLogo } from 'Src/index'
-import sidebarLogo from 'Image/yifu_logo.svg'
+import sidebarLogo from 'Image/logo.svg'
 import { throwErrorMessage } from 'Src/util/message'
+import taskStyle from 'Src/view/Project/task/TaskInstances/TaskInstance.less'
 import styles from './header.less'
 
 interface ResetPasswordDialogProps {
@@ -163,22 +164,23 @@ function Header(props: any) {
     '/projects/Tasks/Detail/TaskLog': '日志',
     '/projects/Tasks/Detail/Scale': '动态监控',
     '/projects/Tasks/Detail/ScaleDetail': '缺陷详情',
+    '/projects/Tasks/Detail/InitTask': '缺陷详情',
     '/Excitataions': '激励配置'
     // '/TwoExcitationList': '激励单元管理',
     // '/ThreeExcitationList': '激励嵌套管理',
     // '/FourExcitationList': '交互管理',
-    // '/OneExcitationList/Detail': '外设详情',
+    // '/OneExcitationList/Detail': '端口详情',
     // '/TwoExcitationList/Detail': '激励单元详情',
     // '/ThreeExcitationList/Detail': '激励嵌套详情',
     // '/FourExcitationList/Deatail': '交互详情',
-    // '/OneExcitationList/update': '修改外设',
+    // '/OneExcitationList/update': '修改端口',
     // '/TwoExcitationList/update': '修改激励单元',
     // '/ThreeExcitationList/update': '修改激励嵌套',
     // '/FourExcitationList/update': '修改交互',
     // '/TwoExcitationList/createDoubleExcitationGroup': '新建激励单元',
     // '/ThreeExcitationList/createDoubleExcitation': '新建激励嵌套',
     // '/FourExcitationList/createGroupExcitation': '新建交互',
-    // '/OneExcitationList/createExcitation': '新建外设',
+    // '/OneExcitationList/createExcitation': '新建端口',
     // '/FourExcitationList/createGroupExcitation/ExcitationDraw': '预览',
     // '/FourExcitationList/Deatail/ExcitationDraw': '预览',
     // '/FourExcitationList/update/ExcitationDraw': '预览',
@@ -245,11 +247,18 @@ function Header(props: any) {
       <Logo />
       <div className={styles.HeaderRight_Layout}>
         <div className={styles.HeaderBread}>
-          <Breadcrumb>
+          <div className={taskStyle.headerCloumnLine} />
+          <Breadcrumb style={{ marginLeft: '5px' }} className={styles.BreadcrumbStyle}>
             {extraBreadcrumbItems.map((item: string, index: number) => {
               return (
                 <Breadcrumb.Item key={item}>
-                  <span style={{ cursor: 'pointer' }} role='button' tabIndex={index} onClick={() => jumpTest(item)}>
+                  <span
+                    style={{ cursor: 'pointer', color: '#999999' }}
+                    className={index === extraBreadcrumbItems.length - 1 ? styles.BreadcrumItem : null}
+                    role='button'
+                    tabIndex={index}
+                    onClick={() => jumpTest(item)}
+                  >
                     {name[item]}
                   </span>
                 </Breadcrumb.Item>

@@ -16,6 +16,7 @@ type LeftAction = {
   decrease: (type: string) => void
   setTitleorDesc: (type: string, val: string) => void
   setValue: (type: string, val: number) => void
+  setOneExcitaionInfo: (id: number) => void
 }
 
 interface LeftActionState {
@@ -25,6 +26,7 @@ interface LeftActionState {
   name: string
   desc: string
   updated: boolean
+  oneExcitationInfo: any
 }
 
 interface CmpsOnly {
@@ -53,6 +55,7 @@ type ArgeementAction = {
   setHead: (val: Record<string, any>) => void
   setDeatilStatus: (val: boolean) => void
   deleteDropListRef: (index: number) => void
+  deleteAllDropListRef: () => void
 }
 
 interface ArgeementActionState {
@@ -145,4 +148,9 @@ interface Sender_idType {
 
 interface ExcitationLisSendBtnType {
   sendBtnStatus: boolean
+}
+
+interface updateSender_id {
+  updateSender_Id: number | null
+  setUpdateSender_Id: (id: number | null) => void
 }

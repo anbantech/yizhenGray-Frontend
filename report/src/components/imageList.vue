@@ -8,7 +8,7 @@
 -->
 <template>
   <div style="margin-top: 24px;text-align: center">
-    <h1 class="tableTitle">6、动态调用图</h1>
+     <h2  class="tableTitle">6、动态调用图</h2>
     <el-image class="img" :fit="scale-down" :src="imgUrl" :preview-src-list="imgList"></el-image>
     <span class="footerTitle ">点击查看大图</span>
   </div>
@@ -71,7 +71,7 @@ export default {
   font-size: 6px;
   line-height: 150%;
   text-align: center;
-  color: #000000;
+  color: #333333;
 }
 .img{
   width:100%;

@@ -29,8 +29,9 @@
     height: 36px;
     display: flex;
     align-items: center;
+    color: #333;
     // position: relative;
-    padding-left: 19px;
+    padding-left: 9px;
     border-bottom: 1px solid #E9E9E9;
 }
 
@@ -62,7 +63,7 @@
 
 .dropList_Header{
     width: calc(100% - 4px);
-    height: 36px;
+    height: 48px;
     padding: 0 16px;
     display: flex;
     background-color: #fff;
@@ -139,6 +140,7 @@
    width: 100%;
    height: 48px;
    display: flex;
+   font-weight: 400;
    background-color:#fff ;
    border-bottom: 1px solid #E9E9E9;
    align-items: center;
@@ -319,12 +321,21 @@
 
 .numberInput{
     width: 64px;
-    height: 32px;
+    height: 34px;
     position: relative;
-    padding: 0px 0px 0px 5px !important;
+    padding: 2px 0px 2px 5px !important;
     :global(.ant-input){
         width: 30px !important;
     }
+}
+
+.numberInputDisabled{
+    width: 64px;
+    height: 34px;
+    position: relative;
+    border-color: #d9d9d9 !important;
+    box-shadow: none;
+    padding: 2x 0px 2px 5px !important;
 }
 
 .DropHeader{
@@ -433,11 +444,11 @@
     height: 36px;
     position:absolute;
     right: 0px;
-    top:-12px;
+    top:-8px;
+    border-radius: 4px !important;
     :global(.ant-btn){
         background-color: #4880FF !important;
         color: #fff !important;
-        border: radius 4px !important;
     }
 }
 

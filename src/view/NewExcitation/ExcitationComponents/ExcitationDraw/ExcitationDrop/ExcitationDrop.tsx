@@ -36,15 +36,20 @@ const DeleteCompoent = ({ number, DeleteCheckItem }: { number: number; DeleteChe
 const DeleteCompoentMemo = React.memo(DeleteCompoent)
 
 function ExcitationDropMemo() {
+  // 拖拽数据 存储
   const DropList = LeftDropListStore(state => state.DropList)
   const setLeftList = LeftDropListStore(state => state.setLeftList)
+  // 设置状态详情
   const setDetailData = LeftDropListStore(state => state.setDetailData)
   // sender_id
   const sender_id = useExicitationSenderId(state => state.sender_id)
   // 筛选逻辑
   const checkAllList = checkListStore(state => state.checkAllList)
+  // 清除筛选,框筛选条件
   const clearCheckList = checkListStore(state => state.clearCheckList)
-  const { setParamsChange } = LeftDropListStore()
+  // 更新数据
+  const { setParamsChange, setDestoryEverything } = LeftDropListStore()
+  // 按钮状态
   const setSendBtnStatus = GlobalStatusStore(state => state.setSendBtnStatus)
   // 实例状态是否更新
   const detailStatus = GlobalStatusStore(state => state.detailStatus)
@@ -70,6 +75,7 @@ function ExcitationDropMemo() {
     async (id: number) => {
       try {
         const res = await getExcitaionDeatilFn(id)
+
         if (res.data) {
           setDetailData(res.data)
         }
@@ -77,27 +83,29 @@ function ExcitationDropMemo() {
         message.error(error.message)
       }
     },
+
     [setDetailData]
   )
 
   useEffect(() => {
     if (sender_id) {
-      setSendBtnStatus(true)
       getExcitaionDeatilFunction(sender_id)
     }
   }, [getExcitaionDeatilFunction, sender_id, detailStatus, setSendBtnStatus])
 
   useEffect(() => {
     return () => {
+      setDestoryEverything()
       clearCheckList()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
   return (
     <div className={StyleSheet.excitaionDrop_Body}>
       <DropHeader getExcitaionDeatilFunction={getExcitaionDeatilFunction} />
       <Line />
-      <span className={StyleSheet.sendListTitle}>发送列表</span>
+      <span className={StyleSheet.sendListTitle}>发送序列</span>
       <MemoExcitationListHeader />
       {DropListLength ? <ExcitationDropList /> : <NoTask />}
       {checkListMemo ? <DeleteCompoentMemo number={checkListMemo} DeleteCheckItem={DeleteCheckItem} /> : null}

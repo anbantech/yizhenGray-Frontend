@@ -32,7 +32,7 @@ const BottomFooterDrag = ({ DeleteCheckItem, exportAll, saveConfig }: any) => {
   return (
     <div className={StyleSheet.BottomFooterDragBody}>
       <div className={StyleSheet.buleButton} role='time' onClick={saveConfig}>
-        添加到发送列表
+        添加到激励序列
       </div>
       <div className={StyleSheet.exportButtn} role='time' onClick={exportAll}>
         导出
@@ -229,7 +229,7 @@ function ExcitationListMemo() {
     if (!id) {
       const child_id_list = [[], [...checkAllList], []]
       try {
-        const res = await createExcitationList({ name: '默认1', desc: '默认创建', gu_cnt0: 1, gu_w0: 0, child_id_list })
+        const res = await createExcitationList({ name: '激励序列1', desc: '激励序列1', gu_cnt0: 1, gu_w0: 0, child_id_list })
         if (res.code === 0) {
           clearCheckList()
           setUpdateStatus(!updateStatus)

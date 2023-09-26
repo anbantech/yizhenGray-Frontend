@@ -71,6 +71,45 @@ const DeleteItem = (cb: (val: DragCmps[]) => void, val: DragCmps[], index: numbe
   del(index)
 }
 
+const ItemNumberMemo: React.FC<any> = (props: any) => {
+  const { value, onChange, onFocus, onBlur } = props
+  const [count, setCount] = React.useState(10)
+  const triggerChange = React.useCallback(
+    (changedValue: any) => {
+      onChange?.(changedValue)
+    },
+    [onChange]
+  )
+  const onNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newNumber = Number.parseInt(e.target.value || '0', 10)
+    if (Number.isNaN(newNumber)) {
+      return
+    }
+    setCount(newNumber)
+    triggerChange(newNumber)
+  }
+  const onMax = () => {
+    const newValue = count > 255 ? 255 : count === 0 ? 1 : count
+    onBlur()
+    setCount(newValue)
+    triggerChange(newValue)
+  }
+  return (
+    <span>
+      <Input
+        spellCheck='false'
+        tabIndex={0}
+        className={styles.IntArrayInput}
+        onFocus={onFocus}
+        onBlur={onMax}
+        value={value || count}
+        onChange={onNumberChange}
+      />
+    </span>
+  )
+}
+const ItemNumber = React.memo(ItemNumberMemo)
+
 const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmps, myRef: any) => {
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
   const deleteDropListRef = ArgeementDropListStore(state => state.deleteDropListRef)
@@ -82,6 +121,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
   const onValuesChange = React.useCallback((changedValues: any, allValues: any) => {
     setformData(allValues)
   }, [])
+
   const onToggleForbidDrag = React.useCallback(() => {
     setCanDrag(false)
     return Promise.reject(new Error('字段名称由汉字、数字、字母和下划线组成'))
@@ -234,7 +274,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
         <span className={styles.cloumnBodyCharts}>字符串 </span>
       </div>
       <Form form={form} name='Compoents' layout='inline' onValuesChange={onValuesChange} className={styles.StringForm} initialValues={formData}>
-        <Tooltip placement='bottom' title={formData.name}>
+        <Tooltip placement='topLeft' overlayClassName={styles.magicToolTipStyle} title={formData.name}>
           <Form.Item
             name='name'
             validateFirst
@@ -263,6 +303,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
           >
             <Input
               autoComplete='off'
+              spellCheck='false'
               placeholder='请输入字段名'
               onFocus={() => {
                 canDragBool(setCanDrag)
@@ -279,9 +320,10 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Tooltip placement='topLeft' title={formData.value}>
+        <Tooltip placement='topLeft' overlayClassName={styles.magicToolTipStyle} title={formData.value}>
           <Form.Item name='value'>
             <Input
+              spellCheck='false'
               bordered={false}
               className={styles.StringInputValue}
               onFocus={() => {
@@ -480,7 +522,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
         <span className={styles.cloumnBodyCharts}>整数 </span>
       </div>
       <Form form={form} name='IntCompoents' className={styles.StringForm} onValuesChange={onValuesChange} layout='inline' initialValues={formData}>
-        <Tooltip placement='bottom' title={formData.name}>
+        <Tooltip placement='topLeft' overlayClassName={styles.magicToolTipStyle} title={formData.name}>
           <Form.Item
             name='name'
             validateFirst
@@ -508,6 +550,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
             ]}
           >
             <Input
+              spellCheck='false'
               placeholder='请输入字段名'
               onFocus={() => {
                 canDragBool(setCanDrag)
@@ -530,7 +573,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Tooltip placement='topLeft' title={formData.value}>
+        <Tooltip placement='topLeft' overlayClassName={styles.magicToolTipStyle} title={formData.value}>
           <Form.Item
             className={styles.intFormItem}
             name='value'
@@ -549,6 +592,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
             ]}
           >
             <Input
+              spellCheck='false'
               bordered={false}
               className={styles.IntInputValue}
               onFocus={() => {
@@ -579,7 +623,6 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
   const deleteDropListRef = ArgeementDropListStore(state => state.deleteDropListRef)
   const [form] = Form.useForm<any>()
   const DropList = ArgeementDropListStore(state => state.DropList)
-  const [val, setVal] = React.useState(10)
   const [formData, setformData] = React.useState<any>({
     name: '',
     type: 'byte_array',
@@ -688,37 +731,13 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
     }
   })
 
-  const onChangeGu_time = React.useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newNumber = Number.parseInt(e.target.value || '0', 10)
-      if (Number.isNaN(newNumber)) {
-        return
-      }
-      form.setFieldsValue({ count: val })
-      setVal(newNumber)
-    },
-    [form, val]
-  )
-
-  const onMax = React.useCallback(() => {
-    const l1 = typeof val === 'number' && val > 255
-    const l2 = typeof val === 'number' && val < 1
-    if (l1) {
-      setVal(255)
-    } else if (l2) {
-      setVal(1)
-    }
-  }, [val, setVal])
-
   React.useEffect(() => {
     if (Item.name) {
       const { name, skip, value, length, context, count } = Item
       setformData({ name, skip, value, length, context, count })
       form.setFieldsValue({ name, skip, value, length, context, count })
-    } else {
-      form.setFieldsValue({ count: val })
     }
-  }, [val, form, Item])
+  }, [form, Item])
 
   drag(drop(ref))
 
@@ -755,7 +774,19 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
   const onValuesChange = React.useCallback((changedValues: any, allValues: any) => {
     setformData(allValues)
   }, [])
+  const checkGuW0 = (_: any, value: any) => {
+    if (value >= 0) {
+      return Promise.resolve()
+    }
+  }
 
+  const onBlur = React.useCallback(() => {
+    canIsDragBool(setCanDrag)
+  }, [])
+
+  const onFocus = React.useCallback(() => {
+    canDragBool(setCanDrag)
+  }, [])
   return (
     <div
       className={styles.cloumnBody}
@@ -770,7 +801,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
       </div>
 
       <Form form={form} name='IntArrayCompoents' className={styles.StringForm} onValuesChange={onValuesChange} initialValues={formData}>
-        <Tooltip placement='bottom' title={formData.name}>
+        <Tooltip placement='topLeft' overlayClassName={styles.magicToolTipStyle} title={formData.name}>
           <Form.Item
             name='name'
             validateFirst
@@ -798,6 +829,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
             ]}
           >
             <Input
+              spellCheck='false'
               placeholder='请输入字段名'
               onFocus={() => {
                 canDragBool(setCanDrag)
@@ -814,21 +846,8 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
           元素个数
         </div>
 
-        <Form.Item name='count' className={styles.IntArrayForm}>
-          <Input
-            onBlur={() => {
-              onMax()
-              canIsDragBool(setCanDrag)
-            }}
-            autoComplete='off'
-            onChange={e => {
-              onChangeGu_time(e)
-            }}
-            onFocus={() => {
-              canDragBool(setCanDrag)
-            }}
-            className={styles.IntArrayInput}
-          />
+        <Form.Item name='count' className={styles.IntArrayForm} rules={[{ required: true, validator: checkGuW0 }]}>
+          <ItemNumber onFocus={onFocus} onBlur={onBlur} />
         </Form.Item>
 
         <div className={styles.FourCharts} style={{ height: '37px' }}>
@@ -843,7 +862,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
         </Form.Item>
 
         <div className={styles.initValue}>初始值</div>
-        <Tooltip placement='topLeft' title={formData.value}>
+        <Tooltip placement='topLeft' overlayClassName={styles.magicToolTipStyle} title={formData.value}>
           <Form.Item
             className={styles.intArrayFormItem}
             name='value'
@@ -862,6 +881,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
             ]}
           >
             <Input
+              spellCheck='false'
               autoComplete='off'
               bordered={false}
               onFocus={() => {

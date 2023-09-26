@@ -3,7 +3,6 @@
 import { ConfigProvider, message, Table, Tooltip } from 'antd'
 import React, { useCallback, useEffect } from 'react'
 import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
-import { WarnTip } from 'Src/view/excitation/excitationComponent/Tip'
 import { getTestingLog } from 'Src/services/api/taskApi'
 import { CrashInfoMapLog } from 'Utils/DataMap/dataMap'
 import { getTime } from 'Src/util/baseFn'
@@ -35,7 +34,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
   }, [params])
 
   useEffect(() => {
-    if (status === 2 && (taskDetailInfo.test_num || taskDetailInfo.error_num || taskDetailInfo.warning_count)) {
+    if (status === 2 && (taskDetailInfo.total || taskDetailInfo.defects_count || taskDetailInfo.error_count)) {
       getlog()
         .then(res => {
           setSpinning(false)
@@ -46,7 +45,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, taskDetailInfo.test_num, taskDetailInfo.error_num, taskDetailInfo.warning_count])
+  }, [status, taskDetailInfo.total, taskDetailInfo.defects_count, taskDetailInfo.error_count])
 
   const columns = [
     {
@@ -60,12 +59,17 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       title: '发送数据',
       dataIndex: 'send_data',
       key: 'send_data',
-      ellipsis: true,
       width: '12%',
       render: (text: any, record: any) => (
-        <p className={styles.checkDetail} key={record.id}>
-          {typeof record.send_data === 'string' ? record.send_data : record.send_data[0] || ''}
-        </p>
+        <Tooltip
+          title={typeof record.send_data === 'string' ? record.send_data : record.send_data[0] || ''}
+          placement='bottomLeft'
+          overlayClassName={styles.overlay}
+        >
+          <p className={styles.checkDetail} key={record.id}>
+            {typeof record.send_data === 'string' ? record.send_data : record.send_data[0] || ''}
+          </p>
+        </Tooltip>
       )
     },
     {
@@ -76,28 +80,11 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       width: '10%',
       render: (text: any, record: any) => (
         <div key={record.id} className={styles.recv_datalog}>
-          <p key={record.id}>{record.recv_data || ' - '}</p>
+          <p key={record.id}>{record.recv_data || '-'}</p>
         </div>
       )
     },
-    {
-      title: () => {
-        return (
-          <div>
-            <span> 异常用例</span>
-          </div>
-        )
-      },
-      dataIndex: 'case_type',
-      key: 'case_type',
-      ellipsis: true,
-      render: (text: any, record: any) => (
-        <div className={styles.checkDetail} key={record.id}>
-          {record.case_type ? '是' : '否'}
-        </div>
-      ),
-      width: '11%'
-    },
+
     {
       title: () => {
         return (
@@ -106,12 +93,12 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
           </div>
         )
       },
-      dataIndex: 'update_time',
-      key: 'update_time',
+      dataIndex: 'create_time',
+      key: 'create_time',
       ellipsis: true,
       render: (text: any, record: any) => (
         <div className={styles.checkDetail} key={record.id}>
-          {getTime(record.update_time)}
+          {getTime(record.create_time)}
         </div>
       ),
       width: '15%'
@@ -157,17 +144,16 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
         return (
           <div style={{ display: 'flex' }}>
             <span> 缺陷结果</span>
-            <WarnTip />
           </div>
         )
       },
-      dataIndex: 'crash_info',
-      key: 'crash_info',
+      dataIndex: 'crash_type',
+      key: 'crash_type',
       ellipsis: true,
       width: '12.5%',
       render: (text: any, record: any) => (
         <div className={styles.dataLongInfoResult}>
-          {Object.keys(record.crash_info).map(item => {
+          {Object.keys(record.crash_type).map(item => {
             return (
               <div key={item} className={styles.crash_infoTitle}>
                 <Tooltip title={CrashInfoMapLog[+item]} placement='bottom' overlayClassName={styles.overlay}>
@@ -190,9 +176,9 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
           rowKey={record => record.id}
           columns={columns}
           rowClassName={record => {
-            return record.case_type && Object.keys(record.crash_info)[0]
+            return record.case_type && Object.keys(record.crash_type)[0]
               ? `${styles.tableStyleBackground}`
-              : Object.keys(record.crash_info)[0] && !record.case_type
+              : Object.keys(record.crash_type)[0] && !record.case_type
               ? `${styles.warninfo}`
               : ''
           }}

@@ -39,6 +39,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     sort_field: 'create_time',
     sort_order: 'descend',
     system: 'hex',
+    level: '',
     statement_coverage: '',
     branch_coverage: '',
     diagnosis: ''
@@ -49,27 +50,23 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   const [updateStatus, setUpdateStatus] = React.useState(0)
   const timer = useRef<any>()
   const [messageInfo] = UseWebsocket(+instanceInfo.id)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [status, depCollect, depData] = useDepCollect(RequsetParams)
   const [total, logData] = UseGetTestLog(depData, updateStatus)
-  const [spinning, setSpinning] = React.useState(true)
+  // const [spinning, setSpinning] = React.useState(true)
   const [display, setDisplay] = React.useState(false)
-  const updateRef = useRef<any>()
+  // const updateRef = useRef<any>()
 
-  const getInstanceDetail = async (value: string) => {
+  const getInstanceDetail = React.useCallback(async (value: string) => {
     const getTaskDetails = await instanceDetail(value)
     if (getTaskDetails.data) {
       setTaskDetailInfo(getTaskDetails.data)
     }
-  }
+  }, [])
 
   // 测试降序
   const testTimeSort = (value: string) => {
     depCollect(true, { sort_order: value, page: 1, statement_coverage: '', branch_coverage: '' })
-  }
-
-  // 筛选异常用例
-  const caseSort = (value: string) => {
-    depCollect(true, { case_type: value, page: 1 })
   }
 
   const statementSort = (value: string) => {
@@ -88,6 +85,13 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const InitTask = React.useCallback(() => {
+    history.push({
+      pathname: '/projects/Tasks/Detail/InitTask',
+      state: { projectInfo, taskInfo, instanceInfo }
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const changePage = (page: number, pageSize: number) => {
     depCollect(true, { page, page_size: pageSize })
   }
@@ -96,48 +100,38 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     depCollect(true, { system: value, page: 1 })
   }
 
+  const checkCrashLevel = (value: string) => {
+    const val = value === '-1' ? '' : value
+    depCollect(true, { level: val, page: 1 })
+  }
+
   const getMessageStatus = React.useCallback(() => {
     if (messageInfo && messageInfo.instance_id) {
       if (+messageInfo.instance_id === +instanceInfo.id) {
         if (updateStatus !== messageInfo.task_status) {
           setUpdateStatus(messageInfo.task_status)
           setDisplay(messageInfo.dispaly)
-          if ([1, 4].includes(messageInfo.task_status)) {
-            setSpinning(true)
-          }
         }
         getInstanceDetail(instanceInfo.id)
       }
     }
-  }, [instanceInfo.id, messageInfo, updateStatus])
+  }, [getInstanceDetail, instanceInfo.id, messageInfo, updateStatus])
 
   useEffect(() => {
     getMessageStatus()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getMessageStatus, status, taskInfo.task_id, updateStatus])
+  }, [getMessageStatus, taskDetailInfo?.status, taskInfo.task_id, updateStatus])
 
   useEffect(() => {
-    if ([1, 4].includes(updateStatus)) {
-      updateRef.current = setTimeout(() => {
-        setSpinning(false)
-      }, 5000)
-      return () => {
-        clearTimeout(updateRef.current)
-      }
-    }
-  }, [updateStatus, spinning])
-
-  useEffect(() => {
-    if (taskInfo.task_id && updateStatus === 2) {
+    if (taskInfo.task_id && [2].includes(updateStatus)) {
       timer.current = setInterval(() => {
         getInstanceDetail(instanceInfo.id)
-      }, 1000)
+      }, 1500)
     }
     return () => {
       clearInterval(timer.current)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [instanceInfo?.status, instanceInfo.id, updateStatus])
+  }, [instanceInfo.id, updateStatus, taskDetailInfo?.status])
 
   return (
     <>
@@ -152,18 +146,19 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
                 display={display}
                 RequsetParams={RequsetParams}
               />
-              <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} />
+              <TaskDetailCard taskDetailInfo={taskDetailInfo} lookLog={lookLog} InitTask={InitTask} />
               {taskDetailInfo?.status === 2 ? (
                 <DetailTestingTable params={RequsetParams} taskDetailInfo={taskDetailInfo} status={updateStatus} />
               ) : (
                 <DetailTestedTable
+                  level={depData.level}
                   system={depData.system}
                   status={updateStatus}
                   Checked={checked}
+                  checkCrashLevel={checkCrashLevel}
                   task_id={+instanceInfo.id}
                   infoMap={props.location?.state}
                   testTimeSort={testTimeSort}
-                  caseSort={caseSort}
                   changePage={changePage}
                   total={total as number}
                   params={depData}

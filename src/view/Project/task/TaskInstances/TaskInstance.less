@@ -18,7 +18,7 @@
 }
 
 .headerright {
-  width: 120px;
+  width: 192px;
   height: 96px;
 }
 
@@ -32,13 +32,35 @@
   font-weight: 700;
   font-size: 20px;
 }
+.Inputs {
+  padding: 0px 12px 2px 12px;
+  :global(.ant-input-affix-wrapper) {
+    width: 100%;
+    height: 36px;
+    border-radius: 4px;
+    padding: 0px 11px !important;
+    background-color: #f1f3f4;
+  }
 
+  :global(.ant-input) {
+    background-color: #f1f3f4;
+  }
+}
 .cloumnLine{
   width: 1px;
   height: 20px;
   background: #e9e9e9;
   overflow: hidden;
   margin: 0 12px;
+}
+
+
+.headerCloumnLine {
+  width: 1px;
+  height: 20px;
+  background: #e9e9e9;
+  overflow: hidden;
+  margin: 0px 12px 0px 0px;
 }
 
 .headerSubtitle{
@@ -56,9 +78,16 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  color: #999999;
   vertical-align: middle;
 }
 
 .descChart{
-  color: #000;
+  color: #999999;
 }
+
+ .table{
+   :global(.ant-table-tbody>tr>td){
+     color:#333333
+   }
+ }

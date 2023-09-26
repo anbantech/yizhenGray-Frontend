@@ -47,6 +47,7 @@ const TitleInput: React.FC<TitleInputProps> = ({ defaultTitle, value, onChange, 
           ) : (
             <>
               <Input
+                spellCheck='false'
                 style={inputCss}
                 className={styles.template_name}
                 placeholder={defaultTitle}

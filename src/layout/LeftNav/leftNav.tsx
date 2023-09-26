@@ -3,10 +3,10 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import items from 'Image/items.svg'
 import configImage from 'Image/config.svg'
-import ac_items from 'Image/ac_items.svg'
+import ac_items from 'Image/projectsActive.svg'
 import ac_configImage from 'Image/ac_config.svg'
 import Arge from 'Image/Arge.svg'
-import ac_Arge from 'Image/ac_Arge.svg'
+import ac_Arge from 'Image/excititation.svg'
 import { getLicense } from 'Src/services/api/loginApi'
 import { useHistory, withRouter } from 'react-router-dom'
 import { UpOutlined } from '@ant-design/icons'
@@ -49,7 +49,7 @@ const routerList: SideBarRoute[] = [
   //   name: '配置项',
   //   children: [
   //     { name: '模板管理', path: 'templateList' },
-  //     { name: '外设管理', path: 'OneExcitationList' },
+  //     { name: '端口管理', path: 'OneExcitationList' },
   //     { name: '激励单元管理', path: 'TwoExcitationList' },
   //     { name: '激励嵌套管理', path: 'ThreeExcitationList' },
   //     { name: '交互管理', path: 'FourExcitationList' }
@@ -76,6 +76,8 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
     userInfo: { roles },
     count
   } = config
+
+  const [hoverImgStatus, setHoverImgStatus] = useState(false)
 
   const generateRouterList = useCallback((routerList: SideBarRoute[], role: string | string[], isSubItem?: boolean) => {
     role = (typeof role === 'string' ? [role] : role) || ['common']
@@ -126,6 +128,7 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
               _router.isActive = true
               _router.isOpen = !_router.isOpen
             } else {
+              setHoverImgStatus(false)
               _router.isActive = false
             }
             if (_router.children.length > 0) {
@@ -183,6 +186,11 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
   const styleImageFn = useCallback(() => {
     return isClose ? styles.sideNav_img : styles.sideNav_imgClose
   }, [isClose])
+
+  const hoverImg = useCallback((bol: boolean, isHovering) => {
+    if (bol) return
+    setHoverImgStatus(isHovering)
+  }, [])
   const generateRouterListJsx = useCallback(
     (routerList: Required<SideBarRouteExtension>[]) => {
       return routerList.map(router => {
@@ -192,12 +200,23 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
               className={styleMemoFn(router)}
               style={router.isSubItem ? { paddingLeft: '64px' } : {}}
               role='button'
-              tabIndex={0}
               onClick={() => switchRouter(router)}
+              onMouseEnter={() => {
+                hoverImg(router.isActive, true)
+              }}
+              onMouseLeave={() => {
+                hoverImg(router.isActive, false)
+              }}
+              tabIndex={0}
             >
               {!!router.activeImageURL && (
-                <img className={styleImageFn()} src={router.isActive ? router.activeImageURL : router.inactiveImageURL} alt={router.name} />
+                <img
+                  className={styleImageFn()}
+                  src={router.isActive || hoverImgStatus ? router.activeImageURL : router.inactiveImageURL}
+                  alt={router.name}
+                />
               )}
+
               {isClose && (
                 <span className={styles.sideNav_chart}>
                   {router.name} {router.name === '异常信息' && +count > 0 && <span className={styles.errorMessageCue} />}
@@ -210,7 +229,7 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
         )
       })
     },
-    [styleMemoFn, styleImageFn, isClose, count, switchRouter]
+    [styleMemoFn, styleImageFn, isClose, count, switchRouter, hoverImgStatus, hoverImg]
   )
 
   return <>{generateRouterListJsx(routerList2Render)}</>

@@ -156,13 +156,23 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
         <Checkbox value={Item.keys} />
       </div>
       <div className={StyleSheet.excitationItemDrop_right}>
-        <span className={StyleSheet.excitationChart}>{index}</span>
+        <span style={{ fontWeight: 400 }} className={StyleSheet.excitationChart}>
+          {index}
+        </span>
         <Tooltip placement='bottomLeft' title={Item.name}>
-          <span className={StyleSheet.excitationChart}>{Item.name}</span>
+          <span style={{ fontWeight: 400 }} className={StyleSheet.excitationChart}>
+            {Item.name}
+          </span>
         </Tooltip>
-        <span className={StyleSheet.excitationChart}>{Item.peripheral}</span>
-        <span className={StyleSheet.excitationChart}>{Item.gu_cnt0}</span>
-        <span className={StyleSheet.excitationChart}>{Item.gu_w0}</span>
+        <span style={{ fontWeight: 400 }} className={StyleSheet.excitationChart}>
+          {Item.peripheral}
+        </span>
+        <span style={{ fontWeight: 400 }} className={StyleSheet.excitationChart}>
+          {Item.gu_cnt0}
+        </span>
+        <span style={{ fontWeight: 400 }} className={StyleSheet.excitationChart}>
+          {Item.gu_w0}
+        </span>
         <div style={{ paddingRight: '16px', cursor: 'pointer' }}>
           <div
             role='time'
@@ -202,23 +212,27 @@ function ExcitationDropList() {
     [DropList]
   )
 
+  const updateList = React.useCallback(
+    (DropList, hoverIndex, itemIndex) => {
+      const dropCardListCopy = DropList
+      const copy = dropCardListCopy.splice(itemIndex, 1)
+      dropCardListCopy.splice(hoverIndex, 0, ...copy)
+      setLeftList([...dropCardListCopy])
+    },
+    [setLeftList]
+  )
+
   const moveCardHandler = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
       clearCheckList()
       if (dragableDragingStatus) {
-        const dropCardListCopy = DropList
-        const lessIndex = dropCardListCopy.findIndex((item: any) => item.sender_id === -1)
-        const copy = dropCardListCopy.splice(lessIndex, 1)
-        dropCardListCopy.splice(hoverIndex, 0, ...copy)
-        setLeftList([...dropCardListCopy])
+        const lessIndex = DropList.findIndex((item: any) => item.sender_id === -1)
+        updateList(DropList, hoverIndex, lessIndex)
       } else {
-        const dropCardListCopy = [...DropList]
-        const copy = dropCardListCopy.splice(dragIndex, 1)
-        dropCardListCopy.splice(hoverIndex, 0, ...copy)
-        setLeftList([...dropCardListCopy])
+        updateList(DropList, hoverIndex, dragIndex)
       }
     },
-    [DropList, clearCheckList, dragableDragingStatus, setLeftList]
+    [DropList, clearCheckList, dragableDragingStatus, updateList]
   )
 
   const onChange = React.useCallback(
@@ -251,6 +265,7 @@ function ExcitationDropList() {
   )
 
   drop(ref)
+
   return (
     <ScrollingComponent className={StyleSheet.dropList_ListScroll}>
       <div ref={ref} className={StyleSheet.dropList_List}>

@@ -316,6 +316,9 @@ export interface ResTaskDetail {
   group_name: string
   simu_instance_id: number
   num: string
+  total: number
+  defects_count: number
+  error_count: number
 }
 
 // 22. 任务删除  返回为null

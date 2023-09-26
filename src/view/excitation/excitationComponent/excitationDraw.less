@@ -11,7 +11,7 @@
   vertical-align: middle;
   font-size: 12px;
   background-color: white;
-  border: 1px solid #488ff0;
+  border: 1px solid #4880FF;
 }
 
 .drawBody_concentBody_line {
@@ -146,4 +146,20 @@
   position: absolute;
   right: 15px;
   top: 20px;
+}
+
+
+.levelTooltip{
+  display: flex;
+  flex-direction: column;
+}
+
+.overlay {
+  max-width: 500px;
+  overflow-x: scroll;
+  flex-direction: column;
+  :global(.ant-tooltip-inner) {
+    padding-bottom: 0px !important;
+    white-space: pre-line;
+  }
 }

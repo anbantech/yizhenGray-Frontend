@@ -1,5 +1,5 @@
 .beginTestChart {
-  color: #000;
+  color: #333333;
   font-weight: normal;
   font-size: 16px;
   font-style: normal;
@@ -15,7 +15,7 @@
   :global(.ant-modal-header) {
     display: flex;
     align-items: center;
-    height: 36px !important;
+    height: 48px !important;
     border-radius: 0px !important;
   }
 
@@ -26,7 +26,7 @@
   :global(.ant-modal-close-x) {
     width: 16px;
     height: 16px;
-    line-height: 36px;
+    line-height: 48px;
   }
 
   :global(.ant-modal-footer) {
@@ -35,15 +35,24 @@
   }
 }
 
-.formModal {
-  :global(.ant-modal-body) {
-    padding-left: 18px !important;
+ :global(.ant-modal-footer) {
+   padding: 12px 16px !important;
+   height: 56px;
+   line-height: 28px;
+ }
+
+  :global(.ant-modal) {
+    border-radius: 4px;
   }
-}
+
+  .formModal {
+    :global(.ant-modal-body) {
+      padding-left: 18px !important;
+    }
+  }
 
 .BeginTest {
   height: 100%;
-
   :global(.ant-modal-header) {
     display: flex;
     align-items: center;
@@ -298,8 +307,6 @@
   box-sizing: border-box;
   width: 72px;
   height: 32px;
-  color: #387dff;
-  border: 1px solid #387dff;
   border-radius: 4px;
 }
 
@@ -312,7 +319,7 @@
 }
 
 .chartStyle {
-  color: #000;
+  color: #333333;
   font-weight: normal;
   font-size: 16px;
   font-style: normal;
@@ -414,7 +421,7 @@
   display: flex;
   align-items: center;
   margin-top: 10px;
-  color: #000;
+  color: #333333;
   font-weight: normal;
   font-size: 16px;
   font-style: normal;
@@ -456,7 +463,7 @@
   z-index: 5;
   width: 100%;
   height: 100%;
-  background: #000;
+  background: #333333;
   background: rgba(0, 0, 0, 0.7);
 }
 
@@ -763,7 +770,7 @@
   z-index: 5;
   width: 100%;
   height: 100%;
-  background: #000;
+  background: #333333;
   background: rgba(0, 0, 0, 0.7);
 }
 
@@ -774,7 +781,7 @@
   z-index: 5;
   width: 100%;
   height: 100%;
-  background: #000;
+  background: #333333;
   background: rgba(0, 0, 0, 0.7);
 }
 
@@ -799,7 +806,7 @@
 }
 
 .ProgressTitle {
-  color: #000;
+  color: #333333;
   font-weight: 600;
   font-size: 18px;
   font-style: normal;
@@ -1057,7 +1064,7 @@
 .BackupDataModelBtn {
   width: 104px;
   height: 32px;
-  background: #488ff0;
+  background: #4880FF;
   border-radius: 16px;
 }
 
@@ -1115,7 +1122,7 @@
 .taskConcented > span {
   width: 33.33%;
   overflow: hidden;
-  color: #000;
+  color: #333333;
   font-weight: normal;
   font-size: 16px;
   font-style: normal;
@@ -1138,7 +1145,7 @@
 }
 
 .taskConcent > span {
-  color: #000;
+  color: #333333;
   font-weight: normal;
   font-size: 16px;
   font-style: normal;
@@ -1149,7 +1156,7 @@
 .taskConcent > span:nth-child(1) {
   width: 200px;
   overflow: hidden;
-  color: #000;
+  color: #333333;
   font-weight: normal;
   font-size: 16px;
   font-style: normal;
@@ -1164,7 +1171,7 @@
   align-items: center;
   justify-content: flex-end;
   width: 60px;
-  color: #000;
+  color: #333333;
   font-weight: normal;
   font-size: 16px;
   font-style: normal;
@@ -1178,7 +1185,7 @@
 }
 
 .lookUpTaskHead > span {
-  color: #000;
+  color: #333333;
   font-weight: normal;
   font-size: 14px;
   font-style: normal;
@@ -1362,7 +1369,7 @@
   align-items: center;
   height: 44px;
   padding: 0 24px;
-  color: #000;
+  color: #333333;
   font-weight: 400;
   font-size: 14px;
   font-style: normal;
@@ -1374,7 +1381,7 @@
   align-items: center;
   height: 44px;
   padding: 0 24px;
-  color: #000;
+  color: #333333;
   font-weight: 400;
   font-size: 14px;
   font-style: normal;
@@ -1543,7 +1550,7 @@
 
 .modleDeatilStyle {
   :global(.ant-modal-footer) {
-    padding: 10px 16px;
+    padding: 12px 16px;
     text-align: right;
     background: transparent;
     border-top: 1px solid #f0f0f0 !important;
@@ -1558,6 +1565,10 @@
 .concent_layout {
   padding-top: 24px;
   display: flex;
+  width: 100%;
+  border-left: 1px solid #E9E9E9;
+  border-top: 1px solid #E9E9E9;
+  border-right: 1px solid #E9E9E9;
 }
 
 .concent_layoutLeft {
@@ -1579,7 +1590,7 @@
 }
 
 .crashTable {
-  width: 390px;
+  width: 450px;
   height: 258px;
   background: #ffffff;
   border: 1px solid #bfbfbf;
@@ -1588,7 +1599,7 @@
 }
 
 .crashDes {
-  width: 390px;
+  width: 450px;
   background: #ffffff;
   border-radius: 2px;
   overflow: hidden;
@@ -1596,7 +1607,7 @@
   position: relative;
 }
 .crashDes > span > {
-  width: 350px;
+  width: 450px;
   display: inline-block;
 }
 
@@ -1608,10 +1619,11 @@
   display: flex;
   height: 39px;
   border-bottom: 1px solid #bfbfbf;
+  background-color: #F8F8FA;
 }
 
 .crashTable_headerLeft {
-  width: 70%;
+  width: 90%;
   padding-left: 10px;
   text-align: left;
   line-height: 39px;
@@ -1619,22 +1631,18 @@
 
 .crashTable_headerRight {
   display: flex;
-  width: 180px;
+  width: 105px;
 }
 
-.Checkbox1 {
-  display: inline-block;
-  padding-left: 12px;
-  width: 75px;
-  text-align: center;
-  line-height: 39px;
-}
+
 .Checkbox2 {
+  
   display: inline-block;
   text-align: right;
+  padding-right: 3px;
   padding-left: 15px;
   line-height: 39px;
-  width: 75px;
+  width: 76px;
 }
 
 .tableFooterList {
@@ -1668,23 +1676,23 @@
 }
 
 .CrashTableBody {
-  width: 100%;
+  width: 564px;
   display: flex;
   margin-bottom: 20px;
 }
 
 .CrashTableBody > span:nth-child(1) {
-  margin-left: 24px;
+  margin-left: 16px;
 }
 
 .taskCrashForm {
-  width: 490px;
+  width: 550px;
 }
 
 .formNewInstanceModal {
   :global(.ant-modal-body) {
     margin: 0;
-    padding-left: 7px;
+    padding-left: 17px;
   }
 }
 .btn_createCrashTable {
@@ -1748,6 +1756,7 @@
     padding: 0 !important;
   }
   :global(.ant-modal-footer) {
+    height: 0px !important;
     padding: 0 !important;
   }
 }
@@ -1882,4 +1891,19 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+
+.bottomAll{
+  height: 600px;
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+
+.workTime{
+  :global(.ant-form-item-label>label::after){
+    padding-left: 6px;
+    margin: 0 8px 0 2px;
+  }
 }

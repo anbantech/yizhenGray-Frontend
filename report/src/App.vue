@@ -10,24 +10,10 @@
   <div id="app">
     <reportHeader />
     <div class="main">
-      <div class="left_nav">
-        <span class="left_nav_title">易复测试报告</span>
-        <div v-for="(value,index) in titleArray" style="cursor: pointer;">
-          <span class="title_menu" :key='index' @click="scroll(index)">{{value}}</span>
-        </div>
-        <div style="cursor: pointer;" v-if='isShow'>
-          <span class="title_menu" @click="scroll(4)">五、测试结果统计</span>
-        </div>
-        <div class="left_nav_menu_title" v-if='isShow'>
-          <div v-for="(value,index) in titleMenuArray" style="cursor: pointer;">
-            <span class="title_menu" :key='index' @click="menuScroll(index)">{{value}}</span>
-          </div>
-        </div>
-      </div>
       <div class="concentBody">
-        <Home :homeDataTestOverview='homeData' />
+        <!-- <Home :homeDataTestOverview='homeData' /> -->
         <div>
-          <div id='one' style="padding-top: 70p'x;margin-top: -70px;">
+          <div id='one' style="padding-top: 70px;margin-top: -70px;">
             <HomeComponent :homeDataTestOverview='homeDataTestOverview' title="一、测试概述"
               cloumnType="homeDataTestOverviewType" />
           </div>
@@ -39,12 +25,12 @@
               cloumnType="homeDataTestSummaryType" />
           </div>
           <div id='four' style="padding-top: 70px;margin-top: -70px;">
-            <HomeTestDetail :table-data="homeDataTestDetail" title="四、测试详情" />
+            <HomeTestDetail :table-data="homeDataTestDetail" :progress.sync="progress" title="四、测试详情" />
           </div>
         </div>
         <div class="statistics" v-if='isShow'>
           <div id="five" style="padding-top: 70px;margin-top: -70px;"></div>
-          <span class="result">五、测试统计结果</span>
+          <h1 class="result">五、测试统计结果</h1>
           <div id="first" style="padding-top: 70px;margin-top: -70px;">
             <coverTable  :table-data="tableData.coverData"></coverTable>
           </div>
@@ -62,10 +48,6 @@
           <div id="fifth" style="padding-top: 70px;margin-top: -70px;">
             <staticTable :table-data="tableData.staticData"></staticTable>
           </div>
-          <div id="sixth" style="padding-top: 70px;margin-top: -70px;">
-            <imageList v-if='urlList !== "" ' :url-list="urlList"></imageList>
-          </div>
-
         </div>
       </div>
     </div>
@@ -112,7 +94,8 @@ export default class App extends Vue {
   urlList = ''
   titleArray = ['一、测试概述','二、测试方案','三、测试总结','四、测试详情']
   titleMenuArray = ['1、覆盖统计表', '2、性能统计表', '3、内存统计表', '4、跟踪统计表', '5、静态度量表', '6、动态调用图']
-  isShow = true
+  isShow = false
+  progress = 0
   mounted(){
    this.homeData = window.reportData.cover
    this.homeDataTestOverview = window.reportData.testOverview
@@ -122,6 +105,34 @@ export default class App extends Vue {
    this.tableData = window.reportData.tableData
    this.isShow = Object.keys(window.reportData.tableData)?.length > 0 
    this.urlList = window.reportData.tableData.dynamicCallGraph
+   this.insertLoadedFlag()
+  }
+    insertLoadedFlag() {
+    function checkLoadingStatus(this: App, clear: () => void) {
+      console.log(this.progress)
+      if (Math.round(this.progress) >= 100) {
+        if (document.querySelector('#__STATIC_REPORT_LOADED__')) {
+          clear()
+          return
+        }
+        setTimeout(() => {
+          const d = document.createElement('div')
+          d.id = '__STATIC_REPORT_LOADED__'
+          document.body.append(d)
+        }, 3000)
+        clear()
+      }
+    }
+
+    const interval = setInterval(
+      checkLoadingStatus.bind(this, () => {
+        clearInterval(interval)
+      }),
+      3000
+    )
+    this.$once('hook:beforeDestroy', () => {
+      clearInterval(interval)
+    })
   }
    scroll(index:number){
       if(index === 0){
@@ -227,7 +238,7 @@ export default class App extends Vue {
 }
 .concentBody{
   padding-bottom:48px;
-  width: 790px;
+  width: 1001px;
   margin: 0 auto;
   background-color:#fff;
 }
@@ -236,7 +247,7 @@ export default class App extends Vue {
 }
 .main{
   width :100%;
-  padding:32px 32px 0px 32px;
+  margin-bottom:32px;
   display:flex;
   justify-content:space-between;
   background-color: #FAFAFA;
@@ -244,6 +255,8 @@ export default class App extends Vue {
 .left_nav{
    position:fixed;
    top:111px;
+   left:32px;
+   display:none
 }
 .left_nav_title{
   display:inline-block;
@@ -274,5 +287,19 @@ export default class App extends Vue {
 }
 .left_nav_menu_title{
   margin-left:28px;
+}
+
+@media print {
+  .reportColumn {
+      page-break-before: auto;
+  }
+
+  .reportHeader, .left_nav {
+    display: none !important;
+  }
+
+  .main {
+    padding-top: 32px;
+  }
 }
 </style>

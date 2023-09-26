@@ -26,9 +26,9 @@ interface mapType {
 }
 
 const TypeMap = {
-  0: '外设',
+  0: '端口',
   1: '激励',
-  3: '激励发送列表',
+  3: '激励序列',
   4: '模板',
   5: '任务'
 }
@@ -156,11 +156,11 @@ function LookUpDependence(props: NewTaskInstanceType) {
 
   return (
     <Modal
+      centered={Boolean(1)}
       className={styles.lookUpDependenceModal}
       width={width}
       visible={visibility}
       title={name}
-      centered
       onCancel={() => {
         choiceModal(false)
       }}

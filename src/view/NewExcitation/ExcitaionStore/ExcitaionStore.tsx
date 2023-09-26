@@ -1,4 +1,7 @@
+import { message } from 'antd'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
+import { getExcitaionDeatilFn } from 'Src/services/api/excitationApi'
+import { generateUUID } from 'Src/util/common'
 import { create } from 'zustand'
 import {
   ArgeementAction,
@@ -20,7 +23,8 @@ import {
   RightStateType,
   RouterProps,
   Sender_idType,
-  sendList
+  sendList,
+  updateSender_id
 } from './ExcitationStoreParams'
 
 const useModalExcitationStore = create((set: any) => ({
@@ -73,6 +77,18 @@ const RightDragListStore = create<RightStateType & RightAction & ListAllItemFn &
   }
 }))
 
+const getInfo = async (id: number) => {
+  try {
+    const res = await getExcitaionDeatilFn(id)
+    if (res.data) {
+      const { name, gu_cnt0, gu_w0, peripheral } = res.data
+      const data = { name, gu_cnt0, gu_w0, peripheral, sender_id: id }
+      return data
+    }
+  } catch (error) {
+    message.error(error.message)
+  }
+}
 const LeftDropListStore = create<LeftAction & sendList & ListFn & LeftActionState>((set, get) => ({
   DropList: [],
   gu_cnt0: 1,
@@ -82,6 +98,7 @@ const LeftDropListStore = create<LeftAction & sendList & ListFn & LeftActionStat
   updated: false,
   paramsChange: false,
   detailData: {},
+  oneExcitationInfo: { name: '', gu_cnt0: '', gu_w0: '', peripheral: '', keys: '', sender_id: null },
   setParamsChange: (val: boolean) => {
     set(() => ({
       paramsChange: val
@@ -154,19 +171,57 @@ const LeftDropListStore = create<LeftAction & sendList & ListFn & LeftActionStat
       gu_w0: 1,
       paramsChange: false,
       sender_id: -1,
-      detailData: {}
+      detailData: {},
+      oneExcitationInfo: { name: '', gu_cnt0: '', gu_w0: '', peripheral: '', keys: '', sender_id: null }
     }))
   },
+  setOneExcitaionInfo: (id: number) => {
+    getInfo(id)
+      .then(res => {
+        if (res) {
+          set({
+            oneExcitationInfo: res
+          })
+        }
+        return res
+      })
+      .catch((error: any) => {
+        set({
+          oneExcitationInfo: {}
+        })
+        message.error(error.message)
+      })
+  },
   setDetailData: state => {
-    set({
-      detailData: state,
-      name: state.name,
-      desc: state.desc,
-      gu_cnt0: state.gu_cnt0,
-      gu_w0: state.gu_w0,
-      DropList: state.group_data_list[1],
-      updated: state.updated
-    })
+    const { DropList, oneExcitationInfo } = get()
+    const isSender_id = DropList.find((newItem: any) => newItem.sender_id === oneExcitationInfo.sender_id)
+    if (DropList.length >= 1 && isSender_id) {
+      const dropList = DropList
+      DropList.forEach((oldItem, index) => {
+        if (oldItem.sender_id === oneExcitationInfo.sender_id) {
+          dropList[index] = { ...oneExcitationInfo, keys: generateUUID() }
+        }
+      })
+      set({
+        detailData: state,
+        name: state.name,
+        desc: state.desc,
+        gu_cnt0: state.gu_cnt0,
+        gu_w0: state.gu_w0,
+        DropList: [...dropList],
+        updated: state.updated
+      })
+    } else {
+      set({
+        detailData: state,
+        name: state.name,
+        desc: state.desc,
+        gu_cnt0: state.gu_cnt0,
+        gu_w0: state.gu_w0,
+        DropList: state.group_data_list[1],
+        updated: state.updated
+      })
+    }
   }
 }))
 
@@ -249,6 +304,11 @@ const ArgeementDropListStore = create<ArgeementAction & ArgeementActionState>((s
     DropListRefCopy.splice(index, 1)
     set(() => ({
       DropListRef: [...DropListRefCopy]
+    }))
+  },
+  deleteAllDropListRef: () => {
+    set(() => ({
+      DropListRef: []
     }))
   },
   destoryEveryItem: () => {
@@ -397,6 +457,14 @@ const RouterStore = create<RouterProps>(set => ({
   }
 }))
 
+const updateSender_idFn = create<updateSender_id>(set => ({
+  updateSender_Id: null,
+  setUpdateSender_Id: (id: number | null) => {
+    set(() => ({
+      updateSender_Id: id
+    }))
+  }
+}))
 export {
   useExicitationSenderId,
   useModalExcitationStore,
@@ -407,5 +475,6 @@ export {
   useRequestStore,
   checkListStore,
   GlobalStatusStore,
-  RouterStore
+  RouterStore,
+  updateSender_idFn
 }

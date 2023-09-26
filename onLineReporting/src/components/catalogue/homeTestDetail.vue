@@ -5,8 +5,9 @@
         <el-table :data="tableData" style="width: 100%; margin-top: 12px" border
             :header-cell-style="{ background: '#F0F0F0 !important' }" header-row-class-name="statisticsTableHeader"
             header-cell-class-name="statisticsTableCell">
-            <el-table-column prop="this_cases" label="用例数量"> </el-table-column>
-            <el-table-column prop="this_error_case_num" label="异常用例"> </el-table-column>
+            <el-table-column prop="total" label="用例总数"> </el-table-column>
+            <el-table-column prop="error_count" label="异常用例数"> </el-table-column>
+            <el-table-column prop="defects_count" label="缺陷数量"> </el-table-column>
             <el-table-column prop="elapsed_time" label="耗时">
                 <template slot-scope="scope">
                     <span> {{ scope.row.elapsed_time ? `${scope.row.elapsed_time}` : '0' }}</span>
@@ -19,36 +20,28 @@
             </el-table-column>
         </el-table>
         <span class="title">本次异常用例</span>
-        <el-table :data="tableData[0].this_time_error_cases" style="width: 100%; margin-top: 12px" border
+        <el-table :data="errorCases" style="width: 100%; margin-top: 12px" border
             header-row-class-name="statisticsTableHeader" :header-cell-style="{ background: '#F0F0F0 !important' }"
             header-cell-class-name="statisticsTableCell">
-            <el-table-column prop="time" label="时间" width="200%">
+            <el-table-column prop="num" label="用例编号" width="100%">
             </el-table-column>
-            <el-table-column prop="frames" label="异常情况描述" > 
-                   <template slot-scope="scope">
-            	      <div v-for = "(item,index) in scope.row.frames" :key = 'index'>   
-                       {{ item }}
-                     </div>
-                   </template> 
+            <el-table-column prop="time" label="发送时间" width="200%">
+            </el-table-column>
+            <el-table-column prop="frames" label="发送数据" width="400%">
+                <template slot-scope="scope">
+                    <div v-for="(item, index) in scope.row.frames" :key='index'>
+                        {{ item }}
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="kind" label="缺陷结果">
+                <template slot-scope="scope">
+                    <div v-for="(item, index) in scope.row.kind" :key='index'>
+                        {{ item }}
+                    </div>
+                </template>
             </el-table-column>
         </el-table>
-        <!-- <span class="title">累计测试详情</span>
-        <el-table :data="tableData" style="width: 100%; margin-top: 12px" border
-            header-row-class-name="statisticsTableHeader" :header-cell-style="{ background:'#F0F0F0 !important'}"
-            header-cell-class-name="statisticsTableCell">
-            <el-table-column prop="instance_num" label="实例编号" width="200%">
-            </el-table-column>
-            <el-table-column prop="cases" label="用例数量"> </el-table-column>
-            <el-table-column prop="error_case_num" label="异常用例"> </el-table-column>
-        </el-table>
-        <span class="title">累计异常用例</span>
-        <el-table :data="tableData[0].total_error_frames" style="width: 100%; margin-top: 12px" border
-            header-row-class-name="statisticsTableHeader" :header-cell-style="{ background:'#F0F0F0 !important'}"
-            header-cell-class-name="statisticsTableCell">
-            <el-table-column prop="time" label="时间" width="200%">
-            </el-table-column>
-            <el-table-column prop="frames" label="异常情况描述"> </el-table-column>
-        </el-table> -->
     </div>
 </template>
 
@@ -68,9 +61,37 @@ export default {
     },
     data() {
         return {
-            homeData:tableData
+            errorCases: [],
+            doning: false,
+            stop: false
         };
     },
+    methods: {
+        async sleep(time) {
+            return await new Promise((resolve) => setTimeout(resolve, time));
+        },
+
+        async injectTc() {
+            const ec = this.tableData[0] ? this.tableData[0].this_time_error_cases : [];
+            for (let i = 0; i < ec.length; i++) {
+                if (this.stop) return
+                this.errorCases.push(ec[i]);
+                await this.sleep(500)
+            }
+        },
+        async init() {
+            this.injectTc()
+        }
+    },
+    updated() {
+        if (!this.doning) {
+            this.init()
+        }
+        this.doning = true
+    },
+    beforeDestroy() {
+        this.stop = true
+    }
 };
 </script>
 

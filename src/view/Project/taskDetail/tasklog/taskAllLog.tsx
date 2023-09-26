@@ -1,7 +1,6 @@
 /* eslint-disable indent */
 /* eslint-disable react/display-name */
-import { DownOutlined } from '@ant-design/icons'
-import { Dropdown, Menu, Space, Table, TableColumnProps, Tooltip } from 'antd'
+import { Table, TableColumnProps, Tooltip } from 'antd'
 import { getAllTestingLog } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
@@ -10,13 +9,13 @@ import React, { useEffect, useState } from 'react'
 import SortIconComponent from 'Src/components/SortIcon/sortIcon'
 import { getTime } from 'Src/util/baseFn'
 import { testAlllogs } from 'Src/globalType/Param'
-import { WarnTip } from 'Src/view/excitation/excitationComponent/Tip'
 import { CrashInfoMapLog } from 'Src/util/DataMap/dataMap'
 import style from 'Src/view/Project/project/project.less'
 import styles from '../taskDetailUtil/Detail.less'
 import tableStyle from '../taskDetail.less'
 import { projectInfoType } from '../../task/taskList/task'
 import CheckCompoents from '../taskDetailCompoents/CheckCompoents'
+import CheckCrashLevelCompoents from '../taskDetailCompoents/CheckCrashLevelCompoents'
 
 interface T {
   align: string
@@ -43,7 +42,6 @@ interface taskDetailType<S, T> {
 }
 
 const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskDetailType<taskDetailInfoType, projectInfoType>>> = props => {
-  const [currentType, setCurrentType] = useState('all')
   const { instanceInfo } = props.location.state
   const RequsetParams = {
     instance_id: +instanceInfo.id,
@@ -54,13 +52,14 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
     case_type: '',
     system: 'hex',
     statement_coverage: '',
-    branch_coverage: ''
+    branch_coverage: '',
+    level: ''
   }
   const [params, setParams] = useState(RequsetParams)
 
-  const changeCurrentType = (e: any) => {
-    setCurrentType(e.key)
-    setParams({ ...params, page: 1, case_type: e.key })
+  const checkCrashLevel = (value: string) => {
+    const val = value === '-1' ? '' : value
+    setParams({ ...params, level: val })
   }
 
   const [total, setTotal] = React.useState(-1)
@@ -119,30 +118,6 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       </div>
     )
   }
-  const menu = (
-    <Menu selectable onClick={changeCurrentType} selectedKeys={[currentType]}>
-      <Menu.Item key='' style={{ textAlign: 'center' }}>
-        默认
-      </Menu.Item>
-      <Menu.Item key={1} style={{ textAlign: 'center' }}>
-        是
-      </Menu.Item>
-      <Menu.Item key={0} style={{ textAlign: 'center' }}>
-        否
-      </Menu.Item>
-    </Menu>
-  )
-
-  function IsWrongDownMenu() {
-    return (
-      <Dropdown overlay={menu}>
-        <Space>
-          异常用例
-          <DownOutlined />
-        </Space>
-      </Dropdown>
-    )
-  }
 
   const columns = [
     {
@@ -164,7 +139,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       dataIndex: 'send_data',
       key: 'send_data',
       ellipsis: true,
-      width: '12.5%',
+      width: '10%',
       render: (text: any, record: any) => {
         return (
           <div className={styles.recv_data} key={record.id}>
@@ -195,7 +170,7 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       dataIndex: 'recv_data',
       key: 'recv_data',
       ellipsis: true,
-      width: '12.5%',
+      width: '10%',
       render: (text: any, record: any) => (
         <div className={styles.recv_data} key={record.id}>
           {record.recv_data ? (
@@ -209,24 +184,10 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
               )
             })
           ) : (
-            <span> - </span>
+            <span>-</span>
           )}
         </div>
       )
-    },
-    {
-      title: () => {
-        return <IsWrongDownMenu />
-      },
-      dataIndex: 'case_type',
-      key: 'case_type',
-      ellipsis: true,
-      render: (text: any, record: any) => (
-        <div className={styles.checkDetail} key={record.id}>
-          {record.case_type ? '是' : '否'}
-        </div>
-      ),
-      width: '10%'
     },
 
     {
@@ -256,36 +217,36 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       ),
       width: '10%'
     },
+
     {
       title: () => {
         return <SortIconComponent title='发送时间' key='2' onChange={changeTimeType} type='time' isType={isType} />
       },
-      dataIndex: 'update_time',
-      key: 'update_time',
-      ellipsis: true,
+      dataIndex: 'create_time',
+      key: 'create_time',
       render: (text: any, record: any) => (
         <div className={styles.checkDetail} key={record.id}>
-          {getTime(record.update_time)}
+          {getTime(record.create_time)}
         </div>
       ),
-      width: '15%'
+      width: '10%'
     },
+
     {
       title: () => {
         return (
           <div style={{ display: 'flex' }}>
             <span> 缺陷结果</span>
-            <WarnTip />
           </div>
         )
       },
-      dataIndex: 'crash_info',
-      key: 'crash_info',
+      dataIndex: 'crash_type',
+      key: 'crash_type',
       ellipsis: true,
-      width: '12.5%',
+      width: '10%',
       render: (text: any, record: any) => (
         <div className={styles.dataLongInfoResult}>
-          {Object.keys(record.crash_info).map(item => {
+          {Object.keys(record.crash_type).map(item => {
             return (
               <div key={item} className={styles.crash_infoTitle}>
                 <Tooltip title={CrashInfoMapLog[+item]} placement='bottom' overlayClassName={styles.overlay}>
@@ -303,7 +264,10 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
     <div className={styles.Detail}>
       <div className={styles.DetailHeader_allLog}>
         <span className={styles.useCaseTitle}>日志</span>
-        <CheckCompoents system={params.system} Checked={checked} />
+        <div className={styles.doubleCheck}>
+          <CheckCrashLevelCompoents system={params.level} Checked={checkCrashLevel} />
+          <CheckCompoents system={params.system} Checked={checked} />
+        </div>
       </div>
       <div style={{ marginTop: '24px' }} className={styles.tableBoby}>
         <Table rowKey={(record: any) => `${record.id}_${new Date()}`} pagination={false} dataSource={logData} columns={columns as any} bordered />

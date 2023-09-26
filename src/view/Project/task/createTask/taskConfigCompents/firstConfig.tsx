@@ -2,16 +2,12 @@ import { Divider, Form, Input, message, Select, Space } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import { IconAdd } from '@anban/iconfonts'
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
-
-import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { excitationListFn } from 'Src/services/api/excitationApi'
-
 import { createTaskFn, getSimulateNode, updateTask } from 'Src/services/api/taskApi'
-import { sleep } from 'Src/util/baseFn'
-
 import { throwErrorMessage } from 'Src/util/message'
 import styles from './stepBaseConfig.less'
 import TaskExcitaionModal from './taskExcitation'
+import FixTaskModal from './fixTaskModal'
 
 const layout = {
   labelCol: { span: 4 },
@@ -26,6 +22,7 @@ const request = {
   sort_field: 'create_time',
   sort_order: 'descend'
 }
+
 interface projectInfoType {
   id: number
   sender_id: number
@@ -57,7 +54,9 @@ interface propsFn {
 }
 const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   const { onChange, id, taskInfo, cancenlForm, fromDataTask } = props
-
+  const getContainer = () => {
+    return document.querySelector('#myContainer') // 替换为你想要绑定的 DOM 元素的选择器
+  }
   const [form] = useForm()
   const { Option } = Select
   const [open, setOpen] = useState(false)
@@ -68,6 +67,10 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   //  删除弹出框
   const [excitationList, setExcitationList] = useState<projectInfoType[]>([])
   const [nodeList, setNodeList] = useState<number[]>([])
+
+  // 下拉菜单
+
+  const [dropDownOpen, setDropDownOpen] = useState(false)
   const scrollRef = useRef(-1)
   const pageRef = useRef(0)
   // 删除弹出框函数
@@ -110,17 +113,27 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         }
       }
     } catch (error) {
-      message.error(error.message)
-      await sleep(300)
+      throwErrorMessage(error, {
+        1004: '该任务不存在',
+        1005: '任务名称重复，请修改',
+        1006: '任务参数校验失败',
+        1007: '操作频繁',
+        2013: '激励序列至少包含一个激励',
+        1015: taskInfo?.editTaskMode ? '任务更新失败' : '任务创建失败'
+      })
       setModalData({ ...modalData, spinning: false })
-      CommonModleClose(false)
       return error
     }
-  }, [CommonModleClose, cancenlForm, form, id, modalData, taskInfo?.data?.id, taskInfo?.editTaskMode])
+  }, [cancenlForm, form, id, modalData, taskInfo?.data?.id, taskInfo?.editTaskMode])
 
   const matchItem = React.useCallback(async () => {
     setModalData({ ...modalData, isModalVisible: true })
   }, [modalData])
+
+  const getFormData = React.useCallback(async () => {
+    const values = await form.validateFields()
+    return values
+  }, [form])
 
   useImperativeHandle(myRef, () => ({
     save: () => {
@@ -138,7 +151,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         setNodeList(result.data)
       }
     } catch (error) {
-      throwErrorMessage(error, {})
+      throwErrorMessage(error, { 3002: '仿真连接失败', 3001: '未找到可用仿真节点', 3000: '仿真通讯异常' })
     }
   }
 
@@ -165,7 +178,9 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           })
         }
       } catch (error) {
-        message.error(error.message)
+        throwErrorMessage(error, {
+          1004: '获取激励列表失败'
+        })
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -181,37 +196,15 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     }
   }
 
-  const onFieldsChange = useCallback(
-    async (changedFields?: any, allFields?: any) => {
-      // avoid outOfDate bug, sleep 300ms
-      await new Promise<void>(resolve => setTimeout(() => resolve(), 300))
-
-      if (!changedFields && !allFields) {
-        // eslint-disable-next-line no-param-reassign
-        allFields = form.getFieldsValue()
-      }
-      let allFinished = true
-      // eslint-disable-next-line no-restricted-syntax
-      for (const [fieldName, fieldValue] of Object.entries(allFields)) {
-        if (fieldName !== 'description' && fieldName !== 'rxid' && typeof fieldValue === 'undefined') {
-          allFinished = false
-          break
-        }
-      }
-      if (!allFinished) {
-        onChange(true)
-        return
-      }
-      let values
-      try {
-        values = await form.validateFields()
-      } catch (error) {
-        message.error(error)
-      }
-      onChange(!values)
-    },
-    [form, onChange]
-  )
+  const onValuesChange = async (changedValues: any, allValues: any) => {
+    const name = allValues.name?.length >= 2 && allValues.name.length <= 20 && /^[\w\u4E00-\u9FA5]+$/.test(allValues.name)
+    const { sender_id, simu_instance_id } = allValues
+    if (name && sender_id && simu_instance_id) {
+      onChange(false)
+    } else {
+      onChange(true)
+    }
+  }
 
   useEffect(() => {
     getExcitationList(params)
@@ -233,7 +226,6 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
       }
       form.setFieldsValue(formData)
       getExcitationList({ ...params, key_word: group_name })
-      onFieldsChange()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, taskInfo.data, fromDataTask])
@@ -253,12 +245,9 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
     setOpen(true)
   }
 
-  const getContainer = () => {
-    return document.querySelector('#myContainer') // 替换为你想要绑定的 DOM 元素的选择器
-  }
   return (
     <div className={styles.stepBaseMain} id='myContainer'>
-      <Form name='basic' className={styles.stepBaseMain_Form} {...layout} onValuesChange={onFieldsChange} autoComplete='off' form={form} size='large'>
+      <Form name='basic' className={styles.stepBaseMain_Form} {...layout} onValuesChange={onValuesChange} autoComplete='off' form={form} size='large'>
         <Form.Item
           label='任务名称'
           name='name'
@@ -292,11 +281,11 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
             }
           ]}
         >
-          <Input placeholder='请输入任务名称' />
+          <Input spellCheck='false' style={{ borderRadius: '4px' }} placeholder='请输入任务名称' />
         </Form.Item>
 
         <Form.Item label='节拍单元' name='beat_unit' initialValue={200}>
-          <Input placeholder='请输入节拍单元' disabled suffix='毫秒' />
+          <Input spellCheck='false' style={{ borderRadius: '4px' }} placeholder='请输入节拍单元' disabled suffix='毫秒' />
         </Form.Item>
         <Form.Item
           label='仿真节点'
@@ -305,7 +294,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           validateTrigger={['onBlur']}
           rules={[{ required: true, message: '请选择仿真节点' }]}
         >
-          <Select placeholder='请选择仿真节点'>
+          <Select placeholder='请选择仿真节点' style={{ borderRadius: '4px' }}>
             {
               /**
                * 根据连接方式列表渲染下拉框可选择的设备比特率
@@ -321,20 +310,23 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           </Select>
         </Form.Item>
         <Form.Item
-          label='激励发送列表'
+          label='激励序列'
           name='sender_id'
           validateFirst
           validateTrigger={['onBlur']}
-          rules={[{ required: true, message: '请选择激励发送列表' }]}
+          rules={[{ required: true, message: '请选择激励序列' }]}
         >
           <Select
-            placeholder='请选择激励发送列表'
+            placeholder='请选择激励序列'
             showSearch
             onSearch={onSearch}
+            open={dropDownOpen}
+            onDropdownVisibleChange={visible => setDropDownOpen(visible)}
             optionFilterProp='children'
             onPopupScroll={e => {
               onScrollData(e)
             }}
+            style={{ borderRadius: '4px' }}
             dropdownRender={menu => (
               <div>
                 {menu}
@@ -344,12 +336,12 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
                     className={styles.selectRender}
                     role='time'
                     onClick={() => {
+                      setDropDownOpen(false)
                       jumpNewCreateTask()
                     }}
                   >
                     <IconAdd className={styles.addImg} />
-                    {/* <img src={addImage} alt='' /> */}
-                    <span className={styles.sendlistTitle}>新建激励发送列表</span>
+                    <span className={styles.sendlistTitle}>新建激励序列 </span>
                   </div>
                 </Space>
               </div>
@@ -375,6 +367,8 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           rules={[{ message: '请输入任务描述!' }, { type: 'string', max: 50, message: '字数不能超过50个 ' }]}
         >
           <Input.TextArea
+            style={{ borderRadius: '4px' }}
+            spellCheck='false'
             placeholder='任务描述'
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
@@ -385,16 +379,21 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           />
         </Form.Item>
       </Form>
-      <CommonModle
-        IsModalVisible={modalData.isModalVisible}
-        spinning={modalData.spinning}
-        deleteProjectRight={createOneExcitationFn}
-        CommonModleClose={CommonModleClose}
-        btnName='修改'
-        ing='修改中'
-        name='修改任务'
-        concent='修改除名称、描述以外的配置项，会停止关联任务，并清空关联任务的测试数据，是否确认修改？'
-      />
+      {modalData.isModalVisible && (
+        <FixTaskModal
+          IsModalVisible={modalData.isModalVisible}
+          spinning={modalData.spinning}
+          CommonModleClose={CommonModleClose}
+          cancenlForm={cancenlForm}
+          btnName='修改'
+          id={id}
+          ing='修改中'
+          getFormData={getFormData}
+          taskId={taskInfo.data.id}
+          name='修改任务'
+          concent='修改除名称、描述以外的配置项，会停止关联任务，并清空关联任务的测试数据，是否确认修改？'
+        />
+      )}
       {open && <TaskExcitaionModal open={open} cancel={cancel} getContainer={getContainer} />}
     </div>
   )

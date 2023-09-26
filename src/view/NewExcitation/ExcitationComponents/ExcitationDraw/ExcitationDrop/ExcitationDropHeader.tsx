@@ -129,7 +129,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
       }
     } catch (error) {
       close()
-      throwErrorMessage(error, { 1005: '激励发送列表名称重复，请修改' })
+      throwErrorMessage(error, { 1005: '激励序列名称重复，请修改' })
     }
   }, [isReg, DropList, updated, name, gu_cnt0, gu_w0, desc, close, sender_id, callback, clearCheckList])
 
@@ -208,7 +208,13 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
       setInputStatus(false)
     }
   }, [sender_id])
+  const styleFnTop = React.useMemo(() => {
+    return gu_w0 === 100 || gu_w0 === 0
+  }, [gu_w0])
 
+  const styleFnDown = React.useMemo(() => {
+    return gu_cnt0 === 1 || gu_cnt0 === 20
+  }, [gu_cnt0])
   return (
     <div className={StyleSheet.DropHeader}>
       <Button disabled={!BtnStatus} type='primary' onClick={updateOrCreate} className={StyleSheet.saveBtn}>
@@ -220,6 +226,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
           <Input
             className={StyleSheet.numberInputHeader}
             value={name}
+            spellCheck='false'
             onBlur={() => {
               disableOnBlur('name')
             }}
@@ -260,6 +267,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
           描述:
           {inputSatus ? (
             <Input
+              spellCheck='false'
               className={StyleSheet.descInputHeader}
               onBlur={() => {
                 disableOnBlur('desc')
@@ -296,7 +304,8 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
           </span>
 
           <Input
-            className={StyleSheet.numberInput}
+            spellCheck='false'
+            className={styleFnDown ? StyleSheet.numberInputDisabled : StyleSheet.numberInput}
             value={gu_cnt0}
             onBlur={() => {
               onMax('gu_cnt0')
@@ -314,7 +323,8 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
           </span>
 
           <Input
-            className={StyleSheet.numberInput}
+            spellCheck='false'
+            className={styleFnTop ? StyleSheet.numberInputDisabled : StyleSheet.numberInput}
             onChange={e => {
               onChangeGu_time('gu_w0', e)
             }}
@@ -338,7 +348,7 @@ function DropHeaderMemo({ getExcitaionDeatilFunction }: { getExcitaionDeatilFunc
           ing='保存中'
           name='保存配置'
           btnName='确定'
-          concent='修改激励发送列表配置，会停止关联任务，并清空关联任务的测试数据，是否确认保存？'
+          concent='修改激励序列配置，会停止关联任务，并清空关联任务的测试数据，是否确认保存？'
         />
       )}
     </div>

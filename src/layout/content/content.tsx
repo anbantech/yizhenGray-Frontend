@@ -14,6 +14,8 @@ import DetailTestAlLTable from 'Src/view/Project/taskDetail/tasklog/taskAllLog'
 // import TemplateList from 'Src/view/template/TemplateList/templateList'
 import Scale from 'Src/view/Project/taskDetail/Scale/ScaleIndex'
 import ExcitationIndex from 'Src/view/NewExcitation/ExcitationIndex'
+import ScaleDetail from 'Src/view/Project/taskDetail/Scale/ScaleDetail'
+import ScaleInitInfo from 'Src/view/Project/taskDetail/Scale/ScaleInitInfo'
 // import CreateResponseTemplateComponent from 'Src/view/template/ResponseTemplate/createResponseTemplate'
 // import CreateTemplateWrapper from 'Src/view/template/BaseTemplate/createTemplateWrapper'
 // import ExcitationDraw from 'Src/view/excitation/excitationComponent/excitationDraw'
@@ -34,8 +36,9 @@ function content() {
         <Route path='/projects/Tasks/fixTask' exact component={OperationTask} />
         <Route path='/projects/Tasks/Detail/lookTaskDetailInfo' exact component={TaskInfo} />
         <Route path='/projects/Tasks/Detail/TaskLog' exact component={DetailTestAlLTable} />
+        <Route path='/projects/Tasks/Detail/InitTask' exact component={ScaleInitInfo} />
         <Route path='/projects/Tasks/Detail/Scale' exact component={Scale} />
-        <Route path='/projects/Tasks/Detail/ScaleDetail' exact component={Scale} />
+        <Route path='/projects/Tasks/Detail/ScaleDetail' exact component={ScaleDetail} />
         <Route path='/Excitataions' exact component={ExcitationIndex} />
         {/* <Route path='/Excitataions' exact component={OneExcitationList} />
         <Route path='/TwoExcitationList' exact component={TwoExcitationList} />

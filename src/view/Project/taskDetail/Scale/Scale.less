@@ -18,7 +18,7 @@
 
 .CheckName {
   margin-right: 16px;
-  color: #000;
+  color: #333333;
   font-weight: normal;
   font-size: 14px;
   font-style: normal;
@@ -71,7 +71,7 @@
 
 .imgConent :nth-child(2) {
   margin-top: 5px;
-  color: #000;
+  color: #333333;
   font-weight: normal;
   font-size: 12px;
   font-style: normal;
@@ -111,7 +111,7 @@
 .IDfooter {
   width: 100%;
   padding-top: 10px;
-  color: #488ff0;
+  color: #4880FF;
   font-weight: 700;
   font-size: 18px;
   font-style: normal;
@@ -159,7 +159,7 @@
 .log {
   display: flex;
   align-items: center;
-  color: #000;
+  color: #333333;
   font-weight: 500;
   font-size: 20px;
   font-style: normal;
@@ -234,7 +234,7 @@
 
 .roundStatusBlue {
   padding-top: 10px;
-  color: #488ff0;
+  color: #4880FF;
   font-weight: 700;
   font-size: 18px;
   font-style: normal;
@@ -244,7 +244,7 @@
 
 .roundStatusBlack {
   padding-top: 10px;
-  color: #000;
+  color: #333333;
   font-weight: 700;
   font-size: 18px;
   font-style: normal;
@@ -552,7 +552,7 @@
   width: 120px;
   height: 36px;
   margin-top: 16px;
-  background: #488ff0;
+  background: #4880FF;
   border-radius: 4px;
 }
 
@@ -733,6 +733,18 @@
   display: flex;
 }
 
+.register_cloumns{
+    width: 100%;
+    height: 80px;
+    display: flex;
+}
+
+.register_cloumns:nth-child(even) {
+  background-color: #f8f8fa;
+}
+
+
+
 .rowTableRe {
   width: 100%;
   height: 600px;
@@ -742,9 +754,16 @@
   border-radius: 4px;
 }
 
-.register_cloumn:nth-child(even) {
-  background-color: #f8f8fa;
+.rowTableDetail{
+  width: 100%;
+  height: 320px;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-bottom: 1px solid #e9e9e9;
 }
+
+
 
 .register_row {
   width: 20%;
@@ -771,6 +790,20 @@
   background-color: #d9d9d9;
 }
 
+.registerCloumn_lines{
+  width: 1px;
+  height: 80px;
+  background-color: #d9d9d9;
+}
+.register_row:last-child{
+  .registerCloumn_lines:last-child {
+      width: 0px;
+      height: 0px;
+      background-color: #d9d9d9;
+    }
+}
+
+
 .memoryData_main {
   width: 100%;
   display: flex;
@@ -789,3 +822,15 @@
 .btn_top {
   padding-top: 4px;
 }
+
+
+.ScaleDetailBody{
+  padding: 16px;
+  height: calc(100vh - 96px);
+  overflow-y: overlay;
+  scroll-behavior: auto;
+  scroll-behavior: smooth;
+}
+
+
+

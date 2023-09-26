@@ -93,7 +93,7 @@ const Dragable = ({ sender_id, name, item, setMenuId, menuId, onChange }: Dragab
         <img className={StyleSheet.img_Body} src={dragImg} alt='' />
         <Checkbox value={sender_id} />
 
-        <span className={StyleSheet.dragItem_name} style={{ marginRight: '6px' }}>
+        <span className={StyleSheet.dragItem_name} style={{ marginRight: '6px', color: '#333333' }}>
           <Tooltip placement='bottom' title={name}>
             {' '}
             {name}
@@ -119,8 +119,11 @@ const DragableMemo = React.memo(Dragable, isEqual)
 // 拖拽区
 function ExcitationDragMemo({ onChange }: Props) {
   const layoutRef = React.useRef<any>()
+  // 右侧拖拽
   const rightDragList = RightDragListStore(state => state.DragList)
+  // 全选
   const checkAllList = RightDragListStore(state => state.checkAllList)
+  // 全选状态
   const setIndeterminate = RightDragListStore(state => state.setIndeterminate)
   const checkAllSenderIdList = RightDragListStore(state => state.checkAllSenderIdList)
   const setCheckAll = RightDragListStore(state => state.setCheckAll)
@@ -139,9 +142,7 @@ function ExcitationDragMemo({ onChange }: Props) {
   )
   const up = React.useCallback(() => {
     setCheckAll(checkAllList.length === rightDragList.length)
-
     setIndeterminate(!!checkAllList.length && checkAllList.length < rightDragList.length)
-
     loadMoreData()
   }, [checkAllList.length, loadMoreData, rightDragList.length, setCheckAll, setIndeterminate])
   React.useEffect(() => {

@@ -10,7 +10,7 @@ import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'reac
 import zhCN from 'antd/lib/locale/zh_CN'
 import deleteImage from 'Src/assets/image/icon_delete.svg'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
-import { statusList, statusMap } from 'Src/util/DataMap/dataMap'
+import { reset_mode_Map, statusList, statusMap } from 'Src/util/DataMap/dataMap'
 import { DownOutlined } from '@ant-design/icons/lib/icons'
 import { deleteExampleTask, taskTest } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
@@ -18,7 +18,9 @@ import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import globalStyle from 'Src/view/Project/project/project.less'
 import NewTaskInstance from 'Src/components/Modal/taskModal/newTaskInstance'
 import { getTime } from 'Src/util/baseFn'
+
 import styles from '../taskList/task.less'
+import TaskInstancesStyle from './TaskInstance.less'
 import { InstancesContext } from '../TaskIndex'
 
 const customizeRender = () => <DefaultValueTips content='暂无实例' />
@@ -132,7 +134,12 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   // 状态菜单
   const StatusMenuComponents = React.useCallback(() => {
     return (
-      <div className={styles.statusMenu}>
+      <div
+        className={styles.statusMenu}
+        onMouseLeave={() => {
+          setStatusOperationStatus(false)
+        }}
+      >
         {statusList.map((item: statusItemType) => {
           return (
             <div key={item.value} className={styles.size}>
@@ -175,7 +182,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         message.success('实例删除成功')
       }
     } catch (error) {
-      message.error(error.message)
+      throwErrorMessage(error, { 1009: '实例删除失败' })
     }
   }, [InstancesDetail, modalData, params])
 
@@ -224,25 +231,25 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
     },
     {
       width: '8%',
-      title: '设定数量',
-      dataIndex: 'crash_num',
-      key: 'crash_num',
+      title: '复位方式',
+      dataIndex: 'reset_mode',
+      key: 'reset_mode',
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
-        return <span>{`${row.crash_num}`}</span>
+        return <span style={{ color: '#333333' }}>{reset_mode_Map[row.reset_mode as keyof typeof reset_mode_Map]}</span>
       }
     },
     {
       width: '8%',
-      title: '发现数量',
-      dataIndex: 'error_num',
-      key: 'error_num'
+      title: '缺陷数量',
+      dataIndex: 'defects_count',
+      key: 'defects_count'
     },
     {
-      width: '10%',
+      width: '11%',
       // eslint-disable-next-line react/display-name
       title: () => (
-        <div className={styles.statusList_boby}>
+        <div className={styles.statusList_boby} style={{ cursor: 'pointer' }}>
           <div
             role='button'
             tabIndex={0}
@@ -262,7 +269,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         return (
           <div className={styles.status}>
             <span className={statusMap[row.status].color} />
-            <span>{statusMap[row.status].label}</span>
+            <span style={{ color: '#333333' }}>{statusMap[row.status].label}</span>
           </div>
         )
       }
@@ -274,11 +281,11 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       key: 'create_time',
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
-        return <span>{getTime(row.create_time)}</span>
+        return <span style={{ color: '#333333' }}>{getTime(row.create_time)}</span>
       }
     },
     {
-      width: '13%',
+      width: '12%',
 
       // eslint-disable-next-line react/display-name
       title: () => {
@@ -291,8 +298,9 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         return (
           <div className={globalStyle.Opera_detaile}>
             <span
-              style={{ marginLeft: '10px', marginRight: '30px' }}
+              style={{ marginLeft: '10px', marginRight: '20px' }}
               role='button'
+              className={styles.hoverOpera}
               tabIndex={0}
               onClick={() => {
                 jumpTasksDetail(row)
@@ -354,7 +362,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       <div className={styles.instance_header}>
         <div className={styles.instanceListLeft}>
           <span>实例列表</span>
-          <SearchInput ref={inputRef} placeholder='根据实例编号搜索实例' className={styles.taskInput} onChangeValue={updateParams} />
+          <SearchInput ref={inputRef} placeholder='根据实例编号搜索实例' className={TaskInstancesStyle.Inputs} onChangeValue={updateParams} />
         </div>
         <CreateButton
           width='146px'
@@ -370,7 +378,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
       </div>
       <div className={globalStyle.tableConcent}>
         <ConfigProvider locale={zhCN} renderEmpty={customizeRender}>
-          <Table rowKey='id' dataSource={taskLists} columns={columns} pagination={false} />
+          <Table rowKey='id' className={TaskInstancesStyle.table} dataSource={taskLists} columns={columns} pagination={false} />
         </ConfigProvider>
       </div>
       <div className={globalStyle.AnBan_PaginationsAge}>
@@ -386,7 +394,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
         concent='是否确认删除？'
       />
       {visibility ? (
-        <NewTaskInstance visibility={visibility} isDetail={0} task_id={InstancesDetail.task_detail.id} choiceModal={choiceModal} width='532px' />
+        <NewTaskInstance visibility={visibility} isDetail={0} task_id={InstancesDetail.task_detail.id} choiceModal={choiceModal} width='592px' />
       ) : null}
     </div>
   )

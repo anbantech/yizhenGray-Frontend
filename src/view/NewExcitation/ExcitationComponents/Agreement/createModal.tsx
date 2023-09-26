@@ -8,7 +8,7 @@ import { generateUUID } from 'Src/util/common'
 import AgreementIndex from './agreementIndex'
 import StyleSheet from './agreementCompoents.less'
 import HeaderForm from './HeaderFrom'
-import { ArgeementDropListStore, GlobalStatusStore, RightDragListStore } from '../../ExcitaionStore/ExcitaionStore'
+import { ArgeementDropListStore, GlobalStatusStore, LeftDropListStore, RightDragListStore } from '../../ExcitaionStore/ExcitaionStore'
 
 interface PropsType {
   visibility: boolean
@@ -24,7 +24,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
   const DropList = ArgeementDropListStore(state => state.DropList)
   const clearCheckList = RightDragListStore(state => state.clearCheckList)
   const setHead = ArgeementDropListStore(state => state.setHead)
-  //
+  const setOneExcitaionInfo = LeftDropListStore(state => state.setOneExcitaionInfo)
   const setDrop = GlobalStatusStore(state => state.setDetailStatus)
   const DropStatus = GlobalStatusStore(state => state.detailStatus)
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
@@ -91,11 +91,12 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
           message.success('激励修改成功')
         }
       }
+      setOneExcitaionInfo(sender_id)
       return res
     } catch (error) {
       message.error(error.message)
     }
-  }, [DropListRef, sender_id])
+  }, [DropListRef, sender_id, setOneExcitaionInfo])
   // 创建
 
   const getExcitaionDeatilFunction = React.useCallback(
@@ -121,6 +122,11 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
     return DropList.length !== 0
   }, [DropList])
   // 更新
+
+  const operationExctaionList = React.useCallback(() => {
+    setSpinning(false)
+    setDrop(!DropStatus)
+  }, [DropStatus, setDrop])
   const upadateItemInfo = React.useCallback(async () => {
     CommonModleClose(false)
     setSpinning(true)
@@ -129,8 +135,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
         const res1 = await updateItem()
         if (res1) {
           clearCheckList()
-          setSpinning(false)
-          setDrop(!DropStatus)
+          operationExctaionList()
           onOk()
         }
         return res
@@ -138,7 +143,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
       .catch(() => {
         setSpinning(false)
       })
-  }, [CommonModleClose, DropStatus, checkItem, clearCheckList, onOk, setDrop, updateItem])
+  }, [CommonModleClose, checkItem, clearCheckList, onOk, operationExctaionList, updateItem])
 
   React.useEffect(() => {
     if (sender_id !== -1) {
@@ -154,16 +159,15 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
             const val = await createItem()
             return val
           }
-          const val = await upadateItemInfo()
-
-          return val
+          CommonModleClose(true)
         }
         return res
       })
       .catch(() => {})
-  }, [checkItem, createItem, sender_id, upadateItemInfo])
+  }, [sender_id, checkItem, createItem, CommonModleClose])
   return (
     <Modal
+      centered={Boolean(1)}
       width={720}
       className={StyleSheet.excitaionModal}
       visible={visibility}

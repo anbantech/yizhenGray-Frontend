@@ -101,16 +101,19 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   }
 
   //  更改页码
-  const loadMoreData = () => {
+  const loadMoreData = React.useCallback(() => {
     const newPage = params.page_size + 10
     setParams({ ...params, page_size: newPage })
-  }
+  }, [params])
 
   // 更新右侧列表
-  const updateInstanceList = (id: string) => {
-    setModalData({ ...modalData, taskId: id })
-    checkInstances(id)
-  }
+  const updateInstanceList = React.useCallback(
+    (id: string) => {
+      setModalData({ ...modalData, taskId: id })
+      checkInstances(id)
+    },
+    [checkInstances, modalData]
+  )
 
   // 实列详情返回任务列表,左侧任务列表,与实列列表保持一致
   // 通过维护task_id,且通过路由,或者任务列表第一个数据拿值,并且判断taskList长度是否为空
@@ -124,14 +127,17 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     [checkInstances, modalData]
   )
   // 页面加载时 调用
-  const backWebTask = (taskListOne_id: string) => {
-    if (taskListOne_id) {
-      setModalData({ ...modalData, taskId: taskListOne_id })
-      checkInstances(taskListOne_id)
-      return true
-    }
-    return false
-  }
+  const backWebTask = React.useCallback(
+    (taskListOne_id: string) => {
+      if (taskListOne_id) {
+        setModalData({ ...modalData, taskId: taskListOne_id })
+        checkInstances(taskListOne_id)
+        return true
+      }
+      return false
+    },
+    [checkInstances, modalData]
+  )
 
   useEffect(() => {
     backWebTask(taskListOne_id)
@@ -161,7 +167,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
       CommonModleClose(false)
     } catch (error) {
       CommonModleClose(false)
-      throwErrorMessage(error, { 1009: '任务删除失败' })
+      throwErrorMessage(error, { 1009: '任务删除失败', 1007: '操作频繁' })
     }
   }
 
@@ -193,7 +199,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
         }
         return result
       } catch (error) {
-        throwErrorMessage(error)
+        throwErrorMessage(error, { 1008: '服务异常' })
       }
     },
     [InstancesDetail, keepCheckTask, modalData.taskId]
@@ -266,16 +272,16 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
           hasMore={hasMoreData}
           height={height}
           loader={
-            <p style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: 'center' }}>
               <div className={styles.listLine} />
               <div className={styles.concentList}>内容已经加载完毕</div>
-            </p>
+            </div>
           }
           endMessage={
-            <p style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: 'center' }}>
               <div className={styles.listLine} />
               <div className={styles.concentList}>内容已经加载完毕</div>
-            </p>
+            </div>
           }
         >
           {taskLists.map((item: any) => {

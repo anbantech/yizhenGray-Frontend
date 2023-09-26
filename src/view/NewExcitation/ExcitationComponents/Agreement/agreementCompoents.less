@@ -240,6 +240,7 @@
   display: flex;
   background-color: #FFFFFF;
   align-items: center;
+  position: relative;
   height: 38px;
   border-left: 1px solid #E9E9E9;
   border-right: 1px solid #E9E9E9;
@@ -367,7 +368,7 @@
    :global(.ant-modal-header){
     display: flex;
     align-items: center;
-    height: 36px !important;
+    height: 48px !important;
     border-radius:none ;
    }
 
@@ -378,7 +379,7 @@
    :global(.ant-modal-header){
     display: flex;
     align-items: center;
-    height: 36px !important;
+    height: 48px !important;
     border-radius: 0px !important;
     }
 
@@ -389,7 +390,7 @@
    :global(.ant-modal-close-x){
      width: 16px ;
      height:16px ;
-     line-height: 36px;
+     line-height: 48px;
    }
    :global(.ant-modal-footer) {
       border-top: 0px;
@@ -431,7 +432,7 @@
 
 .commonItem{
     width:232px  !important;
-    height:32px !important;
+    height:34px !important;
     border-radius: 2px;
 }
 
@@ -444,7 +445,7 @@
 
 .commonItems {
     width: 260px !important;
-    height: 32px !important;
+    height: 34px !important;
     border-radius: 2px;
 }
 
@@ -456,4 +457,54 @@
     position: absolute;
     width: 98px;
   }
+}
+
+
+// 魔改tooltip样式
+
+.magicToolTipStyle{
+  :global(.ant-tooltip-arrow){
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.clearBtn{
+  width: 72px;
+  height: 26px;
+  display: flex;
+  position: absolute;
+  right: 0;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: 0px;
+  color: #333333;
+  border-radius:4px;
+  border: 1px solid #E9E9E9;
+  background-color: #fff;
+}
+
+
+.clearBtn:hover {
+  width: 72px;
+  height: 26px;
+  position: absolute;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
+  border-radius: 4px;
+  border: 1px solid #E9E9E9;
+  text-align: center;
+  color: #FFFFFF; 
+  background-color: #4880FF;
+  cursor: pointer;
 }

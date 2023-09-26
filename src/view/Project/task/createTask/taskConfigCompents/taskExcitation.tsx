@@ -11,7 +11,7 @@ interface OpenType {
   getContainer: any
 }
 
-const StepTitle = ['选择激励', '添加到发送列表', '新建']
+const StepTitle = ['选择激励 ', '添加到发送序列 ', '新建']
 
 function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
   const current = stepStore(state => state.current)
@@ -33,7 +33,7 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
     if (current === 2) {
       return excitationList.length === 0
     }
-  }, [current, btnStatus, excitationList.length])
+  }, [current, btnStatus, excitationList])
   const createExcitation = React.useCallback(async () => {
     const listArray = excitationList.map((item: any) => {
       return item.sender_id
@@ -53,10 +53,11 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
   }, [baseInfo.desc, baseInfo.name, cancel, deleteEverything, excitationList, gu_cnt0, gu_w0])
   return (
     <Modal
+      centered={Boolean(1)}
       width={632}
       visible={open}
       className={StyleSheet.taskExcitaionModal}
-      title='新建激励发送列表'
+      title='新建激励序列'
       onCancel={() => {
         deleteEverything()
         cancel()
@@ -66,7 +67,7 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
       footer={[
         <>
           {current > 0 && (
-            <Button key='back' className={StyleSheet.preBtn} onClick={preCurrent}>
+            <Button key='back' style={{ borderRadius: '4px' }} className={StyleSheet.preBtn} onClick={preCurrent}>
               上一步
             </Button>
           )}
@@ -75,6 +76,8 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
           {' '}
           <Button
             key='back'
+            className={StyleSheet.Btn}
+            style={{ borderRadius: '4px' }}
             onClick={() => {
               deleteEverything()
               cancel()
@@ -82,7 +85,14 @@ function TaskExcitaionModal({ open, cancel, getContainer }: OpenType) {
           >
             取消
           </Button>
-          <Button key='submit' type='primary' disabled={btnStatusMemo()} onClick={current === 2 ? createExcitation : setCurrent}>
+          <Button
+            className={StyleSheet.Btn}
+            key='submit'
+            type='primary'
+            style={{ borderRadius: '4px' }}
+            disabled={btnStatusMemo()}
+            onClick={current === 2 ? createExcitation : setCurrent}
+          >
             {StepTitle[current]}
           </Button>
         </div>

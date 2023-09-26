@@ -29,7 +29,7 @@ function ExcitationModal(props: any) {
       if (name) {
         if (fixTitle) {
           const res = await updateExcitationList(sender_id, { name: name.trim(), desc: desc ? desc.trim() : '' })
-          message.success('激励发送列表修改成功')
+          message.success('激励序列修改成功')
           return res
         }
         if (!fixTitle) {
@@ -38,7 +38,7 @@ function ExcitationModal(props: any) {
         }
       }
     } catch (error) {
-      throwErrorMessage(error, { 1005: '激励发送列表名称重复，请修改' })
+      throwErrorMessage(error, { 1005: '激励序列名称重复，请修改' })
       return error
     }
   }, [fixTitle, form, sender_id])
@@ -69,10 +69,11 @@ function ExcitationModal(props: any) {
 
   return (
     <Modal
+      centered={Boolean(1)}
       className={styles.excitaionCreateModal}
       width={480}
       visible={visible}
-      title={fixTitle ? '修改激励发送列表' : '新建激励发送列表'}
+      title={fixTitle ? '修改激励序列' : '新建激励序列'}
       onCancel={() => {
         hideModal(false, 'noResult')
         form.resetFields()
@@ -116,11 +117,11 @@ function ExcitationModal(props: any) {
             }
           ]}
         >
-          <Input placeholder='请输入激励发送列表名称' />
+          <Input spellCheck='false' placeholder='请输入激励序列名称' />
         </Form.Item>
         <Form.Item name='desc' label='描述' rules={[{ type: 'string', max: 50, message: '字数不能超过50个' }]}>
           <TextArea
-            placeholder='请添加针对激励发送列表的相关描述'
+            placeholder='请添加针对激励序列的相关描述'
             autoSize={{ minRows: 4, maxRows: 5 }}
             showCount={{
               formatter({ count }) {

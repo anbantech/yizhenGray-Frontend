@@ -11,8 +11,6 @@ import { Context } from '../ScaleIndex'
 function MemoryMonitor() {
   const { test_id } = useContext(Context)
   const [form] = useForm<any>()
-  // const type = useContext(Context)?.currentType
-  // const [buttonStatus, setButtonStatus] = useState(true)
   const [MemoryData, setMemoryData] = useState<number[]>([])
   const timerRef = useRef<any>()
   // 查询内存
@@ -48,22 +46,6 @@ function MemoryMonitor() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }
 
-  // useEffect(() => {
-  //   if (!buttonStatus) {
-  //     timerRef.current = setInterval(() => {
-  //       searchMemory(MemoryData)
-  //     }, 5000)
-  //     return () => {
-  //       clearInterval(timerRef.current)
-  //     }
-  //   }
-  // // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [buttonStatus, type, MemoryData])
-  // useEffect(() => {
-  //   if (type !== 'Memory') {
-  //     setButtonStatus(true)
-  //   }
-  // }, [type])
   return (
     <div className={styles.memoryMonitor}>
       <div className={styles.memoryMonitorOptions}>

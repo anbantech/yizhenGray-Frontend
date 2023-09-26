@@ -112,7 +112,7 @@ const TemplateDialog: React.FC<TemplateDialogProps> = ({ visible, onOk }) => {
           og[index].status = 'error'
           og[index].response = `导入失败 => ${throwErrorMessage(
             error,
-            { 1005: '目标激励已存在', 4003: '该激励无效，请检查激励', 1006: '格式校验不通过，请检查文件内容' },
+            { 1005: '目标激励已存在', 4003: '该激励无效，请检查激励', 1006: `${error.message}` },
             false
           ).replace(/name/, '名称')}`
           return [...originalFileList]

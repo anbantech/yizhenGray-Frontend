@@ -16,7 +16,7 @@
           <span class="title_menu" :key='index' @click="scroll(index)">{{value}}</span>
         </div>
         <div style="cursor: pointer;" v-if='isShow'>
-          <span class="title_menu" @click="scroll(4)">五、测试结果统计</span>
+          <span class="title_menu" @click="scroll(4)">五、测试统计结果</span>
         </div>
         <div class="left_nav_menu_title" v-if='isShow'>
           <div v-for="(value,index) in titleMenuArray" style="cursor: pointer;">
@@ -113,7 +113,7 @@ export default class App extends Vue {
   urlList = ''
   titleArray = ['一、测试概述','二、测试方案','三、测试总结','四、测试详情']
   titleMenuArray = ['1、覆盖统计表', '2、性能统计表', '3、内存统计表', '4、跟踪统计表', '5、静态度量表', '6、动态调用图']
-  isShow = true
+  isShow = false
   mounted(){
    window.onload = () => {
      this.update()
@@ -132,11 +132,16 @@ export default class App extends Vue {
           this.tableData = JSON.parse(e.data)?.tableData
           this.isShow = Object.keys(JSON.parse(e.data).tableData)?.length > 0
           this.urlList = JSON.parse(e.data)?.tableData.dynamicCallGraph
+          this.$nextTick(() => {
+            setTimeout(() => {
+              window.parent.postMessage('__AB_REPORT_DONE__', "*")
+            }, 6000);
+          })
         }
       })
     })
   }
-   scroll(index:number){
+  scroll(index:number){
       if(index === 0){
         const ele = document.querySelector('#one')
         if(!!ele){
@@ -175,7 +180,7 @@ export default class App extends Vue {
           })
         }
       }
-   }
+  }
   menuScroll(index:number){
     if(index===0){
       const ele = document.querySelector('#first')
@@ -240,7 +245,7 @@ export default class App extends Vue {
 }
 .concentBody{
   padding-bottom:48px;
-  width: 790px;
+  width: 1001px;
   margin: 0 auto;
   background-color:#fff;
 }
@@ -249,7 +254,6 @@ export default class App extends Vue {
 }
 .main{
   width :100%;
-  padding:32px 32px 0px 32px;
   margin-bottom:32px;
   display:flex;
   justify-content:space-between;
@@ -258,6 +262,7 @@ export default class App extends Vue {
 .left_nav{
    position:fixed;
    top:111px;
+   left:32px;
 }
 .left_nav_title{
   display:inline-block;

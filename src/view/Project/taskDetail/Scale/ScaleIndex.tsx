@@ -37,6 +37,19 @@ const RegisterSvg = (props: propsType) => {
     </>
   )
 }
+
+const PerformanceSvg = (props: propsType) => {
+  const key = props.type || 0
+  return (
+    <>
+      {key === 'PerformanceSvg' ? (
+        <img style={{ width: 18, height: 18, marginRight: 8, marginBottom: 4 }} src={yz_performance_select} alt='' />
+      ) : (
+        <img style={{ width: 18, height: 18, marginRight: 8, marginBottom: 4 }} src={yz_performance_unselect} alt='' />
+      )}
+    </>
+  )
+}
 type propsNo = {
   loopStatus: number
 }
@@ -62,18 +75,6 @@ const TrackSvg = (props: propsType) => {
         <img style={{ width: 18, height: 18, marginRight: 8, marginBottom: 4 }} src={yz_trace_select} alt='' />
       ) : (
         <img style={{ width: 18, height: 18, marginRight: 8, marginBottom: 4 }} src={yz_trace_unselect} alt='' />
-      )}
-    </>
-  )
-}
-const PerformanceSvg = (props: propsType) => {
-  const key = props.type || 0
-  return (
-    <>
-      {key === 'PerformanceSvg' ? (
-        <img style={{ width: 18, height: 18, marginRight: 8, marginBottom: 4 }} src={yz_performance_select} alt='' />
-      ) : (
-        <img style={{ width: 18, height: 18, marginRight: 8, marginBottom: 4 }} src={yz_performance_unselect} alt='' />
       )}
     </>
   )
@@ -188,7 +189,7 @@ function Scale(props: any) {
           {[0, 1, 4].includes(loopStatus) ? (
             <NoScaleData loopStatus={loopStatus} />
           ) : (
-            <div className={styles.DetailHead}>
+            <div className={styles.DetailHead} style={{ display: data?.case_type || isTesting ? '' : ' none' }}>
               <Tabs defaultActiveKey={isTesting ? 'Memory' : 'Register'} style={{ width: '100%' }} onChange={changeCurrentType}>
                 {isTesting && (
                   <TabPane

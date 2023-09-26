@@ -2,6 +2,7 @@ import { Form, Input, message, Select } from 'antd'
 import * as React from 'react'
 import NewInputNumberSuffixModal from 'Src/components/inputNumbersuffix/newExcitationModal'
 import { getPortList } from 'Src/services/api/excitationApi'
+import StyleSheetOther from '../ExcitationDraw/excitationDraw.less'
 import { ArgeementDropListStore } from '../../ExcitaionStore/ExcitaionStore'
 import styles from './agreementCompoents.less'
 
@@ -9,6 +10,10 @@ const GuCntInput: React.FC<any> = (props: any) => {
   const { value, onChange } = props
   const setValue = ArgeementDropListStore(state => state.setValue)
   const gu_cnt0 = ArgeementDropListStore(state => state.gu_cnt0)
+
+  const styleFnDown = React.useMemo(() => {
+    return gu_cnt0 === 1 || gu_cnt0 === 20
+  }, [gu_cnt0])
   const triggerChange = (changedValue: any) => {
     onChange?.(changedValue)
   }
@@ -36,10 +41,12 @@ const GuCntInput: React.FC<any> = (props: any) => {
   return (
     <span>
       <Input
+        spellCheck='false'
         onBlur={onMax}
-        value={value || gu_cnt0}
+        className={styleFnDown ? StyleSheetOther.numberInputDisabled : StyleSheetOther.numberInput}
+        value={gu_cnt0 || value}
         onChange={onNumberChange}
-        style={{ width: 232 }}
+        style={{ width: 232, height: 34 }}
         suffix={<NewInputNumberSuffixModal type='gu_cnt0' />}
       />
     </span>
@@ -47,9 +54,13 @@ const GuCntInput: React.FC<any> = (props: any) => {
 }
 
 const GuW0InputMemo: React.FC<any> = (props: any) => {
-  const { detaileStatus, value, onChange } = props
+  const { detaileStatus, onChange } = props
   const setValue = ArgeementDropListStore(state => state.setValue)
   const gu_w0 = ArgeementDropListStore(state => state.gu_w0)
+  const styleFnTop = React.useMemo(() => {
+    return gu_w0 === 100 || gu_w0 === 0
+  }, [gu_w0])
+
   const triggerChange = React.useCallback(
     (changedValue: any) => {
       onChange?.(changedValue)
@@ -72,12 +83,14 @@ const GuW0InputMemo: React.FC<any> = (props: any) => {
   return (
     <span>
       <Input
+        spellCheck='false'
         tabIndex={0}
         onBlur={onMax}
-        value={value || gu_w0}
+        className={styleFnTop ? StyleSheetOther.numberInputDisabled : StyleSheetOther.numberInput}
+        value={gu_w0}
         onChange={onNumberChange}
         disabled={detaileStatus}
-        style={{ width: 232 }}
+        style={{ width: 232, height: 34 }}
         suffix={<NewInputNumberSuffixModal type='gu_w0' />}
       />
     </span>
@@ -171,13 +184,13 @@ const HeadForm = React.forwardRef((props, myRef) => {
           }
         ]}
       >
-        <Input placeholder='请输入激励名称' className={styles.commonItem} />
+        <Input spellCheck='false' placeholder='请输入激励名称' className={styles.commonItem} />
       </Form.Item>
       <Form.Item name='gu_cnt0' label='发送次数' rules={[{ required: true, validator: checkGuCnt }]}>
         <GuCntInput />
       </Form.Item>
-      <Form.Item name='peripheral' validateTrigger={['onBlur']} label='外设' rules={[{ required: true, message: '请选择外设' }]}>
-        <Select placeholder='请选择外设' className={styles.commonItem}>
+      <Form.Item name='peripheral' validateTrigger={['onBlur']} label='端口' rules={[{ required: true, message: '请选择端口' }]}>
+        <Select placeholder='请选择端口' className={styles.commonItem}>
           {
             /**
              * 下拉选择端口

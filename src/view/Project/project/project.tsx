@@ -8,7 +8,7 @@ import ConfigProvider from 'antd/lib/config-provider'
 import * as React from 'react'
 import { useState } from 'react'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
-import { message } from 'antd'
+import { message, Tooltip } from 'antd'
 import { ProList, removeProject } from 'Src/services/api/projectApi'
 import { throwErrorMessage } from 'Src/util/message'
 import zhCN from 'antd/lib/locale/zh_CN'
@@ -16,6 +16,7 @@ import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import inputStyle from 'Src/components/Input/searchInput/searchInput.less'
 import styles from './project.less'
+import { NoTask } from '../../NewExcitation/ExcitationComponents/ExcitationDraw/ExcitationDraw'
 
 const customizeRender = () => <DefaultValueTips content='暂无项目' />
 
@@ -140,17 +141,13 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
       if (res.data) {
         setParams({ ...params, page: 1 })
         setCommonModleStatus(false)
-        if (res.data.success_list.length > 0) {
-          message.success('删除成功')
-        }
-        if (res.data.fail_list.length > 0) {
-          CommonModleClose(false)
-          message.error(`${res.data.fail_list[0]}`)
-        }
+      }
+      if (res.code === 0) {
+        message.success('项目删除成功')
       }
     } catch (error) {
       CommonModleClose(false)
-      throwErrorMessage(error, { 1009: '项目删除失败' })
+      throwErrorMessage(error, { 1009: '项目删除失败', 1007: '操作频繁' })
     }
   }
 
@@ -170,32 +167,45 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   React.useEffect(() => {
     getProjectList(params)
   }, [params])
+
   const columns = [
     {
       width: '20%',
       title: '项目名称',
       dataIndex: 'name',
       key: 'name',
+      ellipsis: true,
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
         return (
-          <span
-            className={styles.tableProjectName}
-            role='time'
-            onClick={() => {
-              jumpTask(row)
-            }}
-          >
-            {row.name}
-          </span>
+          <Tooltip title={row.name} placement='bottomLeft' overlayClassName={styles.overlay}>
+            <span
+              className={styles.tableProjectName}
+              role='time'
+              onClick={() => {
+                jumpTask(row)
+              }}
+            >
+              {row.name}
+            </span>
+          </Tooltip>
         )
       }
     },
     {
-      width: '30%',
+      width: '25%',
       title: '项目描述',
       dataIndex: 'desc',
-      key: 'desc'
+      ellipsis: true,
+      key: 'desc',
+      // eslint-disable-next-line react/display-name
+      render: (_: any, row: any) => {
+        return (
+          <Tooltip title={row.name} placement='bottomLeft' overlayClassName={styles.overlay}>
+            <span style={{ color: '#333333' }}>{row.desc ? row.desc : '暂无描述'}</span>
+          </Tooltip>
+        )
+      }
     },
     {
       width: '10%',
@@ -211,6 +221,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
           <div className={styles.Opera_detaile}>
             <span
               style={{ marginLeft: '10px', marginRight: '30px' }}
+              className={styles.Opera_hover}
               role='button'
               tabIndex={0}
               onClick={() => {
@@ -233,6 +244,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
       }
     }
   ]
+
   return (
     <div className={styles.AnBan_main}>
       <div className={styles.AnBan_header}>
@@ -241,14 +253,24 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
           <CreateButton width='146px' name='新建项目' size='large' type='primary' onClick={createProjectModal} />
         </div>
       </div>
-      <div className={styles.tableConcent}>
-        <ConfigProvider locale={zhCN} renderEmpty={customizeRender}>
-          <Table rowKey='id' dataSource={projectList} columns={columns} pagination={false} />
-        </ConfigProvider>
-      </div>
-      <div className={styles.AnBan_PaginationsAge}>
-        <PaginationsAge length={total} num={params.page_size} getParams={changePage} pagenums={params.page} />
-      </div>
+      <>
+        {projectList.length >= 1 ? (
+          <div>
+            <div className={styles.tableConcent}>
+              <ConfigProvider locale={zhCN} renderEmpty={customizeRender}>
+                <Table rowKey='id' dataSource={projectList} columns={columns} pagination={false} />
+              </ConfigProvider>
+            </div>
+            <div className={styles.AnBan_PaginationsAge}>
+              <PaginationsAge length={total} num={params.page_size} getParams={changePage} pagenums={params.page} />
+            </div>
+          </div>
+        ) : (
+          <div style={{ height: '700px', display: 'flex' }}>
+            <NoTask />
+          </div>
+        )}
+      </>
       <ModalpPop
         visible={modalData.isModalVisible}
         hideModal={cancel}
