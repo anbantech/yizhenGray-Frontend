@@ -286,7 +286,7 @@ function TaskDetailHead(props: propsResTaskDetailType<ResTaskDetail>) {
         <div className={styles.taskDetailHead_Main_left_footer}>
           <span>
             {' '}
-            {[0, 1, 10].includes(status) ? (
+            {[0, 1].includes(status) ? (
               <div className={styles.textTitle}>
                 {' '}
                 <span> 开始时间 : {getTime(start_time)}</span>
