@@ -13,23 +13,29 @@ function AgreementDrop() {
   const setDropListRef = ArgeementDropListStore(state => state.setDropListRef)
   const setLeftList = ArgeementDropListStore(state => state.setLeftList)
   const dragableDragingStatus = DragableDragingStatusStore(state => state.dragableDragingStatus)
+
+  const updateList = React.useCallback(
+    (DropList, hoverIndex, itemIndex) => {
+      const dropCardListCopy = DropList
+      const copy = dropCardListCopy.splice(itemIndex, 1)
+      dropCardListCopy.splice(hoverIndex, 0, ...copy)
+      setLeftList([...dropCardListCopy])
+    },
+    [setLeftList]
+  )
+
   const moveCardHandler = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
       if (dragableDragingStatus) {
-        const dropCardListCopy = DropList
         const lessIndex = DropList.findIndex((item: any) => item.id === -1)
-        const copy = dropCardListCopy.splice(lessIndex, 1)
-        dropCardListCopy.splice(hoverIndex, 0, ...copy)
-        setLeftList([...dropCardListCopy])
+        updateList(DropList, hoverIndex, lessIndex)
       } else {
-        const dropCardListCopy = [...DropList]
-        const copy = dropCardListCopy.splice(dragIndex, 1)
-        dropCardListCopy.splice(hoverIndex, 0, ...copy)
-        setLeftList([...dropCardListCopy])
+        updateList(DropList, hoverIndex, dragIndex)
       }
     },
-    [DropList, dragableDragingStatus, setLeftList]
+    [DropList, dragableDragingStatus, updateList]
   )
+
   const getRef = React.useCallback(
     (ref: any, index) => {
       setDropListRef(ref, index)
