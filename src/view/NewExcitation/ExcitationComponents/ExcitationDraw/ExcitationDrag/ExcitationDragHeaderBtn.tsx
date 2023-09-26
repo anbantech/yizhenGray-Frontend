@@ -12,7 +12,7 @@ function BtnCompoents({ setVsible, setNewCreate }: { setVsible: (val: boolean) =
       <div className={StyleSheet.btn_header}>
         <CreateButton
           width='120px'
-          height='35px'
+          height='36px'
           name='新建激励'
           type='primary'
           onClick={() => {

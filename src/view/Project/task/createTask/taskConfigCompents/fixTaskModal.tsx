@@ -72,14 +72,21 @@ function FixTaskModal(props: any) {
           className={styles.btn_cancelCrashTable}
           key='back'
           disabled={spinning}
-          style={{ width: '96px' }}
+          style={{ width: '96px', borderRadius: '4px' }}
           onClick={() => {
             CommonModleClose(false)
           }}
         >
           取消
         </Button>,
-        <Button className={styles.btn_create} key='submit' type='primary' style={{ width: '96px' }} loading={spinning} onClick={getResult}>
+        <Button
+          className={styles.btn_create}
+          key='submit'
+          type='primary'
+          style={{ width: '96px', borderRadius: '4px' }}
+          loading={spinning}
+          onClick={getResult}
+        >
           {spinning ? `${ing}` : `${btnName}`}
         </Button>
       ]}

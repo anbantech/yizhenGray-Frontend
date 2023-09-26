@@ -15,7 +15,16 @@ interface buttonStyleType {
 const CommonButton: React.FC<buttonStyleType> = props => {
   const { name, size, type, onClick, buttonStyle, disabled, loading } = props
   return (
-    <Button disabled={disabled} className={buttonStyle} loading={loading} type={type} size={size} block onClick={onClick}>
+    <Button
+      disabled={disabled}
+      style={{ borderRadius: '4px' }}
+      className={buttonStyle}
+      loading={loading}
+      type={type}
+      size={size}
+      block
+      onClick={onClick}
+    >
       {name}
     </Button>
   )

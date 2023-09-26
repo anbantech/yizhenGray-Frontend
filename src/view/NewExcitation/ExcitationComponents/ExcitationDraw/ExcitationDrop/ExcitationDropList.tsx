@@ -156,13 +156,23 @@ const DropableMemo = ({ index, Item, moveCardHandler, DeleteCheckItem }: PropsTy
         <Checkbox value={Item.keys} />
       </div>
       <div className={StyleSheet.excitationItemDrop_right}>
-        <span className={StyleSheet.excitationChart}>{index}</span>
+        <span style={{ fontWeight: 400 }} className={StyleSheet.excitationChart}>
+          {index}
+        </span>
         <Tooltip placement='bottomLeft' title={Item.name}>
-          <span className={StyleSheet.excitationChart}>{Item.name}</span>
+          <span style={{ fontWeight: 400 }} className={StyleSheet.excitationChart}>
+            {Item.name}
+          </span>
         </Tooltip>
-        <span className={StyleSheet.excitationChart}>{Item.peripheral}</span>
-        <span className={StyleSheet.excitationChart}>{Item.gu_cnt0}</span>
-        <span className={StyleSheet.excitationChart}>{Item.gu_w0}</span>
+        <span style={{ fontWeight: 400 }} className={StyleSheet.excitationChart}>
+          {Item.peripheral}
+        </span>
+        <span style={{ fontWeight: 400 }} className={StyleSheet.excitationChart}>
+          {Item.gu_cnt0}
+        </span>
+        <span style={{ fontWeight: 400 }} className={StyleSheet.excitationChart}>
+          {Item.gu_w0}
+        </span>
         <div style={{ paddingRight: '16px', cursor: 'pointer' }}>
           <div
             role='time'
