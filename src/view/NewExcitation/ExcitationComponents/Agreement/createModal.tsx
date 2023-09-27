@@ -76,6 +76,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
       }
     } catch (error) {
       message.error(error.message)
+      return error
     }
   }, [DropListRef, clearCheckList, onOk])
   // 更新元素 updateControl
@@ -96,8 +97,9 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
       return res
     } catch (error) {
       message.error(error.message)
+      CommonModleClose(false)
     }
-  }, [DropListRef, sender_id, setOneExcitaionInfo])
+  }, [CommonModleClose, DropListRef, sender_id, setOneExcitaionInfo])
   // 创建
 
   const getExcitaionDeatilFunction = React.useCallback(
@@ -129,7 +131,6 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
     setDrop(!DropStatus)
   }, [DropStatus, setDrop])
   const upadateItemInfo = React.useCallback(async () => {
-    CommonModleClose(false)
     checkItem()
       .then(async res => {
         setSpinning(true)
@@ -141,10 +142,8 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
         }
         return res
       })
-      .catch(() => {
-        CommonModleClose(false)
-      })
-  }, [CommonModleClose, checkItem, clearCheckList, onOk, operationExctaionList, updateItem])
+      .catch(() => {})
+  }, [checkItem, clearCheckList, onOk, operationExctaionList, updateItem])
 
   React.useEffect(() => {
     if (sender_id !== -1) {
