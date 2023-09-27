@@ -151,7 +151,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
         setNodeList(result.data)
       }
     } catch (error) {
-      throwErrorMessage(error, { 3002: '仿真连接失败', 3001: '未找到可用仿真节点', 3000: '仿真通讯异常' })
+      throwErrorMessage(error, { 3001: '未找到可用仿真节点', 3000: '仿真通讯异常' })
     }
   }
 
