@@ -3,7 +3,7 @@ import { useHistory } from 'react-router'
 import globalStyle from 'Src/view/Project/project/project.less'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { getTime } from 'Src/util/baseFn'
-import { copyText, throwErrorMessage } from 'Src/util/common'
+import { copyText, generateUUID, throwErrorMessage } from 'Src/util/common'
 import SortIconComponent from 'Src/components/SortIcon/sortIcon'
 import NoData from 'Src/view/404/NoData/NoData'
 import { rePlayTask } from 'Src/services/api/taskApi'
@@ -62,6 +62,25 @@ interface DataType {
   level: null | number
 }
 type Detail_Type = Record<string, any>
+
+interface TipProp {
+  data: string
+  caseCount: number
+  sendCount: number
+}
+const TipComponents = (props: TipProp) => {
+  const { data, caseCount, sendCount } = props
+  const isSend = React.useMemo(() => {
+    const isSendString = (caseCount === 0 && sendCount === 0) || (caseCount === 1 && sendCount !== 0) ? '已发送' : '未发送'
+    return isSendString
+  }, [caseCount, sendCount])
+  return (
+    <>
+      <span className={styles.tipsCompoents}>{`${isSend} : ${data}`}</span>
+    </>
+  )
+}
+const TipComponentsMemo = React.memo(TipComponents)
 const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
   const {
     task_id,
@@ -186,16 +205,6 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
     [status, replayId]
   )
 
-  const Tips = (props: Record<string, string>) => {
-    const { title, val } = props
-    return (
-      <div>
-        <span>{title}</span>
-        <span> {val} </span>
-      </div>
-    )
-  }
-
   useEffect(() => {
     setType('time')
   }, [status])
@@ -245,23 +254,13 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
             <>
               {logData.map((item: DataType) => {
                 return (
-                  <div key={`${item.id}${item.msg_index}${item.create_time}`} className={`${styles.Table_concent} ${styleFn(item)}`}>
+                  <div key={`${item.id}${item.msg_index}`} className={`${styles.Table_concent} ${styleFn(item)}`}>
                     <div>{item.msg_index}</div>
                     <div>
                       <div className={styles.dataInfoContainer}>
                         <Tooltip
-                          title={
-                            <Tips
-                              val={item.send_data[0]}
-                              title={
-                                item.case_type === 0 && item.sent_cnt === 0
-                                  ? '已发送'
-                                  : item.case_type === 1 && item.sent_cnt !== 0
-                                  ? '已发送'
-                                  : '未发送'
-                              }
-                            />
-                          }
+                          key={item.msg_index}
+                          title={<TipComponentsMemo data={item.send_data[0]} caseCount={item.case_type} sendCount={item.sent_cnt} />}
                           placement='bottom'
                           overlayClassName={styles.overlay}
                         >
@@ -275,22 +274,12 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                         {item.send_data.length > 1 &&
                           item.send_data.slice(1).map((send_data: string, index: number) => {
                             return (
-                              <div className={styles.dataShowItem} key={`${send_data}_${Math.random()}`}>
+                              <div key={`${generateUUID()}${String(index)}`} className={styles.dataShowItem}>
                                 <Tooltip
-                                  title={
-                                    <Tips
-                                      val={send_data}
-                                      title={
-                                        item.case_type === 0 && item.sent_cnt === 0
-                                          ? '已发送 : '
-                                          : item.sent_cnt - 1 > index
-                                          ? '已发送 : '
-                                          : '未发送 : '
-                                      }
-                                    />
-                                  }
+                                  destroyTooltipOnHide={Boolean(1)}
+                                  key={String(index)}
+                                  title={<TipComponentsMemo data={send_data} caseCount={item.case_type} sendCount={item.sent_cnt} />}
                                   placement='bottom'
-                                  overlayClassName={styles.overlay}
                                 >
                                   <span className={styles.dataLongInfo}> {send_data || '无'} </span>
                                 </Tooltip>
