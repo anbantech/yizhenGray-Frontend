@@ -57,6 +57,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
   }, [DropListRef])
 
   const CommonModleClose = React.useCallback((val: boolean) => {
+    setSpinning(false)
     setVisibility(val)
   }, [])
 
@@ -129,9 +130,9 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
   }, [DropStatus, setDrop])
   const upadateItemInfo = React.useCallback(async () => {
     CommonModleClose(false)
-    setSpinning(true)
     checkItem()
       .then(async res => {
+        setSpinning(true)
         const res1 = await updateItem()
         if (res1) {
           clearCheckList()
@@ -141,7 +142,7 @@ function NewExcitationMoadl({ visibility, onOk, sender_id }: PropsType) {
         return res
       })
       .catch(() => {
-        setSpinning(false)
+        CommonModleClose(false)
       })
   }, [CommonModleClose, checkItem, clearCheckList, onOk, operationExctaionList, updateItem])
 
