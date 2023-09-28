@@ -97,7 +97,6 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
       }
     } catch (error) {
       setCrashObj({})
-
       setCheckAllCrash(false)
       setDisabledStatus(true)
       throwErrorMessage(error, { 1005: '实例新建失败' })
@@ -166,11 +165,12 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
 
   useEffect(() => {
     if (data) {
-      const { work_time, crash_config } = data
+      const { work_time, crash_config, reset_mode } = data
       // cause backend will auto add prefix for queue name
       // thus remove prefix of queue name when editing
       const formData = { work_time }
       form.setFieldsValue(formData)
+      setValue(reset_mode)
       setCrashObj({ ...crash_config })
     }
     return () => {
