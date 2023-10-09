@@ -16,6 +16,7 @@ import Scale from 'Src/view/Project/taskDetail/Scale/ScaleIndex'
 import ExcitationIndex from 'Src/view/NewExcitation/ExcitationIndex'
 import ScaleDetail from 'Src/view/Project/taskDetail/Scale/ScaleDetail'
 import ScaleInitInfo from 'Src/view/Project/taskDetail/Scale/ScaleInitInfo'
+import Modeling from 'Src/view/Modeling/Modeling'
 // import CreateResponseTemplateComponent from 'Src/view/template/ResponseTemplate/createResponseTemplate'
 // import CreateTemplateWrapper from 'Src/view/template/BaseTemplate/createTemplateWrapper'
 // import ExcitationDraw from 'Src/view/excitation/excitationComponent/excitationDraw'
@@ -30,6 +31,7 @@ function content() {
       <Switch>
         <Route path='/' exact component={Project} />
         <Route path='/projects' exact component={Project} />
+        <Route path='/Modeling' exact component={Modeling} />
         <Route path='/projects/Tasks' exact component={Tasks} />
         <Route path='/projects/Tasks/Detail' exact component={TasksDetail} />
         <Route path='/projects/Tasks/createTask' exact component={OperationTask} />

@@ -43,6 +43,12 @@ const routerList: SideBarRoute[] = [
     name: '激励配置',
     path: 'Excitataions'
   },
+  {
+    inactiveImageURL: Arge,
+    activeImageURL: ac_Arge,
+    name: '外设建模',
+    path: 'Modeling'
+  },
   // {
   //   inactiveImageURL: Arge,
   //   activeImageURL: ac_Arge,
