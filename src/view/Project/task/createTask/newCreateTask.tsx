@@ -45,7 +45,7 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
         setBtnLoading(false)
       } else {
         history.push({
-          pathname: '/projects/Tasks',
+          pathname: '/Projects/Tasks',
           state: { projectInfo }
         })
       }
@@ -55,7 +55,7 @@ const CreateTask: React.FC<RouteComponentProps<any, StaticContext, taskPropsType
   }
   const cancenlForm = () => {
     history.push({
-      pathname: '/projects/Tasks',
+      pathname: '/Projects/Tasks',
       state: { projectInfo }
     })
   }

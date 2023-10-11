@@ -89,7 +89,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   // 新建任务
   const jumpNewCreateTask = () => {
     history.push({
-      pathname: '/projects/Tasks/createTask',
+      pathname: '/Projects/Tasks/CreateTask',
       state: { projectInfo, taskInfo: { editTask: false } }
     })
   }
@@ -208,7 +208,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   // 跳转修改任务
   const fixTask = (item: any) => {
     history.push({
-      pathname: '/projects/Tasks/fixTask',
+      pathname: '/Projects/Tasks/FixTask',
       state: { projectInfo, taskInfo: { data: item, editTaskMode: true } }
     })
   }

@@ -159,7 +159,7 @@ function Scale(props: any) {
   const history = useHistory()
   const goBack = () => {
     history.push({
-      pathname: '/projects/Tasks/Detail',
+      pathname: '/Projects/Tasks/Detail',
       state: Data
     })
   }

@@ -163,7 +163,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   const jumpTasksDetail = (value: any) => {
     const { task_id } = value
     history.push({
-      pathname: '/projects/Tasks/Detail',
+      pathname: '/Projects/Tasks/Detail',
       state: { projectInfo, taskInfo: { editTask: false, task_id }, instanceInfo: value }
     })
   }

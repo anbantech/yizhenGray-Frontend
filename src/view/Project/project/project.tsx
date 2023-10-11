@@ -107,7 +107,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   const jumpTask = (value: projectInfoType) => {
     const { id, desc, name } = value
     history.push({
-      pathname: '/projects/Tasks',
+      pathname: '/Projects/Tasks',
       state: { projectInfo: { projectId: id, projectDesc: desc, projectName: name } }
     })
   }

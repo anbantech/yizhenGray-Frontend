@@ -385,7 +385,7 @@ const ExcitationDraw: React.FC = () => {
     if (state?.fromDataLoaction) {
       const { taskInfo, fromDataTask, projectInfo } = state?.fromDataLoaction
       history.push({
-        pathname: '/projects/Tasks/createTask',
+        pathname: '/Projects/Tasks/CreateTask',
         state: { projectInfo, taskInfo, fromDataTask }
       })
     }

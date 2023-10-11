@@ -1,4 +1,5 @@
 import React from 'react'
+import { shallow } from 'zustand/shallow'
 import ReactFlow, { Background, SelectionMode, BackgroundVariant, Controls, ReactFlowProvider } from 'reactflow'
 import 'reactflow/dist/style.css'
 
@@ -30,7 +31,9 @@ const initialEdges = [
   { id: 'e1-2', source: '1', target: '2', animated: true },
   { id: 'e2-3', source: '2', target: '3', animated: true }
 ]
+
 const panOnDrag = [1, 2]
+
 function Flow() {
   return (
     <div style={{ width: '100vw', height: '80vh' }}>

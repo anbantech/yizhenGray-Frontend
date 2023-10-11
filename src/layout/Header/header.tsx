@@ -155,16 +155,16 @@ function Header(props: any) {
   })
 
   const name: any = {
-    '/projects': '项目管理',
-    '/projects/Tasks': '任务列表',
-    '/projects/Tasks/Detail': '实例详情',
-    '/projects/Tasks/createTask': '新建任务',
-    '/projects/Tasks/fixTask': '修改任务',
-    '/projects/Tasks/Detail/lookTaskDetailInfo': '实例信息',
-    '/projects/Tasks/Detail/TaskLog': '日志',
-    '/projects/Tasks/Detail/Scale': '动态监控',
-    '/projects/Tasks/Detail/ScaleDetail': '缺陷详情',
-    '/projects/Tasks/Detail/InitTask': '缺陷详情',
+    '/Projects': '项目管理',
+    '/Projects/Tasks': '任务列表',
+    '/Projects/Tasks/Detail': '实例详情',
+    '/Projects/Tasks/CreateTask': '新建任务',
+    '/Projects/Tasks/FixTask': '修改任务',
+    '/Projects/Tasks/Detail/LookTaskDetailInfo': '实例信息',
+    '/Projects/Tasks/Detail/TaskLog': '日志',
+    '/Projects/Tasks/Detail/Scale': '动态监控',
+    '/Projects/Tasks/Detail/ScaleDetail': '缺陷详情',
+    '/Projects/Tasks/Detail/InitTask': '缺陷详情',
     '/Excitataions': '激励配置'
     // '/TwoExcitationList': '激励单元管理',
     // '/ThreeExcitationList': '激励嵌套管理',
