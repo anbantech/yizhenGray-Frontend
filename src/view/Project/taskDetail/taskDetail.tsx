@@ -79,7 +79,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   // 跳转日志
   const lookLog = React.useCallback(() => {
     history.push({
-      pathname: '/projects/Tasks/Detail/TaskLog',
+      pathname: '/Projects/Tasks/Detail/TaskLog',
       state: { projectInfo, taskInfo, instanceInfo }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -87,7 +87,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
 
   const InitTask = React.useCallback(() => {
     history.push({
-      pathname: '/projects/Tasks/Detail/InitTask',
+      pathname: '/Projects/Tasks/Detail/InitTask',
       state: { projectInfo, taskInfo, instanceInfo }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps

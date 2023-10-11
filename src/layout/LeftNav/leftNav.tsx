@@ -35,7 +35,7 @@ const routerList: SideBarRoute[] = [
     activeImageURL: ac_items,
     inactiveImageURL: items,
     name: '项目管理',
-    path: 'projects'
+    path: 'Projects'
   },
   {
     inactiveImageURL: Arge,

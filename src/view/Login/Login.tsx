@@ -31,7 +31,7 @@ function Login() {
           localStorage.setItem('access_token', res.data.access_token)
           localStorage.setItem('userId', `${res.data.id}`)
           history.push({
-            pathname: '/projects'
+            pathname: '/Projects'
           })
           message.success('登录成功')
           setLoading(false)

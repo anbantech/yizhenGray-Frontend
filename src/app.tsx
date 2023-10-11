@@ -56,7 +56,7 @@ const App: React.FC<RouteComponentProps<any, any, any>> = props => {
       console.log('%c开发环境路由监听', 'background:yellow;', props.location)
     }
   }, [props.location])
-  const RouterMap = new Set(['/projects', '/Excitataions', '/Modeling'])
+  const RouterMap = new Set(['/Projects', '/Excitataions', '/Modeling'])
   const tokenID = window.localStorage.getItem('access_token')
   return (
     <>
