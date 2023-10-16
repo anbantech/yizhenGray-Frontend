@@ -89,7 +89,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
   // 新建任务
   const jumpNewCreateTask = () => {
     history.push({
-      pathname: '/Projects/Tasks/CreateTask',
+      pathname: '/Projects/Tasks/createTask',
       state: { projectInfo, taskInfo: { editTask: false } }
     })
   }

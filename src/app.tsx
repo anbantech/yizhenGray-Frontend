@@ -13,6 +13,9 @@ import styles from './app.less'
 import Head from './layout/Header/header'
 import LeftNav from './layout/LeftNav/leftNav'
 import Contents from './layout/content/content'
+import useWebSocketStore from './webSocket/webSocketStore'
+import { useGetVersionHook } from './webSocket/getVersion'
+import VersionModal from './components/Modal/VersionModal'
 
 const { Header, Content } = Layout
 
@@ -50,11 +53,20 @@ function Main() {
 
 const App: React.FC<RouteComponentProps<any, any, any>> = props => {
   const name = props.location.pathname
+  const [showModalMemo] = useGetVersionHook()
+  const { connect } = useWebSocketStore()
+
+  useEffect(() => {
+    connect()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line no-console
       console.log('%c开发环境路由监听', 'background:yellow;', props.location)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.location])
   const RouterMap = new Set(['/Projects', '/Excitataions', '/Modeling'])
   const tokenID = window.localStorage.getItem('access_token')
@@ -87,6 +99,7 @@ const App: React.FC<RouteComponentProps<any, any, any>> = props => {
         />
         <Redirect from='/*' to='/login' />
       </Switch>
+      {showModalMemo && <VersionModal showModalMemo={showModalMemo} />}
     </>
   )
 }

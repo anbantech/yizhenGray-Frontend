@@ -1,6 +1,6 @@
 {
   "name": "yizhen-grey",
-  "version": "v1.0.333333.20230417",
+  "version": "v1.2.009.20231013",
   "templateVersion": "v1.0.333333.20230128",
   "main": "index.js",
   "description": "yizhen-frontend",
@@ -15,6 +15,7 @@
     "lint-stylelint": "stylelint --config .stylelintrc.js src/**/*.{less,css,scss} --fix",
     "commit:changelog": "git add . && git commit -m \"docs: update changelog and version\"",
     "clear": "rimraf node_modules/.cache/hard-source/",
+    "generate-version": "node scripts/generateVersion.js",
     "detect:repetition": "npx jscpd --config .cpd.json ./src"
   },
   "browserslist": [

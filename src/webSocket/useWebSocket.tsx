@@ -11,7 +11,7 @@ interface InfoType {
   instance_id: number
 }
 
-const UseWebsocket = (id?: number) => {
+const UseWebsocket = (id: number, type: string, instanced?: number) => {
   const [messageInfo, setMessage] = useState<InfoType>()
   const [wsInstance, setWsInstance] = useState<WebSocket | null | undefined>()
 
@@ -43,13 +43,16 @@ const UseWebsocket = (id?: number) => {
     [wsInstance]
   )
   useEffect(() => {
-    if (id) {
-      createWsInstance(ws => ws?.send(`${id}`))
+    if (id && type === 'task') {
+      createWsInstance(ws => ws?.send(JSON.stringify({ task_id: id, cmd: '' })))
+    }
+    if (id && type === 'instance') {
+      createWsInstance(ws => ws?.send(JSON.stringify({ task_id: id, cmd: '', instance_id: instanced })))
     }
     return () => {
       createWsInstance(ws => ws?.close())
     }
-  }, [createWsInstance, id])
+  }, [createWsInstance, id, instanced, type])
   useBindEventListener(wsInstance, 'message', messageEventListener)
   //   useBindEventListener(wsInstance, 'close', closeEventListener)
   return [messageInfo]
