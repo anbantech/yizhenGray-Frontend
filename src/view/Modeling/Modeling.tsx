@@ -1,5 +1,4 @@
 import React from 'react'
-import { shallow } from 'zustand/shallow'
 import ReactFlow, { Background, SelectionMode, BackgroundVariant, Controls, ReactFlowProvider } from 'reactflow'
 import 'reactflow/dist/style.css'
 

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useEffect, useRef } from 'react'
 import { RouteComponentProps, StaticContext, useHistory } from 'react-router'
 import { ResTaskDetail } from 'Src/globalType/Response'
-import UseWebsocket from 'Src/webSocket/useWebSocket'
+import useWebSocketStore from 'Src/webSocket/webSocketStore'
 import useDepCollect from 'Src/util/Hooks/useDepCollect'
 import { instanceDetail } from 'Src/services/api/taskApi'
 import globalStyle from 'Src/view/Project/project/project.less'
@@ -49,7 +49,7 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
   const [taskDetailInfo, setTaskDetailInfo] = React.useState<ResTaskDetail>()
   const [updateStatus, setUpdateStatus] = React.useState(0)
   const timer = useRef<any>()
-  const [messageInfo] = UseWebsocket(+instanceInfo.id)
+  const { sendMessage, messages, socket } = useWebSocketStore()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [status, depCollect, depData] = useDepCollect(RequsetParams)
   const [total, logData] = UseGetTestLog(depData, updateStatus)
@@ -104,22 +104,26 @@ const TaskDetailTask: React.FC<RouteComponentProps<any, StaticContext, taskDetai
     const val = value === '-1' ? '' : value
     depCollect(true, { level: val, page: 1 })
   }
-
   const getMessageStatus = React.useCallback(() => {
-    if (messageInfo && messageInfo.instance_id) {
-      if (+messageInfo.instance_id === +instanceInfo.id) {
-        if (updateStatus !== messageInfo.task_status) {
-          setUpdateStatus(messageInfo.task_status)
-          setDisplay(messageInfo.dispaly)
-        }
+    if (messages && messages.instance_id) {
+      if (+messages.instance_id === +instanceInfo.id) {
+        setUpdateStatus(messages.task_status)
+        setDisplay(messages.dispaly)
         getInstanceDetail(instanceInfo.id)
       }
     }
-  }, [getInstanceDetail, instanceInfo.id, messageInfo, updateStatus])
+  }, [instanceInfo.id, messages, getInstanceDetail])
+
+  useEffect(() => {
+    if (taskInfo.task_id && instanceInfo.id) {
+      sendMessage(+taskInfo.task_id, 'instance', +instanceInfo.id)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket])
 
   useEffect(() => {
     getMessageStatus()
-  }, [getMessageStatus, taskDetailInfo?.status, taskInfo.task_id, updateStatus])
+  }, [getMessageStatus, messages])
 
   useEffect(() => {
     if (taskInfo.task_id && [2].includes(updateStatus)) {

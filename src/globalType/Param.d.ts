@@ -234,7 +234,7 @@ export interface TaskDetail {
 // 23.  测试实例列表
 
 export interface TestList {
-  task_id: number
+  task_id: number | null
   key_word?: string
   page: number
   status: number | null | string

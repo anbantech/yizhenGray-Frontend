@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import Project from 'Src/view/Project/project/project'
-import Tasks from 'Src/view/Project/task/TaskIndex'
+import Tasks from 'Src/view/Project/TaskHome/TaskIndex'
 import TasksDetail from 'Src/view/Project/taskDetail/taskDetail'
 import OperationTask from 'Src/view/Project/task/createTask/newCreateTask'
 import TaskInfo from 'Src/view/Project/taskDetail/taskDetailCompoents/showTaskDetail'
