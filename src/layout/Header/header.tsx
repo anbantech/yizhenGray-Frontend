@@ -166,29 +166,6 @@ function Header(props: any) {
     '/Projects/Tasks/Detail/ScaleDetail': '缺陷详情',
     '/Projects/Tasks/Detail/InitTask': '缺陷详情',
     '/Excitataions': '激励配置'
-    // '/TwoExcitationList': '激励单元管理',
-    // '/ThreeExcitationList': '激励嵌套管理',
-    // '/FourExcitationList': '交互管理',
-    // '/OneExcitationList/Detail': '端口详情',
-    // '/TwoExcitationList/Detail': '激励单元详情',
-    // '/ThreeExcitationList/Detail': '激励嵌套详情',
-    // '/FourExcitationList/Deatail': '交互详情',
-    // '/OneExcitationList/update': '修改端口',
-    // '/TwoExcitationList/update': '修改激励单元',
-    // '/ThreeExcitationList/update': '修改激励嵌套',
-    // '/FourExcitationList/update': '修改交互',
-    // '/TwoExcitationList/createDoubleExcitationGroup': '新建激励单元',
-    // '/ThreeExcitationList/createDoubleExcitation': '新建激励嵌套',
-    // '/FourExcitationList/createGroupExcitation': '新建交互',
-    // '/OneExcitationList/createExcitation': '新建端口',
-    // '/FourExcitationList/createGroupExcitation/ExcitationDraw': '预览',
-    // '/FourExcitationList/Deatail/ExcitationDraw': '预览',
-    // '/FourExcitationList/update/ExcitationDraw': '预览',
-    // '/templateList': '模板管理',
-    // '/templateList/templateDetail': `${
-    //  // !data?.editOriginalTemplate && !data?.readonlyBaseTemplate ? '新建模板' : data?.editOriginalTemplate ? '修改模板' : '模板详情'
-    // }`,
-    // '/templateList/template': `${data && data?.editOriginalTemplate ? '修改模板' : '新建模板'}`
   }
 
   const history = useHistory()
