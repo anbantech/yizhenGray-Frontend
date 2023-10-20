@@ -1,192 +1,428 @@
-import { Button } from 'antd'
-import dagre from 'dagre'
-import { stratify, tree, hierarchy } from 'd3-hierarchy'
-import React from 'react'
+// import shallow from 'zustand/shallow'
+
+// import React, { useState } from 'react'
+// import ReactFlow, {
+//   Background,
+//   SelectionMode,
+//   BackgroundVariant,
+//   Controls,
+//   ReactFlowProvider,
+//   useReactFlow,
+//   // useOnSelectionChange,
+//   // getOutgoers,
+//   ConnectionLineType,
+//   applyNodeChanges,
+//   OnEdgesChange,
+//   applyEdgeChanges,
+//   MarkerType
+// } from 'reactflow'
+// import 'reactflow/dist/style.css'
+
+// import ModelStore from 'Src/view/Modeling/Store/ModelStore'
+// import CustomNode from './CustomNode'
+// import useAutoLayout from './useLayout'
+// import styles from './model.less'
+
+// const panOnDrag = [1, 2]
+
+// const defaultEdgeOptions = {
+//   type: 'smoothstep',
+//   markerEnd: { type: MarkerType.ArrowClosed },
+//   pathOptions: { offset: 5 }
+// }
+// type ExampleProps = {
+//   direction?: any
+// }
+// const nodeTypes: Record<string, any> = {
+//   custom: CustomNode
+// }
+
+// const proOptions = {
+//   account: 'paid-pro',
+//   hideAttribution: true
+// }
+// const ReactFlowPro = ({ direction = 'TB' }: ExampleProps) => {
+//   const { fitView } = useReactFlow()
+
+//   useAutoLayout({ direction })
+//   const { getModelDetails } = ModelStore()
+
+//   // const [nodes, setNodes] = useState<Node<NodeData>[]>(initialElements.nodes)
+//   // const [edges, setEdges] = useState<Edge[]>(initialElements.edges)
+//   const nodesItem = ModelStore(state => state.nodesItem)
+//   const edgesItem = ModelStore(state => state.edgesItem)
+//   // 获取筛选节点数据
+//   // const SelectionChangeLogger = () => {
+//   //   useOnSelectionChange({
+//   //     // onChange: ({ nodes, edges }) => console.log('changed selection', nodes, edges)
+//   //   })
+//   //   return null
+//   // }
+//   // 框选删除更新界面
+//   // const deleteNodeRef = React.useRef<any[]>([])
+//   // const fn = React.useCallback(
+//   //   (deleted: any) => {
+//   //     deleted.reduce((acc, node) => {
+//   //       const outgoers = getOutgoers(node, nodes, edges)
+//   //       if (outgoers.length > 0) {
+//   //         deleteNodeRef.current.push(outgoers)
+//   //         fn(outgoers)
+//   //       }
+//   //     }, edges)
+//   //   },
+//   //   [edges, nodes]
+//   // )
+//   // const onNodesDelete = React.useCallback(
+//   //   deleted => {
+//   //     fn(deleted)
+//   //     const deleteNodeArray = deleteNodeRef.current.concat(deleted).flat(Infinity)
+//   //     const node = nodes.filter(item => {
+//   //       return !deleteNodeArray.some(data => data.id === item.id)
+//   //     })
+//   //
+//   //     const edge = edges.filter(item => {
+//   //       return !deleteNodeArray.some(data => data.id === item.target)
+//   //     })
+//   //     // onLayouts(node, edge)
+//   //   },
+//   //   [fn, nodes, edges]
+//   // )
+
+//   // const onNodesChange: OnNodesChange = (changes: NodeChange[]) => {
+//   //   console.log(changes)
+//   //   setNodes(nodes => applyNodeChanges(changes, nodes))
+//   // }
+
+//   // const onEdgesChange: OnEdgesChange = (changes: EdgeChange[]) => {
+//   //   setEdges(edges => applyEdgeChanges(changes, edges))
+//   // }
+//   React.useEffect(() => {
+//     if (getModelDetails) {
+//       getModelDetails()
+//     }
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [])
+
+//   React.useEffect(() => {
+//     fitView({ duration: 400 })
+//   }, [nodesItem, fitView])
+
+//   return (
+//     <ReactFlow
+//       proOptions={proOptions}
+//       nodes={nodesItem as any}
+//       nodeTypes={nodeTypes}
+//       edges={edgesItem}
+//       // onNodesChange={onNodesChange}
+//       // onEdgesChange={onEdgesChange}
+//       // onNodesChange={onNodesChange}
+//       panOnDrag={panOnDrag}
+//       // onNodesDelete={onNodesDelete}
+//       connectionLineType={ConnectionLineType.SmoothStep}
+//       selectionMode={SelectionMode.Partial}
+//       panOnScroll
+//       fitView
+//       defaultEdgeOptions={defaultEdgeOptions}
+//       selectionOnDrag
+//     >
+//       {/* <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
+//       <Controls /> */}
+//       {/* <SelectionChangeLogger /> */}
+//     </ReactFlow>
+//   )
+// }
+// function Flow() {
+//   return (
+//     <div style={{ width: '90vw   ', height: '80vh' }}>
+//       <ReactFlowProvider>
+//         <ReactFlowPro />
+//       </ReactFlowProvider>
+//     </div>
+//   )
+// }
+
+// export default Flow
+
+// import shallow from 'zustand/shallow'
+
+// import React, { useState } from 'react'
+// import ReactFlow, {
+//   Background,
+//   SelectionMode,
+//   BackgroundVariant,
+//   Controls,
+//   ReactFlowProvider,
+//   useReactFlow,
+//   // useOnSelectionChange,
+//   // getOutgoers,
+//   ConnectionLineType,
+//   applyNodeChanges,
+//   OnEdgesChange,
+//   applyEdgeChanges,
+//   MarkerType
+// } from 'reactflow'
+// import 'reactflow/dist/style.css'
+
+// import ModelStore from 'Src/view/Modeling/Store/ModelStore'
+// import CustomNode from './CustomNode'
+// import useAutoLayout from './useLayout'
+// import styles from './model.less'
+
+// const panOnDrag = [1, 2]
+
+// const defaultEdgeOptions = {
+//   type: 'smoothstep',
+//   markerEnd: { type: MarkerType.ArrowClosed },
+//   pathOptions: { offset: 5 }
+// }
+// type ExampleProps = {
+//   direction?: any
+// }
+// const nodeTypes: Record<string, any> = {
+//   custom: CustomNode
+// }
+
+// const proOptions = {
+//   account: 'paid-pro',
+//   hideAttribution: true
+// }
+// const ReactFlowPro = ({ direction = 'TB' }: ExampleProps) => {
+//   const { fitView } = useReactFlow()
+
+//   useAutoLayout({ direction })
+//   const { getModelDetails } = ModelStore()
+
+//   // const [nodes, setNodes] = useState<Node<NodeData>[]>(initialElements.nodes)
+//   // const [edges, setEdges] = useState<Edge[]>(initialElements.edges)
+//   const nodesItem = ModelStore(state => state.nodesItem)
+//   const edgesItem = ModelStore(state => state.edgesItem)
+
+//   React.useEffect(() => {
+//     if (getModelDetails) {
+//       getModelDetails()
+//     }
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [])
+
+//   React.useEffect(() => {
+//     fitView({ duration: 400 })
+//   }, [nodesItem, fitView])
+
+//   return (
+//     <ReactFlow
+//       proOptions={proOptions}
+//       nodes={nodesItem as any}
+//       nodeTypes={nodeTypes}
+//       edges={edgesItem}
+//       // onNodesChange={onNodesChange}
+//       // onEdgesChange={onEdgesChange}
+//       // onNodesChange={onNodesChange}
+//
+//       // onNodesDelete={onNodesDelete}
+//       connectionLineType={ConnectionLineType.SmoothStep}
+//       selectionMode={SelectionMode.Partial}
+//
+//       fitView
+//       defaultEdgeOptions={defaultEdgeOptions}
+//
+//     >
+//       {/* <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
+//       <Controls /> */}
+//       {/* <SelectionChangeLogger /> */}
+//     </ReactFlow>
+//   )
+// }
+// function Flow() {
+//   return (
+//     <div style={{ width: '90vw   ', height: '80vh' }}>
+//       <ReactFlowProvider>
+//         <ReactFlowPro />
+//       </ReactFlowProvider>
+//     </div>
+//   )
+// }
+
+// export default Flow
+
+import React, { useEffect, useState, MouseEvent, DragEvent, DragEventHandler } from 'react'
 import ReactFlow, {
+  MarkerType,
+  ReactFlowProvider,
+  useReactFlow,
+  Node,
+  Edge,
+  NodeTypes,
+  OnNodesChange,
+  applyNodeChanges,
+  NodeMouseHandler,
+  NodeChange,
+  OnEdgesChange,
+  EdgeChange,
+  applyEdgeChanges,
   Background,
-  SelectionMode,
   BackgroundVariant,
   Controls,
-  ReactFlowProvider,
-  useNodesState,
-  useEdgesState,
+  SelectionMode,
   useOnSelectionChange,
-  useReactFlow,
-  getOutgoers,
-  ConnectionLineType,
-  Panel
+  getOutgoers
 } from 'reactflow'
+
+import CustomNode from './CustomNode'
+import useAutoLayout, { Direction } from './useLayout'
+
 import 'reactflow/dist/style.css'
+import styles from './model.less'
 
-const position = { x: 0, y: 0 }
-const edgeType = 'smoothstep'
-
-// const initialNodes = [
-//   {
-//     id: '1',
-//     type: 'input',
-//     data: { label: 'input' },
-//     position: { x: 0, y: 0 }
-//   },
-//   {
-//     id: '2',
-//     data: { label: 'node 2' },
-//     position: { x: 0, y: 100 }
-//   },
-//   {
-//     id: '2a',
-//     data: { label: 'node 2a' },
-//     position: { x: 0, y: 200 }
-//   },
-//   {
-//     id: '2b',
-//     data: { label: 'node 2b' },
-//     position: { x: 0, y: 300 }
-//   },
-//   {
-//     id: '2c',
-//     data: { label: 'node 2c' },
-//     position: { x: 0, y: 400 }
-//   },
-//   {
-//     id: '2d',
-//     data: { label: 'node 2d' },
-//     position: { x: 0, y: 500 }
-//   },
-//   {
-//     id: '3',
-//     data: { label: 'node 3' },
-//     position: { x: 200, y: 100 }
-//   }
-// ]
-// const initialEdges = [
-//   { id: 'e12', source: '1', target: '2', type: edgeType, animated: true },
-//   { id: 'e13', source: '1', target: '3', type: edgeType, animated: true },
-//   { id: 'e22a', source: '2', target: '2a', type: edgeType, animated: true },
-//   { id: 'e22b', source: '2', target: '2b', type: edgeType, animated: true },
-//   { id: 'e22c', source: '2', target: '2c', type: edgeType, animated: true },
-//   { id: 'e2c2d', source: '2c', target: '2d', type: edgeType, animated: true },
-//   { id: 'e45', source: '4', target: '5', type: edgeType, animated: true },
-//   { id: 'e56', source: '5', target: '6', type: edgeType, animated: true },
-//   { id: 'e57', source: '5', target: '7', type: edgeType, animated: true }
-// ]
-
-const treeData = {
-  name: '2',
-  id: 1,
-  children: [
-    {
-      id: 1 - 1,
-      name: 'Cain1'
-    },
-    {
-      id: 1 - 2,
-      name: 'Cain2'
-    }
-  ]
+const nodeTypes: NodeTypes = {
+  custom: CustomNode
 }
-const root = hierarchy(treeData)
-const treeLayout = tree().size([400, 200]) // 设置树形图的宽度和高度
-treeLayout(root as any)
+
+const proOptions = {
+  account: 'paid-pro',
+  hideAttribution: true
+}
+
+const defaultEdgeOptions = {
+  type: 'smoothstep',
+  markerEnd: { type: MarkerType.ArrowClosed },
+  pathOptions: { offset: 5 }
+}
+
+type ExampleProps = {
+  direction?: Direction
+}
+
+type NodeData = {
+  label: string
+}
+const getModelDetails = () => {
+  const treeNode = {
+    name: 'dsp4198231',
+    id: '1',
+    children: [
+      {
+        name: '外设1',
+        id: '1-1',
+        children: [
+          {
+            name: '寄存器',
+            id: '1-1-1'
+          },
+          {
+            name: '寄存器2',
+            id: '1-1-2'
+          }
+        ]
+      },
+      {
+        name: '外设2',
+        id: '1-2'
+      }
+    ]
+  }
+  const converTreeToNode = (node: any) => {
+    const result = []
+    result.push({
+      data: { label: `Node ${node.name}` },
+      type: 'custom',
+      id: node.id as string,
+      position: { x: 0, y: 0 },
+      draggable: false
+    })
+    if (node.children && node.children.length > 0) {
+      node.children.forEach((item: any) => {
+        result.push(...converTreeToNode(item))
+      })
+    }
+    return result
+  }
+  const nodeArray = converTreeToNode(treeNode)
+  const converTreeToEdges = (node: any) => {
+    const links: any[] = []
+    if (node.children && node.children.length > 0) {
+      node.children.forEach((item: any) => {
+        const source = node.id
+        const target = item.id
+        links.push({ id: `${source}->${target}`, source, target, type: 'smoothstep' })
+        links.push(...converTreeToEdges(item))
+      })
+    }
+    return links
+  }
+  const edgeArray = converTreeToEdges(treeNode)
+  return { edgeArray, nodeArray }
+}
 
 const panOnDrag = [1, 2]
-const dagreGraph = new dagre.graphlib.Graph()
-dagreGraph.setDefaultEdgeLabel(() => ({}))
-
-const nodeWidth = 172
-const nodeHeight = 36
-
-const getLayoutedElements = (nodes: any, edges: any, direction = 'TB') => {
-  const isHorizontal = direction === 'LR'
-  dagreGraph.setGraph({ rankdir: direction })
-
-  nodes.forEach((node: any) => {
-    dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight })
-  })
-
-  edges.forEach((edge: any) => {
-    dagreGraph.setEdge(edge.source, edge.target)
-  })
-
-  dagre.layout(dagreGraph)
-
-  nodes.forEach((node: any) => {
-    const nodeWithPosition = dagreGraph.node(node.id)
-    console.log(nodeWithPosition)
-    node.targetPosition = isHorizontal ? 'left' : 'top'
-    node.sourcePosition = isHorizontal ? 'right' : 'bottom'
-    node.position = {
-      x: nodeWithPosition.x - nodeWidth / 2,
-      y: nodeWithPosition.y
-    }
-
-    return node
-  })
-
-  return { nodes, edges }
-}
-
-const g = tree()
-
-const getLayoutedElementOs = (nodes: any, edges: any, options) => {
-  if (nodes.length === 0) return { nodes, edges }
-
-  const { width, height } = document.querySelector(`[data-id="${nodes[0].id}"]`)?.getBoundingClientRect()
-  const hierarchy = stratify()
-    .id(node => node.id)
-    .parentId(node => edges.find(edge => edge.target === node.id)?.source)
-  const root = hierarchy(nodes)
-  const layout = g.nodeSize([width * 2, height * 2])(root)
-
-  return {
-    nodes: layout.descendants().map(node => ({ ...node.data, position: { x: node.x, y: node.y } })),
-    edges
-  }
-}
-
-const LayoutFlow = () => {
+/**
+ * This example shows how you can automatically arrange your nodes after adding child nodes to your graph.
+ */
+function ReactFlowPro({ direction = 'LR' }: ExampleProps) {
+  // this hook handles the computation of the layout once the elements or the direction changes
   const { fitView } = useReactFlow()
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes as any)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
-  const onLayout = React.useCallback(
-    direction => {
-      const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(nodes, edges, direction)
-      setNodes([...layoutedNodes])
-      setEdges([...layoutedEdges])
-    },
-    [nodes, edges, setNodes, setEdges]
-  )
 
-  const onLayouts = React.useCallback(
-    (nodes, edges, direction = 'LR') => {
-      console.log(nodes, edges)
-      const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElementOs(nodes, edges, direction)
-      setNodes([...layoutedNodes])
-      setEdges([...layoutedEdges])
-      window.requestAnimationFrame(() => {
-        fitView()
-      })
-    },
-    [setNodes, setEdges, fitView]
-  )
-  const setTreeTopoData = React.useCallback(
-    (nodes, edges, direction = 'LR') => {
-      const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(nodes, edges, direction)
-      console.log(layoutedNodes)
-      setNodes([...layoutedNodes])
-      setEdges([...layoutedEdges])
-      window.requestAnimationFrame(() => {
-        fitView()
-      })
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [nodes, edges]
-  )
+  useAutoLayout({ direction })
+  const [nodes, setNodes] = useState<Node<NodeData>[]>([])
+  const [edges, setEdges] = useState<Edge[]>([])
 
-  const onConnect = () => {
-    // 禁止手动连线
-    return false
+  // this function adds a new node and connects it to the source node
+  // const createConnection = (sourceId: string) => {
+  //   // create an incremental ID based on the number of elements already in the graph
+  //   const targetId = `${nodes.length + 1}`
+
+  //   const targetNode: Node<NodeData> = {
+  //     id: targetId,
+  //     data: { label: `Node ${targetId}` },
+  //     position: { x: 0, y: 0 }, // no need to pass a position as it is computed by the layout hook
+  //     type: 'custom',
+  //     style: { opacity: 0 }
+  //   }
+
+  //   const connectingEdge: Edge = {
+  //     id: `${sourceId}->${targetId}`,
+  //     source: sourceId,
+  //     target: targetId,
+  //     style: { opacity: 0 }
+  //   }
+
+  //   setNodes(nodes => nodes.concat([targetNode]))
+  //   setEdges(edges => edges.concat([connectingEdge]))
+  // }
+
+  const fn1 = () => {
+    const { edgeArray, nodeArray } = getModelDetails()
+    setNodes([...nodeArray])
+    setEdges([...edgeArray])
   }
+  // this function is called once the node from the sidebar is dropped onto a node in the current graph
+  // const onDrop: DragEventHandler = (evt: DragEvent<HTMLDivElement>) => {
+  //   // make sure that the event target is a DOM element
+  //   if (evt.target instanceof Element) {
+  //     // from the target element search for the node wrapper element which has the node id as attribute
+  //     const targetId = evt.target.closest('.react-flow__node')?.getAttribute('data-id')
+
+  //     if (targetId) {
+  //       // now we can create a connection to the drop target node
+  //       createConnection(targetId)
+  //     }
+  //   }
+  // }
+
+  // this function is called when a node in the graph is clicked
+  // enables a second possibility to add nodes to the canvas
+  // const onNodeClick: NodeMouseHandler = (_: MouseEvent, node: Node<NodeData>) => {
+  //   // on click, we want to add create a new node connection the clicked node
+  //   createConnection(node.id)
+  // }
+
+  const onNodesChange: OnNodesChange = (changes: NodeChange[]) => {
+    setNodes(nodes => applyNodeChanges(changes, nodes))
+  }
+
+  const onEdgesChange: OnEdgesChange = (changes: EdgeChange[]) => {
+    setEdges(edges => applyEdgeChanges(changes, edges))
+  }
+
   // 获取筛选节点数据
   const SelectionChangeLogger = () => {
     useOnSelectionChange({
@@ -194,7 +430,8 @@ const LayoutFlow = () => {
     })
     return null
   }
-  // 框选删除更新界面
+
+  //  框选删除更新界面
   const deleteNodeRef = React.useRef<any[]>([])
   const fn = React.useCallback(
     (deleted: any) => {
@@ -208,6 +445,7 @@ const LayoutFlow = () => {
     },
     [edges, nodes]
   )
+
   const onNodesDelete = React.useCallback(
     deleted => {
       fn(deleted)
@@ -219,50 +457,65 @@ const LayoutFlow = () => {
       const edge = edges.filter(item => {
         return !deleteNodeArray.some(data => data.id === item.target)
       })
-      onLayouts(node, edge)
+      setNodes([...node])
+      setEdges([...edge])
     },
-    [fn, nodes, edges, onLayouts]
+    [fn, nodes, edges]
   )
 
-  React.useEffect(() => {
-    setTreeTopoData(nodes, edges)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // const onNodesChange: OnNodesChange = (changes: NodeChange[]) => {
+  //   console.log(changes)
+  //   setNodes(nodes => applyNodeChanges(changes, nodes))
+  // }
+
+  // const onEdgesChange: OnEdgesChange = (changes: EdgeChange[]) => {
+  //   setEdges(edges => applyEdgeChanges(changes, edges))
+  // }
+
+  useEffect(() => {
+    fn1()
   }, [])
+  // every time our nodes change, we want to center the graph again
+  useEffect(() => {
+    fitView({ duration: 400 })
+  }, [nodes, fitView])
+
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange}
-      panOnDrag={panOnDrag}
-      onNodesDelete={onNodesDelete}
-      connectionLineType={ConnectionLineType.SmoothStep}
-      selectionMode={SelectionMode.Partial}
-      panOnScroll
-      selectionOnDrag
-      fitView
-    >
-      <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
-      <Controls />
-      <Panel position='top-right'>
-        <Button role='time' onClick={() => onLayout('TB')}>
-          vertical layout
-        </Button>
-        <Button role='time' onClick={() => onLayout('LR')}>
-          horizontal layout
-        </Button>
-      </Panel>
-      <SelectionChangeLogger />
-    </ReactFlow>
-  )
-}
-function Flow() {
-  return (
-    <div style={{ width: '90vw   ', height: '80vh' }}>
-      <ReactFlowProvider>
-        <LayoutFlow />
-      </ReactFlowProvider>
+    <div className={styles.container} style={{ width: '80vw', height: '90vh' }}>
+      <ReactFlow
+        className={styles.reactFlow}
+        proOptions={proOptions}
+        nodeTypes={nodeTypes}
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        fitView
+        selectionOnDrag
+        panOnScroll
+        onNodesDelete={onNodesDelete}
+        panOnDrag={panOnDrag}
+        selectionMode={SelectionMode.Partial}
+        // newly added edges get these options automatically
+        defaultEdgeOptions={defaultEdgeOptions}
+        minZoom={-Infinity}
+        maxZoom={Infinity}
+      >
+        <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
+        <Controls />
+        <SelectionChangeLogger />
+      </ReactFlow>
     </div>
   )
 }
 
-export default Flow
+// as we are accessing the internal React Flow state in our component, we need to wrap it with the ReactFlowProvider
+const ReactFlowWrapper = (props: ExampleProps) => {
+  return (
+    <ReactFlowProvider>
+      <ReactFlowPro {...props} />
+    </ReactFlowProvider>
+  )
+}
+
+export default ReactFlowWrapper
