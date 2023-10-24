@@ -3,7 +3,7 @@ import DefaultValueTips from 'Src/components/Tips/defaultValueTips'
 import CreateButton from 'Src/components/Button/createButton'
 import ModalpPop from 'Src/components/Modal/projectMoadl/BaseModle'
 import Table from 'antd/lib/table'
-import OmitComponents from 'Src/components/OmitComponents/OmitComponents'
+import delete_icon from 'Src/assets/image/icon_delete.svg'
 import ConfigProvider from 'antd/lib/config-provider'
 import * as React from 'react'
 import { useState } from 'react'
@@ -55,9 +55,6 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
   // 目标列表参数
   const [params, setParams] = useState(request)
 
-  // 展示菜单
-  const [updateMenue, setUpdateMenue] = useState<number>(-1)
-
   // 项目管理
   const [projectList, setProjectList] = useState<projectListType[]>([])
 
@@ -72,9 +69,6 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
 
   //  删除弹出框
   const [CommonModleStatus, setCommonModleStatus] = useState<boolean>(false)
-
-  // 存储项目信息
-  const [data, setData] = useState()
 
   // 新建项目 弹出框
   const createProjectModal = () => {
@@ -122,13 +116,13 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
     setParams({ ...params, page, page_size: pageSize })
   }
 
-  const onChange = (val: string) => {
+  const onChange = (val: string, row: Record<string, any>) => {
     switch (val) {
-      case '删除':
-        deleteProject(`${updateMenue}`, true)
+      case 'delete':
+        deleteProject(`${row.id}`, true)
         break
-      case '修改':
-        fixProject(data)
+      case 'fix':
+        fixProject(row)
         break
       default:
         return null
@@ -220,7 +214,7 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
         return (
           <div className={styles.Opera_detaile}>
             <span
-              style={{ marginLeft: '10px', marginRight: '30px' }}
+              style={{ marginLeft: '10px', marginRight: '15px' }}
               className={styles.Opera_hover}
               role='button'
               tabIndex={0}
@@ -230,15 +224,10 @@ const Project: React.FC<RouteComponentProps<any, StaticContext, unknown>> = () =
             >
               查看详情
             </span>
-            <OmitComponents
-              data={row}
-              setData={setData}
-              id={row.id}
-              type='project'
-              onChange={onChange}
-              updateMenueFn={setUpdateMenue}
-              status={updateMenue}
-            />
+            <span className={styles.Opera_hover} role='time' onClick={() => onChange('fix', row)}>
+              修改
+            </span>
+            <img src={delete_icon} alt='' style={{ marginLeft: '15px' }} role='time' onClick={() => onChange('delete', row)} />
           </div>
         )
       }

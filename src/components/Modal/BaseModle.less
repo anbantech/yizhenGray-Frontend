@@ -16,7 +16,7 @@
     display: flex;
     align-items: center;
     height: 48px !important;
-    border-radius: 0px !important;
+    border-radius: 0 !important;
   }
 
   :global(.ant-modal-close) {
@@ -35,21 +35,21 @@
   }
 }
 
- :global(.ant-modal-footer) {
-   padding: 12px 16px !important;
-   height: 56px;
-   line-height: 28px;
- }
+:global(.ant-modal-footer) {
+  padding: 12px 16px !important;
+  height: 56px;
+  line-height: 28px;
+}
 
-  :global(.ant-modal) {
-    border-radius: 4px;
-  }
+:global(.ant-modal) {
+  border-radius: 4px;
+}
 
-  .formModal {
-    :global(.ant-modal-body) {
-      padding-left: 18px !important;
-    }
+.formModal {
+  :global(.ant-modal-body) {
+    padding-left: 18px !important;
   }
+}
 
 .BeginTest {
   height: 100%;
@@ -272,10 +272,6 @@
   border-radius: 2px !important;
 }
 
-:global(.ant-modal-header) {
-  border-radius: 10px !important;
-}
-
 :global(.ant-modal-body) {
   padding-bottom: 0;
 }
@@ -335,7 +331,6 @@
   }
 
   :global(.ant-modal-title) {
-    font-family: 'Source Han Sans CN';
     font-style: normal;
     font-weight: 700;
     font-size: 16px;
@@ -345,7 +340,7 @@
 
   :global(.ant-modal-header) {
     padding-bottom: 4px;
-    border-bottom: 0px solid #f0f0f0;
+    border-bottom: 0 solid #f0f0f0;
   }
 
   :global(.ant-modal-footer) {
@@ -871,7 +866,7 @@
   height: 10px;
   margin-left: -2px;
   background-color: #c0c8d2;
-  border: 1 solid #c0c8d2;
+  border: 1px solid #c0c8d2;
 }
 
 .Progress {
@@ -886,14 +881,15 @@
   position: relative;
   width: 98%;
   height: 8px;
-  background: linear-gradient(-60deg, #5788ff 0, #5788ff 25%, #245ff0 25%, #245ff0 50%, #5788ff; 50%, #5788ff; 75%, #245ff0 75%, #245ff0);
-  background-size: 10px 16px;
-  animation: Progresssss 5s infinite;
-  animation: ProgressMoved 7s linear infinite;
+  //background: linear-gradient(-60deg, #5788ff 0, #5788ff 25%, #245ff0 25%, #245ff0 50%, #5788ff; 50%, #5788ff; 75%, #245ff0 75%, #245ff0);
+  //background-size: 10px 16px;
+  //animation: Progresssss 5s infinite;
+  //animation: ProgressMoved 7s linear infinite;
 }
+
 @keyframes ProgressMoved {
   0% {
-    background-position: 0% 0%;
+    background-position: 0 0;
   }
 
   50% {
@@ -901,9 +897,10 @@
   }
 
   100% {
-    background-position: 100% 0%;
+    background-position: 100% 0;
   }
 }
+
 @keyframes ProgressMove {
   from {
     width: 0;
@@ -968,7 +965,7 @@
   height: 10px;
   margin-left: -2px;
   background-color: red;
-  border: 1 solid #c0c8d2;
+  border: 1px solid #c0c8d2;
 }
 
 .ErrorBtn {
@@ -1064,7 +1061,7 @@
 .BackupDataModelBtn {
   width: 104px;
   height: 32px;
-  background: #4880FF;
+  background: #4880ff;
   border-radius: 16px;
 }
 
@@ -1251,9 +1248,9 @@
     width: 100%;
     height: 60px;
     background: #f2f4f7;
-    border-radius: 16px;
-    border-top-left-radius: unset;
-    border-top-right-radius: unset;
+    //border-radius: 16px;
+    //border-top-left-radius: unset;
+    //border-top-right-radius: unset;
   }
 }
 
@@ -1497,7 +1494,7 @@
   // display: flex;
   // flex-direction: row;
   // justify-content: space-between;
-  padding: 20px 50px 0px 50px;
+  padding: 20px 50px 0 50px;
   :global(.ant-pagination-simple) {
     display: flex;
     flex-direction: row;
@@ -1566,9 +1563,9 @@
   padding-top: 24px;
   display: flex;
   width: 100%;
-  border-left: 1px solid #E9E9E9;
-  border-top: 1px solid #E9E9E9;
-  border-right: 1px solid #E9E9E9;
+  border-left: 1px solid #e9e9e9;
+  border-top: 1px solid #e9e9e9;
+  border-right: 1px solid #e9e9e9;
 }
 
 .concent_layoutLeft {
@@ -1619,7 +1616,7 @@
   display: flex;
   height: 39px;
   border-bottom: 1px solid #bfbfbf;
-  background-color: #F8F8FA;
+  background-color: #f8f8fa;
 }
 
 .crashTable_headerLeft {
@@ -1634,9 +1631,7 @@
   width: 105px;
 }
 
-
 .Checkbox2 {
-  
   display: inline-block;
   text-align: right;
   padding-right: 3px;
@@ -1756,7 +1751,7 @@
     padding: 0 !important;
   }
   :global(.ant-modal-footer) {
-    height: 0px !important;
+    height: 0 !important;
     padding: 0 !important;
   }
 }
@@ -1802,7 +1797,6 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   text-align: left;
-  font-family: 'Source Han Sans CN';
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -1893,16 +1887,14 @@
   text-overflow: ellipsis;
 }
 
-
-.bottomAll{
+.bottomAll {
   height: 600px;
   overflow-y: auto;
   background-color: #fff;
 }
 
-
-.workTime{
-  :global(.ant-form-item-label>label::after){
+.workTime {
+  :global(.ant-form-item-label > label::after) {
     padding-left: 6px;
     margin: 0 8px 0 2px;
   }

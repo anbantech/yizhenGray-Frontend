@@ -1,12 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import items from 'Image/items.svg'
 import configImage from 'Image/config.svg'
-import ac_items from 'Image/projectsActive.svg'
+
 import ac_configImage from 'Image/ac_config.svg'
-import Arge from 'Image/Arge.svg'
-import ac_Arge from 'Image/excititation.svg'
+
+import { IconProject, IconPeripheral, IconIncentive } from '@anban/iconfonts'
 import { getLicense } from 'Src/services/api/loginApi'
 import { useHistory, withRouter } from 'react-router-dom'
 import { UpOutlined } from '@ant-design/icons'
@@ -16,8 +15,8 @@ import { message } from 'antd'
 import styles from './leftNav.less'
 
 interface SideBarRoute {
-  activeImageURL?: string
-  inactiveImageURL?: string
+  activeImageURL?: JSX.Element
+  inactiveImageURL?: JSX.Element
   name: string
   path?: string
   children?: SideBarRoute[]
@@ -32,20 +31,20 @@ interface SideBarRouteExtension extends SideBarRoute {
 
 const routerList: SideBarRoute[] = [
   {
-    activeImageURL: ac_items,
-    inactiveImageURL: items,
+    activeImageURL: <IconProject className={styles.sideNav_img} style={{ color: '#4880FF', width: '24px', height: '24px' }} />,
+    inactiveImageURL: <IconProject className={styles.sideNav_img} style={{ width: '24px', height: '24px' }} />,
     name: '项目管理',
     path: 'Projects'
   },
   {
-    inactiveImageURL: Arge,
-    activeImageURL: ac_Arge,
+    inactiveImageURL: <IconIncentive className={styles.sideNav_img} style={{ width: '24px', height: '24px' }} />,
+    activeImageURL: <IconIncentive className={styles.sideNav_img} style={{ color: '#4880FF', width: '24px', height: '24px' }} />,
     name: '激励配置',
     path: 'Excitataions'
   },
   {
-    inactiveImageURL: Arge,
-    activeImageURL: ac_Arge,
+    inactiveImageURL: <IconPeripheral className={styles.sideNav_img} style={{ width: '24px', height: '24px' }} />,
+    activeImageURL: <IconPeripheral className={styles.sideNav_img} style={{ color: '#4880FF', width: '24px', height: '24px' }} />,
     name: '外设建模',
     path: 'Modeling'
   },
@@ -82,8 +81,6 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
     userInfo: { roles },
     count
   } = config
-
-  const [hoverImgStatus, setHoverImgStatus] = useState(false)
 
   const generateRouterList = useCallback((routerList: SideBarRoute[], role: string | string[], isSubItem?: boolean) => {
     role = (typeof role === 'string' ? [role] : role) || ['common']
@@ -133,9 +130,6 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
             if (_router.name === router.name) {
               _router.isActive = true
               _router.isOpen = !_router.isOpen
-            } else {
-              setHoverImgStatus(false)
-              _router.isActive = false
             }
             if (_router.children.length > 0) {
               _router.children = switchRouterStatus(_router.children as Required<SideBarRouteExtension>[])
@@ -189,14 +183,6 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
     [isClose]
   )
 
-  const styleImageFn = useCallback(() => {
-    return isClose ? styles.sideNav_img : styles.sideNav_imgClose
-  }, [isClose])
-
-  const hoverImg = useCallback((bol: boolean, isHovering) => {
-    if (bol) return
-    setHoverImgStatus(isHovering)
-  }, [])
   const generateRouterListJsx = useCallback(
     (routerList: Required<SideBarRouteExtension>[]) => {
       return routerList.map(router => {
@@ -207,24 +193,11 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
               style={router.isSubItem ? { paddingLeft: '64px' } : {}}
               role='button'
               onClick={() => switchRouter(router)}
-              onMouseEnter={() => {
-                hoverImg(router.isActive, true)
-              }}
-              onMouseLeave={() => {
-                hoverImg(router.isActive, false)
-              }}
               tabIndex={0}
             >
-              {!!router.activeImageURL && (
-                <img
-                  className={styleImageFn()}
-                  src={router.isActive || hoverImgStatus ? router.activeImageURL : router.inactiveImageURL}
-                  alt={router.name}
-                />
-              )}
-
+              {!!router.activeImageURL && router.isActive ? router.activeImageURL : router.inactiveImageURL}
               {isClose && (
-                <span className={styles.sideNav_chart}>
+                <span className={styles.sideNav_chart} style={{ marginLeft: '20px' }}>
                   {router.name} {router.name === '异常信息' && +count > 0 && <span className={styles.errorMessageCue} />}
                 </span>
               )}
@@ -235,7 +208,7 @@ const SideBar: React.FC<{ routerList: SideBarRoute[]; isClose: boolean }> = ({ r
         )
       })
     },
-    [styleMemoFn, styleImageFn, isClose, count, switchRouter, hoverImgStatus, hoverImg]
+    [styleMemoFn, isClose, count, switchRouter]
   )
 
   return <>{generateRouterListJsx(routerList2Render)}</>

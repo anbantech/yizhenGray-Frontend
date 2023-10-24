@@ -10,7 +10,8 @@ import Scale from 'Src/view/Project/taskDetail/Scale/ScaleIndex'
 import ExcitationIndex from 'Src/view/NewExcitation/ExcitationIndex'
 import ScaleDetail from 'Src/view/Project/taskDetail/Scale/ScaleDetail'
 import ScaleInitInfo from 'Src/view/Project/taskDetail/Scale/ScaleInitInfo'
-import Modeling from 'Src/view/Modeling/Modeling'
+import ModelingIndex from 'Src/view/Modeling/ModelingIndex'
+import ModelDetailsIndex from 'Src/view/Modeling/ModelingDetail/ModelDetailsIndex'
 
 function content() {
   return (
@@ -18,7 +19,8 @@ function content() {
       <Switch>
         <Route path='/' exact component={Project} />
         <Route path='/Projects' exact component={Project} />
-        <Route path='/Modeling' exact component={Modeling} />
+        <Route path='/Modeling' exact component={ModelingIndex} />
+        <Route path='/Modeling/Detailes' exact component={ModelDetailsIndex} />
         <Route path='/Projects/Tasks' exact component={Tasks} />
         <Route path='/Projects/Tasks/Detail' exact component={TasksDetail} />
         <Route path='/Projects/Tasks/CreateTask' exact component={OperationTask} />
@@ -29,6 +31,7 @@ function content() {
         <Route path='/Projects/Tasks/Detail/Scale' exact component={Scale} />
         <Route path='/Projects/Tasks/Detail/ScaleDetail' exact component={ScaleDetail} />
         <Route path='/Excitataions' exact component={ExcitationIndex} />
+
         <Redirect from='/*' to='/' />
       </Switch>
     </div>
