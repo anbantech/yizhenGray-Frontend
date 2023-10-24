@@ -267,8 +267,8 @@ import ReactFlow, {
   getOutgoers
 } from 'reactflow'
 
-import CustomNode from './CustomNode'
-import useAutoLayout, { Direction } from './useLayout'
+import CustomNode from '../../ModelingMaterials/CustomNode'
+import useAutoLayout, { Direction } from '../../useLayout'
 
 import 'reactflow/dist/style.css'
 import styles from './model.less'

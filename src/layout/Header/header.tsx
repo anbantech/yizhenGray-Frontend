@@ -165,6 +165,8 @@ function Header(props: any) {
     '/Projects/Tasks/Detail/Scale': '动态监控',
     '/Projects/Tasks/Detail/ScaleDetail': '缺陷详情',
     '/Projects/Tasks/Detail/InitTask': '缺陷详情',
+    '/Modeling': '外设建模',
+    '/Modeling/Detailes': `${data?.name}`,
     '/Excitataions': '激励配置'
   }
 

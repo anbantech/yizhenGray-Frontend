@@ -2,6 +2,7 @@
 // import ModelDrawStoreType from './ModleStore'
 
 import { create } from 'zustand'
+
 import {
   Connection,
   Edge,
@@ -15,6 +16,10 @@ import {
   applyNodeChanges,
   applyEdgeChanges
 } from 'reactflow'
+import { deleteModelTarget, getModelTargetList, updateModelTarget } from 'Src/services/api/modelApi'
+import { throwErrorMessage } from 'Src/util/message'
+import { ModelDetails, NewModelListStore } from './ModleStore'
+// import { message } from 'antd'
 
 type RFState = {
   nodes: Node[]
@@ -109,9 +114,78 @@ const useStore = create<RFState>((set, get) => ({
     }
     const edgeArray = converTreeToEdges(treeNode)
     set({ nodes: [...nodeArray], edges: [...edgeArray] })
-    // onNodesChange(nodeArray as NodeChange[])
-    // onEdgesChange(edgeArray)
   }
 }))
 
-export default useStore
+const useNewModelingStore = create<NewModelListStore>((set, get) => ({
+  total: 0,
+  modelId: null,
+  loading: false,
+  modelList: [],
+  params: {
+    key_word: '',
+    page: 1,
+    page_size: 10,
+    sort_field: 'create_time',
+    sort_order: 'descend'
+  },
+  setKeyWords: (key_words: string) => {
+    const { params } = get()
+    set({ params: { ...params, key_word: key_words, page: 1 } })
+  },
+  setPage: (page: Record<string, number>) => {
+    const { params } = get()
+    set({ params: { ...params, ...page } })
+  },
+  getModelList: () => {},
+  setModelId: (val: number) => {
+    set({ modelId: val })
+  },
+  getModelTargetList: async () => {
+    const { toggleFn } = get()
+    try {
+      toggleFn()
+      const res = await getModelTargetList()
+      if (res.data) {
+        set({ modelList: [...res.data.results], total: res.data.total })
+      }
+      toggleFn()
+    } catch (error) {
+      toggleFn()
+      throwErrorMessage(error)
+    }
+  },
+  updateModelTargetList: async () => {
+    const { modelId } = get()
+    try {
+      const res = await updateModelTarget(modelId)
+    } catch {}
+  },
+  deleteModelTarget: async () => {
+    const { modelId } = get()
+    try {
+      const res = await deleteModelTarget(`${modelId}`)
+
+      return res
+    } catch (error) {
+      throwErrorMessage(error)
+      return error
+    }
+  },
+  toggleFn: () => {
+    const { loading } = get()
+    set({ loading: !loading })
+  }
+}))
+
+const useModelDetailsStore = create<ModelDetails>((set, get) => ({
+  tabs: 'customMadePeripheral',
+  keyWord: '',
+  setTabs: val => {
+    set({ tabs: val })
+  },
+  setKeyWord: val => {
+    set({ keyWord: val })
+  }
+}))
+export { useStore, useNewModelingStore, useModelDetailsStore }
