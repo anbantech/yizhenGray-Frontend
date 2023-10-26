@@ -16,9 +16,22 @@ import {
   applyNodeChanges,
   applyEdgeChanges
 } from 'reactflow'
-import { deleteModelTarget, getModelTargetList, updateModelTarget } from 'Src/services/api/modelApi'
+import {
+  deleteModelTarget,
+  getCustomMadePeripheralList,
+  getModelTargetList,
+  getProcessorList,
+  getTimerList,
+  newSetDataHander,
+  newSetPeripheral,
+  newSetRegister,
+  newSetTimer,
+  updateModelTarget
+} from 'Src/services/api/modelApi'
+import { getPortList } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
-import { ModelDetails, NewModelListStore } from './ModleStore'
+import { ModelDetails, NewModelListStore, HeaderStoreParams, PublicAttributesStoreParams, RightDetailsAttributesStoreParams } from './ModleStore'
+
 // import { message } from 'antd'
 
 type RFState = {
@@ -116,7 +129,7 @@ const useStore = create<RFState>((set, get) => ({
     set({ nodes: [...nodeArray], edges: [...edgeArray] })
   }
 }))
-
+// 目标机列表,建模首页
 const useNewModelingStore = create<NewModelListStore>((set, get) => ({
   total: 0,
   modelId: null,
@@ -178,14 +191,182 @@ const useNewModelingStore = create<NewModelListStore>((set, get) => ({
   }
 }))
 
+// 侧边栏获取列表store
 const useModelDetailsStore = create<ModelDetails>((set, get) => ({
   tabs: 'customMadePeripheral',
+  cusomMadePeripheralListParams: {
+    variety: '1',
+    platform_id: 0,
+    tag: '0',
+    key_word: '',
+    page: 1,
+    page_size: 10,
+    sort_field: 'create_time',
+    sort_order: 'descend'
+  },
+  timerListParams: {
+    platform_id: 0,
+    key_word: '',
+    page: 1,
+    page_size: 10,
+    sort_field: 'create_time',
+    sort_order: 'descend'
+  },
+  processorListParams: {
+    platform_id: 0,
+    used: 'false',
+    key_word: '',
+    page: 1,
+    page_size: 10,
+    sort_field: 'create_time',
+    sort_order: 'descend'
+  },
+  customMadePeripheralList: [],
+  timerList: [],
+  processorList: [],
+  boardLevelPeripherals: [],
   keyWord: '',
   setTabs: val => {
     set({ tabs: val })
   },
   setKeyWord: val => {
     set({ keyWord: val })
+  },
+  getCustomMadePeripheralStore: async (id: number) => {
+    const { cusomMadePeripheralListParams } = get()
+    try {
+      const params = { ...cusomMadePeripheralListParams, platform_id: id }
+      const res = await getCustomMadePeripheralList(params)
+      if (res.data) {
+        set({ customMadePeripheralList: [...res.data.results] })
+      }
+    } catch (error) {
+      throwErrorMessage(error, { 1006: '参数错误' })
+    }
+  },
+  getBoardCustomMadePeripheralStore: async (id: number) => {
+    const { cusomMadePeripheralListParams } = get()
+    try {
+      const params = { ...cusomMadePeripheralListParams, platform_id: id, variety: '1' }
+      const res = await getCustomMadePeripheralList(params)
+      if (res.data) {
+        set({ boardLevelPeripherals: [...res.data.results] })
+      }
+    } catch (error) {
+      throwErrorMessage(error, { 1006: '参数错误' })
+    }
+  },
+  getTimeListStore: async (id: number) => {
+    const { timerListParams } = get()
+    try {
+      const params = { ...timerListParams, platform_id: id }
+      const res = await getTimerList(params)
+      if (res.data) {
+        set({ timerList: [...res.data.results] })
+      }
+    } catch (error) {
+      throwErrorMessage(error, { 1006: '参数错误' })
+    }
+  },
+  getProcessorListStore: async (id: number) => {
+    const { processorListParams } = get()
+    try {
+      const params = { ...processorListParams, platform_id: id }
+      const res = await getProcessorList(params)
+      if (res.data) {
+        set({ processorList: [...res.data.results] })
+      }
+    } catch (error) {
+      throwErrorMessage(error, { 1006: '参数错误' })
+    }
+  },
+  getList: (val: string, id: number) => {
+    // 根据val获取对应的数据
+    const { getProcessorListStore, getCustomMadePeripheralStore, getTimeListStore } = get()
+    set({ tabs: val })
+    switch (val) {
+      case 'customMadePeripheral':
+        getCustomMadePeripheralStore(id)
+        break
+      case 'boardLevelPeripherals':
+        getCustomMadePeripheralStore(id)
+        break
+      case 'dataHandlerNotReferenced':
+        getProcessorListStore(id)
+        break
+      case 'time':
+        getTimeListStore(id)
+        break
+      default:
+        break
+    }
   }
 }))
-export { useStore, useNewModelingStore, useModelDetailsStore }
+
+const HeaderStore = create<HeaderStoreParams>((set, get) => ({
+  tabs: '',
+  params: {},
+  setTabs: val => {
+    set({ tabs: val })
+  },
+  unSetTabs: () => {
+    set({ tabs: '' })
+  },
+  createPeripheral: async () => {
+    const { params } = get()
+    try {
+      const res = await newSetPeripheral(params)
+    } catch (error) {
+      throwErrorMessage(error)
+    }
+  },
+  createRegister: async () => {
+    const { params } = get()
+    try {
+      const res = await newSetRegister(params)
+    } catch (error) {
+      throwErrorMessage(error)
+    }
+  },
+  createDataHandler: async () => {
+    const { params } = get()
+    try {
+      const res = await newSetDataHander(params)
+    } catch (error) {
+      throwErrorMessage(error)
+    }
+  },
+  createTimer: async () => {
+    const { params } = get()
+    try {
+      const res = await newSetTimer(params)
+    } catch (error) {
+      throwErrorMessage(error)
+    }
+  }
+}))
+
+const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>(set => ({
+  typeAttributes: 'Processor',
+  setTypeDetailsAttributes: val => {
+    set({ typeAttributes: val })
+  }
+}))
+
+const publicAttributes = create<PublicAttributesStoreParams>(set => ({
+  portList: [],
+  setPortList: async () => {
+    try {
+      const result = await getPortList()
+      if (result.data) {
+        const results = result.data
+        set({ portList: results })
+      }
+      return result
+    } catch (error) {
+      throwErrorMessage(error)
+    }
+  }
+}))
+
+export { useStore, useNewModelingStore, publicAttributes, useModelDetailsStore, HeaderStore, RightDetailsAttributesStore }

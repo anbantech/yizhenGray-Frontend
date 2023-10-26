@@ -6,7 +6,7 @@ import zhCN from 'antd/lib/locale/zh_CN'
 import delete_icon from 'Src/assets/image/icon_delete.svg'
 import inputStyle from 'Src/components/Input/searchInput/searchInput.less'
 import styles from 'Src/view/Project/project/project.less'
-import { useNewModelingStore } from 'Src/view/Modeling/Store/ModelStore'
+import { publicAttributes, useNewModelingStore } from 'Src/view/Modeling/Store/ModelStore'
 import ModelModal from 'Components/Modal/newModalOrFixModal/newModelOrFoxModel'
 import { ConfigProvider, message, Table, Tooltip } from 'antd'
 import { NoTask } from 'Src/view/NewExcitation/ExcitationComponents/ExcitationDraw/ExcitationDraw'
@@ -28,6 +28,7 @@ function ModelingIndex() {
   // 路由
   const history = useHistory()
   const { setPage, setKeyWords, getModelTargetList, deleteModelTarget, setModelId } = useNewModelingStore()
+  const { setPortList } = publicAttributes()
   const params = useNewModelingStore(state => state.params)
   const loading = useNewModelingStore(state => state.loading)
   const total = useNewModelingStore(state => state.total)
@@ -89,6 +90,13 @@ function ModelingIndex() {
     },
     [history]
   )
+
+  // 获取端口
+  useEffect(() => {
+    setPortList()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // Todo
   // useEffect(() => {
   //   getModelTargetList()

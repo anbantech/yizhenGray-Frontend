@@ -7,10 +7,11 @@ function ModelingInput() {
   const updateParams = (val: string) => {
     console.log(val)
     return val
+
+    // todo 搜索关键字查询接口
   }
 
-  const debouncedValue = useDebounce(updateParams, { wait: 500 })
-  console.log(debouncedValue)
+  useDebounce(updateParams, { wait: 500 })
   return (
     <div className={StyleSheet.ModelingBodyInput}>
       <SearchInput className={StyleSheet.ModelingInput} placeholder='根据名称搜索' onChangeValue={updateParams} />
