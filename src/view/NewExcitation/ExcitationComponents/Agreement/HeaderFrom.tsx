@@ -114,7 +114,6 @@ const HeadForm = React.forwardRef((props, myRef) => {
       const result = await getPortList()
       if (result.data) {
         const results = result.data
-
         setPortList(results)
       }
       return result

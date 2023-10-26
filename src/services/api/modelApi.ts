@@ -1,3 +1,12 @@
+import {
+  CustomMadePeripheralListParams,
+  newPeripheralsParams,
+  newSetDataHanderParams,
+  newSetRegisterParams,
+  newSetTimerParams,
+  ProcessorListParams,
+  TimerListParams
+} from 'Src/globalType/Param'
 import request from 'Src/services/request/request'
 
 // 获取目标机列表
@@ -17,4 +26,49 @@ function updateModelTarget(id: number | null) {
 function deleteModelTarget(id: string | null) {
   return request.delete(`/api/v1.0/models/platforms/remove`, { params: { platforms: id } })
 }
-export { getModelTargetList, createModelTarget, updateModelTarget, deleteModelTarget }
+
+// 获取外设列表
+function getCustomMadePeripheralList(params: CustomMadePeripheralListParams) {
+  return request.get(`/api/v1.0/models/peripherals/query`, { params })
+}
+
+// 获取数据处理器列表
+function getProcessorList(params: ProcessorListParams) {
+  return request.get(`/api/v1.0/models/data_processor/query`, { params })
+}
+
+// 获取定时器列表
+
+function getTimerList(params: TimerListParams) {
+  return request.get(`/api/v1.0/models/timers/query`, { params })
+}
+
+// 新建外设
+function newSetPeripheral(params: newPeripheralsParams) {
+  return request.post(`/api/v1.0/models/peripherals/save`, params)
+}
+// 新建寄存器
+function newSetRegister(params: newSetRegisterParams) {
+  return request.post(`/api/v1.0/models/registers/save`, params)
+}
+// 新建数据处理器
+function newSetDataHander(params: newSetDataHanderParams) {
+  return request.post(`/api/v1.0/models/data_processor/save`, params)
+}
+// 新建定时器
+function newSetTimer(params: newSetTimerParams) {
+  return request.post(`/api/v1.0/models/timers/save`, params)
+}
+export {
+  newSetPeripheral,
+  newSetRegister,
+  newSetDataHander,
+  newSetTimer,
+  getModelTargetList,
+  getTimerList,
+  createModelTarget,
+  getProcessorList,
+  updateModelTarget,
+  deleteModelTarget,
+  getCustomMadePeripheralList
+}

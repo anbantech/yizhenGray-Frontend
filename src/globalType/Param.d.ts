@@ -589,3 +589,65 @@ export interface ExcitationListParams {
   desc?: string
   child_id_list?: Record<string, any>[][]
 }
+
+export interface CustomMadePeripheralListParams {
+  variety: string
+  platform_id: number
+  tag: string
+  key_word?: string
+  page: number
+  page_size: number
+  sort_field?: string
+  sort_order?: string
+}
+
+export interface ProcessorListParams {
+  used: string
+  platform_id: number
+  key_word?: string
+  page: number
+  page_size: number
+  sort_field?: string
+  sort_order?: string
+}
+
+export interface TimerListParams {
+  platform_id: number
+  key_word?: string
+  page: number
+  page_size: number
+  sort_field?: string
+  sort_order?: string
+}
+
+export interface newPeripheralsParams {
+  name: string
+  base_address: string
+  address_length: string
+  kind: number
+  variety?: number
+  desc?: string
+  platform_id: number
+}
+
+export interface newSetRegisterParams {
+  name: string
+  relative_address: string
+  kind: string
+  finish?: string
+  variety?: number
+  platform_id: number
+}
+
+export interface newSetDataHanderParams {
+  name: string
+  port: string
+  platform_id: number
+}
+
+export interface newSetTimerParams {
+  name: string
+  period: string
+  interrupt: string
+  platform_id: number
+}

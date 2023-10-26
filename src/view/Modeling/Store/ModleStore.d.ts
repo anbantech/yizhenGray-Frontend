@@ -1,4 +1,5 @@
 import { Node, Edge } from 'reactflow'
+import { CustomMadePeripheralListParams, ProcessorListParams, TimerListParams } from 'Src/globalType/Param'
 
 type NodeItem = {
   id: string
@@ -61,5 +62,38 @@ export interface ModelDetails {
   tabs: string
   setTabs: (val: string) => void
   keyWord: string
+  cusomMadePeripheralListParams: CustomMadePeripheralListParams
+  processorListParams: ProcessorListParams
+  timerListParams: TimerListParams
+  customMadePeripheralList: [] | CustomMadePeripheralListParams[]
+  timerList: [] | TimerListParams[]
+  processorList: [] | ProcessorListParams[]
+  boardLevelPeripherals: [] | CustomMadePeripheralListParams[]
   setKeyWord: (val: string) => void
+  getCustomMadePeripheralStore: (id: number) => void
+  getProcessorListStore: (id: number) => void
+  getTimeListStore: (id: number) => void
+  getList: (val: string, id: number) => void
+}
+
+export interface HeaderStoreParams {
+  tabs: string
+  setTabs: (val: string) => void
+  unSetTabs: () => void
+  params: any
+  createPeripheral: () => void
+  createRegister: () => void
+  createDataHandler: () => void
+  createTimer: () => void
+}
+
+export interface RightDetailsAttributesStoreParams {
+  typeAttributes: string
+  setTypeDetailsAttributes: (val: string) => void
+}
+
+// 端口列表
+export interface PublicAttributesStoreParams {
+  portList: any
+  setPortList: () => void
 }
