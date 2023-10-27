@@ -49,18 +49,20 @@ export interface NewModelListStore {
   total: number
   params: ModelParams
   modelList: [] | ModelListType
+  createTarget: (params: { name: string; processor: string; desc?: string }) => void
   setKeyWords: (key_words: string) => void
   setPage: (page: Record<string, number>) => void
   getModelTargetList: () => void
-  updateModelTargetList: (id: number) => void
+  getModelListDetails: (id: number) => void
+  updateModelTargetList: (params: { name: string; processor: string; desc?: string }) => void
   deleteModelTarget: () => Promise
   setModelId: (val: number) => void
   toggleFn: () => void
+  initParams: () => void
 }
 
 export interface ModelDetails {
   tabs: string
-  setTabs: (val: string) => void
   keyWord: string
   cusomMadePeripheralListParams: CustomMadePeripheralListParams
   processorListParams: ProcessorListParams
@@ -69,11 +71,18 @@ export interface ModelDetails {
   timerList: [] | TimerListParams[]
   processorList: [] | ProcessorListParams[]
   boardLevelPeripherals: [] | CustomMadePeripheralListParams[]
+  cusomMadePeripheralNums: number
+  timerNums: number
+  handlerDataNums: number
+  boardPeripheralNums: number
+  setTabs: (val: string) => void
   setKeyWord: (val: string) => void
+  getBoardCustomMadePeripheralStore: (id: number) => void
   getCustomMadePeripheralStore: (id: number) => void
   getProcessorListStore: (id: number) => void
   getTimeListStore: (id: number) => void
   getList: (val: string, id: number) => void
+  getModelListDetails: (id: number) => void
 }
 
 export interface HeaderStoreParams {

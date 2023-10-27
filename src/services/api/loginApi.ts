@@ -26,6 +26,9 @@ export function getUserInfo() {
   return request.get(`/api/v1.0/users/detail`)
 }
 
+export function getSystem() {
+  return request.get('/api/v1.0/system/constants')
+}
 export function resetPassword(params: { userId: number; username: string; password: string; confirm_password: string; admin_password: string }) {
   const { userId, ...restParams } = params
   return request.put(`/api/v1.0/users/update/${userId}`, restParams)

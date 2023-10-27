@@ -274,6 +274,17 @@ const HeaderBarMemo = () => {
   const setTabs = HeaderStore(state => state.setTabs)
   const tabs = HeaderStore(state => state.tabs)
   const tabsSelect = React.useMemo(() => tabs, [tabs])
+  const unSelect = HeaderStore(state => state.unSetTabs)
+  const showOrHide = React.useCallback(
+    (val: string) => {
+      if (tabsSelect === val) {
+        unSelect()
+      } else {
+        setTabs(val)
+      }
+    },
+    [setTabs, tabsSelect, unSelect]
+  )
   return (
     <div className={StyleSheet.middleLeftHeaderBar}>
       <div className={StyleSheet.middleLeftHeaderBarLeft}>
@@ -283,7 +294,7 @@ const HeaderBarMemo = () => {
               key={item.tabs}
               role='time'
               onClick={() => {
-                setTabs(item.tabs)
+                showOrHide(item.tabs)
               }}
               className={tabsSelect === item.tabs ? StyleSheet.middleLeftSelectHeaderBarItem : StyleSheet.middleLeftHeaderBarItem}
               style={item.style}

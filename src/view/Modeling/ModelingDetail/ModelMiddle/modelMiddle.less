@@ -1,6 +1,7 @@
 
 .moddleMiddleHeaderBody{
     position: absolute;
+    z-index: 99999;
     top: 32px;
     left: 0;
     display: flex;
@@ -81,9 +82,9 @@
 
 // header样式
 .middleHeaderBar{
-    width: calc(100% - 480px);
     height: 32px ;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     background-color: #fff ;
     border-bottom: 1px solid #efefef;

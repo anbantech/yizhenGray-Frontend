@@ -1,4 +1,16 @@
+import { getSystem } from 'Src/services/api/loginApi'
+import { throwErrorMessage } from 'Src/util/message'
 import { create } from 'zustand'
+
+interface SystemStore {
+  PROCESSOR: [] | Record<string, any>[]
+  REGISTER_CMD: [] | Record<string, any>[]
+  ALGORITHM: [] | Record<string, any>[]
+  PERIPHERAL_TYPE: [] | Record<string, any>[]
+  RESET_MODE: [] | Record<string, any>[]
+  ERROR_KIND_MAP: [] | Record<string, any>[]
+  getSystemList: () => void
+}
 
 const useWebSocketStore = create<WsStore>((set, get) => ({
   socket: null,
@@ -29,4 +41,24 @@ const useWebSocketStore = create<WsStore>((set, get) => ({
   }
 }))
 
-export default useWebSocketStore
+const getSystemConstantsStore = create<SystemStore>(set => ({
+  PROCESSOR: [],
+  REGISTER_CMD: [],
+  ALGORITHM: [],
+  PERIPHERAL_TYPE: [],
+  RESET_MODE: [],
+  ERROR_KIND_MAP: [],
+  getSystemList: async () => {
+    try {
+      const res = await getSystem()
+      if (res.data) {
+        const { PROCESSOR, REGISTER_CMD, ALGORITHM, PERIPHERAL_TYPE, RESET_MODE, ERROR_KIND_MAP } = res.data
+        set({ PROCESSOR, REGISTER_CMD, ALGORITHM, PERIPHERAL_TYPE, RESET_MODE, ERROR_KIND_MAP })
+      }
+    } catch (error) {
+      throwErrorMessage(error)
+    }
+  }
+}))
+
+export { getSystemConstantsStore, useWebSocketStore }

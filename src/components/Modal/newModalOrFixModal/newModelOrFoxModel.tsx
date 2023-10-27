@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
-import { Modal, Input, Form, Button, Select } from 'antd'
+import { Modal, Input, Form, Button, Select, message } from 'antd'
+import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
 import { throwErrorMessage } from 'Src/util/message'
+import { useNewModelingStore } from 'Src/view/Modeling/Store/ModelStore'
 import styles from './modelingModal.less'
 
 interface FormInstance {
   name: string
   desc: string
+  processor: string
 }
 
 interface ModelProps {
   visible: boolean
-  modelId: number | null
   creatModalOrFixModal: (val: boolean) => void
   isFix: boolean
+  detailInfo: { name: string; processor: string; desc: string }
 }
 
 const layout = {
@@ -23,16 +26,78 @@ const layout = {
 
 function ModelModal(props: ModelProps) {
   const { TextArea } = Input
-  const { visible, modelId, creatModalOrFixModal, isFix } = props
+  const { visible, creatModalOrFixModal, isFix, detailInfo } = props
+  const [isDisableStatus, setDisabledStatus] = useState(true)
   const { Option } = Select
   const [form] = Form.useForm<FormInstance>()
-
-  const onValuesChange = (changedValues: any, allValues: any) => {}
+  const { createTarget, updateModelTargetList, initParams } = useNewModelingStore()
+  const { PROCESSOR } = getSystemConstantsStore()
+  const onValuesChange = (changedValues: any, allValues: any) => {
+    const bol = allValues.desc === undefined || allValues.desc?.length <= 50
+    if (allValues.processor && allValues.name?.length >= 2 && allValues.name.length <= 20 && /^[\w\u4E00-\u9FA5]+$/.test(allValues.name) && bol) {
+      setDisabledStatus(false)
+    } else {
+      setDisabledStatus(true)
+    }
+  }
   const closeModal = React.useCallback(() => {
     form.resetFields()
     creatModalOrFixModal(false)
   }, [creatModalOrFixModal, form])
 
+  const create = React.useCallback(
+    async (params: { name: string; processor: string; desc?: string }) => {
+      try {
+        const res = await createTarget(params)
+        if ((res as any).code === 0) {
+          message.success('创建成功')
+          initParams()
+          creatModalOrFixModal(false)
+        }
+      } catch (error) {
+        throwErrorMessage(error, { 1004: '该建模任务不存在', 1005: '建模任务名称重复，请修改', 1007: '操作频繁' })
+      }
+    },
+    [creatModalOrFixModal, createTarget, initParams]
+  )
+
+  const fix = React.useCallback(
+    async (params: { name: string; processor: string; desc?: string }) => {
+      try {
+        const res = await updateModelTargetList(params)
+        if ((res as any).code === 0) {
+          message.success('修改成功')
+          initParams()
+          creatModalOrFixModal(false)
+        }
+      } catch (error) {
+        throwErrorMessage(error, { 1004: '该建模任务不存在', 1005: '建模任务名称重复，请修改', 1007: '操作频繁' })
+      }
+    },
+    [creatModalOrFixModal, initParams, updateModelTargetList]
+  )
+  const createOrfix = React.useCallback(async () => {
+    const value = await form.validateFields()
+    const { name, desc, processor } = value
+    if (isFix) {
+      fix({ name, desc, processor })
+    } else {
+      create({ name, desc, processor })
+    }
+  }, [create, fix, form, isFix])
+  useEffect(() => {
+    if (detailInfo && detailInfo.name) {
+      const { name, desc, processor } = detailInfo
+      // cause backend will auto add prefix for queue name
+      // thus remove prefix of queue name when editing
+      const formData = { name, desc, processor }
+      form.setFieldsValue(formData)
+      setDisabledStatus(false)
+    }
+    return () => {
+      form.resetFields()
+    }
+  }, [form, detailInfo])
   return (
     <Modal
       centered={Boolean(1)}
@@ -44,7 +109,7 @@ function ModelModal(props: ModelProps) {
         <Button className={styles.btn_cancel} key='back' onClick={closeModal}>
           取消
         </Button>,
-        <Button className={styles.btn_create} key='submit' type='primary'>
+        <Button className={styles.btn_create} key='submit' onClick={createOrfix} disabled={isDisableStatus} type='primary'>
           {isFix ? '修改' : '新建'}
         </Button>
       ]}
@@ -74,7 +139,7 @@ function ModelModal(props: ModelProps) {
         </Form.Item>
 
         <Form.Item
-          name='name'
+          name='processor'
           validateFirst
           label='处理器类型'
           validateTrigger={['onBlur']}
@@ -85,10 +150,10 @@ function ModelModal(props: ModelProps) {
               /**
                * 根据连接方式列表渲染下拉框可选择的设备比特率
                */
-              [1, 2, 3]?.map((rate: any) => {
+              PROCESSOR?.map((rate: any) => {
                 return (
-                  <Option key={rate} disabled={rate.disabled} value={rate}>
-                    {rate}
+                  <Option key={rate.value} disabled={rate.disabled} value={rate.value}>
+                    {rate.label}
                   </Option>
                 )
               })

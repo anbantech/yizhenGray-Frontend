@@ -271,7 +271,7 @@ import CustomNode from '../../ModelingMaterials/CustomNode'
 import useAutoLayout, { Direction } from '../../useLayout'
 
 import 'reactflow/dist/style.css'
-import styles from './model.less'
+import styles from '../../model.less'
 
 const nodeTypes: NodeTypes = {
   custom: CustomNode
@@ -481,7 +481,7 @@ function ReactFlowPro({ direction = 'LR' }: ExampleProps) {
   }, [nodes, fitView])
 
   return (
-    <div className={styles.container} style={{ width: '80vw', height: '90vh' }}>
+    <div className={styles.container}>
       <ReactFlow
         className={styles.reactFlow}
         proOptions={proOptions}
@@ -510,10 +510,10 @@ function ReactFlowPro({ direction = 'LR' }: ExampleProps) {
 }
 
 // as we are accessing the internal React Flow state in our component, we need to wrap it with the ReactFlowProvider
-const ReactFlowWrapper = (props: ExampleProps) => {
+const ReactFlowWrapper = () => {
   return (
     <ReactFlowProvider>
-      <ReactFlowPro {...props} />
+      <ReactFlowPro />
     </ReactFlowProvider>
   )
 }

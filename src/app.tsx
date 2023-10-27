@@ -13,7 +13,8 @@ import styles from './app.less'
 import Head from './layout/Header/header'
 import LeftNav from './layout/LeftNav/leftNav'
 import Contents from './layout/content/content'
-import useWebSocketStore from './webSocket/webSocketStore'
+
+import { useWebSocketStore, getSystemConstantsStore } from './webSocket/webSocketStore'
 import { useGetVersionHook } from './webSocket/getVersion'
 import VersionModal from './components/Modal/VersionModal'
 
@@ -22,14 +23,17 @@ const { Header, Content } = Layout
 function Main() {
   const firstEnter = JSON.parse(sessionStorage.getItem('fe') || 'true')
   const [flag, setFlag] = useState(firstEnter)
-
+  const getSystemList = getSystemConstantsStore(state => state.getSystemList)
   setTimeout(() => {
     if (flag) {
       setFlag(false)
       sessionStorage.setItem('fe', 'false')
     }
   }, 3500)
-
+  React.useEffect(() => {
+    getSystemList()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   return (
     <GlobalContextProvider>
       {flag && ifNeedShowLogo ? (

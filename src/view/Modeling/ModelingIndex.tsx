@@ -11,7 +11,7 @@ import ModelModal from 'Components/Modal/newModalOrFixModal/newModelOrFoxModel'
 import { ConfigProvider, message, Table, Tooltip } from 'antd'
 import { NoTask } from 'Src/view/NewExcitation/ExcitationComponents/ExcitationDraw/ExcitationDraw'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
-import { modelList } from 'Src/view/Modeling/mock'
+// import { modelList } from 'Src/view/Modeling/mock'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { throwErrorMessage } from 'Src/util/common'
 import { useHistory } from 'react-router'
@@ -21,18 +21,27 @@ const customizeRender = () => <DefaultValueTips content='暂无外设建模' />
 function ModelingIndex() {
   // 新建的模态框
   const [visible, setVisible] = useState(false)
+  const [detailInfo, setDetailInfo] = useState({ name: '', processor: '', desc: '' })
   // 删除的模态框
   const [closeingVisibleModal, setCloseingVisibleModal] = useState(false)
   // 是否修改
   const [isFix, setIsFix] = useState(false)
   // 路由
   const history = useHistory()
-  const { setPage, setKeyWords, getModelTargetList, deleteModelTarget, setModelId } = useNewModelingStore()
+  const {
+    setPage,
+    setKeyWords,
+    getModelListDetails,
+    initParams,
+    getModelTargetList,
+    modelList,
+    deleteModelTarget,
+    setModelId
+  } = useNewModelingStore()
   const { setPortList } = publicAttributes()
   const params = useNewModelingStore(state => state.params)
   const loading = useNewModelingStore(state => state.loading)
   const total = useNewModelingStore(state => state.total)
-  const modelId = useNewModelingStore(state => state.modelId)
   // 关键字搜索
   const updateParams = useCallback(
     (value: string) => {
@@ -59,6 +68,7 @@ function ModelingIndex() {
     try {
       const res = await deleteModelTarget()
       if (res.code === 0) {
+        initParams()
         message.success('删除成功')
       }
       setCloseingVisibleModal(false)
@@ -66,18 +76,38 @@ function ModelingIndex() {
       setCloseingVisibleModal(false)
       throwErrorMessage(error)
     }
-  }, [deleteModelTarget])
+  }, [deleteModelTarget, initParams])
 
   // 更新页码
   const changePage = (page: number, type: string, pageSize: number) => {
     setPage({ page, page_size: pageSize })
   }
 
+  // 获取建模详情
+  const getTargetDetails = async (id: number) => {
+    try {
+      const res: any = await getModelListDetails(id)
+      setDetailInfo(res.data)
+      return res
+    } catch (error) {
+      throwErrorMessage(error)
+    }
+  }
+
   // 修改操作
   const fixTargetModeling = (id: number) => {
-    setIsFix(true) // 通知模态框是否是修改操作
-    setModelId(id) // 更新store里的建模id
-    setVisible(true) // 打开模态框
+    getTargetDetails(id)
+      .then((res: any) => {
+        if (res.data) {
+          setIsFix(true) // 通知模态框是否是修改操作
+          setModelId(id) // 更新store里的建模id
+          setVisible(true) // 打开模态框
+        }
+        return res
+      })
+      .catch(error => {
+        throwErrorMessage(error)
+      })
   }
 
   // 跳转到建模详情
@@ -98,9 +128,9 @@ function ModelingIndex() {
   }, [])
 
   // Todo
-  // useEffect(() => {
-  //   getModelTargetList()
-  // }, [getModelTargetList, params])
+  useEffect(() => {
+    getModelTargetList()
+  }, [getModelTargetList, params])
 
   // 表格cloumn
   const columns = [
@@ -206,7 +236,7 @@ function ModelingIndex() {
         </div>
       </div>
       <>
-        {[1].length >= 1 ? (
+        {modelList?.length >= 1 ? (
           <div>
             <div className={styles.tableConcent}>
               <ConfigProvider locale={zhCN} renderEmpty={customizeRender}>
@@ -224,14 +254,14 @@ function ModelingIndex() {
         )}
       </>
       <>
-        <ModelModal modelId={modelId} visible={visible} creatModalOrFixModal={creatModalOrFixModal} isFix={isFix} />
+        {visible && <ModelModal detailInfo={detailInfo} visible={visible} creatModalOrFixModal={creatModalOrFixModal} isFix={isFix} />}
         <CommonModle
           IsModalVisible={closeingVisibleModal}
           deleteProjectRight={deleteTargetModeling}
           CommonModleClose={deleteTargetModalStatus}
-          name='删除项目'
+          name='删除建模任务'
           btnName='删除'
-          concent='关联任务会被停止，关联数据会一并被删除，是否确定删除？'
+          concent='是否确认删除该建模任务？'
         />
       </>
     </div>
