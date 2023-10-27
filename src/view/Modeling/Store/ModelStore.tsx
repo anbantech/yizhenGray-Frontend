@@ -17,10 +17,12 @@ import {
   applyEdgeChanges
 } from 'reactflow'
 import {
+  createModelTarget,
   deleteModelTarget,
   getCustomMadePeripheralList,
   getModelTargetList,
   getProcessorList,
+  getTargetDetails,
   getTimerList,
   newSetDataHander,
   newSetPeripheral,
@@ -142,6 +144,17 @@ const useNewModelingStore = create<NewModelListStore>((set, get) => ({
     sort_field: 'create_time',
     sort_order: 'descend'
   },
+  initParams: () => {
+    set({
+      params: {
+        key_word: '',
+        page: 1,
+        page_size: 10,
+        sort_field: 'create_time',
+        sort_order: 'descend'
+      }
+    })
+  },
   setKeyWords: (key_words: string) => {
     const { params } = get()
     set({ params: { ...params, key_word: key_words, page: 1 } })
@@ -150,15 +163,22 @@ const useNewModelingStore = create<NewModelListStore>((set, get) => ({
     const { params } = get()
     set({ params: { ...params, ...page } })
   },
-  getModelList: () => {},
+  getModelListDetails: async (id: number) => {
+    const res = await getTargetDetails(id)
+    return res
+  },
   setModelId: (val: number) => {
     set({ modelId: val })
   },
+  createTarget: async (params: { name: string; processor: string; desc?: string }) => {
+    const res = await createModelTarget(params)
+    return res
+  },
   getModelTargetList: async () => {
-    const { toggleFn } = get()
+    const { toggleFn, params } = get()
     try {
       toggleFn()
-      const res = await getModelTargetList()
+      const res = await getModelTargetList(params)
       if (res.data) {
         set({ modelList: [...res.data.results], total: res.data.total })
       }
@@ -168,11 +188,10 @@ const useNewModelingStore = create<NewModelListStore>((set, get) => ({
       throwErrorMessage(error)
     }
   },
-  updateModelTargetList: async () => {
+  updateModelTargetList: async (params: { name: string; processor: string; desc?: string }) => {
     const { modelId } = get()
-    try {
-      const res = await updateModelTarget(modelId)
-    } catch {}
+    const res = await updateModelTarget(modelId, params)
+    return res
   },
   deleteModelTarget: async () => {
     const { modelId } = get()
@@ -194,6 +213,10 @@ const useNewModelingStore = create<NewModelListStore>((set, get) => ({
 // 侧边栏获取列表store
 const useModelDetailsStore = create<ModelDetails>((set, get) => ({
   tabs: 'customMadePeripheral',
+  cusomMadePeripheralNums: 0,
+  timerNums: 0,
+  handlerDataNums: 0,
+  boardPeripheralNums: 0,
   cusomMadePeripheralListParams: {
     variety: '1',
     platform_id: 0,
@@ -238,7 +261,7 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
       const params = { ...cusomMadePeripheralListParams, platform_id: id }
       const res = await getCustomMadePeripheralList(params)
       if (res.data) {
-        set({ customMadePeripheralList: [...res.data.results] })
+        set({ customMadePeripheralList: [...res.data] })
       }
     } catch (error) {
       throwErrorMessage(error, { 1006: '参数错误' })
@@ -282,14 +305,14 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
   },
   getList: (val: string, id: number) => {
     // 根据val获取对应的数据
-    const { getProcessorListStore, getCustomMadePeripheralStore, getTimeListStore } = get()
+    const { getProcessorListStore, getCustomMadePeripheralStore, getTimeListStore, getBoardCustomMadePeripheralStore } = get()
     set({ tabs: val })
     switch (val) {
       case 'customMadePeripheral':
         getCustomMadePeripheralStore(id)
         break
       case 'boardLevelPeripherals':
-        getCustomMadePeripheralStore(id)
+        getBoardCustomMadePeripheralStore(id)
         break
       case 'dataHandlerNotReferenced':
         getProcessorListStore(id)
@@ -299,6 +322,22 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
         break
       default:
         break
+    }
+  },
+  getModelListDetails: async (id: number) => {
+    try {
+      const res = await getTargetDetails(id)
+      if (res.data) {
+        const { processor_cnt, timer_cnt, default_peripheral_cnt, peripheral_cnt } = res.data
+        set({
+          cusomMadePeripheralNums: peripheral_cnt,
+          timerNums: timer_cnt,
+          handlerDataNums: processor_cnt,
+          boardPeripheralNums: default_peripheral_cnt
+        })
+      }
+    } catch (error) {
+      throwErrorMessage(error)
     }
   }
 }))

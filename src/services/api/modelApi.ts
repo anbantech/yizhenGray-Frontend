@@ -10,17 +10,21 @@ import {
 import request from 'Src/services/request/request'
 
 // 获取目标机列表
-function getModelTargetList() {
-  return request.post('/api/v1.0/models/platforms/query')
+function getModelTargetList(params: any) {
+  return request.get('/api/v1.0/models/platforms/query', { params })
+}
+// 获取目标机详情
+function getTargetDetails(id: number) {
+  return request.get(`/api/v1.0/models/platforms/get/${id}`)
 }
 
 // 创建目标机
-function createModelTarget() {
-  return request.post('/api/v1.0/models/platforms/save')
+function createModelTarget(params: { name: string; processor: string; desc?: sting }) {
+  return request.post('/api/v1.0/models/platforms/save', params)
 }
 // 更新目标机
-function updateModelTarget(id: number | null) {
-  return request.put(`/api/v1.0/models/platforms/update/${id}`)
+function updateModelTarget(id: number | null, params: { name: string; processor: string; desc?: string }) {
+  return request.put(`/api/v1.0/models/platforms/update/${id}`, params)
 }
 // 删除目标机
 function deleteModelTarget(id: string | null) {
@@ -38,7 +42,6 @@ function getProcessorList(params: ProcessorListParams) {
 }
 
 // 获取定时器列表
-
 function getTimerList(params: TimerListParams) {
   return request.get(`/api/v1.0/models/timers/query`, { params })
 }
@@ -70,5 +73,6 @@ export {
   getProcessorList,
   updateModelTarget,
   deleteModelTarget,
-  getCustomMadePeripheralList
+  getCustomMadePeripheralList,
+  getTargetDetails
 }

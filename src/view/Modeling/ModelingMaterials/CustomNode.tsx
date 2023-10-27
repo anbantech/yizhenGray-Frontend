@@ -1,7 +1,7 @@
 import React, { useState, DragEvent } from 'react'
 import { Handle, NodeProps, Position } from 'reactflow'
 import cx from 'classnames'
-import styles from './model.less'
+import styles from '../model.less'
 
 function CustomNode({ data, sourcePosition, targetPosition }: NodeProps) {
   const [isDropzoneActive, setDropzoneActive] = useState<boolean>(false)
