@@ -5,9 +5,16 @@ import {
   newSetRegisterParams,
   newSetTimerParams,
   ProcessorListParams,
-  TimerListParams
+  TimerListParams,
+  paramsCheck
 } from 'Src/globalType/Param'
 import request from 'Src/services/request/request'
+
+// 参数校验
+
+function validatorParams(params: paramsCheck) {
+  return request.post('/api/v1.0/models/platforms/verify', params)
+}
 
 // 获取目标机列表
 function getModelTargetList(params: any) {
@@ -19,7 +26,7 @@ function getTargetDetails(id: number) {
 }
 
 // 创建目标机
-function createModelTarget(params: { name: string; processor: string; desc?: sting }) {
+function createModelTarget(params: { name: string; processor: string; desc?: string }) {
   return request.post('/api/v1.0/models/platforms/save', params)
 }
 // 更新目标机
@@ -74,5 +81,6 @@ export {
   updateModelTarget,
   deleteModelTarget,
   getCustomMadePeripheralList,
-  getTargetDetails
+  getTargetDetails,
+  validatorParams
 }

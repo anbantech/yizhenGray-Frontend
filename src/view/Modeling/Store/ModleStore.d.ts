@@ -1,5 +1,5 @@
 import { Node, Edge } from 'reactflow'
-import { CustomMadePeripheralListParams, ProcessorListParams, TimerListParams } from 'Src/globalType/Param'
+import { CustomMadePeripheralListParams, ProcessorListParams, TimerListParams, paramsCheck } from 'Src/globalType/Param'
 
 type NodeItem = {
   id: string
@@ -105,4 +105,40 @@ export interface RightDetailsAttributesStoreParams {
 export interface PublicAttributesStoreParams {
   portList: any
   setPortList: () => void
+}
+
+type valueParams = {
+  value: number | string
+  validateStatus?: '' | 'success' | 'error' | 'warning' | 'validating' | undefined
+  errorMsg?: string | null
+}
+
+interface optionalParametersParams {
+  name?: valueParams
+  port?: valueParams
+  period?: valueParams
+  interrupt?: valueParams
+  base_address?: valueParams
+  address_length?: valueParams
+  peripheral_id?: valueParams
+  relative_address?: valueParams
+  desc?: valueParams
+}
+
+export interface FormItemCheckStoreParams {
+  changeValuePeripheralForm: (item: string, title: string, val: string) => void
+  changeValueTimerForm: (item: string, title: string, val: string) => void
+  checkFormValues: (val: paramsCheck) => void
+  changeValueRegisterForm: (item: string, title: string, val: string) => void
+  checkName: (item: string, title: string, val: string) => boolean
+  changeValueHanderlForm: (item: string, title: string, val: string) => void
+  optionalParameters: optionalParametersParams
+  initFormValue: () => void
+  btnStatus: boolean
+  setBtnStatus: (val: boolean) => void
+  checkNameLength: (val: string) => boolean
+  checkNameFormat: (val: string) => boolean
+  checkInterval: (val: string) => boolean
+  checkInterrupt: (val: string) => boolean
+  checkHex: (val: string) => boolean
 }

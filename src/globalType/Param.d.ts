@@ -651,3 +651,12 @@ export interface newSetTimerParams {
   interrupt: string
   platform_id: number
 }
+
+export interface paramsCheck {
+  object: string
+  platform: number
+  name?: string
+  addr?: string
+  length?: string
+  port?: string
+}
