@@ -60,6 +60,19 @@ type RFState = {
   setEdges: (edgesValue: Edge[]) => void
 }
 
+const titleMap = {
+  寄存器: 'register',
+  数据处理器: 'processor',
+  定时器: 'timer',
+  外设: 'peripheral'
+}
+
+const checkAsyncMap = {
+  peripheral: ['name', 'base_address'],
+  timer: ['name'],
+  processor: ['name', 'port'],
+  register: ['name', 'relative_address']
+}
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
 const useStore = create<RFState>((set, get) => ({
   nodes: [],
@@ -425,6 +438,11 @@ const publicAttributes = create<PublicAttributesStoreParams>(set => ({
 // 表单接口校验
 const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => ({
   btnStatus: true,
+  baseBtnStatus: true,
+  setBaseBtnStatus: val => {
+    set({ baseBtnStatus: val })
+  },
+
   setBtnStatus: val => {
     set({ btnStatus: val })
   },
@@ -466,15 +484,17 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
       validateStatus: ''
     }
   },
+
   // 外设表单
   changeValuePeripheralForm: (item, title, val) => {
-    const { checkName, checkHex } = get()
+    const { checkName, checkHex, setBtnStatus } = get()
     if (item === 'name') {
       checkName(item, title, val)
     }
     if (item === 'base_address' || item === 'address_length') {
       const hexResult = checkHex(val)
       if (!hexResult) {
+        setBtnStatus(true)
         set(state =>
           produce(state, draft => {
             const updatedDraft = draft
@@ -492,7 +512,14 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
         )
       }
     }
+    set(state =>
+      produce(state, draft => {
+        const updatedDraft = draft
+        ;(updatedDraft.optionalParameters as any)[item].value = val
+      })
+    )
   },
+
   // 数据处理器表单
   changeValueHanderlForm: (item, title, val) => {
     const { checkName } = get()
@@ -505,17 +532,11 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
         ;(updatedDraft.optionalParameters as any)[item].value = val
       })
     )
-    set(state =>
-      produce(state, draft => {
-        const updatedDraft = draft
-        ;(updatedDraft.optionalParameters as any)[item].value = val
-      })
-    )
   },
 
   //  寄存器表单
   changeValueRegisterForm: (item, title, val) => {
-    const { checkName, checkHex } = get()
+    const { checkName, checkHex, setBtnStatus } = get()
 
     if (item === 'name') {
       checkName(item, title, val)
@@ -523,6 +544,7 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
     if (item === 'relative_address') {
       const hexResult = checkHex(val)
       if (!hexResult) {
+        setBtnStatus(true)
         set(state =>
           produce(state, draft => {
             const updatedDraft = draft
@@ -551,7 +573,7 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
 
   // 定时器表单
   changeValueTimerForm: (item, title, val) => {
-    const { checkName, checkInterval, checkInterrupt } = get()
+    const { checkName, checkInterval, checkInterrupt, setBtnStatus } = get()
 
     if (item === 'name') {
       checkName(item, title, val)
@@ -559,6 +581,7 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
     if (item === 'period') {
       const intervalResult = checkInterval(val)
       if (!intervalResult) {
+        setBtnStatus(true)
         set(state =>
           produce(state, draft => {
             const updatedDraft = draft
@@ -579,6 +602,7 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
     if (item === 'interrupt') {
       const interruptResult = checkInterrupt(val)
       if (!interruptResult) {
+        setBtnStatus(true)
         set(state =>
           produce(state, draft => {
             const updatedDraft = draft
@@ -606,8 +630,9 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
 
   // 检查名字
   checkName: (item, title, val) => {
-    const { checkNameLength, checkNameFormat } = get()
+    const { checkNameLength, checkNameFormat, setBtnStatus } = get()
     if (!checkNameLength(val)) {
+      setBtnStatus(true)
       set(state =>
         produce(state, draft => {
           const updatedDraft = draft
@@ -618,6 +643,7 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
       return false
     }
     if (!checkNameFormat(val)) {
+      setBtnStatus(true)
       set(state =>
         produce(state, draft => {
           const updatedDraft = draft
@@ -627,10 +653,11 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
       )
       return false
     }
+
     set(state =>
       produce(state, draft => {
         const updatedDraft = draft
-        ;(updatedDraft.optionalParameters as any)[item].validateStatus = ''
+        ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'success'
         ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
       })
     )
@@ -650,10 +677,75 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
     const checkoutResult = Number(val) >= 0 && Number(val) <= 255
     return checkoutResult
   },
-
+  getKey: (val: string) => {
+    const { optionalParameters } = get()
+    const res = checkAsyncMap[val as keyof typeof checkAsyncMap].every(item => {
+      return optionalParameters[item as keyof typeof optionalParameters]?.validateStatus === 'success'
+    })
+    return res
+  },
   // 异步校验
-  checkFormValues: async params => {
-    const res = await validatorParams(params)
+  checkFormValues: async (type, id, title, value) => {
+    const { checkNameLength, checkNameFormat, setBtnStatus, optionalParameters, baseBtnStatus, getKey } = get()
+
+    if (!checkNameFormat(value) || !checkNameLength(value)) {
+      return false
+    }
+    set(state =>
+      produce(state, draft => {
+        const updatedDraft = draft
+        ;(updatedDraft.optionalParameters as any)[type].validateStatus = 'validating'
+        ;(updatedDraft.optionalParameters as any)[type].errorMsg = null
+      })
+    )
+    const params = {
+      object: titleMap[title as keyof typeof titleMap],
+      platform_id: id,
+      [type]: value
+    }
+
+    const base_address = {
+      object: titleMap[title as keyof typeof titleMap],
+      platform_id: id,
+      [type]: value,
+      address_length: optionalParameters.address_length?.value
+    }
+
+    const address_length = {
+      object: titleMap[title as keyof typeof titleMap],
+      platform_id: id,
+      [type]: value,
+      base_address: optionalParameters.base_address?.value
+    }
+
+    try {
+      const res = await validatorParams(type === 'address_length' ? { ...address_length } : type === 'base_address' ? { ...base_address } : params)
+      if (res.code === 0) {
+        set(state =>
+          produce(state, draft => {
+            const updatedDraft = draft
+            ;(updatedDraft.optionalParameters as any)[type].validateStatus = 'success'
+            ;(updatedDraft.optionalParameters as any)[type].errorMsg = null
+          })
+        )
+      }
+    } catch (error) {
+      setBtnStatus(true)
+      if (error.code === 1005) {
+        set(state =>
+          produce(state, draft => {
+            const updatedDraft = draft
+            ;(updatedDraft.optionalParameters as any)[type].validateStatus = 'error'
+            ;(updatedDraft.optionalParameters as any)[type].errorMsg = `${title}名称重复,请修改`
+          })
+        )
+      }
+    }
+    if (getKey(titleMap[title as keyof typeof titleMap]) && !baseBtnStatus) {
+      setBtnStatus(false)
+    } else {
+      setBtnStatus(true)
+    }
   },
 
   //  校验是否为16进制字符串
@@ -680,6 +772,8 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
   // 初始化数据
   initFormValue: () => {
     set({
+      btnStatus: true,
+      baseBtnStatus: true,
       optionalParameters: {
         name: {
           value: '',
@@ -713,7 +807,10 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
           value: '',
           validateStatus: ''
         },
-        desc: ''
+        desc: {
+          value: '',
+          validateStatus: ''
+        }
       }
     })
   }

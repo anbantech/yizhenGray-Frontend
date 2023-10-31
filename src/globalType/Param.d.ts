@@ -654,7 +654,7 @@ export interface newSetTimerParams {
 
 export interface paramsCheck {
   object: string
-  platform: number
+  platform_id: number
   name?: string
   addr?: string
   length?: string

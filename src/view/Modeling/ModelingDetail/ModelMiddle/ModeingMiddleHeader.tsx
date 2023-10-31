@@ -3,9 +3,12 @@ import React, { useMemo } from 'react'
 import { Button, Form, Input, Radio, Select } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
 import { IconPeripheral, IconYifuRegister, IconClock, IconCommon, IconDownload, IconFileText } from '@anban/iconfonts'
+import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
+import { useLocation } from 'react-router'
 import StyleSheet from './modelMiddle.less'
 import { formItemParamsCheckStore, HeaderStore, publicAttributes, useModelDetailsStore } from '../../Store/ModelStore'
-import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
+
+import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
 
 type TabsSelect = {
   tabs: string
@@ -85,25 +88,26 @@ const FormFooterMemo = React.memo(FormFooter)
 
 // 外设表单
 const PeripheralsForm = () => {
+  const platformsId = (useLocation() as LoactionState).state?.id
+  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
   const { PERIPHERAL_TYPE } = getSystemConstantsStore()
-  const { optionalParameters, changeValuePeripheralForm, setBtnStatus, checkHex, checkNameFormat, checkNameLength } = formItemParamsCheckStore()
+  const { optionalParameters, changeValuePeripheralForm, checkFormValues, setBaseBtnStatus } = formItemParamsCheckStore()
   const { name, base_address, address_length } = optionalParameters
 
   const [form] = Form.useForm()
-  const onValueChange = React.useCallback((val, allValues) => {
-    const bol = allValues.desc === undefined || allValues.desc?.length <= 50
-    if (
-      bol &&
-      checkNameFormat(allValues.name) &&
-      checkNameLength(allValues.name) &&
-      checkHex(allValues.address_length) &&
-      checkHex(allValues.base_address)
-    ) {
-      setBtnStatus(false)
-    } else {
-      setBtnStatus(true)
-    }
-  }, [])
+  const onValueChange = React.useCallback(
+    (val, allValues) => {
+      const bol = allValues.desc === undefined || allValues.desc?.length <= 50
+      const kindCheck = allValues.kind !== undefined
+      if (bol && kindCheck) {
+        setBaseBtnStatus(false)
+      } else {
+        setBaseBtnStatus(true)
+      }
+    },
+    [setBaseBtnStatus]
+  )
+
   return (
     <div className={StyleSheet.formBody}>
       <Form form={form} layout='vertical' onValuesChange={onValueChange}>
@@ -112,6 +116,7 @@ const PeripheralsForm = () => {
           required
           validateFirst
           name='name'
+          hasFeedback
           validateTrigger={['onChange', 'onBlur']}
           className={StyleSheet.firstFormItem}
           help={name?.errorMsg}
@@ -121,6 +126,9 @@ const PeripheralsForm = () => {
             placeholder='请输入自定义外设名称'
             onChange={e => {
               changeValuePeripheralForm('name', '外设', e.target.value)
+            }}
+            onBlur={e => {
+              checkFormValues('name', platformsIdmemo, '外设', e.target.value)
             }}
           />
         </Form.Item>
@@ -141,20 +149,40 @@ const PeripheralsForm = () => {
             })}
           </Select>
         </Form.Item>
-        <Form.Item label='基地址' required name='base_address' help={base_address?.errorMsg} validateStatus={base_address?.validateStatus}>
+        <Form.Item
+          label='基地址'
+          hasFeedback
+          required
+          name='base_address'
+          help={base_address?.errorMsg}
+          validateStatus={base_address?.validateStatus}
+        >
           <Input
             placeholder='请输入基地址'
             prefix='0x'
             onChange={e => {
               changeValuePeripheralForm('base_address', '外设', e.target.value)
             }}
+            onBlur={e => {
+              checkFormValues('base_address', platformsIdmemo, '外设', e.target.value)
+            }}
           />
         </Form.Item>
-        <Form.Item label='地址大小' required name='address_length' help={address_length?.errorMsg} validateStatus={address_length?.validateStatus}>
+        <Form.Item
+          label='地址大小'
+          hasFeedback
+          required
+          name='address_length'
+          help={address_length?.errorMsg}
+          validateStatus={address_length?.validateStatus}
+        >
           <Input
             placeholder='请输入地址大小'
             prefix='0x'
             suffix='字节'
+            onBlur={e => {
+              checkFormValues('address_length', platformsIdmemo, '外设', e.target.value)
+            }}
             onChange={e => {
               changeValuePeripheralForm('address_length', '外设', e.target.value)
             }}
@@ -183,25 +211,27 @@ const PeripheralsFormMemo = React.memo(PeripheralsForm)
 
 // 添加寄存器
 const ProcessorForm = () => {
+  const platformsId = (useLocation() as LoactionState).state?.id
+  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
   const customMadePeripheralList = useModelDetailsStore(state => state.customMadePeripheralList)
   const customMadePeripheralListMemo = useMemo(() => {
     return customMadePeripheralList.map((item: any) => {
       return { id: item.id, name: item.name }
     })
   }, [customMadePeripheralList])
-  const { optionalParameters, changeValueRegisterForm, setBtnStatus, checkHex, checkNameFormat, checkNameLength } = formItemParamsCheckStore()
+  const { optionalParameters, changeValueRegisterForm, checkFormValues, setBaseBtnStatus } = formItemParamsCheckStore()
   const { name, relative_address } = optionalParameters
 
   const [form] = Form.useForm()
   const onValueChange = React.useCallback(
     (changedValues: any, allValues: any) => {
-      if (checkNameFormat(allValues.name) && checkNameLength(allValues.name) && checkHex(allValues.relative_address)) {
-        setBtnStatus(false)
+      if (allValues.peripheral_id !== undefined) {
+        setBaseBtnStatus(false)
       } else {
-        setBtnStatus(true)
+        setBaseBtnStatus(true)
       }
     },
-    [checkHex, checkNameFormat, checkNameLength, setBtnStatus]
+    [setBaseBtnStatus]
   )
   return (
     <div className={StyleSheet.ProcessorFormBody}>
@@ -223,11 +253,14 @@ const ProcessorForm = () => {
             })}
           </Select>
         </Form.Item>
-        <Form.Item label='寄存器名称' required name='name' help={name?.errorMsg} validateStatus={name?.validateStatus}>
+        <Form.Item label='寄存器名称' hasFeedback required name='name' help={name?.errorMsg} validateStatus={name?.validateStatus}>
           <Input
             placeholder='请输入寄存器名称'
             onChange={e => {
               changeValueRegisterForm('name', '寄存器', e.target.value)
+            }}
+            onBlur={e => {
+              checkFormValues('name', platformsIdmemo, '寄存器', e.target.value)
             }}
           />
         </Form.Item>
@@ -235,6 +268,7 @@ const ProcessorForm = () => {
           label='偏移地址'
           required
           name='relative_address'
+          hasFeedback
           help={relative_address?.errorMsg}
           validateStatus={relative_address?.validateStatus}
         >
@@ -243,6 +277,9 @@ const ProcessorForm = () => {
             prefix='0x'
             onChange={e => {
               changeValueRegisterForm('relative_address', '偏移地址', e.target.value)
+            }}
+            onBlur={e => {
+              checkFormValues('relative_address', platformsIdmemo, '寄存器', e.target.value)
             }}
           />
         </Form.Item>
@@ -254,19 +291,21 @@ const ProcessorFormMemo = React.memo(ProcessorForm)
 
 // 数据处理器
 const DataHandlerForm = () => {
+  const platformsId = (useLocation() as LoactionState).state?.id
+  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
   const [form] = Form.useForm()
-  const { optionalParameters, changeValueHanderlForm, setBtnStatus, checkNameLength, checkNameFormat } = formItemParamsCheckStore()
-  const { name } = optionalParameters
+  const { optionalParameters, changeValueHanderlForm, checkFormValues, setBtnStatus } = formItemParamsCheckStore()
+  const { name, port } = optionalParameters
   const { portList } = publicAttributes()
   const onValueChange = React.useCallback(
     (val: any, allValues: { name: string; port: string }) => {
-      if (checkNameLength(allValues.name) && checkNameFormat(allValues.name) && allValues.port) {
+      if (allValues.port) {
         setBtnStatus(false)
       } else {
         setBtnStatus(true)
       }
     },
-    [checkNameFormat, checkNameLength, setBtnStatus]
+    [setBtnStatus]
   )
   return (
     <div className={StyleSheet.DataHandlerFormBody}>
@@ -276,6 +315,7 @@ const DataHandlerForm = () => {
           required
           className={StyleSheet.firstFormItem}
           name='name'
+          hasFeedback
           help={name?.errorMsg}
           validateStatus={name?.validateStatus}
         >
@@ -285,9 +325,12 @@ const DataHandlerForm = () => {
             onChange={e => {
               changeValueHanderlForm('name', '数据处理器', e.target.value)
             }}
+            onBlur={e => {
+              checkFormValues('name', platformsIdmemo, '数据处理器', e.target.value)
+            }}
           />
         </Form.Item>
-        <Form.Item name='port' label='端口' rules={[{ required: true, message: '请选择端口' }]}>
+        <Form.Item name='port' label='端口' required hasFeedback help={port?.errorMsg} validateStatus={port?.validateStatus}>
           <Select
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
             placeholder='请选择端口'
@@ -318,30 +361,19 @@ const DataHandlerFormMemo = React.memo(DataHandlerForm)
 // 添加定时器
 const TimeForm = () => {
   const [form] = Form.useForm()
-  const {
-    optionalParameters,
-    changeValueTimerForm,
-    checkNameLength,
-    checkNameFormat,
-    setBtnStatus,
-    checkInterval,
-    checkInterrupt
-  } = formItemParamsCheckStore()
+  const platformsId = (useLocation() as LoactionState).state?.id
+  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
+  const { optionalParameters, changeValueTimerForm, checkFormValues, setBtnStatus, checkInterval, checkInterrupt } = formItemParamsCheckStore()
   const { name, period, interrupt } = optionalParameters
   const onValueChange = React.useCallback(
     (val: any, allValues: { name: string; period: string; interrupt: string }) => {
-      if (
-        checkNameLength(allValues?.name) &&
-        checkNameFormat(allValues?.name) &&
-        checkInterval(allValues.period) &&
-        checkInterrupt(allValues.interrupt)
-      ) {
+      if (checkInterval(allValues.period) && checkInterrupt(allValues.interrupt)) {
         setBtnStatus(false)
       } else {
         setBtnStatus(true)
       }
     },
-    [checkInterrupt, checkInterval, checkNameFormat, checkNameLength, setBtnStatus]
+    [checkInterrupt, checkInterval, setBtnStatus]
   )
 
   return (
@@ -351,6 +383,7 @@ const TimeForm = () => {
           label='定时器名称'
           name='name'
           required
+          hasFeedback
           className={StyleSheet.firstFormItem}
           help={name?.errorMsg}
           validateStatus={name?.validateStatus}
@@ -361,9 +394,12 @@ const TimeForm = () => {
             onChange={e => {
               changeValueTimerForm('name', '定时器', e.target.value)
             }}
+            onBlur={e => {
+              checkFormValues('name', platformsIdmemo, '定时器', e.target.value)
+            }}
           />
         </Form.Item>
-        <Form.Item label='间隔' required name='period' validateStatus={period?.validateStatus} help={period?.errorMsg}>
+        <Form.Item label='间隔' hasFeedback required name='period' validateStatus={period?.validateStatus} help={period?.errorMsg}>
           <Input
             placeholder='请输入间隔'
             suffix='微秒'
@@ -373,7 +409,7 @@ const TimeForm = () => {
             }}
           />
         </Form.Item>
-        <Form.Item label='中断号' required name='interrupt' validateStatus={interrupt?.validateStatus} help={interrupt?.errorMsg}>
+        <Form.Item label='中断号' hasFeedback required name='interrupt' validateStatus={interrupt?.validateStatus} help={interrupt?.errorMsg}>
           <Input
             placeholder='请输入中断号'
             value={interrupt?.value}

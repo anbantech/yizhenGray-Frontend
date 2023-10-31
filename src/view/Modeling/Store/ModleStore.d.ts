@@ -128,13 +128,16 @@ interface optionalParametersParams {
 export interface FormItemCheckStoreParams {
   changeValuePeripheralForm: (item: string, title: string, val: string) => void
   changeValueTimerForm: (item: string, title: string, val: string) => void
-  checkFormValues: (val: paramsCheck) => void
+  checkFormValues: (type: string, id: number, title: string, value: string) => void
   changeValueRegisterForm: (item: string, title: string, val: string) => void
   checkName: (item: string, title: string, val: string) => boolean
   changeValueHanderlForm: (item: string, title: string, val: string) => void
   optionalParameters: optionalParametersParams
   initFormValue: () => void
+  getKey: (val: string) => boolean
   btnStatus: boolean
+  baseBtnStatus: boolean
+  setBaseBtnStatus: (val: boolean) => void
   setBtnStatus: (val: boolean) => void
   checkNameLength: (val: string) => boolean
   checkNameFormat: (val: string) => boolean
