@@ -13,7 +13,7 @@ import request from 'Src/services/request/request'
 // 参数校验
 
 function validatorParams(params: paramsCheck) {
-  return request.post('/api/v1.0/models/platforms/verify', params)
+  return request.post('/api/v1.0/models/parameters/verify', params)
 }
 
 // 获取目标机列表
