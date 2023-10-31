@@ -2,7 +2,7 @@
 // import ModelDrawStoreType from './ModleStore'
 
 import { create } from 'zustand'
-
+import { produce } from 'immer'
 import {
   Connection,
   Edge,
@@ -28,13 +28,26 @@ import {
   newSetPeripheral,
   newSetRegister,
   newSetTimer,
-  updateModelTarget
+  updateModelTarget,
+  validatorParams
 } from 'Src/services/api/modelApi'
 import { getPortList } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
-import { ModelDetails, NewModelListStore, HeaderStoreParams, PublicAttributesStoreParams, RightDetailsAttributesStoreParams } from './ModleStore'
+
+import {
+  ModelDetails,
+  NewModelListStore,
+  HeaderStoreParams,
+  PublicAttributesStoreParams,
+  RightDetailsAttributesStoreParams,
+  FormItemCheckStoreParams
+} from './ModleStore'
 
 // import { message } from 'antd'
+
+interface MyObject {
+  [key: string]: any
+}
 
 type RFState = {
   nodes: Node[]
@@ -392,6 +405,7 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>(se
   }
 }))
 
+// 公共变量
 const publicAttributes = create<PublicAttributesStoreParams>(set => ({
   portList: [],
   setPortList: async () => {
@@ -408,4 +422,300 @@ const publicAttributes = create<PublicAttributesStoreParams>(set => ({
   }
 }))
 
-export { useStore, useNewModelingStore, publicAttributes, useModelDetailsStore, HeaderStore, RightDetailsAttributesStore }
+// 表单接口校验
+const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => ({
+  btnStatus: true,
+  setBtnStatus: val => {
+    set({ btnStatus: val })
+  },
+  optionalParameters: {
+    name: {
+      value: '',
+      validateStatus: ''
+    },
+    port: {
+      value: '',
+      validateStatus: ''
+    },
+    period: {
+      value: '',
+      validateStatus: ''
+    },
+    interrupt: {
+      value: '',
+      validateStatus: ''
+    },
+    base_address: {
+      value: '',
+      validateStatus: ''
+    },
+    address_length: {
+      value: '',
+      validateStatus: ''
+    },
+    kind: {
+      value: '',
+      validateStatus: ''
+    },
+    relative_address: {
+      value: '',
+      validateStatus: ''
+    },
+    desc: {
+      value: '',
+      validateStatus: ''
+    }
+  },
+  // 外设表单
+  changeValuePeripheralForm: (item, title, val) => {
+    const { checkName, checkHex } = get()
+    if (item === 'name') {
+      checkName(item, title, val)
+    }
+    if (item === 'base_address' || item === 'address_length') {
+      const hexResult = checkHex(val)
+      if (!hexResult) {
+        set(state =>
+          produce(state, draft => {
+            const updatedDraft = draft
+            ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
+            ;(updatedDraft.optionalParameters as any)[item].errorMsg = `请输入由0-9,A-F(或a-f)组成的16进制数`
+          })
+        )
+      } else {
+        set(state =>
+          produce(state, draft => {
+            const updatedDraft = draft
+            ;(updatedDraft.optionalParameters as any)[item].validateStatus = ''
+            ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
+          })
+        )
+      }
+    }
+  },
+  // 数据处理器表单
+  changeValueHanderlForm: (item, title, val) => {
+    const { checkName } = get()
+    if (item === 'name') {
+      checkName(item, title, val)
+    }
+    set(state =>
+      produce(state, draft => {
+        const updatedDraft = draft
+        ;(updatedDraft.optionalParameters as any)[item].value = val
+      })
+    )
+    set(state =>
+      produce(state, draft => {
+        const updatedDraft = draft
+        ;(updatedDraft.optionalParameters as any)[item].value = val
+      })
+    )
+  },
+
+  //  寄存器表单
+  changeValueRegisterForm: (item, title, val) => {
+    const { checkName, checkHex } = get()
+
+    if (item === 'name') {
+      checkName(item, title, val)
+    }
+    if (item === 'relative_address') {
+      const hexResult = checkHex(val)
+      if (!hexResult) {
+        set(state =>
+          produce(state, draft => {
+            const updatedDraft = draft
+            ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
+            ;(updatedDraft.optionalParameters as any)[item].errorMsg = `请输入由0-9,A-F(或a-f)组成的16进制数`
+          })
+        )
+      } else {
+        set(state =>
+          produce(state, draft => {
+            const updatedDraft = draft
+            ;(updatedDraft.optionalParameters as any)[item].validateStatus = ''
+            ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
+          })
+        )
+      }
+    }
+
+    set(state =>
+      produce(state, draft => {
+        const updatedDraft = draft
+        ;(updatedDraft.optionalParameters as any)[item].value = val
+      })
+    )
+  },
+
+  // 定时器表单
+  changeValueTimerForm: (item, title, val) => {
+    const { checkName, checkInterval, checkInterrupt } = get()
+
+    if (item === 'name') {
+      checkName(item, title, val)
+    }
+    if (item === 'period') {
+      const intervalResult = checkInterval(val)
+      if (!intervalResult) {
+        set(state =>
+          produce(state, draft => {
+            const updatedDraft = draft
+            ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
+            ;(updatedDraft.optionalParameters as any)[item].errorMsg = `请输入0~65535的整数`
+          })
+        )
+      } else {
+        set(state =>
+          produce(state, draft => {
+            const updatedDraft = draft
+            ;(updatedDraft.optionalParameters as any)[item].validateStatus = ''
+            ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
+          })
+        )
+      }
+    }
+    if (item === 'interrupt') {
+      const interruptResult = checkInterrupt(val)
+      if (!interruptResult) {
+        set(state =>
+          produce(state, draft => {
+            const updatedDraft = draft
+            ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
+            ;(updatedDraft.optionalParameters as any)[item].errorMsg = `请输入0~255的整数`
+          })
+        )
+      } else {
+        set(state =>
+          produce(state, draft => {
+            const updatedDraft = draft
+            ;(updatedDraft.optionalParameters as any)[item].validateStatus = ''
+            ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
+          })
+        )
+      }
+    }
+    set(state =>
+      produce(state, draft => {
+        const updatedDraft = draft
+        ;(updatedDraft.optionalParameters as any)[item].value = val
+      })
+    )
+  },
+
+  // 检查名字
+  checkName: (item, title, val) => {
+    const { checkNameLength, checkNameFormat } = get()
+    if (!checkNameLength(val)) {
+      set(state =>
+        produce(state, draft => {
+          const updatedDraft = draft
+          ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
+          ;(updatedDraft.optionalParameters as any)[item].errorMsg = `${title}名称长度在2-20个字符之间`
+        })
+      )
+      return false
+    }
+    if (!checkNameFormat(val)) {
+      set(state =>
+        produce(state, draft => {
+          const updatedDraft = draft
+          ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
+          ;(updatedDraft.optionalParameters as any)[item].errorMsg = `${title}名称由汉字、数字、字母和下划线组成`
+        })
+      )
+      return false
+    }
+    set(state =>
+      produce(state, draft => {
+        const updatedDraft = draft
+        ;(updatedDraft.optionalParameters as any)[item].validateStatus = ''
+        ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
+      })
+    )
+    return true
+  },
+
+  // 检查间隔
+  checkInterval: (val: string) => {
+    if (!val) return false
+    const checkoutResult = Number(val) >= 0 && Number(val) <= 65535
+    return checkoutResult
+  },
+
+  // 检查中断号
+  checkInterrupt: (val: string) => {
+    if (!val) return false
+    const checkoutResult = Number(val) >= 0 && Number(val) <= 255
+    return checkoutResult
+  },
+
+  // 异步校验
+  checkFormValues: async params => {
+    const res = await validatorParams(params)
+  },
+
+  //  校验是否为16进制字符串
+  checkHex: (val: string) => {
+    if (!val) return false
+    const reg = /^(0x)?([\da-f]{1,8})$/i
+    return reg.test(`0x${val}`)
+  },
+
+  // 检查名字格式
+  checkNameFormat: (val: string) => {
+    if (!val) return false
+    const reg = /^[\w\u4E00-\u9FA5]+$/
+    return reg.test(val)
+  },
+
+  // 检查名字长度
+  checkNameLength: (val: string) => {
+    if (!val) return false
+    const length = val.length >= 2 && val.length <= 20
+    return length
+  },
+
+  // 初始化数据
+  initFormValue: () => {
+    set({
+      optionalParameters: {
+        name: {
+          value: '',
+          validateStatus: ''
+        },
+        port: {
+          value: '',
+          validateStatus: ''
+        },
+        period: {
+          value: '',
+          validateStatus: ''
+        },
+        interrupt: {
+          value: '',
+          validateStatus: ''
+        },
+        base_address: {
+          value: '',
+          validateStatus: ''
+        },
+        address_length: {
+          value: '',
+          validateStatus: ''
+        },
+        peripheral_id: {
+          value: '',
+          validateStatus: ''
+        },
+        relative_address: {
+          value: '',
+          validateStatus: ''
+        },
+        desc: ''
+      }
+    })
+  }
+}))
+export { useStore, formItemParamsCheckStore, useNewModelingStore, publicAttributes, useModelDetailsStore, HeaderStore, RightDetailsAttributesStore }
