@@ -19,6 +19,7 @@ import {
 import {
   createModelTarget,
   deleteModelTarget,
+  getCanvas,
   getCustomMadePeripheralList,
   getModelTargetList,
   getProcessorList,
@@ -52,10 +53,15 @@ interface MyObject {
 type RFState = {
   nodes: Node[]
   edges: Edge[]
+  changeView: boolean
+  setChangeView: (val: boolean) => void
+  canvasData: any
   onNodesChange: OnNodesChange
   onEdgesChange: OnEdgesChange
   onConnect: OnConnect
-  getModelDetails: () => void
+  targetId: null | number
+  setTargetId: (id: number) => void
+  getModelDetails: (id: number) => any
   setNodes: (nodesValue: Node[]) => void
   setEdges: (edgesValue: Edge[]) => void
 }
@@ -74,9 +80,19 @@ const checkAsyncMap = {
   register: ['name', 'relative_address']
 }
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
-const useStore = create<RFState>((set, get) => ({
+// 目标机列表 侧边栏 顶部操作栏 右侧属性  表单校验 公共属性
+const useFlowStore = create<RFState>((set, get) => ({
   nodes: [],
   edges: [],
+  changeView: false,
+  setChangeView: val => {
+    set({ changeView: val })
+  },
+  canvasData: [],
+  targetId: null,
+  setTargetId: id => {
+    set({ targetId: id })
+  },
   setNodes: (nodesValue: Node[]) => {
     set({ nodes: nodesValue })
   },
@@ -100,63 +116,71 @@ const useStore = create<RFState>((set, get) => ({
       edges: addEdge(connection, get().edges)
     })
   },
-  getModelDetails: () => {
-    const treeNode = {
-      name: 'dsp4198231',
-      id: '1',
-      children: [
-        {
-          name: '外设1',
-          id: '1-1',
-          children: [
-            {
-              name: '寄存器',
-              id: '1-1-1'
+  converTreeToNode: () => {},
+  getModelDetails: async id => {
+    if (!id) return
+    try {
+      const res = await getCanvas(id)
+      if (res.data.canvas) {
+        set({ canvasData: res.data.canvas })
+        const converTreeToNode = (node: any) => {
+          const result = []
+          result.push({
+            data: {
+              label: `Node ${node.name}`,
+              type: node.flag,
+              id: node.id,
+              db_id: node.db_id,
+              nums: node.children?.length,
+              hidden: node.flag !== 5,
+              position: { x: 0, y: 0 },
+              draggable: false,
+              flag: node.flag
             },
-            {
-              name: '寄存器2',
-              id: '1-1-2'
-            }
-          ]
-        },
-        {
-          name: '外设2',
-          id: '1-2'
+            flag: node.flag,
+            type: node.flag === 5 ? 'targetNode' : 'custom',
+            hidden: node.flag !== 5,
+            id: node.id as string,
+            position: { x: 0, y: 0 },
+            draggable: false
+          })
+          if (node.children && node.children.length > 0) {
+            node.children.forEach((item: any) => {
+              result.push(...converTreeToNode(item))
+            })
+          }
+          return result
         }
-      ]
-    }
-    const converTreeToNode = (node: any) => {
-      const result = []
-      result.push({
-        data: { label: `Node ${node.name}` },
-        type: 'custom',
-        id: node.id as string,
-        position: { x: 0, y: 0 }
-      })
-      if (node.children && node.children.length > 0) {
-        node.children.forEach((item: any) => {
-          result.push(...converTreeToNode(item))
-        })
+        const nodeArray = converTreeToNode(res.data.canvas)
+        const converTreeToEdges = (node: any) => {
+          const links: any[] = []
+          if (node.children && node.children.length > 0) {
+            node.children.forEach((item: any) => {
+              const source = node.id
+              const target = item.id
+              links.push({
+                flag: node.flag,
+                id: `${source}->${target}`,
+                source,
+                target,
+                hidden: node.flag !== 5,
+                type: 'step',
+                data: {
+                  label: 'edge label'
+                }
+              })
+              links.push(...converTreeToEdges(item))
+            })
+          }
+          return links
+        }
+        const edgeArray = converTreeToEdges(res.data.canvas)
+        set({ nodes: [...nodeArray], edges: [...edgeArray] })
       }
-      return result
-    }
-    const nodeArray = converTreeToNode(treeNode)
-    const converTreeToEdges = (node: any) => {
-      const links: any[] = []
-      if (node.children && node.children.length > 0) {
-        node.children.forEach((item: any) => {
-          const source = node.id
-          const target = item.id
-          links.push({ id: `${source}->${target}`, source, target, type: 'smoothstep' })
-          links.push(...converTreeToEdges(item))
-        })
-      }
-      return links
-    }
-    const edgeArray = converTreeToEdges(treeNode)
-    set({ nodes: [...nodeArray], edges: [...edgeArray] })
+    } catch {}
   }
 }))
+
 // 目标机列表,建模首页
 const useNewModelingStore = create<NewModelListStore>((set, get) => ({
   total: 0,
@@ -238,18 +262,23 @@ const useNewModelingStore = create<NewModelListStore>((set, get) => ({
 
 // 侧边栏获取列表store
 const useModelDetailsStore = create<ModelDetails>((set, get) => ({
+  keyWord: '',
+  foucsId: null,
+  showNode: [],
   tabs: 'customMadePeripheral',
+  fn: () => {},
+  hasMoreData: true, // 共用
   cusomMadePeripheralNums: 0,
   timerNums: 0,
   handlerDataNums: 0,
   boardPeripheralNums: 0,
   cusomMadePeripheralListParams: {
-    variety: '1',
+    variety: '0',
     platform_id: 0,
     tag: '0',
     key_word: '',
     page: 1,
-    page_size: 10,
+    page_size: 25,
     sort_field: 'create_time',
     sort_order: 'descend'
   },
@@ -257,7 +286,7 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
     platform_id: 0,
     key_word: '',
     page: 1,
-    page_size: 10,
+    page_size: 25,
     sort_field: 'create_time',
     sort_order: 'descend'
   },
@@ -266,73 +295,203 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
     used: 'false',
     key_word: '',
     page: 1,
-    page_size: 10,
+    page_size: 25,
     sort_field: 'create_time',
     sort_order: 'descend'
   },
   customMadePeripheralList: [],
   timerList: [],
   processorList: [],
-  boardLevelPeripherals: [],
-  keyWord: '',
+  boardLevelPeripheralsList: [],
+  setExpand: (val: any) => {
+    const idArray: [] | string[] = []
+    const extractIdsFromTree = (tree: any, resultArray: any[]) => {
+      // 遍历树结构
+      for (const node of tree) {
+        // 提取当前节点的id并添加到结果数组
+        resultArray.push(node.id)
+
+        // 如果当前节点有子节点，递归调用该函数
+        if (node.children && node.children.length > 0) {
+          extractIdsFromTree(node.children, resultArray)
+        }
+      }
+    }
+    extractIdsFromTree(val, idArray)
+    set({ showNode: idArray })
+  },
+  setItemExpand: val => {
+    set({ showNode: val })
+  },
+  setParams: (tabs: string, val) => {
+    const { processorListParams, timerListParams, cusomMadePeripheralListParams } = get()
+    switch (tabs) {
+      case 'time':
+        set({ timerListParams: { ...timerListParams, ...val } })
+        break
+      case 'boardLevelPeripherals':
+        set({ cusomMadePeripheralListParams: { ...cusomMadePeripheralListParams, ...val } })
+        break
+      case 'customMadePeripheral':
+        set({ cusomMadePeripheralListParams: { ...cusomMadePeripheralListParams, ...val } })
+        break
+      case 'dataHandlerNotReferenced':
+        set({ processorListParams: { ...processorListParams, ...val } })
+        break
+      default:
+        break
+    }
+  },
   setTabs: val => {
     set({ tabs: val })
   },
-  setKeyWord: val => {
+  setTags: val => {
+    const { cusomMadePeripheralListParams } = get()
+    set({ cusomMadePeripheralListParams: { ...cusomMadePeripheralListParams, tag: val, page: 1, page_size: 10 } })
+  },
+  setHasMore: (val: boolean) => {
+    set(() => ({
+      hasMoreData: val
+    }))
+  },
+  setFousId: (val: number) => {
+    set({ foucsId: val })
+  },
+  setKeyWord: (val: string, tabs: string) => {
+    const { cusomMadePeripheralListParams, processorListParams, setTags, timerListParams, setExpand } = get()
+    if (!val) {
+      setTags('0')
+    }
+    if (['', undefined].includes(val)) {
+      setExpand([])
+    }
+    switch (tabs) {
+      case 'customMadePeripheral':
+        set({ cusomMadePeripheralListParams: { ...cusomMadePeripheralListParams, key_word: val } })
+        break
+      case 'boardLevelPeripherals':
+        set({ cusomMadePeripheralListParams: { ...cusomMadePeripheralListParams, key_word: val } })
+        break
+      case 'dataHandlerNotReferenced':
+        set({ processorListParams: { ...processorListParams, key_word: val } })
+        break
+      case 'time':
+        set({ timerListParams: { ...timerListParams, key_word: val } })
+        break
+      default:
+        break
+    }
     set({ keyWord: val })
   },
   getCustomMadePeripheralStore: async (id: number) => {
-    const { cusomMadePeripheralListParams } = get()
+    const { cusomMadePeripheralListParams, setExpand } = get()
     try {
       const params = { ...cusomMadePeripheralListParams, platform_id: id }
       const res = await getCustomMadePeripheralList(params)
+
       if (res.data) {
-        set({ customMadePeripheralList: [...res.data] })
+        set({ customMadePeripheralList: [...res.data.results] })
       }
+      if (!['', undefined].includes(cusomMadePeripheralListParams.key_word) && cusomMadePeripheralListParams.tag === '0') {
+        setExpand(res.data.results)
+      }
+      return res
     } catch (error) {
       throwErrorMessage(error, { 1006: '参数错误' })
+      return error
     }
   },
   getBoardCustomMadePeripheralStore: async (id: number) => {
-    const { cusomMadePeripheralListParams } = get()
+    const { cusomMadePeripheralListParams, setExpand } = get()
     try {
       const params = { ...cusomMadePeripheralListParams, platform_id: id, variety: '1' }
       const res = await getCustomMadePeripheralList(params)
       if (res.data) {
-        set({ boardLevelPeripherals: [...res.data.results] })
+        set({ boardLevelPeripheralsList: [...res.data.results] })
       }
+      if (!['', undefined].includes(cusomMadePeripheralListParams.key_word) && cusomMadePeripheralListParams.tag === '0') {
+        setExpand(res.data.results)
+      }
+      return res
     } catch (error) {
       throwErrorMessage(error, { 1006: '参数错误' })
+      return error
     }
   },
   getTimeListStore: async (id: number) => {
-    const { timerListParams } = get()
+    const { timerListParams, setHasMore } = get()
     try {
       const params = { ...timerListParams, platform_id: id }
       const res = await getTimerList(params)
       if (res.data) {
+        const newList = [...res.data.results]
+        if (newList.length === 0) {
+          setHasMore(false)
+          set({ timerList: [...res.data.results] })
+          return
+        }
+        if (newList.length === res.data.total) {
+          setHasMore(false)
+        } else {
+          setHasMore(true)
+        }
         set({ timerList: [...res.data.results] })
       }
+      return res
     } catch (error) {
       throwErrorMessage(error, { 1006: '参数错误' })
+      return error
     }
   },
   getProcessorListStore: async (id: number) => {
-    const { processorListParams } = get()
+    const { processorListParams, setHasMore } = get()
     try {
       const params = { ...processorListParams, platform_id: id }
       const res = await getProcessorList(params)
       if (res.data) {
+        const newList = [...res.data.results]
+        if (newList.length === 0) {
+          setHasMore(false)
+          set({ processorList: [...res.data.results] })
+          return
+        }
+        if (newList.length === res.data.total) {
+          setHasMore(false)
+        } else {
+          setHasMore(true)
+        }
         set({ processorList: [...res.data.results] })
       }
+      return res
     } catch (error) {
       throwErrorMessage(error, { 1006: '参数错误' })
+      return error
     }
   },
   getList: (val: string, id: number) => {
     // 根据val获取对应的数据
     const { getProcessorListStore, getCustomMadePeripheralStore, getTimeListStore, getBoardCustomMadePeripheralStore } = get()
     set({ tabs: val })
+    switch (val) {
+      case 'customMadePeripheral':
+        getCustomMadePeripheralStore(id)
+        break
+      case 'boardLevelPeripherals':
+        getBoardCustomMadePeripheralStore(id)
+        break
+      case 'dataHandlerNotReferenced':
+        getProcessorListStore(id)
+        break
+      case 'time':
+        getTimeListStore(id)
+        break
+      default:
+        break
+    }
+  },
+  baseKeyWordAndTagsGetList: (val: string, id: number) => {
+    // 根据val获取对应的数据
+    const { getProcessorListStore, getCustomMadePeripheralStore, getTimeListStore, getBoardCustomMadePeripheralStore } = get()
     switch (val) {
       case 'customMadePeripheral':
         getCustomMadePeripheralStore(id)
@@ -365,9 +524,49 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
     } catch (error) {
       throwErrorMessage(error)
     }
+  },
+
+  clearKeyWord: fn => {
+    set({ fn })
+  },
+  initStore: () => {
+    set({
+      keyWord: '',
+      foucsId: null,
+      hasMoreData: true, // 共用
+      showNode: [],
+      cusomMadePeripheralListParams: {
+        variety: '0',
+        platform_id: 0,
+        tag: '0',
+        key_word: '',
+        page: 1,
+        page_size: 20,
+        sort_field: 'create_time',
+        sort_order: 'descend'
+      },
+      timerListParams: {
+        platform_id: 0,
+        key_word: '',
+        page: 1,
+        page_size: 20,
+        sort_field: 'create_time',
+        sort_order: 'descend'
+      },
+      processorListParams: {
+        platform_id: 0,
+        used: 'false',
+        key_word: '',
+        page: 1,
+        page_size: 20,
+        sort_field: 'create_time',
+        sort_order: 'descend'
+      }
+    })
   }
 }))
 
+// 顶部操作栏 创建定时器 外设 数据处理器
 const HeaderStore = create<HeaderStoreParams>((set, get) => ({
   tabs: '',
   params: {},
@@ -411,6 +610,7 @@ const HeaderStore = create<HeaderStoreParams>((set, get) => ({
   }
 }))
 
+// 右侧属性
 const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>(set => ({
   typeAttributes: 'Processor',
   setTypeDetailsAttributes: val => {
@@ -815,4 +1015,12 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
     })
   }
 }))
-export { useStore, formItemParamsCheckStore, useNewModelingStore, publicAttributes, useModelDetailsStore, HeaderStore, RightDetailsAttributesStore }
+export {
+  useFlowStore,
+  formItemParamsCheckStore,
+  useNewModelingStore,
+  publicAttributes,
+  useModelDetailsStore,
+  HeaderStore,
+  RightDetailsAttributesStore
+}

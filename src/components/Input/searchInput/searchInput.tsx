@@ -46,12 +46,14 @@ const ClearSuffix = React.memo(function ClearSuffix(isShowProp: isShowProps<isSh
 
 const SearchInput = React.forwardRef((props: searchTypes, myRef) => {
   const { placeholder, className, onChangeValue } = props
+
   const changeValueFn = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
     onChangeValue(value, 'key_word')
   }
 
   const [nowValue, isCancel, controlRate] = useRequestRate(changeValueFn, 300)
+
   useImperativeHandle(myRef, () => ({
     save: () => {
       return controlRate('')

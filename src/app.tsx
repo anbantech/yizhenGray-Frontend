@@ -57,7 +57,7 @@ function Main() {
 
 const App: React.FC<RouteComponentProps<any, any, any>> = props => {
   const name = props.location.pathname
-  const [showModalMemo] = useGetVersionHook()
+  // const [showModalMemo] = useGetVersionHook()
   const { connect } = useWebSocketStore()
 
   useEffect(() => {
@@ -103,7 +103,7 @@ const App: React.FC<RouteComponentProps<any, any, any>> = props => {
         />
         <Redirect from='/*' to='/login' />
       </Switch>
-      {showModalMemo && <VersionModal showModalMemo={showModalMemo} />}
+      {/* {showModalMemo && <VersionModal showModalMemo={showModalMemo} />} */}
     </>
   )
 }

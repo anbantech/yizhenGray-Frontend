@@ -6,7 +6,7 @@ import zhCN from 'antd/lib/locale/zh_CN'
 import delete_icon from 'Src/assets/image/icon_delete.svg'
 import inputStyle from 'Src/components/Input/searchInput/searchInput.less'
 import styles from 'Src/view/Project/project/project.less'
-import { publicAttributes, useNewModelingStore } from 'Src/view/Modeling/Store/ModelStore'
+import { publicAttributes, useFlowStore, useNewModelingStore } from 'Src/view/Modeling/Store/ModelStore'
 import ModelModal from 'Components/Modal/newModalOrFixModal/newModelOrFoxModel'
 import { ConfigProvider, message, Table, Tooltip } from 'antd'
 import { NoTask } from 'Src/view/NewExcitation/ExcitationComponents/ExcitationDraw/ExcitationDraw'
@@ -38,10 +38,12 @@ function ModelingIndex() {
     deleteModelTarget,
     setModelId
   } = useNewModelingStore()
+  const { setTargetId } = useFlowStore()
   const { setPortList } = publicAttributes()
   const params = useNewModelingStore(state => state.params)
   const loading = useNewModelingStore(state => state.loading)
   const total = useNewModelingStore(state => state.total)
+
   // 关键字搜索
   const updateParams = useCallback(
     (value: string) => {
@@ -112,13 +114,14 @@ function ModelingIndex() {
 
   // 跳转到建模详情
   const jumpModelingDetails = useCallback(
-    (id: number, name: string) => {
+    async (id: number, name: string) => {
+      await setTargetId(id)
       history.push({
         pathname: '/Modeling/Detailes',
         state: { name, id }
       })
     },
-    [history]
+    [history, setTargetId]
   )
 
   // 获取端口

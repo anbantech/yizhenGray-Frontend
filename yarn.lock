@@ -1347,13 +1347,6 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.18.9":
-  version "7.22.5"
-  resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.22.5.tgz"
-  integrity sha512-ecjvYlnAaZ/KVneE/OdKYBYfgXV3Ptu6zQWmgEF7vwKhQnvVS6bjMD2XYgj+SNvQ1GfK/pjgokfPkC/2CO8CuA==
-  dependencies:
-    regenerator-runtime "^0.13.11"
-
 "@babel/template@^7.22.15", "@babel/template@^7.22.5":
   version "7.22.15"
   resolved "http://192.168.5.253:4873/@babel/template/-/template-7.22.15.tgz"
@@ -1811,27 +1804,28 @@
   resolved "https://registry.npmmirror.com/@react-dnd/shallowequal/-/shallowequal-2.0.0.tgz"
   integrity sha512-Pc/AFTdwZwEKJxFJvlxrSmGe/di+aAOBn60sremrpLo6VI/6cmiUYNNwlI5KNYttg7uypzA3ILPMPgxB2GYZEg==
 
-"@reactflow/background@11.2.0":
-  version "11.2.0"
-  resolved "http://192.168.5.253:4873/@reactflow/background/-/background-11.2.0.tgz"
-  integrity sha512-Fd8Few2JsLuE/2GaIM6fkxEBaAJvfzi2Lc106HKi/ddX+dZs8NUsSwMsJy1Ajs8b4GbiX8v8axfKpbK6qFMV8w==
+"@reactflow/background@11.3.4":
+  version "11.3.4"
+  resolved "http://192.168.5.253:4873/@reactflow/background/-/background-11.3.4.tgz#377a869d9d6b6046d588f3dc6eba126eb5e03d99"
+  integrity sha512-bgwvqWxF09chwmdkyClpYEMaewBspdwjgLbbFlLf4SpWPFMYyuvCBQrcISsvy/EDEWO9i3Uj9ktgGAhvtSQsmA==
   dependencies:
-    "@reactflow/core" "11.7.0"
+    "@reactflow/core" "11.9.4"
     classcat "^5.0.3"
-    zustand "^4.3.1"
+    zustand "^4.4.1"
 
-"@reactflow/controls@11.1.11":
-  version "11.1.11"
-  resolved "http://192.168.5.253:4873/@reactflow/controls/-/controls-11.1.11.tgz"
-  integrity sha512-g6WrsszhNkQjzkJ9HbVUBkGGoUy2z8dQVgH6CYQEjuoonD15cWAPGvjyg8vx8oGG7CuktUhWu5JPivL6qjECow==
+"@reactflow/controls@11.2.4":
+  version "11.2.4"
+  resolved "http://192.168.5.253:4873/@reactflow/controls/-/controls-11.2.4.tgz#13b690e52b133ebc3edd9fb771ff3ed3f2bf182a"
+  integrity sha512-x6e5p9iHjC6gd+4SoZ3DOOp0F1MefGKQ8hT6yPVdqxfo1+rV2WhrWvrX/MCoEu12Dp7457LdLfa0giy3aho8tQ==
   dependencies:
-    "@reactflow/core" "11.7.0"
+    "@reactflow/core" "11.9.4"
     classcat "^5.0.3"
+    zustand "^4.4.1"
 
-"@reactflow/core@11.7.0", "@reactflow/core@^11.6.0":
-  version "11.7.0"
-  resolved "http://192.168.5.253:4873/@reactflow/core/-/core-11.7.0.tgz"
-  integrity sha512-UJcpbNRSupSSoMWh5UmRp6UUr0ug7xVKmMvadnkKKiNi9584q57nz4HMfkqwN3/ESbre7LD043yh2n678d/5FQ==
+"@reactflow/core@11.9.4":
+  version "11.9.4"
+  resolved "http://192.168.5.253:4873/@reactflow/core/-/core-11.9.4.tgz#61285d7acb91ebb38bbfbf24ad8c960a61e6edc4"
+  integrity sha512-Ko7nKPOYalwDTTbRHi2+QXDiidSAcpUzGN3G+0B+QysLZkcaPCkpkMjjHiDC4c/Z1BJBzs1FRJg/T6BXaBnYkg==
   dependencies:
     "@types/d3" "^7.4.0"
     "@types/d3-drag" "^3.0.1"
@@ -1841,40 +1835,40 @@
     d3-drag "^3.0.0"
     d3-selection "^3.0.0"
     d3-zoom "^3.0.0"
-    zustand "^4.3.1"
+    zustand "^4.4.1"
 
-"@reactflow/minimap@11.5.0":
-  version "11.5.0"
-  resolved "http://192.168.5.253:4873/@reactflow/minimap/-/minimap-11.5.0.tgz"
-  integrity sha512-n/3tlaknLpi3zaqCC+tDDPvUTOjd6jglto9V3RB1F2wlaUEbCwmuoR2GYTkiRyZMvuskKyAoQW8+0DX0+cWwsA==
+"@reactflow/minimap@11.7.4":
+  version "11.7.4"
+  resolved "http://192.168.5.253:4873/@reactflow/minimap/-/minimap-11.7.4.tgz#18a73fd354ffef90ba321771d957b0d2910fc1da"
+  integrity sha512-Jo1R+uDey9IV7O2s3m0gK2+cZpg9M8hq2EZJb3NGfOSzMAPhj3mby0fNJIgTzycreuht0TpA51c2YfjGI3YIOw==
   dependencies:
-    "@reactflow/core" "11.7.0"
+    "@reactflow/core" "11.9.4"
     "@types/d3-selection" "^3.0.3"
     "@types/d3-zoom" "^3.0.1"
     classcat "^5.0.3"
     d3-selection "^3.0.0"
     d3-zoom "^3.0.0"
-    zustand "^4.3.1"
+    zustand "^4.4.1"
 
-"@reactflow/node-resizer@2.1.0":
-  version "2.1.0"
-  resolved "http://192.168.5.253:4873/@reactflow/node-resizer/-/node-resizer-2.1.0.tgz"
-  integrity sha512-DVL8nnWsltP8/iANadAcTaDB4wsEkx2mOLlBEPNE3yc5loSm3u9l5m4enXRcBym61MiMuTtDPzZMyYYQUjuYIg==
+"@reactflow/node-resizer@2.2.4":
+  version "2.2.4"
+  resolved "http://192.168.5.253:4873/@reactflow/node-resizer/-/node-resizer-2.2.4.tgz#cc72eadf53eb5806e7b367973ee5c81e97b5f6fb"
+  integrity sha512-+p271/hAsM5M1+RQTWW/02pbNkCHeGXwxGimIlL1tMIagyuko0NX2vOz2B8jxJnPKlF09Wj18BcXBNUm3nDcSg==
   dependencies:
-    "@reactflow/core" "^11.6.0"
+    "@reactflow/core" "11.9.4"
     classcat "^5.0.4"
     d3-drag "^3.0.0"
     d3-selection "^3.0.0"
-    zustand "^4.3.1"
+    zustand "^4.4.1"
 
-"@reactflow/node-toolbar@1.1.11":
-  version "1.1.11"
-  resolved "http://192.168.5.253:4873/@reactflow/node-toolbar/-/node-toolbar-1.1.11.tgz"
-  integrity sha512-+hKtx+cvXwfCa9paGxE+G34rWRIIVEh68ZOqAtivClVmfqGzH/sEoGWtIOUyg9OEDNE1nEmZ1NrnpBGSmHHXFg==
+"@reactflow/node-toolbar@1.3.4":
+  version "1.3.4"
+  resolved "http://192.168.5.253:4873/@reactflow/node-toolbar/-/node-toolbar-1.3.4.tgz#dc9aac88685d2a5fa13f19c86af1352dc4a1490e"
+  integrity sha512-TfcmpXHRBb2mUfzKGjburiU6FWqRME9pPFs1OwIC1z5e9BjupQhNDEKEk8XHi7PKL/mAiDfwuGXaM1BVVFuPqw==
   dependencies:
-    "@reactflow/core" "11.7.0"
+    "@reactflow/core" "11.9.4"
     classcat "^5.0.3"
-    zustand "^4.3.1"
+    zustand "^4.4.1"
 
 "@sentry/browser@6.13.3":
   version "6.13.3"
@@ -2353,11 +2347,6 @@
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
-
-"@types/resize-observer-browser@^0.1.7":
-  version "0.1.7"
-  resolved "https://registry.npmjs.org/@types/resize-observer-browser/-/resize-observer-browser-0.1.7.tgz"
-  integrity sha512-G9eN0Sn0ii9PWQ3Vl72jDPgeJwRWhv2Qk/nQkJuWmRmOB4HX3/BhD5SE1dZs/hzPZL/WKnvF0RHdTSG54QJFyg==
 
 "@types/source-list-map@*":
   version "0.1.2"
@@ -7387,7 +7376,7 @@ immediate@~3.0.5:
 
 immer@^10.0.3:
   version "10.0.3"
-  resolved "http://192.168.5.253:4873/immer/-/immer-10.0.3.tgz#a8de42065e964aa3edf6afc282dfc7f7f34ae3c9"
+  resolved "http://192.168.5.253:4873/immer/-/immer-10.0.3.tgz"
   integrity sha512-pwupu3eWfouuaowscykeckFmVTpqbzW+rXFCX8rQLkZzM9ftBmU/++Ra+o+L27mz03zJTlyV4UUr+fdKNffo4A==
 
 import-cwd@^2.0.0:
@@ -11534,20 +11523,6 @@ react-dom@^17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
-react-flow-renderer@^10.3.17:
-  version "10.3.17"
-  resolved "https://registry.npmjs.org/react-flow-renderer/-/react-flow-renderer-10.3.17.tgz"
-  integrity sha512-bywiqVErlh5kCDqw3x0an5Ur3mT9j9CwJsDwmhmz4i1IgYM1a0SPqqEhClvjX+s5pU4nHjmVaGXWK96pwsiGcQ==
-  dependencies:
-    "@babel/runtime" "^7.18.9"
-    "@types/d3" "^7.4.0"
-    "@types/resize-observer-browser" "^0.1.7"
-    classcat "^5.0.3"
-    d3-drag "^3.0.0"
-    d3-selection "^3.0.0"
-    d3-zoom "^3.0.0"
-    zustand "^3.7.2"
-
 react-infinite-scroll-component@^6.1.0:
   version "6.1.0"
   resolved "https://registry.npmmirror.com/react-infinite-scroll-component/-/react-infinite-scroll-component-6.1.0.tgz"
@@ -11607,17 +11582,17 @@ react@^17.0.2:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
 
-reactflow@11.7.0:
-  version "11.7.0"
-  resolved "http://192.168.5.253:4873/reactflow/-/reactflow-11.7.0.tgz"
-  integrity sha512-bjfJV1iQZ+VwIlvsnd4TbXNs6kuJ5ONscud6fNkF8RY/oU2VUZpdjA3q1zwmgnjmJcIhxuBiBI5VLGajYx/Ozg==
+reactflow@^11.9.4:
+  version "11.9.4"
+  resolved "http://192.168.5.253:4873/reactflow/-/reactflow-11.9.4.tgz#3e9cb4388601e7f1d568e65fdf9c01136d8769b9"
+  integrity sha512-IHAKBkJngNvU9y1vZ5Nw9rvA3Z+zc9geTgQQIi9qq9Y9knGLlDDr9KfsjbFMew9AycAAgVg8TvBEakF4IT5lqg==
   dependencies:
-    "@reactflow/background" "11.2.0"
-    "@reactflow/controls" "11.1.11"
-    "@reactflow/core" "11.7.0"
-    "@reactflow/minimap" "11.5.0"
-    "@reactflow/node-resizer" "2.1.0"
-    "@reactflow/node-toolbar" "1.1.11"
+    "@reactflow/background" "11.3.4"
+    "@reactflow/controls" "11.2.4"
+    "@reactflow/core" "11.9.4"
+    "@reactflow/minimap" "11.7.4"
+    "@reactflow/node-resizer" "2.2.4"
+    "@reactflow/node-toolbar" "1.3.4"
 
 read-pkg-up@^1.0.1:
   version "1.0.1"
@@ -11781,11 +11756,6 @@ regenerator-runtime@^0.11.0:
   version "0.11.1"
   resolved "https://registry.npm.taobao.org/regenerator-runtime/download/regenerator-runtime-0.11.1.tgz"
   integrity sha1-vgWtf5v30i4Fb5cmzuUBf78Z4uk=
-
-regenerator-runtime@^0.13.11:
-  version "0.13.11"
-  resolved "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz"
-  integrity sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==
 
 regenerator-runtime@^0.13.4:
   version "0.13.5"
@@ -14719,15 +14689,17 @@ zrender@5.3.0:
   dependencies:
     tslib "2.3.0"
 
-zustand@^3.7.2:
-  version "3.7.2"
-  resolved "https://registry.npmjs.org/zustand/-/zustand-3.7.2.tgz"
-  integrity sha512-PIJDIZKtokhof+9+60cpockVOq05sJzHCriyvaLBmEJixseQ1a5Kdov6fWZfWOu5SK9c+FhH1jU0tntLxRJYMA==
-
-zustand@^4.3.1, zustand@^4.3.8:
+zustand@^4.3.8:
   version "4.4.0"
   resolved "https://registry.npmjs.org/zustand/-/zustand-4.4.0.tgz"
   integrity sha512-2dq6wq4dSxbiPTamGar0NlIG/av0wpyWZJGeQYtUOLegIUvhM2Bf86ekPlmgpUtS5uR7HyetSiktYrGsdsyZgQ==
+  dependencies:
+    use-sync-external-store "1.2.0"
+
+zustand@^4.4.1:
+  version "4.4.6"
+  resolved "http://192.168.5.253:4873/zustand/-/zustand-4.4.6.tgz#03c78e3e2686c47095c93714c0c600b72a6512bd"
+  integrity sha512-Rb16eW55gqL4W2XZpJh0fnrATxYEG3Apl2gfHTyDSE965x/zxslTikpNch0JgNjJA9zK6gEFW8Fl6d1rTZaqgg==
   dependencies:
     use-sync-external-store "1.2.0"
 

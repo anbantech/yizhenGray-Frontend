@@ -244,7 +244,8 @@
 
 // export default Flow
 
-import React, { useEffect, useState, MouseEvent, DragEvent, DragEventHandler } from 'react'
+// 1. 主要就是更新节点,边已经在初始化的时候全部填入数组当中,操作节点的时候 添加 或者 删除 都是要更新 节点的 , 然后拉取画布详情,完成页面更新
+import React, { useEffect, useState } from 'react'
 import ReactFlow, {
   MarkerType,
   ReactFlowProvider,
@@ -264,17 +265,27 @@ import ReactFlow, {
   Controls,
   SelectionMode,
   useOnSelectionChange,
-  getOutgoers
+  getOutgoers,
+  EdgeTypes,
+  useNodesState,
+  useEdgesState
 } from 'reactflow'
-
+import { useLocation } from 'react-router'
 import CustomNode from '../../ModelingMaterials/CustomNode'
+import CustomTargetNode from '../../ModelingMaterials/CustomTargetNode'
 import useAutoLayout, { Direction } from '../../useLayout'
 
 import 'reactflow/dist/style.css'
 import styles from '../../model.less'
+import { useFlowStore } from '../../Store/ModelStore'
+
+import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
+import useAlwaysLayout from './changeLayout'
+import useLayout from '../../useLayoutChange'
 
 const nodeTypes: NodeTypes = {
-  custom: CustomNode
+  custom: CustomNode,
+  targetNode: CustomTargetNode
 }
 
 const proOptions = {
@@ -282,145 +293,30 @@ const proOptions = {
   hideAttribution: true
 }
 
-const defaultEdgeOptions = {
-  type: 'smoothstep',
-  markerEnd: { type: MarkerType.ArrowClosed },
-  pathOptions: { offset: 5 }
-}
-
 type ExampleProps = {
   direction?: Direction
+  edgeStore: Edge[]
+  nodeStore: Node[]
 }
 
 type NodeData = {
   label: string
-}
-const getModelDetails = () => {
-  const treeNode = {
-    name: 'dsp4198231',
-    id: '1',
-    children: [
-      {
-        name: '外设1',
-        id: '1-1',
-        children: [
-          {
-            name: '寄存器',
-            id: '1-1-1'
-          },
-          {
-            name: '寄存器2',
-            id: '1-1-2'
-          }
-        ]
-      },
-      {
-        name: '外设2',
-        id: '1-2'
-      }
-    ]
-  }
-  const converTreeToNode = (node: any) => {
-    const result = []
-    result.push({
-      data: { label: `Node ${node.name}` },
-      type: 'custom',
-      id: node.id as string,
-      position: { x: 0, y: 0 },
-      draggable: false
-    })
-    if (node.children && node.children.length > 0) {
-      node.children.forEach((item: any) => {
-        result.push(...converTreeToNode(item))
-      })
-    }
-    return result
-  }
-  const nodeArray = converTreeToNode(treeNode)
-  const converTreeToEdges = (node: any) => {
-    const links: any[] = []
-    if (node.children && node.children.length > 0) {
-      node.children.forEach((item: any) => {
-        const source = node.id
-        const target = item.id
-        links.push({ id: `${source}->${target}`, source, target, type: 'smoothstep' })
-        links.push(...converTreeToEdges(item))
-      })
-    }
-    return links
-  }
-  const edgeArray = converTreeToEdges(treeNode)
-  return { edgeArray, nodeArray }
 }
 
 const panOnDrag = [1, 2]
 /**
  * This example shows how you can automatically arrange your nodes after adding child nodes to your graph.
  */
-function ReactFlowPro({ direction = 'LR' }: ExampleProps) {
-  // this hook handles the computation of the layout once the elements or the direction changes
+function FlowPro({ direction = 'LR', edgeStore, nodeStore }: ExampleProps) {
   const { fitView } = useReactFlow()
-
-  useAutoLayout({ direction })
-  const [nodes, setNodes] = useState<Node<NodeData>[]>([])
-  const [edges, setEdges] = useState<Edge[]>([])
-
-  // this function adds a new node and connects it to the source node
-  // const createConnection = (sourceId: string) => {
-  //   // create an incremental ID based on the number of elements already in the graph
-  //   const targetId = `${nodes.length + 1}`
-
-  //   const targetNode: Node<NodeData> = {
-  //     id: targetId,
-  //     data: { label: `Node ${targetId}` },
-  //     position: { x: 0, y: 0 }, // no need to pass a position as it is computed by the layout hook
-  //     type: 'custom',
-  //     style: { opacity: 0 }
-  //   }
-
-  //   const connectingEdge: Edge = {
-  //     id: `${sourceId}->${targetId}`,
-  //     source: sourceId,
-  //     target: targetId,
-  //     style: { opacity: 0 }
-  //   }
-
-  //   setNodes(nodes => nodes.concat([targetNode]))
-  //   setEdges(edges => edges.concat([connectingEdge]))
-  // }
-
-  const fn1 = () => {
-    const { edgeArray, nodeArray } = getModelDetails()
+  const [nodes, setNodes, onNodesChange] = useNodesState([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState([])
+  const changeView = useFlowStore(state => state.changeView)
+  // useAutoLayout({ direction })
+  const layoutedNodes = useLayout(nodes, edges, changeView, { direction })
+  const fn1 = (nodeArray: any, edgeArray: any) => {
     setNodes([...nodeArray])
     setEdges([...edgeArray])
-  }
-  // this function is called once the node from the sidebar is dropped onto a node in the current graph
-  // const onDrop: DragEventHandler = (evt: DragEvent<HTMLDivElement>) => {
-  //   // make sure that the event target is a DOM element
-  //   if (evt.target instanceof Element) {
-  //     // from the target element search for the node wrapper element which has the node id as attribute
-  //     const targetId = evt.target.closest('.react-flow__node')?.getAttribute('data-id')
-
-  //     if (targetId) {
-  //       // now we can create a connection to the drop target node
-  //       createConnection(targetId)
-  //     }
-  //   }
-  // }
-
-  // this function is called when a node in the graph is clicked
-  // enables a second possibility to add nodes to the canvas
-  // const onNodeClick: NodeMouseHandler = (_: MouseEvent, node: Node<NodeData>) => {
-  //   // on click, we want to add create a new node connection the clicked node
-  //   createConnection(node.id)
-  // }
-
-  const onNodesChange: OnNodesChange = (changes: NodeChange[]) => {
-    setNodes(nodes => applyNodeChanges(changes, nodes))
-  }
-
-  const onEdgesChange: OnEdgesChange = (changes: EdgeChange[]) => {
-    setEdges(edges => applyEdgeChanges(changes, edges))
   }
 
   // 获取筛选节点数据
@@ -463,22 +359,18 @@ function ReactFlowPro({ direction = 'LR' }: ExampleProps) {
     [fn, nodes, edges]
   )
 
-  // const onNodesChange: OnNodesChange = (changes: NodeChange[]) => {
-  //   console.log(changes)
-  //   setNodes(nodes => applyNodeChanges(changes, nodes))
-  // }
-
-  // const onEdgesChange: OnEdgesChange = (changes: EdgeChange[]) => {
-  //   setEdges(edges => applyEdgeChanges(changes, edges))
-  // }
-
   useEffect(() => {
-    fn1()
-  }, [])
-  // every time our nodes change, we want to center the graph again
+    if (nodeStore && edgeStore) {
+      fn1(nodeStore, edgeStore)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nodeStore, edgeStore])
   useEffect(() => {
-    fitView({ duration: 400 })
-  }, [nodes, fitView])
+    setTimeout(() => {
+      // duration is used for a smooth animation
+      fitView({ duration: 400 })
+    }, 100)
+  }, [layoutedNodes, fitView])
 
   return (
     <div className={styles.container}>
@@ -486,7 +378,7 @@ function ReactFlowPro({ direction = 'LR' }: ExampleProps) {
         className={styles.reactFlow}
         proOptions={proOptions}
         nodeTypes={nodeTypes}
-        nodes={nodes}
+        nodes={layoutedNodes}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
@@ -497,7 +389,7 @@ function ReactFlowPro({ direction = 'LR' }: ExampleProps) {
         panOnDrag={panOnDrag}
         selectionMode={SelectionMode.Partial}
         // newly added edges get these options automatically
-        defaultEdgeOptions={defaultEdgeOptions}
+        // defaultEdgeOptions={defaultEdgeOptions}
         minZoom={-Infinity}
         maxZoom={Infinity}
       >
@@ -511,10 +403,19 @@ function ReactFlowPro({ direction = 'LR' }: ExampleProps) {
 
 // as we are accessing the internal React Flow state in our component, we need to wrap it with the ReactFlowProvider
 const ReactFlowWrapper = () => {
+  const platformsId = (useLocation() as LoactionState).state?.id
+  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
+  const getModelDetails = useFlowStore(state => state.getModelDetails)
+  const nodeStore = useFlowStore(state => state.nodes)
+  const edgeStore = useFlowStore(state => state.edges)
+  useEffect(() => {
+    if (platformsIdmemo) {
+      getModelDetails(platformsIdmemo)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [platformsIdmemo])
   return (
-    <ReactFlowProvider>
-      <ReactFlowPro />
-    </ReactFlowProvider>
+    <ReactFlowProvider>{nodeStore.length >= 1 && edgeStore.length >= 1 && <FlowPro nodeStore={nodeStore} edgeStore={edgeStore} />}</ReactFlowProvider>
   )
 }
 

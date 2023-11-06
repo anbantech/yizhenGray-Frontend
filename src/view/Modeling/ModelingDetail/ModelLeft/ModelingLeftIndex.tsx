@@ -17,10 +17,11 @@ function ModelingLeftIndex() {
   const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
   const getModelListDetails = useModelDetailsStore(state => state.getModelListDetails)
   const getList = useModelDetailsStore(state => state.getList)
+  const tabs = useModelDetailsStore(state => state.tabs)
   React.useEffect(() => {
-    if (getModelListDetails) {
+    if (platformsIdmemo) {
       getModelListDetails(platformsIdmemo)
-      getList('customMadePeripheral', platformsIdmemo)
+      getList(tabs, platformsIdmemo)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [platformsIdmemo])
