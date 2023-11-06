@@ -25,7 +25,7 @@ export interface ModelDrawStoreType {
   edgesItem: Edge[]
   setNodes: (nodes: Node[]) => void
   setEdges: (edges: Edge[]) => void
-  getModelDetails: () => void
+  getModelDetails: (number: id) => { nodeArray: any[]; edgeArray: any[] }
 }
 
 type ModelListType = {
@@ -64,25 +64,38 @@ export interface NewModelListStore {
 export interface ModelDetails {
   tabs: string
   keyWord: string
+  foucsId: number | null
   cusomMadePeripheralListParams: CustomMadePeripheralListParams
   processorListParams: ProcessorListParams
   timerListParams: TimerListParams
   customMadePeripheralList: [] | CustomMadePeripheralListParams[]
   timerList: [] | TimerListParams[]
   processorList: [] | ProcessorListParams[]
-  boardLevelPeripherals: [] | CustomMadePeripheralListParams[]
+  boardLevelPeripheralsList: [] | CustomMadePeripheralListParams[]
   cusomMadePeripheralNums: number
   timerNums: number
   handlerDataNums: number
-  boardPeripheralNums: number
+  boardPeripheralNums: numbe
+  hasMoreData: boolean
+  fn: () => void
+  setFousId: (val: number) => void
+  clearKeyWord: (val: () => void) => any
+  initStore: () => void
+  setHasMore: (val: boolean) => void
+  setParams: (tabs: string, val) => void
   setTabs: (val: string) => void
-  setKeyWord: (val: string) => void
+  setKeyWord: (val: string, tabs: string) => void
+  baseKeyWordAndTagsGetList: (val: string, id: number) => void
+  setTags: (val: string) => void
   getBoardCustomMadePeripheralStore: (id: number) => void
   getCustomMadePeripheralStore: (id: number) => void
   getProcessorListStore: (id: number) => void
   getTimeListStore: (id: number) => void
   getList: (val: string, id: number) => void
   getModelListDetails: (id: number) => void
+  showNode: React.Key[] | []
+  setExpand: (val: any) => void
+  setItemExpand: (val: React.Key[]) => void
 }
 
 export interface HeaderStoreParams {

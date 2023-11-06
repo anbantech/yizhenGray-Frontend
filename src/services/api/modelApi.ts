@@ -69,6 +69,11 @@ function newSetDataHander(params: newSetDataHanderParams) {
 function newSetTimer(params: newSetTimerParams) {
   return request.post(`/api/v1.0/models/timers/save`, params)
 }
+
+// 获取画布
+function getCanvas(id: number) {
+  return request.get(`/api/v1.0/models/canvas/get/${id}`)
+}
 export {
   newSetPeripheral,
   newSetRegister,
@@ -82,5 +87,6 @@ export {
   deleteModelTarget,
   getCustomMadePeripheralList,
   getTargetDetails,
-  validatorParams
+  validatorParams,
+  getCanvas
 }

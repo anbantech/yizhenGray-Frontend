@@ -22,17 +22,17 @@
 .ModelingTabsCommonStyle{
     width: 100%;   
     height: 32px;
-    padding: 0 8px;
     display: flex;
     justify-content: space-between;
+    padding: 0 4px;
     align-items: center;
     cursor: pointer;
 }
 
 .ModelingTabsCommonStyle:hover{
     width: 100%;
-    padding: 0 8px;
     height: 32px;
+    padding:0 4px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -62,7 +62,7 @@
    width: 100%;
    height: 32px;
    :global(.ant-input-affix-wrapper) {
-        width: 208px !important;
+        width: 216px !important;
         height: 32px;
         border-radius: 4px;
         padding: 0px 11px !important;
@@ -72,4 +72,134 @@
     :global(.ant-input) {
         background-color: #f1f3f4;
     }
+}
+
+.title{
+    color: #333;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.node{
+    height:  24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.node:hover{
+  .icon{
+    display: block;
+  }
+}
+
+.treeItem{
+    width: 100%;
+    display: flex;
+    :global(.ant-tree-switcher){
+      width: 12px;
+      text-align: left;
+      line-height: 28px;   
+    }
+    :global(.ant-tree-list){
+      width: 216px;
+    }
+    :global(.ant-tree-iconEle){
+       width: 16px !important;
+       height: 16px !important;
+       line-height: 18px !important;
+       display: flex;
+    }
+    :global(.ant-tree-node-content-wrapper){
+      width: 100%;
+      height: 24px;
+      display: flex;
+      padding: 0px;
+      flex-direction: row;
+      align-items: center;
+    }
+    :global(.ant-tree-treenode){
+        width: 100%;
+        height: 32px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    :global(.ant-tree-switcher-icon){
+        color: #333 !important;
+    }
+    :global(.ant-tree-treenode-selected::before){
+        background-color: #EBF2FF !important;
+    }
+    :global(.ant-tree-title){
+        width:calc(100% - 16px);
+    }
+}
+
+
+.radioGroup{
+    height: 24px;
+    border-radius: 2px;
+    margin:8px 0;
+}
+
+.radio{
+    height: 24px;
+    padding: 0 8px;
+    font-family: Source Han Sans CN;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    :global(.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)){
+        background-color: #E6F6FF !important;
+        color: #4880FF !important
+    }
+    :global(.ant-radio-button-checked){
+        background-color: #E6F6FF;
+        color: #4880FF !important;
+    }
+}
+
+.tagItem{
+    width: 100%;
+    height: 32px;
+    display: flex;
+    padding: 0 6px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.tagItem:hover{
+    background-color: #f5f5f5;
+    .icon {
+        display: block;
+    }
+}
+.leftTagItem{
+    width: 100%;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    color: #333;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.icon {
+    display: none;
+}
+
+.nodeIcon{
+    :global(.ant-tree-switcher-noop){
+        display: none;
+    }
+}
+
+.concentBody {
+    height: calc(100vh - 280px);
 }
