@@ -25,14 +25,7 @@ function CustomNode({ data, sourcePosition, targetPosition }: NodeProps) {
   const className = cx(styles.node, { [styles.nodeDropzone]: isDropzoneActive })
 
   return (
-    <div
-      className={className}
-      onDrop={onDrop}
-      style={{ opacity: data.hidden ? 1 : 0 }}
-      onDragOver={onDragOver}
-      onDragEnter={onDragEnter}
-      onDragLeave={onDragLeave}
-    >
+    <div className={className} onDrop={onDrop} onDragOver={onDragOver} onDragEnter={onDragEnter} onDragLeave={onDragLeave}>
       <Handle className={styles.handle} type='target' position={targetPosition || Position.Top} />
       <Handle className={styles.handle} type='source' position={sourcePosition || Position.Bottom} />
       {data.label}

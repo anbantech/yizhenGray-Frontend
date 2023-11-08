@@ -100,13 +100,15 @@ export interface ModelDetails {
 
 export interface HeaderStoreParams {
   tabs: string
+  checkSum: string
+  setCheckSum: (val: string) => void
   setTabs: (val: string) => void
   unSetTabs: () => void
-  params: any
-  createPeripheral: () => void
-  createRegister: () => void
-  createDataHandler: () => void
-  createTimer: () => void
+  createPeripheral: (idSum: string, params: any) => void
+  createRegister: (idSum: string, params: any) => void
+  createDataHandler: (idSum: string, params: any) => void
+  createTimer: (idSum: string, params: any) => void
+  createElement: (idSum: string, params: any) => void
 }
 
 export interface RightDetailsAttributesStoreParams {
@@ -136,6 +138,7 @@ interface optionalParametersParams {
   peripheral_id?: valueParams
   relative_address?: valueParams
   desc?: valueParams
+  kind?: valueParams
 }
 
 export interface FormItemCheckStoreParams {

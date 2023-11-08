@@ -51,8 +51,9 @@ interface MyObject {
 }
 
 type RFState = {
-  nodes: Node[]
+  nodes: any
   edges: Edge[]
+  nodeId: null | number | string
   changeView: boolean
   setChangeView: (val: boolean) => void
   canvasData: any
@@ -62,8 +63,9 @@ type RFState = {
   targetId: null | number
   setTargetId: (id: number) => void
   getModelDetails: (id: number) => any
-  setNodes: (nodesValue: Node[]) => void
+  setNodes: (nodesValue: any) => void
   setEdges: (edgesValue: Edge[]) => void
+  setNodeId: (val: string | number | null) => void
 }
 
 const titleMap = {
@@ -84,6 +86,7 @@ const checkAsyncMap = {
 const useFlowStore = create<RFState>((set, get) => ({
   nodes: [],
   edges: [],
+  nodeId: null,
   changeView: false,
   setChangeView: val => {
     set({ changeView: val })
@@ -92,6 +95,9 @@ const useFlowStore = create<RFState>((set, get) => ({
   targetId: null,
   setTargetId: id => {
     set({ targetId: id })
+  },
+  setNodeId: val => {
+    set({ nodeId: val })
   },
   setNodes: (nodesValue: Node[]) => {
     set({ nodes: nodesValue })
@@ -128,19 +134,15 @@ const useFlowStore = create<RFState>((set, get) => ({
           result.push({
             data: {
               label: `Node ${node.name}`,
-              type: node.flag,
               id: node.id,
-              db_id: node.db_id,
               nums: node.children?.length,
-              hidden: node.flag !== 5,
+              expanded: false,
               position: { x: 0, y: 0 },
               draggable: false,
               flag: node.flag
             },
-            flag: node.flag,
-            type: node.flag === 5 ? 'targetNode' : 'custom',
-            hidden: node.flag !== 5,
-            id: node.id as string,
+            type: node.flag === 5 ? 'targetNode' : node.flag === 1 ? 'peripheralNode' : node.flag === 2 ? 'registerNode' : 'custom',
+            id: node.id,
             position: { x: 0, y: 0 },
             draggable: false
           })
@@ -163,7 +165,6 @@ const useFlowStore = create<RFState>((set, get) => ({
                 id: `${source}->${target}`,
                 source,
                 target,
-                hidden: node.flag !== 5,
                 type: 'step',
                 data: {
                   label: 'edge label'
@@ -568,44 +569,62 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
 
 // 顶部操作栏 创建定时器 外设 数据处理器
 const HeaderStore = create<HeaderStoreParams>((set, get) => ({
+  checkSum: '0',
   tabs: '',
-  params: {},
+  setCheckSum: val => {
+    set({ checkSum: val })
+  },
   setTabs: val => {
     set({ tabs: val })
   },
   unSetTabs: () => {
     set({ tabs: '' })
   },
-  createPeripheral: async () => {
-    const { params } = get()
+  createPeripheral: async (idSum, params) => {
     try {
       const res = await newSetPeripheral(params)
     } catch (error) {
       throwErrorMessage(error)
     }
   },
-  createRegister: async () => {
-    const { params } = get()
+  createRegister: async (idSum, params) => {
     try {
       const res = await newSetRegister(params)
     } catch (error) {
       throwErrorMessage(error)
     }
   },
-  createDataHandler: async () => {
-    const { params } = get()
+  createDataHandler: async (idSum, params) => {
     try {
       const res = await newSetDataHander(params)
     } catch (error) {
       throwErrorMessage(error)
     }
   },
-  createTimer: async () => {
-    const { params } = get()
+  createTimer: async (idSum, params) => {
     try {
       const res = await newSetTimer(params)
     } catch (error) {
       throwErrorMessage(error)
+    }
+  },
+  createElement: (idSum, params) => {
+    const { tabs, createPeripheral, createRegister, createDataHandler, createTimer } = get()
+    switch (tabs) {
+      case 'customMadePeripheral':
+        createPeripheral(idSum, params)
+        break
+      case 'processor':
+        createRegister(idSum, params)
+        break
+      case 'dataHandlerNotReferenced':
+        createDataHandler(idSum, params)
+        break
+      case 'time':
+        createTimer()
+        break
+      default:
+        break
     }
   }
 }))
@@ -689,7 +708,7 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
   changeValuePeripheralForm: (item, title, val) => {
     const { checkName, checkHex, setBtnStatus } = get()
     if (item === 'name') {
-      checkName(item, title, val)
+      return checkName(item, title, val)
     }
     if (item === 'base_address' || item === 'address_length') {
       const hexResult = checkHex(val)
@@ -712,10 +731,13 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
         )
       }
     }
+
     set(state =>
       produce(state, draft => {
         const updatedDraft = draft
-        ;(updatedDraft.optionalParameters as any)[item].value = val
+        if ((updatedDraft.optionalParameters as any)[item] !== undefined) {
+          ;(updatedDraft.optionalParameters as any)[item].value = val
+        }
       })
     )
   },
@@ -937,6 +959,15 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
             const updatedDraft = draft
             ;(updatedDraft.optionalParameters as any)[type].validateStatus = 'error'
             ;(updatedDraft.optionalParameters as any)[type].errorMsg = `${title}名称重复,请修改`
+          })
+        )
+      }
+      if (error.code === 7020) {
+        set(state =>
+          produce(state, draft => {
+            const updatedDraft = draft
+            ;(updatedDraft.optionalParameters as any)[type].validateStatus = 'error'
+            ;(updatedDraft.optionalParameters as any)[type].errorMsg = `${title}地址被使用,请修改`
           })
         )
       }

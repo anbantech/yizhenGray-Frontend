@@ -5,9 +5,9 @@ import TextArea from 'antd/lib/input/TextArea'
 import { IconPeripheral, IconYifuRegister, IconClock, IconCommon, IconDownload, IconFileText } from '@anban/iconfonts'
 import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
 import { useLocation } from 'react-router'
+import { useStoreApi } from 'reactflow'
 import StyleSheet from './modelMiddle.less'
 import { formItemParamsCheckStore, HeaderStore, publicAttributes, useModelDetailsStore } from '../../Store/ModelStore'
-
 import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
 
 type TabsSelect = {
@@ -56,15 +56,54 @@ const RightHeaderBarArray = [
 // 表单页脚
 const FormFooter = () => {
   const unSetTabs = HeaderStore(state => state.unSetTabs)
+  const Tabs = HeaderStore(state => state.tabs)
   const btnStatus = formItemParamsCheckStore(state => state.btnStatus)
   const setBtnStatus = formItemParamsCheckStore(state => state.setBtnStatus)
+  const platformsId = (useLocation() as LoactionState).state?.id
+  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
+  const createElement = HeaderStore(state => state.createElement)
   const optionalParameters = formItemParamsCheckStore(state => state.optionalParameters)
   const cancel = React.useCallback(() => {
     setBtnStatus(true)
     unSetTabs()
   }, [setBtnStatus, unSetTabs])
   const getCollect = React.useCallback(() => {
-    console.log(optionalParameters)
+    // const { nodeInternals } = store.getState()
+    // console.log([...nodeInternals.values()])
+    const { name, base_address, desc, interrupt, address_length, period, peripheral_id, port, relative_address, kind } = optionalParameters
+
+    const periperalParams = {
+      name: name?.value,
+      kind: kind?.value,
+      desc: desc?.value,
+      address_length: address_length?.value,
+      base_address: base_address?.value
+    }
+
+    const timerParams = {
+      name: name?.value,
+      period: period?.value,
+      interrupt: interrupt?.value
+    }
+
+    const dataHandParams = {
+      name: name?.value,
+      port: port?.value
+    }
+
+    const ProcessorParams = {
+      name: name?.value,
+      peripheral_id: peripheral_id?.value,
+      relative_address: relative_address?.value
+    }
+
+    const mapParams = {
+      customMadePeripheral: periperalParams,
+      processor: ProcessorParams,
+      time: timerParams,
+      dataHandlerNotReferenced: dataHandParams
+    }
+    // createElement()
   }, [optionalParameters])
   return (
     <div className={StyleSheet.formFooter}>
@@ -134,10 +173,10 @@ const PeripheralsForm = () => {
         </Form.Item>
         <Form.Item label='类型' required className={StyleSheet.firstFormItem} name='kind'>
           <Select
-            placeholder='请选择所属外设'
+            placeholder='请选择类型'
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
             onChange={value => {
-              changeValuePeripheralForm('peripheral_id', '外设', value)
+              changeValuePeripheralForm('kind', '外设', value)
             }}
           >
             {PERIPHERAL_TYPE?.map((rate: any) => {
