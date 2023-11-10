@@ -3,6 +3,7 @@
 
 import { create } from 'zustand'
 import { produce } from 'immer'
+import crc32 from 'crc-32'
 import {
   Connection,
   Edge,
@@ -38,7 +39,6 @@ import { throwErrorMessage } from 'Src/util/message'
 import {
   ModelDetails,
   NewModelListStore,
-  HeaderStoreParams,
   PublicAttributesStoreParams,
   RightDetailsAttributesStoreParams,
   FormItemCheckStoreParams
@@ -52,20 +52,36 @@ interface MyObject {
 
 type RFState = {
   nodes: any
-  edges: Edge[]
+  edges: any
+  menuStatusObj: { status: boolean; id: null | string }
   nodeId: null | number | string
   changeView: boolean
   setChangeView: (val: boolean) => void
+  setMenuStatus: (id: string) => void
+  setOpenMenu: () => void
   canvasData: any
+  itemNodes: any
+  itemEdges: any
   onNodesChange: OnNodesChange
   onEdgesChange: OnEdgesChange
   onConnect: OnConnect
   targetId: null | number
+  setNodeAndSetEdge: (node: any, edge: any) => void
   setTargetId: (id: number) => void
   getModelDetails: (id: number) => any
   setNodes: (nodesValue: any) => void
   setEdges: (edgesValue: Edge[]) => void
+  getSumNodeId: () => void
   setNodeId: (val: string | number | null) => void
+  upDateNodesAndEdges: (newNode: Node[], newEdge: Edge[]) => void
+  expandNode: (nodeId: string) => void
+  addChildNode: (info: any) => void
+  createPeripheral: (params: any, fn: (val: number, tabs: string) => void, id: number, cancel: () => void, tabs: string) => void
+  createRegister: (params: any, fn: (val: number, tabs: string) => void, id: number, cancel: () => void, tabs: string) => void
+  createDataHandler: (params: any, fn: (val: number, tabs: string) => void, id: number, cancel: () => void, tabs: string) => void
+  createTimer: (params: any, fn: (val: number, tabs: string) => void, id: number, cancel: () => void, tabs: string) => void
+  createElement: (tabs: string, params: any, fn: (val: number, tabs: string) => void, id: number, cancel: () => void) => void
+  zindexNode: (nodeId: string, zIndex: number) => void
 }
 
 const titleMap = {
@@ -86,10 +102,32 @@ const checkAsyncMap = {
 const useFlowStore = create<RFState>((set, get) => ({
   nodes: [],
   edges: [],
+  itemNodes: [],
+  itemEdges: [],
+  menuStatusObj: { status: false, id: null },
+  setMenuStatus: (id: string) => {
+    set({ menuStatusObj: { status: !get().menuStatusObj.status, id } })
+  },
+  setOpenMenu: () => {
+    set({ menuStatusObj: { status: false, id: null } })
+  },
   nodeId: null,
   changeView: false,
   setChangeView: val => {
     set({ changeView: val })
+  },
+  setNodeAndSetEdge: (nodes, edges) => {
+    set({ itemNodes: nodes, itemEdges: edges })
+  },
+  // 获取节点id
+  getSumNodeId: () => {
+    const { nodes } = get()
+    if (nodes.length === 0) return
+    const idArray = nodes.map((item: { id: string }) => item.id).join(',')
+    // eslint-disable-next-line no-bitwise
+    const crc32Value = crc32.str(idArray) >>> 0
+    const hex = crc32Value.toString(16).toUpperCase()
+    return hex
   },
   canvasData: [],
   targetId: null,
@@ -99,7 +137,7 @@ const useFlowStore = create<RFState>((set, get) => ({
   setNodeId: val => {
     set({ nodeId: val })
   },
-  setNodes: (nodesValue: Node[]) => {
+  setNodes: nodesValue => {
     set({ nodes: nodesValue })
   },
   setEdges: (edgesValue: Edge[]) => {
@@ -107,9 +145,69 @@ const useFlowStore = create<RFState>((set, get) => ({
       edges: edgesValue
     })
   },
-  onNodesChange: (changes: NodeChange[]) => {
+  upDateNodesAndEdges: (newNode, newEdge) => {
     set({
-      nodes: applyNodeChanges(changes, get().nodes)
+      nodes: newNode,
+      edges: newEdge
+    })
+  },
+  expandNode: (nodeId: string) => {
+    set({
+      nodes: get().nodes.map((node: Node) => {
+        if (node.id === nodeId) {
+          // it's important to create a new object here, to inform React Flow about the changes
+          return { ...node, data: { ...node.data, expanded: !node.data.expanded } }
+        }
+        return node
+      })
+    })
+  },
+
+  zindexNode: (nodeId: string, zIndex) => {
+    set({
+      nodes: get().nodes.map((node: Node) => {
+        if (node.id === nodeId) {
+          // it's important to create a new object here, to inform React Flow about the changes
+          return { ...node, style: { ...node.style, zIndex } }
+        }
+        return node
+      })
+    })
+  },
+  addChildNode: (node: any) => {
+    const newNode = {
+      data: {
+        label: node.name,
+        id: String(node.id),
+        nums: 0,
+        expanded: true,
+        position: { x: 0, y: 0 },
+        draggable: false,
+        flag: 1,
+        zIndex: 1002
+      },
+      type: 'peripheralNode',
+      id: String(node.id),
+      parentNode: String(node.platform_id),
+      position: { x: 0, y: 0 },
+      draggable: false
+    }
+    const newEdge = {
+      id: `${String(node.platform_id)}->${String(node.id)}`,
+      type: 'step',
+      data: { label: '12' },
+      source: String(node.platform_id),
+      target: String(node.id)
+    }
+    set({
+      nodes: [...get().nodes, newNode],
+      edges: [...get().edges, newEdge]
+    })
+  },
+  onNodesChange: (changes: NodeChange[]) => {
+    const { nodes } = get()
+    set({
+      nodes: applyNodeChanges(changes, nodes)
     })
   },
   onEdgesChange: (changes: EdgeChange[]) => {
@@ -123,18 +221,20 @@ const useFlowStore = create<RFState>((set, get) => ({
     })
   },
   converTreeToNode: () => {},
+  // 初始化获取画布数据
   getModelDetails: async id => {
     if (!id) return
     try {
       const res = await getCanvas(id)
       if (res.data.canvas) {
         set({ canvasData: res.data.canvas })
-        const converTreeToNode = (node: any) => {
+        const converTreeToNode = (node: any, parentId: number) => {
           const result = []
           result.push({
             data: {
               label: `Node ${node.name}`,
               id: node.id,
+              parentId,
               nums: node.children?.length,
               expanded: false,
               position: { x: 0, y: 0 },
@@ -144,16 +244,17 @@ const useFlowStore = create<RFState>((set, get) => ({
             type: node.flag === 5 ? 'targetNode' : node.flag === 1 ? 'peripheralNode' : node.flag === 2 ? 'registerNode' : 'custom',
             id: node.id,
             position: { x: 0, y: 0 },
-            draggable: false
+            draggable: false,
+            zIndex: node.flag === 5 ? 1003 : node.flag === 1 ? 1002 : node.flag === 2 ? 1001 : 1001
           })
           if (node.children && node.children.length > 0) {
             node.children.forEach((item: any) => {
-              result.push(...converTreeToNode(item))
+              result.push(...converTreeToNode(item, node.id))
             })
           }
           return result
         }
-        const nodeArray = converTreeToNode(res.data.canvas)
+        const nodeArray = converTreeToNode(res.data.canvas, res.data.canvas.id)
         const converTreeToEdges = (node: any) => {
           const links: any[] = []
           if (node.children && node.children.length > 0) {
@@ -179,6 +280,51 @@ const useFlowStore = create<RFState>((set, get) => ({
         set({ nodes: [...nodeArray], edges: [...edgeArray] })
       }
     } catch {}
+  },
+  createPeripheral: async (params, fn, id, cancel) => {
+    const { addChildNode } = get()
+    try {
+      const res = await newSetPeripheral(params)
+      if (res.code !== 0) return
+      addChildNode(res.data)
+    } catch (error) {
+      throwErrorMessage(error)
+    }
+  },
+  createRegister: async (params, fn, id, cancel) => {
+    try {
+      const res = await newSetRegister(params)
+    } catch (error) {
+      throwErrorMessage(error)
+    }
+  },
+  createDataHandler: async (params, fn, id, cancel) => {
+    try {
+      const res = await newSetDataHander(params)
+    } catch (error) {
+      throwErrorMessage(error)
+    }
+  },
+  createTimer: async (params, fn, id, cancel, tabs) => {
+    try {
+      const res = await newSetTimer(params)
+      if (res.data) {
+        fn(id, tabs)
+        cancel()
+      }
+    } catch (error) {
+      throwErrorMessage(error)
+    }
+  },
+  createElement: (tabs, params, fn, id, cancel) => {
+    const { createPeripheral, createRegister, createDataHandler, createTimer } = get()
+    const componentFunctions = {
+      customMadePeripheral: createPeripheral,
+      processor: createRegister,
+      dataHandlerNotReferenced: createDataHandler,
+      time: createTimer
+    }
+    componentFunctions[tabs as keyof typeof componentFunctions](params, fn, id, cancel, tabs)
   }
 }))
 
@@ -248,13 +394,13 @@ const useNewModelingStore = create<NewModelListStore>((set, get) => ({
     const { modelId } = get()
     try {
       const res = await deleteModelTarget(`${modelId}`)
-
       return res
     } catch (error) {
       throwErrorMessage(error)
       return error
     }
   },
+
   toggleFn: () => {
     const { loading } = get()
     set({ loading: !loading })
@@ -321,6 +467,7 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
     extractIdsFromTree(val, idArray)
     set({ showNode: idArray })
   },
+
   setItemExpand: val => {
     set({ showNode: val })
   },
@@ -343,18 +490,22 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
         break
     }
   },
+
   setTabs: val => {
     set({ tabs: val })
   },
+
   setTags: val => {
     const { cusomMadePeripheralListParams } = get()
     set({ cusomMadePeripheralListParams: { ...cusomMadePeripheralListParams, tag: val, page: 1, page_size: 10 } })
   },
+
   setHasMore: (val: boolean) => {
     set(() => ({
       hasMoreData: val
     }))
   },
+
   setFousId: (val: number) => {
     set({ foucsId: val })
   },
@@ -510,8 +661,12 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
         break
     }
   },
-  getModelListDetails: async (id: number) => {
+
+  // 侧边栏数量获取详情
+  getModelListDetails: async (id: number, headertabs) => {
+    const { tabs, getList } = get()
     try {
+      // 获取详情
       const res = await getTargetDetails(id)
       if (res.data) {
         const { processor_cnt, timer_cnt, default_peripheral_cnt, peripheral_cnt } = res.data
@@ -521,6 +676,10 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
           handlerDataNums: processor_cnt,
           boardPeripheralNums: default_peripheral_cnt
         })
+        // 画布添加数据和左侧列表所选tabs是否一致 如果一致更新列表
+        if (headertabs === tabs) {
+          getList(tabs, id)
+        }
       }
     } catch (error) {
       throwErrorMessage(error)
@@ -530,6 +689,7 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
   clearKeyWord: fn => {
     set({ fn })
   },
+
   initStore: () => {
     set({
       keyWord: '',
@@ -567,68 +727,6 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
   }
 }))
 
-// 顶部操作栏 创建定时器 外设 数据处理器
-const HeaderStore = create<HeaderStoreParams>((set, get) => ({
-  checkSum: '0',
-  tabs: '',
-  setCheckSum: val => {
-    set({ checkSum: val })
-  },
-  setTabs: val => {
-    set({ tabs: val })
-  },
-  unSetTabs: () => {
-    set({ tabs: '' })
-  },
-  createPeripheral: async (idSum, params) => {
-    try {
-      const res = await newSetPeripheral(params)
-    } catch (error) {
-      throwErrorMessage(error)
-    }
-  },
-  createRegister: async (idSum, params) => {
-    try {
-      const res = await newSetRegister(params)
-    } catch (error) {
-      throwErrorMessage(error)
-    }
-  },
-  createDataHandler: async (idSum, params) => {
-    try {
-      const res = await newSetDataHander(params)
-    } catch (error) {
-      throwErrorMessage(error)
-    }
-  },
-  createTimer: async (idSum, params) => {
-    try {
-      const res = await newSetTimer(params)
-    } catch (error) {
-      throwErrorMessage(error)
-    }
-  },
-  createElement: (idSum, params) => {
-    const { tabs, createPeripheral, createRegister, createDataHandler, createTimer } = get()
-    switch (tabs) {
-      case 'customMadePeripheral':
-        createPeripheral(idSum, params)
-        break
-      case 'processor':
-        createRegister(idSum, params)
-        break
-      case 'dataHandlerNotReferenced':
-        createDataHandler(idSum, params)
-        break
-      case 'time':
-        createTimer()
-        break
-      default:
-        break
-    }
-  }
-}))
-
 // 右侧属性
 const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>(set => ({
   typeAttributes: 'Processor',
@@ -656,17 +754,23 @@ const publicAttributes = create<PublicAttributesStoreParams>(set => ({
 
 // 表单接口校验
 const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => ({
-  btnStatus: true,
-  baseBtnStatus: true,
-  setBaseBtnStatus: val => {
-    set({ baseBtnStatus: val })
+  tabs: '',
+  setTabs: val => {
+    set({ tabs: val })
   },
 
-  setBtnStatus: val => {
-    set({ btnStatus: val })
+  unSetTabs: () => {
+    const { initFormValue } = get()
+    set({ tabs: '' })
+    initFormValue()
   },
+
   optionalParameters: {
     name: {
+      value: '',
+      validateStatus: ''
+    },
+    kind: {
       value: '',
       validateStatus: ''
     },
@@ -690,10 +794,6 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
       value: '',
       validateStatus: ''
     },
-    kind: {
-      value: '',
-      validateStatus: ''
-    },
     relative_address: {
       value: '',
       validateStatus: ''
@@ -703,41 +803,59 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
       validateStatus: ''
     }
   },
+  btnStatus: true,
+  baseBtnStatus: true,
+  setBaseBtnStatus: val => {
+    set({ baseBtnStatus: val })
+  },
+
+  setBtnStatus: val => {
+    set({ btnStatus: val })
+  },
 
   // 外设表单
   changeValuePeripheralForm: (item, title, val) => {
     const { checkName, checkHex, setBtnStatus } = get()
+
     if (item === 'name') {
-      return checkName(item, title, val)
+      checkName(item, title, val)
     }
+
     if (item === 'base_address' || item === 'address_length') {
       const hexResult = checkHex(val)
       if (!hexResult) {
         setBtnStatus(true)
-        set(state =>
+        return set(state =>
           produce(state, draft => {
             const updatedDraft = draft
             ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
             ;(updatedDraft.optionalParameters as any)[item].errorMsg = `请输入由0-9,A-F(或a-f)组成的16进制数`
           })
         )
-      } else {
-        set(state =>
+      }
+      set(state =>
+        produce(state, draft => {
+          const updatedDraft = draft
+          ;(updatedDraft.optionalParameters as any)[item].validateStatus = ''
+          ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
+        })
+      )
+
+      const hexLength = val.trim().length
+      if (hexLength % 2 !== 0) {
+        const hexValue0 = `0${val}`
+        return set(state =>
           produce(state, draft => {
             const updatedDraft = draft
-            ;(updatedDraft.optionalParameters as any)[item].validateStatus = ''
-            ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
+            ;(updatedDraft.optionalParameters as any)[item].value = hexValue0
           })
         )
       }
     }
-
     set(state =>
       produce(state, draft => {
         const updatedDraft = draft
-        if ((updatedDraft.optionalParameters as any)[item] !== undefined) {
-          ;(updatedDraft.optionalParameters as any)[item].value = val
-        }
+        ;(updatedDraft.optionalParameters as any)[item].value = val
       })
     )
   },
@@ -870,7 +988,7 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
         produce(state, draft => {
           const updatedDraft = draft
           ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
-          ;(updatedDraft.optionalParameters as any)[item].errorMsg = `${title}名称由汉字、数字、字母和下划线组成`
+          ;(updatedDraft.optionalParameters as any)[item].errorMsg = `${title}名称由数字、字母和下划线组成,不能以数字开头`
         })
       )
       return false
@@ -899,6 +1017,7 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
     const checkoutResult = Number(val) >= 0 && Number(val) <= 255
     return checkoutResult
   },
+
   getKey: (val: string) => {
     const { optionalParameters } = get()
     const res = checkAsyncMap[val as keyof typeof checkAsyncMap].every(item => {
@@ -906,12 +1025,14 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
     })
     return res
   },
+
   // 异步校验
   checkFormValues: async (type, id, title, value) => {
     const { checkNameLength, checkNameFormat, setBtnStatus, optionalParameters, baseBtnStatus, getKey } = get()
-
-    if (!checkNameFormat(value) || !checkNameLength(value)) {
-      return false
+    if (type === 'name') {
+      if (!checkNameFormat(value) || !checkNameLength(value)) {
+        return false
+      }
     }
     set(state =>
       produce(state, draft => {
@@ -920,6 +1041,7 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
         ;(updatedDraft.optionalParameters as any)[type].errorMsg = null
       })
     )
+
     const params = {
       object: titleMap[title as keyof typeof titleMap],
       platform_id: id,
@@ -989,7 +1111,7 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
   // 检查名字格式
   checkNameFormat: (val: string) => {
     if (!val) return false
-    const reg = /^[\w\u4E00-\u9FA5]+$/
+    const reg = /^[A-Z_a-z]\w*$/
     return reg.test(val)
   },
 
@@ -1007,6 +1129,10 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
       baseBtnStatus: true,
       optionalParameters: {
         name: {
+          value: '',
+          validateStatus: ''
+        },
+        kind: {
           value: '',
           validateStatus: ''
         },
@@ -1046,12 +1172,4 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
     })
   }
 }))
-export {
-  useFlowStore,
-  formItemParamsCheckStore,
-  useNewModelingStore,
-  publicAttributes,
-  useModelDetailsStore,
-  HeaderStore,
-  RightDetailsAttributesStore
-}
+export { useFlowStore, formItemParamsCheckStore, useNewModelingStore, publicAttributes, useModelDetailsStore, RightDetailsAttributesStore }

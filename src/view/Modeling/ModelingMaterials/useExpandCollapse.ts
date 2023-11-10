@@ -40,8 +40,7 @@ const direction = 'LR'
 function useExpandCollapse(
   nodes: Node[],
   edges: Edge[],
-  { layoutNodes = true, treeWidth = 220, treeHeight = 100 }: UseExpandCollapseOptions = {},
-  changeView: boolean
+  { layoutNodes = true, treeWidth = 240, treeHeight = 130 }: UseExpandCollapseOptions = {}
 ): { nodes: Node[]; edges: Edge[] } {
   return useMemo(() => {
     const hierarchy = stratify<ExpandCollapseNode>()
@@ -73,7 +72,7 @@ function useExpandCollapse(
       edges: edges.filter(edge => root.find(h => h.id === edge.source) && root.find(h => h.id === edge.target))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nodes, edges, layoutNodes, treeWidth, treeHeight, changeView])
+  }, [nodes, edges, layoutNodes, treeWidth, treeHeight, nodes.length, edges.length])
 }
 
 export default useExpandCollapse
