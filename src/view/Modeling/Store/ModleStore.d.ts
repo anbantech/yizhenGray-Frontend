@@ -92,23 +92,10 @@ export interface ModelDetails {
   getProcessorListStore: (id: number) => void
   getTimeListStore: (id: number) => void
   getList: (val: string, id: number) => void
-  getModelListDetails: (id: number) => void
+  getModelListDetails: (id: number, headertabs?: string) => void
   showNode: React.Key[] | []
   setExpand: (val: any) => void
   setItemExpand: (val: React.Key[]) => void
-}
-
-export interface HeaderStoreParams {
-  tabs: string
-  checkSum: string
-  setCheckSum: (val: string) => void
-  setTabs: (val: string) => void
-  unSetTabs: () => void
-  createPeripheral: (idSum: string, params: any) => void
-  createRegister: (idSum: string, params: any) => void
-  createDataHandler: (idSum: string, params: any) => void
-  createTimer: (idSum: string, params: any) => void
-  createElement: (idSum: string, params: any) => void
 }
 
 export interface RightDetailsAttributesStoreParams {
@@ -130,6 +117,7 @@ type valueParams = {
 
 interface optionalParametersParams {
   name?: valueParams
+  kind?: valueParams
   port?: valueParams
   period?: valueParams
   interrupt?: valueParams
@@ -138,17 +126,19 @@ interface optionalParametersParams {
   peripheral_id?: valueParams
   relative_address?: valueParams
   desc?: valueParams
-  kind?: valueParams
 }
 
 export interface FormItemCheckStoreParams {
+  tabs: string
+  setTabs: (val: string) => void
+  unSetTabs: () => void
+  optionalParameters: optionalParametersParams
   changeValuePeripheralForm: (item: string, title: string, val: string) => void
   changeValueTimerForm: (item: string, title: string, val: string) => void
   checkFormValues: (type: string, id: number, title: string, value: string) => void
   changeValueRegisterForm: (item: string, title: string, val: string) => void
   checkName: (item: string, title: string, val: string) => boolean
   changeValueHanderlForm: (item: string, title: string, val: string) => void
-  optionalParameters: optionalParametersParams
   initFormValue: () => void
   getKey: (val: string) => boolean
   btnStatus: boolean

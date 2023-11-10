@@ -1,18 +1,23 @@
 /* eslint-disable unicorn/prefer-query-selector */
-import React, { useMemo } from 'react'
-import { Button, Form, Input, Radio, Select } from 'antd'
+import React, { useMemo, createContext } from 'react'
+import { Button, Form, Input, Select } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
 import { IconPeripheral, IconYifuRegister, IconClock, IconCommon, IconDownload, IconFileText } from '@anban/iconfonts'
 import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
 import { useLocation } from 'react-router'
-import { useStoreApi } from 'reactflow'
 import StyleSheet from './modelMiddle.less'
-import { formItemParamsCheckStore, HeaderStore, publicAttributes, useModelDetailsStore } from '../../Store/ModelStore'
+
+import { formItemParamsCheckStore, publicAttributes, useFlowStore, useModelDetailsStore } from '../../Store/ModelStore'
 import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
 
 type TabsSelect = {
   tabs: string
 }
+
+type props = {
+  addNodeAndAddEdge: () => void
+}
+const ctx = createContext<props>({ addNodeAndAddEdge: () => {} })
 
 const { Option } = Select
 
@@ -55,24 +60,21 @@ const RightHeaderBarArray = [
 
 // 表单页脚
 const FormFooter = () => {
-  const unSetTabs = HeaderStore(state => state.unSetTabs)
-  const Tabs = HeaderStore(state => state.tabs)
+  const unSetTabs = formItemParamsCheckStore(state => state.unSetTabs)
+  const Tabs = formItemParamsCheckStore(state => state.tabs)
   const btnStatus = formItemParamsCheckStore(state => state.btnStatus)
-  const setBtnStatus = formItemParamsCheckStore(state => state.setBtnStatus)
   const platformsId = (useLocation() as LoactionState).state?.id
   const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
-  const createElement = HeaderStore(state => state.createElement)
+  const createElement = useFlowStore(state => state.createElement)
   const optionalParameters = formItemParamsCheckStore(state => state.optionalParameters)
+  const getModelListDetails = useModelDetailsStore(state => state.getModelListDetails)
   const cancel = React.useCallback(() => {
-    setBtnStatus(true)
     unSetTabs()
-  }, [setBtnStatus, unSetTabs])
+  }, [unSetTabs])
   const getCollect = React.useCallback(() => {
-    // const { nodeInternals } = store.getState()
-    // console.log([...nodeInternals.values()])
     const { name, base_address, desc, interrupt, address_length, period, peripheral_id, port, relative_address, kind } = optionalParameters
-
     const periperalParams = {
+      platform_id: platformsIdmemo,
       name: name?.value,
       kind: kind?.value,
       desc: desc?.value,
@@ -81,17 +83,20 @@ const FormFooter = () => {
     }
 
     const timerParams = {
+      platform_id: platformsIdmemo,
       name: name?.value,
       period: period?.value,
       interrupt: interrupt?.value
     }
 
     const dataHandParams = {
+      platform_id: platformsIdmemo,
       name: name?.value,
       port: port?.value
     }
 
     const ProcessorParams = {
+      platform_id: platformsIdmemo,
       name: name?.value,
       peripheral_id: peripheral_id?.value,
       relative_address: relative_address?.value
@@ -103,8 +108,12 @@ const FormFooter = () => {
       time: timerParams,
       dataHandlerNotReferenced: dataHandParams
     }
-    // createElement()
-  }, [optionalParameters])
+
+    const info = mapParams[Tabs as keyof typeof mapParams]
+
+    createElement(Tabs, info, getModelListDetails, platformsIdmemo, cancel)
+  }, [optionalParameters, platformsIdmemo, Tabs, createElement, getModelListDetails, cancel])
+
   return (
     <div className={StyleSheet.formFooter}>
       <Button className={StyleSheet.Btn} key='cancel' style={{ borderRadius: '4px' }} onClick={cancel}>
@@ -199,11 +208,11 @@ const PeripheralsForm = () => {
           <Input
             placeholder='请输入基地址'
             prefix='0x'
-            onChange={e => {
-              changeValuePeripheralForm('base_address', '外设', e.target.value)
-            }}
             onBlur={e => {
               checkFormValues('base_address', platformsIdmemo, '外设', e.target.value)
+            }}
+            onChange={e => {
+              changeValuePeripheralForm('base_address', '外设', e.target.value)
             }}
           />
         </Form.Item>
@@ -471,7 +480,7 @@ const TabsBarForm = {
 }
 
 function ModelingMiddleHeaderMemo() {
-  const tabs = HeaderStore(state => state.tabs)
+  const tabs = formItemParamsCheckStore(state => state.tabs)
   return (
     <div className={StyleSheet.moddleMiddleHeaderBody} key={tabs}>
       {TabsBarForm[tabs as keyof typeof TabsBarForm]}
@@ -483,10 +492,10 @@ function ModelingMiddleHeaderMemo() {
 const ModelingMiddleHeader = React.memo(ModelingMiddleHeaderMemo)
 
 const HeaderBarMemo = () => {
-  const setTabs = HeaderStore(state => state.setTabs)
-  const tabs = HeaderStore(state => state.tabs)
+  const setTabs = formItemParamsCheckStore(state => state.setTabs)
+  const tabs = formItemParamsCheckStore(state => state.tabs)
   const tabsSelect = React.useMemo(() => tabs, [tabs])
-  const unSelect = HeaderStore(state => state.unSetTabs)
+  const unSelect = formItemParamsCheckStore(state => state.unSetTabs)
   const { initFormValue } = formItemParamsCheckStore()
   const showOrHide = React.useCallback(
     (val: string) => {
@@ -534,11 +543,10 @@ const HeaderBarMemo = () => {
     </div>
   )
 }
-
 const HeaderBar = React.memo(HeaderBarMemo)
-
 function MiddleHeaderBar() {
-  const tabs = HeaderStore(state => state.tabs)
+  const tabs = formItemParamsCheckStore(state => state.tabs)
+
   return (
     <div className={StyleSheet.middleHeaderBar}>
       <HeaderBar />

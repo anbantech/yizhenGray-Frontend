@@ -1,194 +1,379 @@
 .container {
-    display: flex;
-    width: 100%;        
-    height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 80px);
+  overflow-y:scroll;
 }
 
 .reactFlow {
-    background-color: #fff;
+  background-color: #fff;
 }
 
 .node {
-    background-color: #222138;
-    color: #fff;
-    border: none;
-    box-shadow: rgba(0, 0, 0, 0.533) 0px 0px 9px 0px;
-    padding: 15px;
-    border-radius: 8px;
+  background-color: #222138;
+  color: #fff;
+  border: none;
+  box-shadow: rgba(0, 0, 0, 0.533) 0px 0px 9px 0px;
+  padding: 15px;
+  border-radius: 8px;
 }
 
 .nodeDropzone {
-    background-color: #ff0072;
-    box-shadow: 0 0 9px 0 #ff0072;
+  background-color: #ff0072;
+  box-shadow: 0 0 9px 0 #ff0072;
 }
 
 .handle {
-    pointer-events: none;
-    opacity: 0;
+  pointer-events: none;
+  opacity: 0;
 }
 
 .sidebar {
-    color: white;
-    top: 5px;
-    left: 5px;
-    z-index: 1000;
-    padding: 10px;
-    border-right: 1px solid #222138;
-    width: 120px;
-    flex-grow: 0;
-    flex-shrink: 0;
-    background-color: #5f5d72;
+  color: white;
+  top: 5px;
+  left: 5px;
+  z-index: 1000;
+  padding: 10px;
+  border-right: 1px solid #222138;
+  width: 120px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  background-color: #5f5d72;
 }
 
 .sidebarLabel {
-    font-size: 14px;
-    margin-bottom: 10px;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
 
 .sidebarNode {
-    background: #222138;
-    color: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-bottom: 10px;
+  background: #222138;
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 10px;
 }
 
 .sidebarNode:hover {
-    box-shadow: rgba(0, 0, 0, 0.533) 0px 0px 9px 0px;
+  box-shadow: rgba(0, 0, 0, 0.533) 0px 0px 9px 0px;
 }
 
 .edgebutton {
-    width: 20px;
-    height: 20px;
-    background: #eee;
-    border: 1px solid #fff;
-    cursor: pointer;
-    border-radius: 50%;
-    font-size: 12px;
-    line-height: 1;
+  width: 20px;
+  height: 20px;
+  background: #eee;
+  border: 1px solid #fff;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 12px;
+  line-height: 1;
 }
 
 .edgebutton:hover {
-    box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.08);
+}
+
+.targetNode {
+  width: 125px;
+  height: 38px;
+  box-sizing: content-box;
+  padding: 1px;
+  border: 2px solid transparent;
+  background-color: #314267;
+  color: #fff;
+  text-align: center;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  border-radius: 4px;
+  line-height: 38px;
+}
+
+.targetNodeBorder {
+  width: 125px;
+  height: 38px;
+  padding: 1px;
+  box-sizing: content-box;
+  border: 2px solid #52aEFF;
+  background-color: #314267;
+  color: #fff;
+  text-align: center;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  border-radius: 4px;
+  line-height: 38px;
+}
+
+.handleNums {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: -50%;
+  right: -5%;
+  transform: translate(100%, 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em;
+  padding: 2px;
+  overflow: hidden;
+  box-shadow: var(--node-box-shadow);
+  z-index: 1;
+  border-radius: 15px;
+  border: 1px solid #666;
+  background: #fff;
+  cursor: pointer;
+}
+
+.handleNumsExpand {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: 10%;
+  right: -2%;
+  transform: translate(100%, 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em;
+  padding: 2px;
+  overflow: hidden;
+  box-shadow: var(--node-box-shadow);
+  z-index: 1;
+  border-radius: 15px;
+  border: 1px solid #666;
+  background: #fff;
+  cursor: pointer;
+}
+
+.handleNumsPerilarl {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: -55%;
+  right: -5%;
+  transform: translate(100%, 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em;
+  padding: 2px;
+  overflow: hidden;
+  box-shadow: var(--node-box-shadow);
+  z-index: 1;
+  border-radius: 15px;
+  border: 1px solid #666;
+  background: #fff;
+  cursor: pointer;
+}
+
+.handleNumsExpandPerilarl {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: 8%;
+  right: -2%;
+  transform: translate(100%, 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em;
+  padding: 2px;
+  overflow: hidden;
+  box-shadow: var(--node-box-shadow);
+  z-index: 1;
+  border-radius: 15px;
+  border: 1px solid #666;
+  background: #fff;
+  cursor: pointer;
+}
+
+.closeImage {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  background-color: #fff;
+  border: 1px solid #666;
+  align-items: center;
+  justify-items: center;
+  border-radius: 8px;
+  position: absolute;
+  top: 30%;
+  right: -20%;
+}
+
+.pherilarNodeBorder {
+  width: 125px;
+  height: 38px;
+  padding-left: 12px;
+  box-sizing: content-box;
+  display: flex;
+  color: #fff;
+  border: 2px solid #52aEFF;
+  align-items: center;
+  border-radius: 4px;
+  background-color: #556da4;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 38px;
+}
+
+.pherilarNode {
+  width: 125px;
+  height: 38px;
+  box-sizing: content-box;
+  border: 2px solid transparent;
+  padding-left: 12px;
+  display: flex;
+  color: #fff;
+  align-items: center;
+  border-radius: 4px;
+  background-color: #556da4;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 38px;
+}
+
+.label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.labelName {
+  width: 90px;
+  padding-left: 4px;
+  text-align: left;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.registerNode {
+  width: 125px;
+  height: 38px;
+  padding: 0 12px;
+  box-sizing: content-box;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  background: #e2e8f3;
+  display: flex;
+  color: #333333;
+  align-items: center;
+  font-family: Source Han Sans CN;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 38px;
 }
 
 
-.targetNode{
-    width:125px;
-    height: 38px;
-    background-color: #314267 ;
-    color: #FFF;
-    text-align: center;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 700;
+.registerNodeBorder {
+  box-sizing: content-box;
+  width: 125px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 4px;
+  background: #e2e8f3;
+  display: flex;
+  border: 2px solid #52aEFF;
+  color: #333333;
+  align-items: center;
+  font-family: Source Han Sans CN;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 38px;
+}
+
+
+.contextMenu5{
+  width: 160px;
+  padding: 0 4px;
+  border-radius: 4px;
+  box-shadow: 0px 1px 2px -2px rgba(0, 0, 0, 0.09), 0px 3px 6px 0px rgba(0, 0, 0, 0.06), 0px 5px 12px 4px rgba(0, 0, 0, 0.03);
+  background-color: #fff;
+  position: absolute;
+  top: 20%;
+  right: 10%;
+  transform: translate(100%, 100%);
+  cursor: pointer;
+}
+
+.contextMenu1{
+    width: 160px;
+    padding: 0 4px;
     border-radius: 4px;
-    line-height: 38px;
-}
-
-
-.handleNums{
-    width: 30px;
-    height: 30px;
+    box-shadow: 0px 1px 2px -2px rgba(0, 0, 0, 0.09), 0px 3px 6px 0px rgba(0, 0, 0, 0.06), 0px 5px 12px 4px rgba(0, 0, 0, 0.03);
+    background-color: #fff;
     position: absolute;
-    top: -68%;
-    right: -5%;
+    top: -60%;
+    right: 10%;
     transform: translate(100%, 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.25em;
-    padding: 2px;
-    overflow: hidden;
-    box-shadow: var(--node-box-shadow);
-    z-index: 1;
-    border-radius: 15px;
-    border: 1px solid #666;
-    background: #FFF;
     cursor: pointer;
 }
 
-.handleNumsExpand{
-    width: 12px;
-    height: 12px;
+.contextMenu2{
+    width: 160px;
+    padding: 0 4px;
+    border-radius: 4px;
+    box-shadow: 0px 1px 2px -2px rgba(0, 0, 0, 0.09), 0px 3px 6px 0px rgba(0, 0, 0, 0.06), 0px 5px 12px 4px rgba(0, 0, 0, 0.03);
+    background-color: #fff;
     position: absolute;
-    top:2%;
-    right: -2%;
+    top: -80%;
+    right: 10%;
     transform: translate(100%, 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.25em;
-    padding: 2px;
-    overflow: hidden;
-    box-shadow: var(--node-box-shadow);
-    z-index: 1;
-    border-radius: 15px;
-    border: 1px solid #666;
-    background: #FFF;
     cursor: pointer;
+  }
+
+.Flag5{
+  height: 32px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  line-height: 32px;
+  color:#666;
+  padding: 0 8px;
 }
 
-.closeImage{
-   width: 16px;
-   height: 16px;
-   display: flex;
-   background-color: #FFF;
-   border: 1px solid #666;
-   align-items: center;
-   justify-items: center;
-   border-radius: 8px;
-   position: absolute;
-   top: 30%;
-   right: -20%;
+.Flag_1:hover {
+  background-color: #F5F5F5;
 }
 
-.pherilarNode{
-    width: 125px;
-    height: 38px;
-    padding: 0 12px ;
-    display: flex;
-    color:#FFF;
-    align-items: center;
-    border-radius: 4px;
-    background: #556DA4; 
-    font-family: Source Han Sans CN;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 38px;
+.Flag_1 {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  line-height: 32px;
+  color: #666;
+  padding: 0 8px;
 }
 
-.label{ 
-    display: flex;
-    justify-content:space-between;
-    align-items: center;
+
+.Flag5:hover{
+  background-color: #F5F5F5;
 }
 
- .labelName {
-    width: 90px;
-    padding-left: 4px;
-    text-align: left;
-    display: inline-block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
- }
+.Flag1{
+  height: 64px;
+  display: flex;
+  flex-direction: column;
+}
 
- .registerNode{
-    width: 125px;
-    height: 38px;
-    padding: 0 12px;
-    border-radius: 4px;
-    background: #E2E8F3;
-    display: flex;
-    color: #333333;
-    align-items: center;
-    font-family: Source Han Sans CN;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 38px;
- }
-
+.ctxMenu{
+    width: 200px;
+    height: 100px;
+    background: white;
+    border-style: solid;
+    box-shadow: 10px 19px 20px rgba(0, 0, 0, 10%);
+    position: absolute;
+    z-index: 10;
+}
