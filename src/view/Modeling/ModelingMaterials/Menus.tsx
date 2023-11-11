@@ -2,11 +2,26 @@ import React from 'react'
 import { IconPeripheral, IconYifuRegister, IconCommon, IconDelete } from '@anban/iconfonts'
 import { NodeProps } from 'reactflow'
 import styles from '../model.less'
+import { formItemParamsCheckStore, useFlowStore } from '../Store/ModelStore'
 
 const Flag5 = (props: NodeProps) => {
   console.log(props)
+  const setTabs = formItemParamsCheckStore(state => state.setTabs)
+  const setOpenMenu = useFlowStore(state => state.setOpenMenu)
+  const createPheripheral = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation()
+    e.preventDefault()
+    setTabs('customMadePeripheral')
+    setOpenMenu()
+  }
   return (
-    <div className={styles.Flag5}>
+    <div
+      className={styles.Flag5}
+      role='time'
+      onClick={e => {
+        createPheripheral(e)
+      }}
+    >
       <IconPeripheral style={{ width: '16px', height: '16px', color: '#666', marginRight: '4px' }} />
       <span> 添加自定义外设 </span>
     </div>
@@ -14,9 +29,23 @@ const Flag5 = (props: NodeProps) => {
 }
 
 const Flag1 = () => {
+  const setTabs = formItemParamsCheckStore(state => state.setTabs)
+  const setOpenMenu = useFlowStore(state => state.setOpenMenu)
+  const processor = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation()
+    e.preventDefault()
+    setTabs('processor')
+    setOpenMenu()
+  }
   return (
     <div className={styles.Flag1}>
-      <div className={styles.Flag5}>
+      <div
+        className={styles.Flag5}
+        role='time'
+        onClick={e => {
+          processor(e)
+        }}
+      >
         <IconYifuRegister style={{ width: '16px', height: '16px', color: '#666', marginRight: '4px' }} />
         <span>添加寄存器 </span>
       </div>
@@ -29,9 +58,23 @@ const Flag1 = () => {
 }
 
 const Flag2 = () => {
+  const setTabs = formItemParamsCheckStore(state => state.setTabs)
+  const setOpenMenu = useFlowStore(state => state.setOpenMenu)
+  const dataHandeler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation()
+    e.preventDefault()
+    setTabs('dataHandlerNotReferenced')
+    setOpenMenu()
+  }
   return (
     <div className={styles.Flag3}>
-      <div className={styles.Flag5}>
+      <div
+        className={styles.Flag5}
+        role='time'
+        onClick={e => {
+          dataHandeler(e)
+        }}
+      >
         <IconCommon style={{ width: '16px', height: '16px', color: '#000', marginRight: '4px' }} />
         <span> 添加数据处理器 </span>
       </div>

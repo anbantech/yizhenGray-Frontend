@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/prefer-query-selector */
-import React, { useMemo, createContext } from 'react'
+import React, { useMemo } from 'react'
 import { Button, Form, Input, Select } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
 import { IconPeripheral, IconYifuRegister, IconClock, IconCommon, IconDownload, IconFileText } from '@anban/iconfonts'
@@ -17,7 +17,6 @@ type TabsSelect = {
 type props = {
   addNodeAndAddEdge: () => void
 }
-const ctx = createContext<props>({ addNodeAndAddEdge: () => {} })
 
 const { Option } = Select
 
@@ -94,11 +93,12 @@ const FormFooter = () => {
       name: name?.value,
       port: port?.value
     }
-
+    // 0 状态寄存器 1 非状态寄存器
     const ProcessorParams = {
       platform_id: platformsIdmemo,
       name: name?.value,
       peripheral_id: peripheral_id?.value,
+      kind: 0,
       relative_address: relative_address?.value
     }
 
@@ -134,7 +134,7 @@ const FormFooter = () => {
 }
 const FormFooterMemo = React.memo(FormFooter)
 
-// 外设表单
+// 外设表单 完全体
 const PeripheralsForm = () => {
   const platformsId = (useLocation() as LoactionState).state?.id
   const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
@@ -267,7 +267,7 @@ const ProcessorForm = () => {
       return { id: item.id, name: item.name }
     })
   }, [customMadePeripheralList])
-  const { optionalParameters, changeValueRegisterForm, checkFormValues, setBaseBtnStatus } = formItemParamsCheckStore()
+  const { optionalParameters, changeValueRegisterForm, checkFormValues, setBaseBtnStatus, setBtnStatus } = formItemParamsCheckStore()
   const { name, relative_address } = optionalParameters
 
   const [form] = Form.useForm()
@@ -275,11 +275,14 @@ const ProcessorForm = () => {
     (changedValues: any, allValues: any) => {
       if (allValues.peripheral_id !== undefined) {
         setBaseBtnStatus(false)
+        if (name?.validateStatus === 'success' && relative_address?.validateStatus === 'success') {
+          setBtnStatus(false)
+        }
       } else {
         setBaseBtnStatus(true)
       }
     },
-    [setBaseBtnStatus]
+    [setBaseBtnStatus, setBtnStatus, name, relative_address]
   )
   return (
     <div className={StyleSheet.ProcessorFormBody}>
@@ -342,22 +345,13 @@ const DataHandlerForm = () => {
   const platformsId = (useLocation() as LoactionState).state?.id
   const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
   const [form] = Form.useForm()
-  const { optionalParameters, changeValueHanderlForm, checkFormValues, setBtnStatus } = formItemParamsCheckStore()
+  const { optionalParameters, changeValueHanderlForm } = formItemParamsCheckStore()
   const { name, port } = optionalParameters
   const { portList } = publicAttributes()
-  const onValueChange = React.useCallback(
-    (val: any, allValues: { name: string; port: string }) => {
-      if (allValues.port) {
-        setBtnStatus(false)
-      } else {
-        setBtnStatus(true)
-      }
-    },
-    [setBtnStatus]
-  )
+
   return (
     <div className={StyleSheet.DataHandlerFormBody}>
-      <Form form={form} layout='vertical' onValuesChange={onValueChange}>
+      <Form form={form} layout='vertical'>
         <Form.Item
           label='数据处理器名称'
           required
@@ -374,7 +368,7 @@ const DataHandlerForm = () => {
               changeValueHanderlForm('name', '数据处理器', e.target.value)
             }}
             onBlur={e => {
-              checkFormValues('name', platformsIdmemo, '数据处理器', e.target.value)
+              changeValueHanderlForm('name', '数据处理器', e.target.value, platformsIdmemo, true)
             }}
           />
         </Form.Item>
@@ -382,8 +376,8 @@ const DataHandlerForm = () => {
           <Select
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
             placeholder='请选择端口'
-            onSelect={(value: string) => {
-              changeValueHanderlForm('port', '数据处理器', value)
+            onChange={(value: string) => {
+              changeValueHanderlForm('port', '数据处理器', value, platformsIdmemo)
             }}
           >
             {
@@ -406,7 +400,8 @@ const DataHandlerForm = () => {
 }
 
 const DataHandlerFormMemo = React.memo(DataHandlerForm)
-// 添加定时器
+
+// 添加定时器 完全体
 const TimeForm = () => {
   const [form] = Form.useForm()
   const platformsId = (useLocation() as LoactionState).state?.id

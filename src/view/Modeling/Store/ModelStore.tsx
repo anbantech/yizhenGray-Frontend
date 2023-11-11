@@ -47,6 +47,8 @@ import {
 // import { message } from 'antd'
 
 interface MyObject {
+  object: string
+  platform_id: number
   [key: string]: any
 }
 
@@ -281,26 +283,38 @@ const useFlowStore = create<RFState>((set, get) => ({
       }
     } catch {}
   },
-  createPeripheral: async (params, fn, id, cancel) => {
+  createPeripheral: async (params, fn, id, cancel, tabs) => {
     const { addChildNode } = get()
     try {
       const res = await newSetPeripheral(params)
       if (res.code !== 0) return
+      if (res.data) {
+        fn(id, tabs)
+        cancel()
+      }
       addChildNode(res.data)
     } catch (error) {
       throwErrorMessage(error)
     }
   },
-  createRegister: async (params, fn, id, cancel) => {
+  createRegister: async (params, fn, id, cancel, tabs) => {
     try {
       const res = await newSetRegister(params)
+      if (res.data) {
+        fn(id, tabs)
+        cancel()
+      }
     } catch (error) {
       throwErrorMessage(error)
     }
   },
-  createDataHandler: async (params, fn, id, cancel) => {
+  createDataHandler: async (params, fn, id, cancel, tabs) => {
     try {
       const res = await newSetDataHander(params)
+      if (res.data) {
+        fn(id, tabs)
+        cancel()
+      }
     } catch (error) {
       throwErrorMessage(error)
     }
@@ -861,10 +875,79 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
   },
 
   // 数据处理器表单
-  changeValueHanderlForm: (item, title, val) => {
-    const { checkName } = get()
+  changeValueHanderlForm: (item, title, val, id?: number, isBlur?: boolean) => {
+    const { checkName, getKey, setBtnStatus, optionalParameters } = get()
+
+    const params = {
+      object: titleMap[title as keyof typeof titleMap],
+      platform_id: id as number,
+      [item]: val
+    }
+
+    const asyncCheck = async (params: MyObject) => {
+      try {
+        const res = await validatorParams(params)
+        if (res.code === 0) {
+          set(state =>
+            produce(state, draft => {
+              const updatedDraft = draft
+              ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'success'
+              ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
+            })
+          )
+        }
+      } catch (error) {
+        setBtnStatus(true)
+        if (error.code === 1005) {
+          set(state =>
+            produce(state, draft => {
+              const updatedDraft = draft
+              ;(updatedDraft.optionalParameters as any)[type].validateStatus = 'error'
+              ;(updatedDraft.optionalParameters as any)[type].errorMsg = `${title}名称重复,请修改`
+            })
+          )
+        }
+        if (error.code === 7020) {
+          set(state =>
+            produce(state, draft => {
+              const updatedDraft = draft
+              ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
+              ;(updatedDraft.optionalParameters as any)[item].errorMsg = `${title}地址被使用,请修改`
+            })
+          )
+        }
+        if (error.code === 7019) {
+          set(state =>
+            produce(state, draft => {
+              const updatedDraft = draft
+              ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
+              ;(updatedDraft.optionalParameters as any)[item].errorMsg = `${title}端口被使用,请修改`
+            })
+          )
+        }
+        return
+      }
+      if (getKey(titleMap[title as keyof typeof titleMap]) && optionalParameters.name?.value) {
+        setBtnStatus(false)
+      } else {
+        setBtnStatus(true)
+      }
+    }
     if (item === 'name') {
-      checkName(item, title, val)
+      const res = checkName(item, title, val)
+      if (isBlur && res) {
+        asyncCheck(params)
+      }
+    }
+    if (item === 'port') {
+      set(state =>
+        produce(state, draft => {
+          const updatedDraft = draft
+          ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'validating'
+          ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
+        })
+      )
+      asyncCheck(params)
     }
     set(state =>
       produce(state, draft => {
@@ -885,19 +968,28 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
       const hexResult = checkHex(val)
       if (!hexResult) {
         setBtnStatus(true)
-        set(state =>
+        return set(state =>
           produce(state, draft => {
             const updatedDraft = draft
             ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
             ;(updatedDraft.optionalParameters as any)[item].errorMsg = `请输入由0-9,A-F(或a-f)组成的16进制数`
           })
         )
-      } else {
-        set(state =>
+      }
+      set(state =>
+        produce(state, draft => {
+          const updatedDraft = draft
+          ;(updatedDraft.optionalParameters as any)[item].validateStatus = ''
+          ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
+        })
+      )
+      const hexLength = val.trim().length
+      if (hexLength % 2 !== 0) {
+        const hexValue0 = `0${val}`
+        return set(state =>
           produce(state, draft => {
             const updatedDraft = draft
-            ;(updatedDraft.optionalParameters as any)[item].validateStatus = ''
-            ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
+            ;(updatedDraft.optionalParameters as any)[item].value = hexValue0
           })
         )
       }
@@ -1062,8 +1154,23 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
       base_address: optionalParameters.base_address?.value
     }
 
+    const relative_address = {
+      object: titleMap[title as keyof typeof titleMap],
+      platform_id: id,
+      [type]: value,
+      relative_address: optionalParameters.relative_address?.value
+    }
+
     try {
-      const res = await validatorParams(type === 'address_length' ? { ...address_length } : type === 'base_address' ? { ...base_address } : params)
+      const res = await validatorParams(
+        type === 'address_length'
+          ? { ...address_length }
+          : type === 'base_address'
+          ? { ...base_address }
+          : type === 'relative_address '
+          ? { ...relative_address }
+          : params
+      )
       if (res.code === 0) {
         set(state =>
           produce(state, draft => {
@@ -1094,6 +1201,7 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
         )
       }
     }
+
     if (getKey(titleMap[title as keyof typeof titleMap]) && !baseBtnStatus) {
       setBtnStatus(false)
     } else {

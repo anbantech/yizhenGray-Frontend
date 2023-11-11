@@ -136,9 +136,9 @@ export interface FormItemCheckStoreParams {
   changeValuePeripheralForm: (item: string, title: string, val: string) => void
   changeValueTimerForm: (item: string, title: string, val: string) => void
   checkFormValues: (type: string, id: number, title: string, value: string) => void
-  changeValueRegisterForm: (item: string, title: string, val: string) => void
+  changeValueRegisterForm: (item: string, title: string, val: string, id?: number) => void
   checkName: (item: string, title: string, val: string) => boolean
-  changeValueHanderlForm: (item: string, title: string, val: string) => void
+  changeValueHanderlForm: (item: string, title: string, val: string, id?: number, isBlur?: boolean) => void
   initFormValue: () => void
   getKey: (val: string) => boolean
   btnStatus: boolean
