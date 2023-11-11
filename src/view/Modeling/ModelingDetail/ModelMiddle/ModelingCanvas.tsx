@@ -17,7 +17,7 @@ import useExpandCollapse from '../../ModelingMaterials/useExpandCollapse'
 import 'reactflow/dist/style.css'
 import styles from '../../model.less'
 import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
-import { useFlowStore } from '../../Store/ModelStore'
+import { formItemParamsCheckStore, useFlowStore } from '../../Store/ModelStore'
 import CustomNode from '../../ModelingMaterials/CustomNode'
 import CustomTargetNode from '../../ModelingMaterials/CustomTargetNode'
 import PherilarlCustomNode from '../../ModelingMaterials/PherilarlCustomNode'
@@ -40,15 +40,24 @@ type ExpandCollapseExampleProps = {
   nodeStore: Node[]
 }
 const panOnDrag = [1, 2]
+
+const flagMap = {
+  5: 'customMadePeripheral'
+  // 6: 'customMadeProcessor',
+  // 7: 'customMadeDataHandler',
+  // 8: 'customMadeTimer'
+}
+// processor: createRegister,
+// dataHandlerNotReferenced: createDataHandler,
+// time: createTimer
+
 function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 100, treeHeight = 220, animationDuration = 300 }: ExpandCollapseExampleProps) {
   const onEdgesChange = useFlowStore(state => state.onEdgesChange)
   const onNodesChange = useFlowStore(state => state.onNodesChange)
   const upDateNodesAndEdges = useFlowStore(state => state.upDateNodesAndEdges)
   const setMenuStatus = useFlowStore(state => state.setMenuStatus)
   const setOpenMenu = useFlowStore(state => state.setOpenMenu)
-  const zindexNode = useFlowStore(state => state.zindexNode)
   const ref = React.useRef(null)
-
   // const { fitView } = useReactFlow()
   const { nodes: visibleNodes, edges: visibleEdges } = useExpandCollapse(nodeStore, edgeStore, {
     treeWidth,
@@ -65,6 +74,8 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 100, treeHeight = 220,
       // Prevent native context menu from showing
       event.preventDefault()
       setMenuStatus(Node.data.id)
+      // setTabs(flagMap[Node.data.flag as keyof typeof flagMap])
+      // console.log(Node)
     },
     [setMenuStatus]
   )
@@ -104,9 +115,6 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 100, treeHeight = 220,
     [getDeleteNodeAndAdge, nodeStore, edgeStore, upDateNodesAndEdges]
   )
 
-  // useEffect(() => {
-  //   fitView({ maxZoom: 0.5 })
-  // }, [fitView])
   const onNodeClick = useCallback(
     (event, node) => {
       event.stopPropagation()
