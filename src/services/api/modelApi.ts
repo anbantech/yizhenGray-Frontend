@@ -6,7 +6,8 @@ import {
   newSetTimerParams,
   ProcessorListParams,
   TimerListParams,
-  paramsCheck
+  paramsCheck,
+  updateDataHandelParams
 } from 'Src/globalType/Param'
 import request from 'Src/services/request/request'
 
@@ -70,11 +71,77 @@ function newSetTimer(params: newSetTimerParams) {
   return request.post(`/api/v1.0/models/timers/save`, params)
 }
 
+// 获取定时器详情
+function getTimerDetails(id: number) {
+  return request.get(`/api/v1.0/models/timers/get/${id}`)
+}
+// 获取数据处理器详情
+function getDataHandlerDetails(id: number) {
+  return request.get(`/api/v1.0/models/data_processor/get/${id}`)
+}
+
+// 获取寄存器详情
+function getRegisterDetails(id: number) {
+  return request.get(`/api/v1.0/models/registers/get/${id}`)
+}
+
+// 获取外设详情
+function getPeripheralsDetails(id: number) {
+  return request.get(`/api/v1.0/models/peripherals/get/${id}`)
+}
+
+// 更新定时器
+
+function updateTimer(
+  id: number | null | string,
+  params: { name: string; period: string | number; interrupt: string | number; platform_id: string | number | null }
+) {
+  return request.put(`/api/v1.0/models/timers/update/${id}`, params)
+}
+
+// 更新数据处理器
+function updateDataHandler(id: number | null | string, params: updateDataHandelParams) {
+  return request.put(`/api/v1.0/models/data_processor/update/${id}`, params)
+}
+
+// 更新寄存器
+
+function updateRegister(id: number | null | string, params: any) {
+  return request.put(`/api/v1.0/models/registers/update/${id}`, params)
+}
+
+// 更新外设
+
+function updatePeripherals(
+  id: string,
+  params: {
+    platform_id: string | number | null
+    name: string | number
+    kind: string | number
+    base_address: string | number
+    address_length: string | number
+    desc: string | number
+  }
+) {
+  return request.put(`/api/v1.0/models/peripherals/update/${id}`, params)
+}
+
 // 获取画布
 function getCanvas(id: number) {
   return request.get(`/api/v1.0/models/canvas/get/${id}`)
 }
+
+// 保存画布
+
+function saveCanvasAsync(params: any) {
+  return request.post('/api/v1.0/models/canvas/save', params)
+}
 export {
+  updateDataHandler,
+  getDataHandlerDetails,
+  saveCanvasAsync,
+  getRegisterDetails,
+  getPeripheralsDetails,
   newSetPeripheral,
   newSetRegister,
   newSetDataHander,
@@ -88,5 +155,9 @@ export {
   getCustomMadePeripheralList,
   getTargetDetails,
   validatorParams,
-  getCanvas
+  getCanvas,
+  getTimerDetails,
+  updateTimer,
+  updatePeripherals,
+  updateRegister
 }

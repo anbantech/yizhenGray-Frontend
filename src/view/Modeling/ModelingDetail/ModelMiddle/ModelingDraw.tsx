@@ -277,7 +277,7 @@ import useAutoLayout, { Direction } from '../../useLayout'
 
 import 'reactflow/dist/style.css'
 import styles from '../../model.less'
-import { useFlowStore } from '../../Store/ModelStore'
+import { MiddleStore } from '../../Store/ModelStore'
 
 import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
 import useAlwaysLayout from './changeLayout'
@@ -311,7 +311,7 @@ function FlowPro({ direction = 'LR', edgeStore, nodeStore }: ExampleProps) {
   const { fitView } = useReactFlow()
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
-  const changeView = useFlowStore(state => state.changeView)
+  const changeView = MiddleStore(state => state.changeView)
   // useAutoLayout({ direction })
   const layoutedNodes = useLayout(nodes, edges, changeView, { direction })
   const fn1 = (nodeArray: any, edgeArray: any) => {
@@ -405,9 +405,9 @@ function FlowPro({ direction = 'LR', edgeStore, nodeStore }: ExampleProps) {
 const ReactFlowWrapper = () => {
   const platformsId = (useLocation() as LoactionState).state?.id
   const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
-  const getModelDetails = useFlowStore(state => state.getModelDetails)
-  const nodeStore = useFlowStore(state => state.nodes)
-  const edgeStore = useFlowStore(state => state.edges)
+  const getModelDetails = MiddleStore(state => state.getModelDetails)
+  const nodeStore = MiddleStore(state => state.nodes)
+  const edgeStore = MiddleStore(state => state.edges)
   useEffect(() => {
     if (platformsIdmemo) {
       getModelDetails(platformsIdmemo)

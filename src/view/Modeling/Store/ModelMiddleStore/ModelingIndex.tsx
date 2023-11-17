@@ -16,7 +16,6 @@ import PaginationsAge from 'Src/components/Pagination/Pagina'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { throwErrorMessage } from 'Src/util/common'
 import { useHistory } from 'react-router'
-import { RightDetailsAttributesStore } from './Store/ModeleRightListStore/RightListStoreList'
 
 const customizeRender = () => <DefaultValueTips content='暂无外设建模' />
 
@@ -31,12 +30,12 @@ function ModelingIndex() {
   // 路由
   const history = useHistory()
   const { setPage, setKeyWords, initParams, getModelTargetList, modelList, deleteModelTarget, setModelId } = useNewModelingStore()
+
   const { setPortList } = publicAttributes()
   const params = useNewModelingStore(state => state.params)
   const loading = useNewModelingStore(state => state.loading)
   const total = useNewModelingStore(state => state.total)
 
-  const rightAttrubutesMap = RightDetailsAttributesStore(state => state.rightAttrubutesMap)
   // 关键字搜索
   const updateParams = useCallback(
     (value: string) => {
@@ -108,13 +107,12 @@ function ModelingIndex() {
   // 跳转到建模详情
   const jumpModelingDetails = useCallback(
     async (id: number, name: string) => {
-      rightAttrubutesMap('Target', id)
       history.push({
         pathname: '/Modeling/Detailes',
         state: { name, id }
       })
     },
-    [history, rightAttrubutesMap]
+    [history]
   )
 
   // 获取端口

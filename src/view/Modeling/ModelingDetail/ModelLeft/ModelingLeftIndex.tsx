@@ -1,8 +1,6 @@
-// todo 什么情况要更新外设建模详情,重启
-
 import * as React from 'react'
 import { useLocation } from 'react-router'
-import { useModelDetailsStore } from '../../Store/ModelStore'
+import { useLeftModelDetailsStore } from '../../Store/ModelStore'
 import ModelingInput from './ModelingInput'
 import ModelingLeftTabList from './ModelingLeftTabList'
 import ModelLeftHeaderLeftMemo from './ModelItemTabsComponents'
@@ -15,11 +13,14 @@ export interface LoactionState {
 function ModelingLeftIndex() {
   const platformsId = (useLocation() as LoactionState).state?.id
   const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
-  const getModelListDetails = useModelDetailsStore(state => state.getModelListDetails)
-  const getList = useModelDetailsStore(state => state.getList)
-  const tabs = useModelDetailsStore(state => state.tabs)
+  const getModelListDetails = useLeftModelDetailsStore(state => state.getModelListDetails)
+  const getList = useLeftModelDetailsStore(state => state.getList)
+  const tabs = useLeftModelDetailsStore(state => state.tabs)
+  const { getAllPeripheral } = useLeftModelDetailsStore()
+
   React.useEffect(() => {
     if (platformsIdmemo) {
+      getAllPeripheral(platformsIdmemo as number)
       getModelListDetails(platformsIdmemo)
       getList(tabs, platformsIdmemo)
     }

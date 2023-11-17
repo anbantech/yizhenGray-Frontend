@@ -7,6 +7,9 @@
     height: calc(100vh - 48px);
     border-left : 1px solid #E9E9E9;
     background: #FFF;
+    :global(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
+      border-radius: 4px; 
+    }
 }
 
 .rightSideheaderBody{
@@ -68,10 +71,72 @@
 .rightConcentBody{
     height: calc(100vh - 80px);
     overflow-y: scroll;
+    position: relative;
 }
 
 .dataFormatProcessing{
     margin-top: 8px;
     padding-top: 8px;
     border-top: 1px solid #e9e9e9;
+}
+
+.renderCheckBoxItem {
+   width: 100%;
+   height: 32px;
+   display: flex;
+   justify-content: space-between;
+   padding: 0 12px;
+}
+
+.checkBoxGroupBody{
+   width: 100%;
+}
+
+.renderCheckBoxItem:hover{
+   background: #F5F5F5;
+}
+
+.formItem{
+  width: 100%;
+}
+
+.tagStyle{
+  max-width:75px;
+  height: 22px;
+  padding: 0 3px;
+  margin-right: 5px;
+  background-color: #f5f5f5;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+
+
+.footerFormTop{
+    display: flex;
+    flex-direction: column;
+    padding: 16px 16px  0px 16px;
+    :global(.ant-input-group-addon){
+        background-color: #FFF;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+    :global(.ant-input-group .ant-input-affix-wrapper:not(:first-child)){
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }
+    :global(.ant-input-group-addon .ant-select.ant-select-single:not(.ant-select-customize-input) .ant-select-selector){
+        // border: 1px solid #cccccc;
+       
+         border: none !important;
+        
+    }
+}
+
+.footerFormChart{
+  width:100% ;
+  display: flex;
+  flex-direction: row;
 }

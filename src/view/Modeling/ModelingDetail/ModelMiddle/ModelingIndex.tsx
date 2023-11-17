@@ -114,7 +114,7 @@ function ModelingIndex() {
         state: { name, id }
       })
     },
-    [history, rightAttrubutesMap]
+    [rightAttrubutesMap, history]
   )
 
   // 获取端口

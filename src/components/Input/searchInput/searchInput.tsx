@@ -44,7 +44,7 @@ const ClearSuffix = React.memo(function ClearSuffix(isShowProp: isShowProps<isSh
   )
 })
 
-const SearchInput = React.forwardRef((props: searchTypes, myRef) => {
+const SearchInputMemo = React.forwardRef((props: searchTypes, myRef) => {
   const { placeholder, className, onChangeValue } = props
 
   const changeValueFn = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,5 +85,8 @@ const SearchInput = React.forwardRef((props: searchTypes, myRef) => {
   )
 })
 
-SearchInput.displayName = 'SearchInput'
+SearchInputMemo.displayName = 'SearchInputMemo'
+
+const SearchInput = React.memo(SearchInputMemo)
+
 export default SearchInput

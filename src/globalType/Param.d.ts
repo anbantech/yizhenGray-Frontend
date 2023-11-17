@@ -602,7 +602,7 @@ export interface CustomMadePeripheralListParams {
 }
 
 export interface ProcessorListParams {
-  used: string
+  used?: string
   platform_id: number
   key_word?: string
   page: number
@@ -654,9 +654,24 @@ export interface newSetTimerParams {
 
 export interface paramsCheck {
   object: string
-  platform_id: number
+  platform_id: number | string | null
   name?: string
   addr?: string
   length?: string
   port?: string
+}
+
+export interface updateDataHandelParams {
+  name: string
+  port: string
+  platform_id: string | number | null
+  interrupt?: string | number | undefined | null
+  sof?: string | number | undefined | null
+  eof?: string | number | undefined | null
+  algorithm?: valueParamsArray | null
+  length_member?: valueParamsArray | null
+  checksum_member?: valueParamsArray | null
+  framing_member?: valueParamsArray | null
+  peripheral_id?: string | number | null
+  register_id?: string | number | null
 }

@@ -59,6 +59,7 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
   const updataMidleAndRightUI = useCallback(
     item => {
       const { flag } = item
+
       rightAttrubutesMap(AttributesType[flag as keyof typeof AttributesType], item.id)
     },
     [rightAttrubutesMap]
@@ -117,21 +118,21 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
   const [autoExpandParent, setAutoExpandParent] = useState(true)
   const showNode = useLeftModelDetailsStore(state => state.showNode)
   const rightAttrubutesMap = RightDetailsAttributesStore(state => state.rightAttrubutesMap)
+  const MiddleStore = RightDetailsAttributesStore(state => state.MiddleStore)
   const setItemExpand = useLeftModelDetailsStore(state => state.setItemExpand)
-  const focusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
+
   const onExpand = (newExpandedKeys: React.Key[]) => {
-    const res = newExpandedKeys
-    console.log([...res])
     setItemExpand(newExpandedKeys)
     setAutoExpandParent(false)
   }
-  console.log(showNode)
+
   const updataMidleAndRightUI = useCallback(
     (selectedKeys, e) => {
       const { flag } = e.node.data
+      MiddleStore(AttributesType[flag as keyof typeof AttributesType], selectedKeys[0])
       rightAttrubutesMap(AttributesType[flag as keyof typeof AttributesType], selectedKeys[0])
     },
-    [rightAttrubutesMap]
+    [rightAttrubutesMap, MiddleStore]
   )
 
   return (
