@@ -3,12 +3,18 @@ import { Handle, NodeProps, Position } from 'reactflow'
 import { IconMinus, IconYifuRegister } from '@anban/iconfonts'
 import classNames from 'classnames'
 import styles from '../model.less'
-import { useFlowStore } from '../Store/ModelStore'
+import MiddleStore from '../Store/ModelMiddleStore/MiddleStore'
 import ContextMenu from './Menus'
+import { RightDetailsAttributesStore } from '../Store/ModeleRightListStore/RightListStoreList'
 
 function CustomRegisterNode(Node: NodeProps) {
-  const { expandNode } = useFlowStore()
-  const menuStatusObj = useFlowStore(state => state.menuStatusObj)
+  const { expandNode } = MiddleStore()
+  const menuStatusObj = MiddleStore(state => state.menuStatusObj)
+  const focusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
+
+  const foucusStatus = React.useMemo(() => {
+    return focusNodeId === Node.data.id
+  }, [focusNodeId, Node])
   const isOpen = useMemo(() => {
     const idBol = menuStatusObj.id === Node.data.id
     return idBol && menuStatusObj.status
@@ -27,7 +33,7 @@ function CustomRegisterNode(Node: NodeProps) {
     return Node.data.nums
   }, [Node])
 
-  const style = classNames({ [styles.registerNode]: !isOpen }, { [styles.registerNodeBorder]: isOpen })
+  const style = classNames({ [styles.registerNode]: !foucusStatus }, { [styles.registerNodeBorder]: foucusStatus })
   return (
     <>
       <div className={style}>

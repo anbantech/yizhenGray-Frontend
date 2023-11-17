@@ -1,27 +1,18 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import ReactFlow, {
-  ReactFlowProvider,
-  Background,
-  Node,
-  Edge,
-  NodeTypes,
-  SelectionMode,
-  BackgroundVariant,
-  Controls,
-  useReactFlow,
-  getOutgoers
-} from 'reactflow'
+import React, { useCallback, useEffect } from 'react'
+import ReactFlow, { ReactFlowProvider, Background, Node, Edge, NodeTypes, SelectionMode, BackgroundVariant, Controls, getOutgoers } from 'reactflow'
 import { useLocation } from 'react-router'
 import useAnimatedNodes from '../../ModelingMaterials/useAnimatedNodes'
 import useExpandCollapse from '../../ModelingMaterials/useExpandCollapse'
 import 'reactflow/dist/style.css'
 import styles from '../../model.less'
 import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
-import { formItemParamsCheckStore, useFlowStore } from '../../Store/ModelStore'
+import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
 import CustomNode from '../../ModelingMaterials/CustomNode'
 import CustomTargetNode from '../../ModelingMaterials/CustomTargetNode'
 import PherilarlCustomNode from '../../ModelingMaterials/PherilarlCustomNode'
 import CustomRegisterNode from '../../ModelingMaterials/CustomRegisterNode'
+import MiddleStore from '../../Store/ModelMiddleStore/MiddleStore'
+import { AttributesType } from '../../Store/MapStore'
 
 const proOptions = { account: 'paid-pro', hideAttribution: true }
 
@@ -41,41 +32,35 @@ type ExpandCollapseExampleProps = {
 }
 const panOnDrag = [1, 2]
 
-const flagMap = {
-  5: 'customMadePeripheral'
-  // 6: 'customMadeProcessor',
-  // 7: 'customMadeDataHandler',
-  // 8: 'customMadeTimer'
-}
 // processor: createRegister,
 // dataHandlerNotReferenced: createDataHandler,
 // time: createTimer
 
 function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 100, treeHeight = 220, animationDuration = 300 }: ExpandCollapseExampleProps) {
-  const onEdgesChange = useFlowStore(state => state.onEdgesChange)
-  const onNodesChange = useFlowStore(state => state.onNodesChange)
-  const upDateNodesAndEdges = useFlowStore(state => state.upDateNodesAndEdges)
-  const setMenuStatus = useFlowStore(state => state.setMenuStatus)
-  const setOpenMenu = useFlowStore(state => state.setOpenMenu)
+  const rightAttrubutesMap = RightDetailsAttributesStore(state => state.rightAttrubutesMap)
+  const onEdgesChange = MiddleStore(state => state.onEdgesChange)
+  const onNodesChange = MiddleStore(state => state.onNodesChange)
+  const upDateNodesAndEdges = MiddleStore(state => state.upDateNodesAndEdges)
+  const setMenuStatus = MiddleStore(state => state.setMenuStatus)
+  const setOpenMenu = MiddleStore(state => state.setOpenMenu)
   const ref = React.useRef(null)
   // const { fitView } = useReactFlow()
   const { nodes: visibleNodes, edges: visibleEdges } = useExpandCollapse(nodeStore, edgeStore, {
     treeWidth,
     treeHeight
   })
+
   const { nodes: animatedNodes } = useAnimatedNodes(visibleNodes, {
     animationDuration
   })
 
   // 获取筛选节点数据
-
   const onNodeContextMenu = useCallback(
     (event, Node) => {
       // Prevent native context menu from showing
       event.preventDefault()
+      event.stopPropagation()
       setMenuStatus(Node.data.id)
-      // setTabs(flagMap[Node.data.flag as keyof typeof flagMap])
-      // console.log(Node)
     },
     [setMenuStatus]
   )
@@ -118,9 +103,12 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 100, treeHeight = 220,
   const onNodeClick = useCallback(
     (event, node) => {
       event.stopPropagation()
+      event.preventDefault()
+      const { flag, id } = node.data
       setOpenMenu()
+      rightAttrubutesMap(AttributesType[flag as keyof typeof AttributesType], id)
     },
-    [setOpenMenu]
+    [rightAttrubutesMap, setOpenMenu]
   )
   return (
     <div className={styles.container}>
@@ -162,10 +150,9 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 100, treeHeight = 220,
 function ReactFlowWrapper() {
   const platformsId = (useLocation() as LoactionState).state?.id
   const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
-  const getModelDetails = useFlowStore(state => state.getModelDetails)
-  const nodeStore = useFlowStore(state => state.nodes)
-  const edgeStore = useFlowStore(state => state.edges)
-
+  const getModelDetails = MiddleStore(state => state.getModelDetails)
+  const nodeStore = MiddleStore(state => state.nodes)
+  const edgeStore = MiddleStore(state => state.edges)
   useEffect(() => {
     if (platformsIdmemo) {
       getModelDetails(platformsIdmemo)

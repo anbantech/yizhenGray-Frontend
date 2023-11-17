@@ -2,12 +2,12 @@ import React from 'react'
 import { IconPeripheral, IconYifuRegister, IconCommon, IconDelete } from '@anban/iconfonts'
 import { NodeProps } from 'reactflow'
 import styles from '../model.less'
-import { formItemParamsCheckStore, useFlowStore } from '../Store/ModelStore'
+import { formItemParamsCheckStore } from '../Store/ModelStore'
+import MiddleStore from '../Store/ModelMiddleStore/MiddleStore'
 
 const Flag5 = (props: NodeProps) => {
-  console.log(props)
   const setTabs = formItemParamsCheckStore(state => state.setTabs)
-  const setOpenMenu = useFlowStore(state => state.setOpenMenu)
+  const setOpenMenu = MiddleStore(state => state.setOpenMenu)
   const createPheripheral = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation()
     e.preventDefault()
@@ -30,7 +30,7 @@ const Flag5 = (props: NodeProps) => {
 
 const Flag1 = () => {
   const setTabs = formItemParamsCheckStore(state => state.setTabs)
-  const setOpenMenu = useFlowStore(state => state.setOpenMenu)
+  const setOpenMenu = MiddleStore(state => state.setOpenMenu)
   const processor = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation()
     e.preventDefault()
@@ -59,7 +59,7 @@ const Flag1 = () => {
 
 const Flag2 = () => {
   const setTabs = formItemParamsCheckStore(state => state.setTabs)
-  const setOpenMenu = useFlowStore(state => state.setOpenMenu)
+  const setOpenMenu = MiddleStore(state => state.setOpenMenu)
   const dataHandeler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation()
     e.preventDefault()

@@ -3,46 +3,20 @@
 
 import { create } from 'zustand'
 import { produce } from 'immer'
-import crc32 from 'crc-32'
-import {
-  Connection,
-  Edge,
-  EdgeChange,
-  Node,
-  NodeChange,
-  addEdge,
-  OnNodesChange,
-  OnEdgesChange,
-  OnConnect,
-  applyNodeChanges,
-  applyEdgeChanges
-} from 'reactflow'
+
 import {
   createModelTarget,
   deleteModelTarget,
-  getCanvas,
   getCustomMadePeripheralList,
   getModelTargetList,
   getProcessorList,
   getTargetDetails,
   getTimerList,
-  newSetDataHander,
-  newSetPeripheral,
-  newSetRegister,
-  newSetTimer,
-  updateModelTarget,
-  validatorParams
+  updateModelTarget
 } from 'Src/services/api/modelApi'
 import { getPortList } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
-
-import {
-  ModelDetails,
-  NewModelListStore,
-  PublicAttributesStoreParams,
-  RightDetailsAttributesStoreParams,
-  FormItemCheckStoreParams
-} from './ModleStore'
+import { ModelDetails, NewModelListStore, PublicAttributesStoreParams, FormItemCheckStoreParams, CheckUtilFnStoreParams } from './ModleStore'
 
 // import { message } from 'antd'
 
@@ -52,295 +26,8 @@ interface MyObject {
   [key: string]: any
 }
 
-type RFState = {
-  nodes: any
-  edges: any
-  menuStatusObj: { status: boolean; id: null | string }
-  nodeId: null | number | string
-  changeView: boolean
-  setChangeView: (val: boolean) => void
-  setMenuStatus: (id: string) => void
-  setOpenMenu: () => void
-  canvasData: any
-  itemNodes: any
-  itemEdges: any
-  onNodesChange: OnNodesChange
-  onEdgesChange: OnEdgesChange
-  onConnect: OnConnect
-  targetId: null | number
-  setNodeAndSetEdge: (node: any, edge: any) => void
-  setTargetId: (id: number) => void
-  getModelDetails: (id: number) => any
-  setNodes: (nodesValue: any) => void
-  setEdges: (edgesValue: Edge[]) => void
-  getSumNodeId: () => void
-  setNodeId: (val: string | number | null) => void
-  upDateNodesAndEdges: (newNode: Node[], newEdge: Edge[]) => void
-  expandNode: (nodeId: string) => void
-  addChildNode: (info: any) => void
-  createPeripheral: (params: any, fn: (val: number, tabs: string) => void, id: number, cancel: () => void, tabs: string) => void
-  createRegister: (params: any, fn: (val: number, tabs: string) => void, id: number, cancel: () => void, tabs: string) => void
-  createDataHandler: (params: any, fn: (val: number, tabs: string) => void, id: number, cancel: () => void, tabs: string) => void
-  createTimer: (params: any, fn: (val: number, tabs: string) => void, id: number, cancel: () => void, tabs: string) => void
-  createElement: (tabs: string, params: any, fn: (val: number, tabs: string) => void, id: number, cancel: () => void) => void
-  zindexNode: (nodeId: string, zIndex: number) => void
-}
-
-const titleMap = {
-  寄存器: 'register',
-  数据处理器: 'processor',
-  定时器: 'timer',
-  外设: 'peripheral'
-}
-
-const checkAsyncMap = {
-  peripheral: ['name', 'base_address'],
-  timer: ['name'],
-  processor: ['name', 'port'],
-  register: ['name', 'relative_address']
-}
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
 // 目标机列表 侧边栏 顶部操作栏 右侧属性  表单校验 公共属性
-const useFlowStore = create<RFState>((set, get) => ({
-  nodes: [],
-  edges: [],
-  itemNodes: [],
-  itemEdges: [],
-  menuStatusObj: { status: false, id: null },
-  setMenuStatus: (id: string) => {
-    set({ menuStatusObj: { status: !get().menuStatusObj.status, id } })
-  },
-  setOpenMenu: () => {
-    set({ menuStatusObj: { status: false, id: null } })
-  },
-  nodeId: null,
-  changeView: false,
-  setChangeView: val => {
-    set({ changeView: val })
-  },
-  setNodeAndSetEdge: (nodes, edges) => {
-    set({ itemNodes: nodes, itemEdges: edges })
-  },
-  // 获取节点id
-  getSumNodeId: () => {
-    const { nodes } = get()
-    if (nodes.length === 0) return
-    const idArray = nodes.map((item: { id: string }) => item.id).join(',')
-    // eslint-disable-next-line no-bitwise
-    const crc32Value = crc32.str(idArray) >>> 0
-    const hex = crc32Value.toString(16).toUpperCase()
-    return hex
-  },
-  canvasData: [],
-  targetId: null,
-  setTargetId: id => {
-    set({ targetId: id })
-  },
-  setNodeId: val => {
-    set({ nodeId: val })
-  },
-  setNodes: nodesValue => {
-    set({ nodes: nodesValue })
-  },
-  setEdges: (edgesValue: Edge[]) => {
-    set({
-      edges: edgesValue
-    })
-  },
-  upDateNodesAndEdges: (newNode, newEdge) => {
-    set({
-      nodes: newNode,
-      edges: newEdge
-    })
-  },
-  expandNode: (nodeId: string) => {
-    set({
-      nodes: get().nodes.map((node: Node) => {
-        if (node.id === nodeId) {
-          // it's important to create a new object here, to inform React Flow about the changes
-          return { ...node, data: { ...node.data, expanded: !node.data.expanded } }
-        }
-        return node
-      })
-    })
-  },
-
-  zindexNode: (nodeId: string, zIndex) => {
-    set({
-      nodes: get().nodes.map((node: Node) => {
-        if (node.id === nodeId) {
-          // it's important to create a new object here, to inform React Flow about the changes
-          return { ...node, style: { ...node.style, zIndex } }
-        }
-        return node
-      })
-    })
-  },
-  addChildNode: (node: any) => {
-    const newNode = {
-      data: {
-        label: node.name,
-        id: String(node.id),
-        nums: 0,
-        expanded: true,
-        position: { x: 0, y: 0 },
-        draggable: false,
-        flag: 1,
-        zIndex: 1002
-      },
-      type: 'peripheralNode',
-      id: String(node.id),
-      parentNode: String(node.platform_id),
-      position: { x: 0, y: 0 },
-      draggable: false
-    }
-    const newEdge = {
-      id: `${String(node.platform_id)}->${String(node.id)}`,
-      type: 'step',
-      data: { label: '12' },
-      source: String(node.platform_id),
-      target: String(node.id)
-    }
-    set({
-      nodes: [...get().nodes, newNode],
-      edges: [...get().edges, newEdge]
-    })
-  },
-  onNodesChange: (changes: NodeChange[]) => {
-    const { nodes } = get()
-    set({
-      nodes: applyNodeChanges(changes, nodes)
-    })
-  },
-  onEdgesChange: (changes: EdgeChange[]) => {
-    set({
-      edges: applyEdgeChanges(changes, get().edges)
-    })
-  },
-  onConnect: (connection: Connection) => {
-    set({
-      edges: addEdge(connection, get().edges)
-    })
-  },
-  converTreeToNode: () => {},
-  // 初始化获取画布数据
-  getModelDetails: async id => {
-    if (!id) return
-    try {
-      const res = await getCanvas(id)
-      if (res.data.canvas) {
-        set({ canvasData: res.data.canvas })
-        const converTreeToNode = (node: any, parentId: number) => {
-          const result = []
-          result.push({
-            data: {
-              label: `Node ${node.name}`,
-              id: node.id,
-              parentId,
-              nums: node.children?.length,
-              expanded: false,
-              position: { x: 0, y: 0 },
-              draggable: false,
-              flag: node.flag
-            },
-            type: node.flag === 5 ? 'targetNode' : node.flag === 1 ? 'peripheralNode' : node.flag === 2 ? 'registerNode' : 'custom',
-            id: node.id,
-            position: { x: 0, y: 0 },
-            draggable: false,
-            zIndex: node.flag === 5 ? 1003 : node.flag === 1 ? 1002 : node.flag === 2 ? 1001 : 1001
-          })
-          if (node.children && node.children.length > 0) {
-            node.children.forEach((item: any) => {
-              result.push(...converTreeToNode(item, node.id))
-            })
-          }
-          return result
-        }
-        const nodeArray = converTreeToNode(res.data.canvas, res.data.canvas.id)
-        const converTreeToEdges = (node: any) => {
-          const links: any[] = []
-          if (node.children && node.children.length > 0) {
-            node.children.forEach((item: any) => {
-              const source = node.id
-              const target = item.id
-              links.push({
-                flag: node.flag,
-                id: `${source}->${target}`,
-                source,
-                target,
-                type: 'step',
-                data: {
-                  label: 'edge label'
-                }
-              })
-              links.push(...converTreeToEdges(item))
-            })
-          }
-          return links
-        }
-        const edgeArray = converTreeToEdges(res.data.canvas)
-        set({ nodes: [...nodeArray], edges: [...edgeArray] })
-      }
-    } catch {}
-  },
-  createPeripheral: async (params, fn, id, cancel, tabs) => {
-    const { addChildNode } = get()
-    try {
-      const res = await newSetPeripheral(params)
-      if (res.code !== 0) return
-      if (res.data) {
-        fn(id, tabs)
-        cancel()
-      }
-      addChildNode(res.data)
-    } catch (error) {
-      throwErrorMessage(error)
-    }
-  },
-  createRegister: async (params, fn, id, cancel, tabs) => {
-    try {
-      const res = await newSetRegister(params)
-      if (res.data) {
-        fn(id, tabs)
-        cancel()
-      }
-    } catch (error) {
-      throwErrorMessage(error)
-    }
-  },
-  createDataHandler: async (params, fn, id, cancel, tabs) => {
-    try {
-      const res = await newSetDataHander(params)
-      if (res.data) {
-        fn(id, tabs)
-        cancel()
-      }
-    } catch (error) {
-      throwErrorMessage(error)
-    }
-  },
-  createTimer: async (params, fn, id, cancel, tabs) => {
-    try {
-      const res = await newSetTimer(params)
-      if (res.data) {
-        fn(id, tabs)
-        cancel()
-      }
-    } catch (error) {
-      throwErrorMessage(error)
-    }
-  },
-  createElement: (tabs, params, fn, id, cancel) => {
-    const { createPeripheral, createRegister, createDataHandler, createTimer } = get()
-    const componentFunctions = {
-      customMadePeripheral: createPeripheral,
-      processor: createRegister,
-      dataHandlerNotReferenced: createDataHandler,
-      time: createTimer
-    }
-    componentFunctions[tabs as keyof typeof componentFunctions](params, fn, id, cancel, tabs)
-  }
-}))
 
 // 目标机列表,建模首页
 const useNewModelingStore = create<NewModelListStore>((set, get) => ({
@@ -374,10 +61,7 @@ const useNewModelingStore = create<NewModelListStore>((set, get) => ({
     const { params } = get()
     set({ params: { ...params, ...page } })
   },
-  getModelListDetails: async (id: number) => {
-    const res = await getTargetDetails(id)
-    return res
-  },
+
   setModelId: (val: number) => {
     set({ modelId: val })
   },
@@ -422,17 +106,29 @@ const useNewModelingStore = create<NewModelListStore>((set, get) => ({
 }))
 
 // 侧边栏获取列表store
-const useModelDetailsStore = create<ModelDetails>((set, get) => ({
+const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
   keyWord: '',
   foucsId: null,
   showNode: [],
   tabs: 'customMadePeripheral',
   fn: () => {},
+  targetDetails: { name: '', desc: '', processor: '' },
   hasMoreData: true, // 共用
   cusomMadePeripheralNums: 0,
   timerNums: 0,
   handlerDataNums: 0,
   boardPeripheralNums: 0,
+
+  // 全部外设数据参数获取
+  AllPeripheral: {
+    platform_id: 0,
+    tag: '1',
+    key_word: '',
+    page: 1,
+    page_size: 3000,
+    sort_field: 'create_time',
+    sort_order: 'descend'
+  },
   cusomMadePeripheralListParams: {
     variety: '0',
     platform_id: 0,
@@ -443,6 +139,7 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
     sort_field: 'create_time',
     sort_order: 'descend'
   },
+
   timerListParams: {
     platform_id: 0,
     key_word: '',
@@ -451,9 +148,9 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
     sort_field: 'create_time',
     sort_order: 'descend'
   },
+
   processorListParams: {
     platform_id: 0,
-    used: 'false',
     key_word: '',
     page: 1,
     page_size: 25,
@@ -464,6 +161,7 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
   timerList: [],
   processorList: [],
   boardLevelPeripheralsList: [],
+  AllPeripheralList: [],
   setExpand: (val: any) => {
     const idArray: [] | string[] = []
     const extractIdsFromTree = (tree: any, resultArray: any[]) => {
@@ -634,6 +332,21 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
       return error
     }
   },
+  // 获取所有外设数据
+  getAllPeripheral: async (id: number) => {
+    const { AllPeripheral } = get()
+    try {
+      const params = { ...AllPeripheral, platform_id: id }
+      const res = await getCustomMadePeripheralList(params)
+      if (res.data) {
+        set({ AllPeripheralList: [...res.data.results] })
+      }
+      return res
+    } catch (error) {
+      throwErrorMessage(error, { 1006: '参数错误' })
+      return error
+    }
+  },
   getList: (val: string, id: number) => {
     // 根据val获取对应的数据
     const { getProcessorListStore, getCustomMadePeripheralStore, getTimeListStore, getBoardCustomMadePeripheralStore } = get()
@@ -675,7 +388,6 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
         break
     }
   },
-
   // 侧边栏数量获取详情
   getModelListDetails: async (id: number, headertabs) => {
     const { tabs, getList } = get()
@@ -685,6 +397,7 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
       if (res.data) {
         const { processor_cnt, timer_cnt, default_peripheral_cnt, peripheral_cnt } = res.data
         set({
+          targetDetails: res.data,
           cusomMadePeripheralNums: peripheral_cnt,
           timerNums: timer_cnt,
           handlerDataNums: processor_cnt,
@@ -699,7 +412,7 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
       throwErrorMessage(error)
     }
   },
-
+  // 清除关键字
   clearKeyWord: fn => {
     set({ fn })
   },
@@ -730,7 +443,6 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
       },
       processorListParams: {
         platform_id: 0,
-        used: 'false',
         key_word: '',
         page: 1,
         page_size: 20,
@@ -738,14 +450,6 @@ const useModelDetailsStore = create<ModelDetails>((set, get) => ({
         sort_order: 'descend'
       }
     })
-  }
-}))
-
-// 右侧属性
-const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>(set => ({
-  typeAttributes: 'Processor',
-  setTypeDetailsAttributes: val => {
-    set({ typeAttributes: val })
   }
 }))
 
@@ -782,433 +486,182 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
   optionalParameters: {
     name: {
       value: '',
-      validateStatus: ''
+      validateStatus: '',
+      errorMsg: null
+    },
+    peripheral_id: {
+      value: '',
+      validateStatus: '',
+      errorMsg: null
     },
     kind: {
       value: '',
-      validateStatus: ''
+      validateStatus: '',
+      errorMsg: null
     },
     port: {
       value: '',
-      validateStatus: ''
+      validateStatus: '',
+      errorMsg: null
     },
     period: {
       value: '',
-      validateStatus: ''
+      validateStatus: '',
+      errorMsg: null
     },
     interrupt: {
       value: '',
-      validateStatus: ''
+      validateStatus: '',
+      errorMsg: null
     },
     base_address: {
       value: '',
-      validateStatus: ''
+      validateStatus: '',
+      errorMsg: null
     },
     address_length: {
       value: '',
-      validateStatus: ''
+      validateStatus: '',
+      errorMsg: null
     },
     relative_address: {
       value: '',
-      validateStatus: ''
+      validateStatus: '',
+      errorMsg: null
     },
     desc: {
       value: '',
-      validateStatus: ''
+      validateStatus: '',
+      errorMsg: null
     }
   },
-  btnStatus: true,
-  baseBtnStatus: true,
-  setBaseBtnStatus: val => {
-    set({ baseBtnStatus: val })
-  },
-
-  setBtnStatus: val => {
-    set({ btnStatus: val })
-  },
-
-  // 外设表单
-  changeValuePeripheralForm: (item, title, val) => {
-    const { checkName, checkHex, setBtnStatus } = get()
-
-    if (item === 'name') {
-      checkName(item, title, val)
-    }
-
-    if (item === 'base_address' || item === 'address_length') {
-      const hexResult = checkHex(val)
-      if (!hexResult) {
-        setBtnStatus(true)
-        return set(state =>
-          produce(state, draft => {
-            const updatedDraft = draft
-            ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
-            ;(updatedDraft.optionalParameters as any)[item].errorMsg = `请输入由0-9,A-F(或a-f)组成的16进制数`
-          })
-        )
-      }
-      set(state =>
-        produce(state, draft => {
-          const updatedDraft = draft
-          ;(updatedDraft.optionalParameters as any)[item].validateStatus = ''
-          ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
-        })
-      )
-
-      const hexLength = val.trim().length
-      if (hexLength % 2 !== 0) {
-        const hexValue0 = `0${val}`
-        return set(state =>
-          produce(state, draft => {
-            const updatedDraft = draft
-            ;(updatedDraft.optionalParameters as any)[item].value = hexValue0
-          })
-        )
-      }
-    }
-    set(state =>
-      produce(state, draft => {
-        const updatedDraft = draft
-        ;(updatedDraft.optionalParameters as any)[item].value = val
-      })
-    )
-  },
-
-  // 数据处理器表单
-  changeValueHanderlForm: (item, title, val, id?: number, isBlur?: boolean) => {
-    const { checkName, getKey, setBtnStatus, optionalParameters } = get()
-
-    const params = {
-      object: titleMap[title as keyof typeof titleMap],
-      platform_id: id as number,
-      [item]: val
-    }
-
-    const asyncCheck = async (params: MyObject) => {
-      try {
-        const res = await validatorParams(params)
-        if (res.code === 0) {
-          set(state =>
-            produce(state, draft => {
-              const updatedDraft = draft
-              ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'success'
-              ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
-            })
-          )
-        }
-      } catch (error) {
-        setBtnStatus(true)
-        if (error.code === 1005) {
-          set(state =>
-            produce(state, draft => {
-              const updatedDraft = draft
-              ;(updatedDraft.optionalParameters as any)[type].validateStatus = 'error'
-              ;(updatedDraft.optionalParameters as any)[type].errorMsg = `${title}名称重复,请修改`
-            })
-          )
-        }
-        if (error.code === 7020) {
-          set(state =>
-            produce(state, draft => {
-              const updatedDraft = draft
-              ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
-              ;(updatedDraft.optionalParameters as any)[item].errorMsg = `${title}地址被使用,请修改`
-            })
-          )
-        }
-        if (error.code === 7019) {
-          set(state =>
-            produce(state, draft => {
-              const updatedDraft = draft
-              ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
-              ;(updatedDraft.optionalParameters as any)[item].errorMsg = `${title}端口被使用,请修改`
-            })
-          )
-        }
-        return
-      }
-      if (getKey(titleMap[title as keyof typeof titleMap]) && optionalParameters.name?.value) {
-        setBtnStatus(false)
-      } else {
-        setBtnStatus(true)
-      }
-    }
-    if (item === 'name') {
-      const res = checkName(item, title, val)
-      if (isBlur && res) {
-        asyncCheck(params)
-      }
-    }
-    if (item === 'port') {
-      set(state =>
-        produce(state, draft => {
-          const updatedDraft = draft
-          ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'validating'
-          ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
-        })
-      )
-      asyncCheck(params)
-    }
-    set(state =>
-      produce(state, draft => {
-        const updatedDraft = draft
-        ;(updatedDraft.optionalParameters as any)[item].value = val
-      })
-    )
-  },
-
-  //  寄存器表单
-  changeValueRegisterForm: (item, title, val) => {
-    const { checkName, checkHex, setBtnStatus } = get()
-
-    if (item === 'name') {
-      checkName(item, title, val)
-    }
-    if (item === 'relative_address') {
-      const hexResult = checkHex(val)
-      if (!hexResult) {
-        setBtnStatus(true)
-        return set(state =>
-          produce(state, draft => {
-            const updatedDraft = draft
-            ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
-            ;(updatedDraft.optionalParameters as any)[item].errorMsg = `请输入由0-9,A-F(或a-f)组成的16进制数`
-          })
-        )
-      }
-      set(state =>
-        produce(state, draft => {
-          const updatedDraft = draft
-          ;(updatedDraft.optionalParameters as any)[item].validateStatus = ''
-          ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
-        })
-      )
-      const hexLength = val.trim().length
-      if (hexLength % 2 !== 0) {
-        const hexValue0 = `0${val}`
-        return set(state =>
-          produce(state, draft => {
-            const updatedDraft = draft
-            ;(updatedDraft.optionalParameters as any)[item].value = hexValue0
-          })
-        )
-      }
-    }
-
-    set(state =>
-      produce(state, draft => {
-        const updatedDraft = draft
-        ;(updatedDraft.optionalParameters as any)[item].value = val
-      })
-    )
-  },
-
-  // 定时器表单
-  changeValueTimerForm: (item, title, val) => {
-    const { checkName, checkInterval, checkInterrupt, setBtnStatus } = get()
-
-    if (item === 'name') {
-      checkName(item, title, val)
-    }
-    if (item === 'period') {
-      const intervalResult = checkInterval(val)
-      if (!intervalResult) {
-        setBtnStatus(true)
-        set(state =>
-          produce(state, draft => {
-            const updatedDraft = draft
-            ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
-            ;(updatedDraft.optionalParameters as any)[item].errorMsg = `请输入0~65535的整数`
-          })
-        )
-      } else {
-        set(state =>
-          produce(state, draft => {
-            const updatedDraft = draft
-            ;(updatedDraft.optionalParameters as any)[item].validateStatus = ''
-            ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
-          })
-        )
-      }
-    }
-    if (item === 'interrupt') {
-      const interruptResult = checkInterrupt(val)
-      if (!interruptResult) {
-        setBtnStatus(true)
-        set(state =>
-          produce(state, draft => {
-            const updatedDraft = draft
-            ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
-            ;(updatedDraft.optionalParameters as any)[item].errorMsg = `请输入0~255的整数`
-          })
-        )
-      } else {
-        set(state =>
-          produce(state, draft => {
-            const updatedDraft = draft
-            ;(updatedDraft.optionalParameters as any)[item].validateStatus = ''
-            ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
-          })
-        )
-      }
-    }
-    set(state =>
-      produce(state, draft => {
-        const updatedDraft = draft
-        ;(updatedDraft.optionalParameters as any)[item].value = val
-      })
-    )
-  },
-
-  // 检查名字
-  checkName: (item, title, val) => {
-    const { checkNameLength, checkNameFormat, setBtnStatus } = get()
-    if (!checkNameLength(val)) {
-      setBtnStatus(true)
-      set(state =>
-        produce(state, draft => {
-          const updatedDraft = draft
-          ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
-          ;(updatedDraft.optionalParameters as any)[item].errorMsg = `${title}名称长度在2-20个字符之间`
-        })
-      )
-      return false
-    }
-    if (!checkNameFormat(val)) {
-      setBtnStatus(true)
-      set(state =>
-        produce(state, draft => {
-          const updatedDraft = draft
-          ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'error'
-          ;(updatedDraft.optionalParameters as any)[item].errorMsg = `${title}名称由数字、字母和下划线组成,不能以数字开头`
-        })
-      )
-      return false
-    }
-
-    set(state =>
-      produce(state, draft => {
-        const updatedDraft = draft
-        ;(updatedDraft.optionalParameters as any)[item].validateStatus = 'success'
-        ;(updatedDraft.optionalParameters as any)[item].errorMsg = null
-      })
-    )
-    return true
-  },
-
-  // 检查间隔
-  checkInterval: (val: string) => {
-    if (!val) return false
-    const checkoutResult = Number(val) >= 0 && Number(val) <= 65535
-    return checkoutResult
-  },
-
-  // 检查中断号
-  checkInterrupt: (val: string) => {
-    if (!val) return false
-    const checkoutResult = Number(val) >= 0 && Number(val) <= 255
-    return checkoutResult
-  },
-
-  getKey: (val: string) => {
-    const { optionalParameters } = get()
-    const res = checkAsyncMap[val as keyof typeof checkAsyncMap].every(item => {
-      return optionalParameters[item as keyof typeof optionalParameters]?.validateStatus === 'success'
-    })
-    return res
-  },
-
-  // 异步校验
-  checkFormValues: async (type, id, title, value) => {
-    const { checkNameLength, checkNameFormat, setBtnStatus, optionalParameters, baseBtnStatus, getKey } = get()
-    if (type === 'name') {
-      if (!checkNameFormat(value) || !checkNameLength(value)) {
+  checkEveryItem: optionalParameters => {
+    const { tabs } = get()
+    const { name, base_address, desc, interrupt, address_length, period, peripheral_id, port, relative_address, kind } = get().optionalParameters
+    const bol = Object.values(optionalParameters).every((item: any) => {
+      if (item.validateStatus === 'error') {
         return false
       }
+      return true
+    })
+    let btnStatus
+    if (tabs === 'dataHandlerNotReferenced') {
+      btnStatus = bol && port?.value && name?.value
     }
+    if (tabs === 'time') {
+      btnStatus = bol && name?.value && interrupt?.value && period?.value
+    }
+    if (tabs === 'customMadePeripheral') {
+      btnStatus =
+        bol &&
+        base_address?.value &&
+        address_length?.value &&
+        kind?.value !== '' &&
+        name?.value &&
+        ((desc?.value as string).length <= 50 || desc?.value === '')
+    }
+    if (tabs === 'processor') {
+      btnStatus = bol && name?.value && relative_address?.value && peripheral_id?.value
+    }
+    return !btnStatus
+  },
+  updateFormValue: (item, val, title, errorMsg, validateStatus) => {
     set(state =>
       produce(state, draft => {
         const updatedDraft = draft
-        ;(updatedDraft.optionalParameters as any)[type].validateStatus = 'validating'
-        ;(updatedDraft.optionalParameters as any)[type].errorMsg = null
+        ;(updatedDraft.optionalParameters as any)[item].validateStatus = validateStatus
+        ;(updatedDraft.optionalParameters as any)[item].errorMsg = errorMsg === null ? null : `${title}${errorMsg}`
+        ;(updatedDraft.optionalParameters as any)[item].value = val
       })
     )
-
-    const params = {
-      object: titleMap[title as keyof typeof titleMap],
-      platform_id: id,
-      [type]: value
-    }
-
-    const base_address = {
-      object: titleMap[title as keyof typeof titleMap],
-      platform_id: id,
-      [type]: value,
-      address_length: optionalParameters.address_length?.value
-    }
-
-    const address_length = {
-      object: titleMap[title as keyof typeof titleMap],
-      platform_id: id,
-      [type]: value,
-      base_address: optionalParameters.base_address?.value
-    }
-
-    const relative_address = {
-      object: titleMap[title as keyof typeof titleMap],
-      platform_id: id,
-      [type]: value,
-      relative_address: optionalParameters.relative_address?.value
-    }
-
-    try {
-      const res = await validatorParams(
-        type === 'address_length'
-          ? { ...address_length }
-          : type === 'base_address'
-          ? { ...base_address }
-          : type === 'relative_address '
-          ? { ...relative_address }
-          : params
-      )
-      if (res.code === 0) {
-        set(state =>
-          produce(state, draft => {
-            const updatedDraft = draft
-            ;(updatedDraft.optionalParameters as any)[type].validateStatus = 'success'
-            ;(updatedDraft.optionalParameters as any)[type].errorMsg = null
-          })
-        )
-      }
-    } catch (error) {
-      setBtnStatus(true)
-      if (error.code === 1005) {
-        set(state =>
-          produce(state, draft => {
-            const updatedDraft = draft
-            ;(updatedDraft.optionalParameters as any)[type].validateStatus = 'error'
-            ;(updatedDraft.optionalParameters as any)[type].errorMsg = `${title}名称重复,请修改`
-          })
-        )
-      }
-      if (error.code === 7020) {
-        set(state =>
-          produce(state, draft => {
-            const updatedDraft = draft
-            ;(updatedDraft.optionalParameters as any)[type].validateStatus = 'error'
-            ;(updatedDraft.optionalParameters as any)[type].errorMsg = `${title}地址被使用,请修改`
-          })
-        )
-      }
-    }
-
-    if (getKey(titleMap[title as keyof typeof titleMap]) && !baseBtnStatus) {
-      setBtnStatus(false)
-    } else {
-      setBtnStatus(true)
-    }
   },
+  onChange: (item, val, title, fn1, fn2) => {
+    const { updateFormValue } = get()
+    if (item === 'name' && fn2 && fn1) {
+      if (!fn2(val)) {
+        return updateFormValue(item, val, title, '名称长度在2-20个字符之间', 'error')
+      }
+      if (!fn1(val)) {
+        return updateFormValue(item, val, title, '名称由数字、字母和下划线组成,不能以数字开头', 'error')
+      }
+    }
 
+    if (item === 'interrupt' && fn1 && !fn1(val)) {
+      return updateFormValue(item, val, title, '请输入0~255的整数', 'error')
+    }
+
+    if (item === 'period' && fn1 && !fn1(val)) {
+      return updateFormValue(item, val, title, '请输入0~65535的整数', 'error')
+    }
+
+    if (['relative_address', 'address_length', 'base_address'].includes(item) && fn1 && !fn1(val)) {
+      return updateFormValue(item, val, title, '请输入由0-9,A-F(或a-f)组成的16进制数', 'error')
+    }
+    updateFormValue(item, val, title, null, 'success')
+  },
+  // 初始化数据
+  initFormValue: () => {
+    set({
+      tabs: '',
+      optionalParameters: {
+        name: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        },
+        kind: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        },
+        port: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        },
+        period: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        },
+        interrupt: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        },
+        base_address: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        },
+        address_length: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        },
+        relative_address: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        },
+        peripheral_id: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        },
+        desc: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        }
+      }
+    })
+  }
+}))
+
+// 校验函数仓库
+
+const checkUtilFnStore = create<CheckUtilFnStoreParams>(() => ({
   //  校验是否为16进制字符串
   checkHex: (val: string) => {
     if (!val) return false
@@ -1222,62 +675,62 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
     const reg = /^[A-Z_a-z]\w*$/
     return reg.test(val)
   },
-
   // 检查名字长度
   checkNameLength: (val: string) => {
     if (!val) return false
     const length = val.length >= 2 && val.length <= 20
     return length
   },
+  // 检查间隔
+  checkInterval: (val: string) => {
+    if (!val) return false
+    const checkoutResult = Number(val) >= 0 && Number(val) <= 65535
+    return checkoutResult
+  },
 
-  // 初始化数据
-  initFormValue: () => {
-    set({
-      btnStatus: true,
-      baseBtnStatus: true,
-      optionalParameters: {
-        name: {
-          value: '',
-          validateStatus: ''
-        },
-        kind: {
-          value: '',
-          validateStatus: ''
-        },
-        port: {
-          value: '',
-          validateStatus: ''
-        },
-        period: {
-          value: '',
-          validateStatus: ''
-        },
-        interrupt: {
-          value: '',
-          validateStatus: ''
-        },
-        base_address: {
-          value: '',
-          validateStatus: ''
-        },
-        address_length: {
-          value: '',
-          validateStatus: ''
-        },
-        peripheral_id: {
-          value: '',
-          validateStatus: ''
-        },
-        relative_address: {
-          value: '',
-          validateStatus: ''
-        },
-        desc: {
-          value: '',
-          validateStatus: ''
-        }
-      }
-    })
+  // 检查中断号
+  checkInterrupt: (val: string) => {
+    if (!val) return false
+    const checkoutResult = Number(val) >= 0 && Number(val) <= 255
+    return checkoutResult
   }
+  // asyncCheckUtil: (val, title, type, id, params) => {
+  //   const param = {
+  //     object: titleMap[title as keyof typeof titleMap],
+  //     platform_id: id,
+  //     [type]: val
+  //   }
+  //   const base_address = {
+  //     object: titleMap[title as keyof typeof titleMap],
+  //     platform_id: id,
+  //     [type]: val,
+  //     address_length: params.address_length?.value
+  //   }
+
+  //   const address_length = {
+  //     object: titleMap[title as keyof typeof titleMap],
+  //     platform_id: id,
+  //     [type]: val,
+  //     base_address: params.base_address?.value
+  //   }
+
+  //   const relative_address = {
+  //     object: titleMap[title as keyof typeof titleMap],
+  //     platform_id: id,
+  //     [type]: val,
+  //     relative_address: params.relative_address?.value
+  //   }
+
+  //   const paramsData =
+  //     type === 'address_length'
+  //       ? { ...address_length }
+  //       : type === 'base_address'
+  //       ? { ...base_address }
+  //       : type === 'relative_address'
+  //       ? { ...relative_address }
+  //       : param
+  //   return validatorParams(paramsData)
+  // }
 }))
-export { useFlowStore, formItemParamsCheckStore, useNewModelingStore, publicAttributes, useModelDetailsStore, RightDetailsAttributesStore }
+
+export { checkUtilFnStore, formItemParamsCheckStore, useNewModelingStore, publicAttributes, useLeftModelDetailsStore }

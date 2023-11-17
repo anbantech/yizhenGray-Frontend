@@ -4,6 +4,7 @@ import { Modal, Input, Form, Button, Select, message } from 'antd'
 import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
 import { throwErrorMessage } from 'Src/util/message'
 import { useNewModelingStore } from 'Src/view/Modeling/Store/ModelStore'
+import MiddleStore from 'Src/view/Modeling/Store/ModelMiddleStore/MiddleStore'
 import styles from './modelingModal.less'
 
 interface FormInstance {
@@ -31,6 +32,8 @@ function ModelModal(props: ModelProps) {
   const { Option } = Select
   const [form] = Form.useForm<FormInstance>()
   const { createTarget, updateModelTargetList, initParams } = useNewModelingStore()
+
+  const { initTreeToNodeAndToEedg } = MiddleStore()
   const { PROCESSOR } = getSystemConstantsStore()
   const onValuesChange = (changedValues: any, allValues: any) => {
     const bol = allValues.desc === undefined || allValues.desc?.length <= 50
@@ -48,17 +51,18 @@ function ModelModal(props: ModelProps) {
   const create = React.useCallback(
     async (params: { name: string; processor: string; desc?: string }) => {
       try {
-        const res = await createTarget(params)
-        if ((res as any).code === 0) {
+        const res: any = await createTarget(params)
+        if (res.code === 0) {
           message.success('创建成功')
           initParams()
+          initTreeToNodeAndToEedg(res.data.canvas)
           creatModalOrFixModal(false)
         }
       } catch (error) {
         throwErrorMessage(error, { 1004: '该建模任务不存在', 1005: '建模任务名称重复，请修改', 1007: '操作频繁' })
       }
     },
-    [creatModalOrFixModal, createTarget, initParams]
+    [creatModalOrFixModal, createTarget, initParams, initTreeToNodeAndToEedg]
   )
 
   const fix = React.useCallback(

@@ -7,8 +7,10 @@ import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
 import { useLocation } from 'react-router'
 import StyleSheet from './modelMiddle.less'
 
-import { formItemParamsCheckStore, publicAttributes, useFlowStore, useModelDetailsStore } from '../../Store/ModelStore'
+import { checkUtilFnStore, formItemParamsCheckStore, publicAttributes, useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
+import MiddleStore from '../../Store/ModelMiddleStore/MiddleStore'
+import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
 
 type TabsSelect = {
   tabs: string
@@ -61,12 +63,15 @@ const RightHeaderBarArray = [
 const FormFooter = () => {
   const unSetTabs = formItemParamsCheckStore(state => state.unSetTabs)
   const Tabs = formItemParamsCheckStore(state => state.tabs)
-  const btnStatus = formItemParamsCheckStore(state => state.btnStatus)
   const platformsId = (useLocation() as LoactionState).state?.id
   const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
-  const createElement = useFlowStore(state => state.createElement)
+  const createElement = MiddleStore(state => state.createElement)
+  const checkEveryItem = formItemParamsCheckStore(state => state.checkEveryItem)
   const optionalParameters = formItemParamsCheckStore(state => state.optionalParameters)
-  const getModelListDetails = useModelDetailsStore(state => state.getModelListDetails)
+  const getModelListDetails = useLeftModelDetailsStore(state => state.getModelListDetails)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const btnStatus = useMemo(() => checkEveryItem(optionalParameters), [optionalParameters])
+  const rightAttrubutesMap = RightDetailsAttributesStore(state => state.rightAttrubutesMap)
   const cancel = React.useCallback(() => {
     unSetTabs()
   }, [unSetTabs])
@@ -77,8 +82,8 @@ const FormFooter = () => {
       name: name?.value,
       kind: kind?.value,
       desc: desc?.value,
-      address_length: address_length?.value,
-      base_address: base_address?.value
+      address_length: (address_length?.value as string)?.trim().length % 2 === 0 ? address_length?.value : `0x${address_length?.value}`,
+      base_address: (base_address?.value as string)?.trim().length % 2 === 0 ? base_address?.value : `0x${base_address?.value}`
     }
 
     const timerParams = {
@@ -99,7 +104,7 @@ const FormFooter = () => {
       name: name?.value,
       peripheral_id: peripheral_id?.value,
       kind: 0,
-      relative_address: relative_address?.value
+      relative_address: (relative_address?.value as string)?.trim().length % 2 === 0 ? relative_address?.value : `0x${relative_address?.value}`
     }
 
     const mapParams = {
@@ -111,8 +116,8 @@ const FormFooter = () => {
 
     const info = mapParams[Tabs as keyof typeof mapParams]
 
-    createElement(Tabs, info, getModelListDetails, platformsIdmemo, cancel)
-  }, [optionalParameters, platformsIdmemo, Tabs, createElement, getModelListDetails, cancel])
+    createElement(Tabs, info, getModelListDetails, platformsIdmemo, cancel, rightAttrubutesMap)
+  }, [optionalParameters, platformsIdmemo, Tabs, createElement, getModelListDetails, cancel, rightAttrubutesMap])
 
   return (
     <div className={StyleSheet.formFooter}>
@@ -136,56 +141,38 @@ const FormFooterMemo = React.memo(FormFooter)
 
 // 外设表单 完全体
 const PeripheralsForm = () => {
-  const platformsId = (useLocation() as LoactionState).state?.id
-  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
   const { PERIPHERAL_TYPE } = getSystemConstantsStore()
-  const { optionalParameters, changeValuePeripheralForm, checkFormValues, setBaseBtnStatus } = formItemParamsCheckStore()
+  const { optionalParameters, onChange, updateFormValue } = formItemParamsCheckStore()
   const { name, base_address, address_length } = optionalParameters
 
   const [form] = Form.useForm()
-  const onValueChange = React.useCallback(
-    (val, allValues) => {
-      const bol = allValues.desc === undefined || allValues.desc?.length <= 50
-      const kindCheck = allValues.kind !== undefined
-      if (bol && kindCheck) {
-        setBaseBtnStatus(false)
-      } else {
-        setBaseBtnStatus(true)
-      }
-    },
-    [setBaseBtnStatus]
-  )
 
+  const { checkNameFormat, checkNameLength, checkHex } = checkUtilFnStore()
   return (
     <div className={StyleSheet.formBody}>
-      <Form form={form} layout='vertical' onValuesChange={onValueChange}>
+      <Form form={form} layout='vertical'>
         <Form.Item
           label='外设名称'
           required
-          validateFirst
+          className={StyleSheet.firstFormItem}
           name='name'
           hasFeedback
-          validateTrigger={['onChange', 'onBlur']}
-          className={StyleSheet.firstFormItem}
           help={name?.errorMsg}
           validateStatus={name?.validateStatus}
         >
           <Input
             placeholder='请输入自定义外设名称'
             onChange={e => {
-              changeValuePeripheralForm('name', '外设', e.target.value)
-            }}
-            onBlur={e => {
-              checkFormValues('name', platformsIdmemo, '外设', e.target.value)
+              onChange('name', e.target.value, '自定义外设', checkNameFormat, checkNameLength)
             }}
           />
         </Form.Item>
-        <Form.Item label='类型' required className={StyleSheet.firstFormItem} name='kind'>
+        <Form.Item label='类型' required name='kind'>
           <Select
             placeholder='请选择类型'
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
             onChange={value => {
-              changeValuePeripheralForm('kind', '外设', value)
+              onChange('kind', value, '类型')
             }}
           >
             {PERIPHERAL_TYPE?.map((rate: any) => {
@@ -208,11 +195,8 @@ const PeripheralsForm = () => {
           <Input
             placeholder='请输入基地址'
             prefix='0x'
-            onBlur={e => {
-              checkFormValues('base_address', platformsIdmemo, '外设', e.target.value)
-            }}
             onChange={e => {
-              changeValuePeripheralForm('base_address', '外设', e.target.value)
+              onChange('base_address', e.target.value, '基地址', checkHex)
             }}
           />
         </Form.Item>
@@ -228,11 +212,8 @@ const PeripheralsForm = () => {
             placeholder='请输入地址大小'
             prefix='0x'
             suffix='字节'
-            onBlur={e => {
-              checkFormValues('address_length', platformsIdmemo, '外设', e.target.value)
-            }}
             onChange={e => {
-              changeValuePeripheralForm('address_length', '外设', e.target.value)
+              onChange('address_length', e.target.value, '地址大小', checkHex)
             }}
           />
         </Form.Item>
@@ -240,7 +221,7 @@ const PeripheralsForm = () => {
           <TextArea
             spellCheck='false'
             onChange={e => {
-              changeValuePeripheralForm('desc', '外设', e.target.value)
+              updateFormValue('desc', e.target.value, '描述', null, 'success')
             }}
             placeholder='请添加针对项目的相关描述'
             autoSize={{ minRows: 2, maxRows: 3 }}
@@ -259,40 +240,27 @@ const PeripheralsFormMemo = React.memo(PeripheralsForm)
 
 // 添加寄存器
 const ProcessorForm = () => {
-  const platformsId = (useLocation() as LoactionState).state?.id
-  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
-  const customMadePeripheralList = useModelDetailsStore(state => state.customMadePeripheralList)
+  const customMadePeripheralList = useLeftModelDetailsStore(state => state.customMadePeripheralList)
   const customMadePeripheralListMemo = useMemo(() => {
     return customMadePeripheralList.map((item: any) => {
       return { id: item.id, name: item.name }
     })
   }, [customMadePeripheralList])
-  const { optionalParameters, changeValueRegisterForm, checkFormValues, setBaseBtnStatus, setBtnStatus } = formItemParamsCheckStore()
+  const { optionalParameters, onChange } = formItemParamsCheckStore()
   const { name, relative_address } = optionalParameters
 
+  const { checkNameFormat, checkNameLength, checkHex } = checkUtilFnStore()
   const [form] = Form.useForm()
-  const onValueChange = React.useCallback(
-    (changedValues: any, allValues: any) => {
-      if (allValues.peripheral_id !== undefined) {
-        setBaseBtnStatus(false)
-        if (name?.validateStatus === 'success' && relative_address?.validateStatus === 'success') {
-          setBtnStatus(false)
-        }
-      } else {
-        setBaseBtnStatus(true)
-      }
-    },
-    [setBaseBtnStatus, setBtnStatus, name, relative_address]
-  )
+
   return (
     <div className={StyleSheet.ProcessorFormBody}>
-      <Form form={form} layout='vertical' onValuesChange={onValueChange}>
-        <Form.Item label='所属外设' required className={StyleSheet.firstFormItem} name='peripheral_id'>
+      <Form form={form} layout='vertical'>
+        <Form.Item label='所属外设' required className={StyleSheet.firstFormItem}>
           <Select
             placeholder='请选择所属外设'
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
             onChange={val => {
-              changeValueRegisterForm('peripheral_id', '外设', val)
+              onChange('peripheral_id', val, '数据处理器')
             }}
           >
             {customMadePeripheralListMemo?.map((rate: any) => {
@@ -308,10 +276,7 @@ const ProcessorForm = () => {
           <Input
             placeholder='请输入寄存器名称'
             onChange={e => {
-              changeValueRegisterForm('name', '寄存器', e.target.value)
-            }}
-            onBlur={e => {
-              checkFormValues('name', platformsIdmemo, '寄存器', e.target.value)
+              onChange('name', e.target.value, '寄存器', checkNameFormat, checkNameLength)
             }}
           />
         </Form.Item>
@@ -327,10 +292,7 @@ const ProcessorForm = () => {
             placeholder='请输入偏移地址'
             prefix='0x'
             onChange={e => {
-              changeValueRegisterForm('relative_address', '偏移地址', e.target.value)
-            }}
-            onBlur={e => {
-              checkFormValues('relative_address', platformsIdmemo, '寄存器', e.target.value)
+              onChange('relative_address', e.target.value, '偏移地址', checkHex)
             }}
           />
         </Form.Item>
@@ -342,13 +304,11 @@ const ProcessorFormMemo = React.memo(ProcessorForm)
 
 // 数据处理器
 const DataHandlerForm = () => {
-  const platformsId = (useLocation() as LoactionState).state?.id
-  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
   const [form] = Form.useForm()
-  const { optionalParameters, changeValueHanderlForm } = formItemParamsCheckStore()
+  const { optionalParameters, onChange } = formItemParamsCheckStore()
   const { name, port } = optionalParameters
   const { portList } = publicAttributes()
-
+  const { checkNameFormat, checkNameLength } = checkUtilFnStore()
   return (
     <div className={StyleSheet.DataHandlerFormBody}>
       <Form form={form} layout='vertical'>
@@ -365,10 +325,7 @@ const DataHandlerForm = () => {
             value={name?.value}
             placeholder='请输入数据处理器名称'
             onChange={e => {
-              changeValueHanderlForm('name', '数据处理器', e.target.value)
-            }}
-            onBlur={e => {
-              changeValueHanderlForm('name', '数据处理器', e.target.value, platformsIdmemo, true)
+              onChange('name', e.target.value, '数据处理器', checkNameFormat, checkNameLength)
             }}
           />
         </Form.Item>
@@ -377,7 +334,7 @@ const DataHandlerForm = () => {
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
             placeholder='请选择端口'
             onChange={(value: string) => {
-              changeValueHanderlForm('port', '数据处理器', value, platformsIdmemo)
+              onChange('port', value, '端口')
             }}
           >
             {
@@ -404,24 +361,12 @@ const DataHandlerFormMemo = React.memo(DataHandlerForm)
 // 添加定时器 完全体
 const TimeForm = () => {
   const [form] = Form.useForm()
-  const platformsId = (useLocation() as LoactionState).state?.id
-  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
-  const { optionalParameters, changeValueTimerForm, checkFormValues, setBtnStatus, checkInterval, checkInterrupt } = formItemParamsCheckStore()
+  const { optionalParameters, onChange } = formItemParamsCheckStore()
   const { name, period, interrupt } = optionalParameters
-  const onValueChange = React.useCallback(
-    (val: any, allValues: { name: string; period: string; interrupt: string }) => {
-      if (checkInterval(allValues.period) && checkInterrupt(allValues.interrupt)) {
-        setBtnStatus(false)
-      } else {
-        setBtnStatus(true)
-      }
-    },
-    [checkInterrupt, checkInterval, setBtnStatus]
-  )
-
+  const { checkNameFormat, checkNameLength, checkInterrupt, checkInterval } = checkUtilFnStore()
   return (
     <div className={StyleSheet.ProcessorFormBody}>
-      <Form form={form} layout='vertical' onValuesChange={onValueChange}>
+      <Form form={form} layout='vertical'>
         <Form.Item
           label='定时器名称'
           name='name'
@@ -432,13 +377,10 @@ const TimeForm = () => {
           validateStatus={name?.validateStatus}
         >
           <Input
-            placeholder='请输入自定义外设名称'
+            placeholder='请输定时器名称'
             value={name?.value}
             onChange={e => {
-              changeValueTimerForm('name', '定时器', e.target.value)
-            }}
-            onBlur={e => {
-              checkFormValues('name', platformsIdmemo, '定时器', e.target.value)
+              onChange('name', e.target.value, '定时器', checkNameFormat, checkNameLength)
             }}
           />
         </Form.Item>
@@ -448,7 +390,7 @@ const TimeForm = () => {
             suffix='微秒'
             value={period?.value}
             onChange={e => {
-              changeValueTimerForm('period', '间隔', e.target.value)
+              onChange('period', e.target.value, '间隔', checkInterval)
             }}
           />
         </Form.Item>
@@ -457,7 +399,7 @@ const TimeForm = () => {
             placeholder='请输入中断号'
             value={interrupt?.value}
             onChange={e => {
-              changeValueTimerForm('interrupt', '中断号', e.target.value)
+              onChange('interrupt', e.target.value, '间隔', checkInterrupt)
             }}
           />
         </Form.Item>

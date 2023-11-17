@@ -3,16 +3,16 @@ import { message, Radio } from 'antd'
 import * as React from 'react'
 import { useLocation } from 'react-router'
 import SearchInput from 'Src/components/Input/searchInput/searchInput'
-import { useModelDetailsStore } from '../../Store/ModelStore'
+import { useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { LoactionState } from './ModelingLeftIndex'
 import StyleSheet from './modelLeft.less'
 
-function ModelingInput() {
-  const tabs = useModelDetailsStore(state => state.tabs)
+function ModelingInputMemo() {
+  const tabs = useLeftModelDetailsStore(state => state.tabs)
   const platformsId = (useLocation() as LoactionState).state?.id
   const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
-  const { setKeyWord, setTags, baseKeyWordAndTagsGetList, clearKeyWord } = useModelDetailsStore()
-  const cusomMadePeripheralListParams = useModelDetailsStore(state => state.cusomMadePeripheralListParams)
+  const { setKeyWord, setTags, baseKeyWordAndTagsGetList, clearKeyWord } = useLeftModelDetailsStore()
+  const cusomMadePeripheralListParams = useLeftModelDetailsStore(state => state.cusomMadePeripheralListParams)
   const ref = React.useRef<any>()
   const updateParams = React.useCallback(
     async (val: string, type: string) => {
@@ -28,7 +28,7 @@ function ModelingInput() {
     [setTags, setKeyWord, tabs, baseKeyWordAndTagsGetList, platformsIdmemo]
   )
   const { run } = useRequest(updateParams, {
-    debounceInterval: 300,
+    debounceInterval: 20,
     manual: true,
     onError: error => {
       message.error(error.message)
@@ -83,4 +83,5 @@ function ModelingInput() {
   )
 }
 
+const ModelingInput = React.memo(ModelingInputMemo)
 export default ModelingInput
