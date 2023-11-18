@@ -37,7 +37,9 @@ const FormType = {
 
 function ModelingRight() {
   const typeAttributes = RightDetailsAttributesStore(state => state.typeAttributes)
+  // 外设 寄存器 数据处理器 定时器 详情
   const rightArrributes = RightDetailsAttributesStore(state => state.rightArrributes)
+  //  目标机详情
   const targetDetails = useLeftModelDetailsStore(state => state.targetDetails)
   const { updateTimerFormValue } = RightListStore()
   React.useEffect(() => {
