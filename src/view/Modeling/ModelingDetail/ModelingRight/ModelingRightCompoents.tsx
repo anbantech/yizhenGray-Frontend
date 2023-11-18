@@ -7,6 +7,7 @@ import StyleSheet from './ModelingRight.less'
 import { checkUtilFnStore, useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { valueParams, valueParamsArray } from '../../Store/ModleStore'
 import { RightListStore, RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
+import MiddleStore from '../../Store/ModelMiddleStore/MiddleStore'
 
 const { Option } = Select
 
@@ -37,6 +38,8 @@ const isFinish = [
   { label: 'True', value: true }
 ]
 
+export const { saveCanvasAndUpdateNodeName } = MiddleStore.getState()
+
 // 定义名称为处理器属性的组件
 // 中断号,帧头,帧尾 做校验
 const ProcessorDetailsAttributes = () => {
@@ -46,7 +49,6 @@ const ProcessorDetailsAttributes = () => {
   const processor = RightListStore(state => state.processor)
   const AllPeripheralList = useLeftModelDetailsStore(state => state.AllPeripheralList)
   const register = RightDetailsAttributesStore(state => state.register)
-
   // 非状态寄存器
   const notRegsiterList = useMemo(() => {
     return register.registers?.filter((item: any) => item.kind === 1)
@@ -455,10 +457,12 @@ const PeripheralDetailsAttributesMemo = React.memo(PeripheralDetailsAttributes)
 // 定义寄存器
 const RegisterDetailsAttributes = () => {
   const [form] = Form.useForm()
-  const tabs = useLeftModelDetailsStore(state => state.tabs)
+
+  const rightArrributes = RightDetailsAttributesStore(state => state.rightArrributes)
+  console.log(rightArrributes)
   const isCustomMadePeripheralOrboardPeripheralNums = useMemo(() => {
-    return tabs === 'boardLevelPeripherals'
-  }, [tabs])
+    return rightArrributes.kind === 1
+  }, [rightArrributes.kind])
   const register = RightListStore(state => state.register)
   const {
     updateRegister,
@@ -570,7 +574,7 @@ const RegisterDetailsAttributes = () => {
                 frontendCheckoutName(e.target.value, '寄存器', 'name', checkNameLength, checkNameFormat)
               }}
               onBlur={e => {
-                onBlurAsyncCheckoutNameFormValues(e.target.value, '寄存器', 'name', updateRegister, register)
+                onBlurAsyncCheckoutNameFormValues(e.target.value, '寄存器', 'name', updateRegister, register, updateNodeName)
               }}
               disabled={isCustomMadePeripheralOrboardPeripheralNums}
             />

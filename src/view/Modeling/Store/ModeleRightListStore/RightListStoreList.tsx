@@ -14,6 +14,7 @@ import {
 } from 'Src/services/api/modelApi'
 import { RightDetailsAttributesStoreParams, RightFormCheckStoreParams } from '../ModleStore'
 import { rightFormCheckMap, titleMap } from '../MapStore'
+import { saveCanvasAndUpdateNodeName } from '../../ModelingDetail/ModelingRight/ModelingRightCompoents'
 
 // 右侧属性
 const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((set, get) => ({
@@ -228,7 +229,7 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     }
     messageInfoFn(item, type, title, '', null, val)
   },
-  // 失焦异步校验
+  // 失焦异步校验  fn1 更新函数
   onBlurAsyncCheckoutNameFormValues: async (val, title, type, fn1) => {
     const { checkEveryItemIsError, messageInfoFn } = get()
     const item = titleMap[title as keyof typeof titleMap]
@@ -304,7 +305,6 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     if (checkEveryItemIsError(title)) return
     updateTimer()
   },
-
   // 校验数据处理器 中断号 ,帧头, 帧尾 基地址
   checkoutProcessor: (val, title, type, fn1, fn2) => {
     if (val.length === 0) return
@@ -387,6 +387,10 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     }
 
     const res = await updatePeripherals(peripheral.id as string, params)
+    if (res.data) {
+      saveCanvasAndUpdateNodeName(String(res.data.id), { label: res.data.name })
+      console.log(res.data)
+    }
   },
   // 更新寄存器
   updateRegister: async () => {

@@ -118,17 +118,18 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
   const showNode = useLeftModelDetailsStore(state => state.showNode)
   const rightAttrubutesMap = RightDetailsAttributesStore(state => state.rightAttrubutesMap)
   const setItemExpand = useLeftModelDetailsStore(state => state.setItemExpand)
-  const focusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
+  // const focusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
   const onExpand = (newExpandedKeys: React.Key[]) => {
     const res = newExpandedKeys
     console.log([...res])
     setItemExpand(newExpandedKeys)
     setAutoExpandParent(false)
   }
-  console.log(showNode)
+
   const updataMidleAndRightUI = useCallback(
     (selectedKeys, e) => {
       const { flag } = e.node.data
+
       rightAttrubutesMap(AttributesType[flag as keyof typeof AttributesType], selectedKeys[0])
     },
     [rightAttrubutesMap]
