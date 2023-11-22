@@ -5,6 +5,7 @@ import ModelingInput from './ModelingInput'
 import ModelingLeftTabList from './ModelingLeftTabList'
 import ModelLeftHeaderLeftMemo from './ModelItemTabsComponents'
 import StyleSheet from './modelLeft.less'
+import { RightListStore } from '../../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
 
 export interface LoactionState {
   state: Record<any, any>
@@ -17,9 +18,11 @@ function ModelingLeftIndex() {
   const getList = useLeftModelDetailsStore(state => state.getList)
   const tabs = useLeftModelDetailsStore(state => state.tabs)
   const { getAllPeripheral } = useLeftModelDetailsStore()
+  const setPlatFormId = RightListStore(state => state.setPlatFormId)
 
   React.useEffect(() => {
     if (platformsIdmemo) {
+      setPlatFormId(platformsIdmemo)
       getAllPeripheral(platformsIdmemo as number)
       getModelListDetails(platformsIdmemo)
       getList(tabs, platformsIdmemo)

@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import styles from '../model.less'
 import MiddleStore from '../Store/ModelMiddleStore/MiddleStore'
 import ContextMenu from './Menus'
-import { RightDetailsAttributesStore } from '../Store/ModeleRightListStore/RightListStoreList'
+import { RightDetailsAttributesStore } from '../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
 
 function Custom(Node: NodeProps) {
   const menuStatusObj = MiddleStore(state => state.menuStatusObj)

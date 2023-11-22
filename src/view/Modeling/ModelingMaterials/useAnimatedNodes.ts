@@ -6,7 +6,7 @@ export type UseAnimatedNodeOptions = {
   animationDuration?: number
 }
 
-function useAnimatedNodes(nodes: Node[], { animationDuration = 300 }: UseAnimatedNodeOptions = {}) {
+function useAnimatedNodes(nodes: Node[], { animationDuration = 400 }: UseAnimatedNodeOptions = {}) {
   const [tmpNodes, setTmpNodes] = useState(nodes)
   const { getNode } = useReactFlow()
 
@@ -28,7 +28,6 @@ function useAnimatedNodes(nodes: Node[], { animationDuration = 300 }: UseAnimate
           position: { x: from.x + (to.x - from.x) * s, y: from.y + (to.y - from.y) * s }
         }
       })
-
       setTmpNodes(currNodes)
 
       if (elapsed > animationDuration) {

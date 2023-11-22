@@ -64,7 +64,6 @@ export interface NewModelListStore {
 export interface ModelDetails {
   tabs: string
   keyWord: string
-  foucsId: number | null
   cusomMadePeripheralListParams: CustomMadePeripheralListParams
   processorListParams: ProcessorListParams
   timerListParams: TimerListParams
@@ -85,7 +84,7 @@ export interface ModelDetails {
     desc: string
   }
   fn: () => void
-  setFousId: (val: number) => void
+  openSiderMenu: (tabs: string) => void
   clearKeyWord: (val: () => void) => any
   initStore: () => void
   setHasMore: (val: boolean) => void
@@ -100,10 +99,9 @@ export interface ModelDetails {
   getTimeListStore: (id: number) => void
   getList: (val: string, id: number) => void
   getModelListDetails: (id: number, headertabs?: string) => void
-  showNode: React.Key[] | []
   getAllPeripheral: (id: number) => void
-  setExpand: (val: any) => void
-  setItemExpand: (val: React.Key[]) => void
+  // setExpand: (val: any) => void
+  // setItemExpand: (val: React.Key[]) => void
 }
 
 export interface RightDetailsAttributesStoreParams {
@@ -111,13 +109,14 @@ export interface RightDetailsAttributesStoreParams {
   focusNodeId: number | null | string
   rightArrributes: any
   register: any
+  updateRegister: (val: any) => void
   setTypeDetailsAttributes: (val: string, id: number) => void
   getTimerAttributes: (id: number) => void
-  getDataHandlerAttributes: (id: number) => void
-  getPeripheralAttributes: (id: number, type?: string) => void
-  getRegisterAttributes: (id: number) => void
+  getDataHandlerAttributes: (id: number, fn?: (val: string | string[]) => void) => void
+  getPeripheralAttributes: (id: number, type?: string, fn1?: any) => void
+  getRegisterAttributes: (id: number, fn?: (val: string | string[]) => void) => void
   getTargetAttributes: (val: number) => void
-  rightAttrubutesMap: (type: string, val: number | string | null) => void
+  rightAttrubutesMap: (type: string, val: number | string | null, fn?: (val: string | string[]) => void) => void
 }
 
 // 端口列表
@@ -164,7 +163,8 @@ export interface FormItemCheckStoreParams {
 
 export interface RightFormCheckStoreParams {
   platform_id: string | number | null
-  registerList: any[]
+  setPlatFormId: (val: string) => void
+  initRightListStore: () => void
   timer: {
     id: string | number | null
     name: valueParams

@@ -12,9 +12,9 @@ import {
   updateRegister,
   updateTimer
 } from 'Src/services/api/modelApi'
-import { RightDetailsAttributesStoreParams, RightFormCheckStoreParams } from '../ModleStore'
-import { rightFormCheckMap, titleMap } from '../MapStore'
-import { saveCanvasAndUpdateNodeName } from '../../ModelingDetail/ModelingRight/ModelingRightCompoents'
+import { RightDetailsAttributesStoreParams, RightFormCheckStoreParams } from '../../ModleStore'
+import { rightFormCheckMap, titleMap } from '../../MapStore'
+import { getModelListDetails, saveCanvasAndUpdateNodeName } from '../../../ModelingDetail/ModelingRight/ModelingRightCompoents'
 
 // 右侧属性
 const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((set, get) => ({
@@ -22,10 +22,12 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
   focusNodeId: null,
   rightArrributes: {},
   register: [],
+  // 聚焦节点,设置右侧属性
   setTypeDetailsAttributes: (val, id) => {
     set({ typeAttributes: val, focusNodeId: id })
   },
 
+  // 获取定时器属性
   getTimerAttributes: async id => {
     try {
       const res = await getTimerDetails(id)
@@ -37,6 +39,8 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
       throwErrorMessage(error)
     }
   },
+
+  // 获取数据处理器属性
   getDataHandlerAttributes: async id => {
     try {
       const res = await getDataHandlerDetails(id)
@@ -48,14 +52,20 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
       throwErrorMessage(error)
     }
   },
-  getPeripheralAttributes: async (id, type) => {
+
+  // 获取外设属性
+  getPeripheralAttributes: async (id, type, fn1) => {
     try {
       const res = await getPeripheralsDetails(id)
       if (res.data) {
-        if (type === 'getList') {
-          set({ register: res.data })
+        // 根据传递的属性 获取列表
+        if (type === 'rightList') {
+          set({ register: res.data.registers })
         } else {
           set({ rightArrributes: res.data })
+        }
+        if (fn1) {
+          fn1()
         }
       }
     } catch (error) {
@@ -63,17 +73,22 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
       throwErrorMessage(error)
     }
   },
-  getRegisterAttributes: async id => {
+
+  getRegisterAttributes: async (id, fn) => {
     try {
       const res = await getRegisterDetails(id)
       if (res.data) {
         set({ rightArrributes: res.data })
+        if (fn) {
+          fn(String(res.data.peripheral_id))
+        }
       }
     } catch (error) {
       // todo Error
       throwErrorMessage(error)
     }
   },
+
   getTargetAttributes: async id => {
     try {
       const res = await getTargetDetails(id)
@@ -84,21 +99,23 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
       throwErrorMessage(error)
     }
   },
-  rightAttrubutesMap: (type, id) => {
-    set({ typeAttributes: type, focusNodeId: id })
+
+  // 点击左侧列表获取详情
+  rightAttrubutesMap: (type, id, fn) => {
     const { getDataHandlerAttributes, getRegisterAttributes, getTimerAttributes, getPeripheralAttributes, getTargetAttributes } = get()
+    set({ typeAttributes: type, focusNodeId: id })
     switch (type) {
       case 'Target':
         getTargetAttributes(id as number)
         break
       case 'Processor':
-        getDataHandlerAttributes(id as number)
+        getDataHandlerAttributes(id as number, fn)
         break
       case 'Peripheral':
-        getPeripheralAttributes(id as number)
+        getPeripheralAttributes(id as number, undefined, fn)
         break
       case 'Register':
-        getRegisterAttributes(id as number)
+        getRegisterAttributes(id as number, fn)
         break
       case 'Timer':
         getTimerAttributes(id as number)
@@ -106,15 +123,26 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
       default:
         break
     }
+  },
+
+  // 更新寄存器列表
+  updateRegister: val => {
+    set({ register: val })
   }
 }))
+
+const getPeripheralAttributesFn = RightDetailsAttributesStore.getState().getPeripheralAttributes
+
+const updateRegisterFn = RightDetailsAttributesStore.getState().updateRegister
 
 // 右侧表单校验
 const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
   // 目标机id
   platform_id: null,
-  // 寄存器列表
-  registerList: [],
+  //  更新目标机id
+  setPlatFormId: val => {
+    set({ platform_id: val })
+  },
   // 定时器表单数据
   timer: {
     id: null,
@@ -179,6 +207,7 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
       errorMsg: ''
     }
   },
+
   // 寄存器  Register: ['peripheral_id', 'name', 'relative_address', 'kind', 'finish', 'variety']
   register: {
     id: null,
@@ -196,6 +225,7 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     sr_id: { value: '', validateStatus: '', errorMsg: '' },
     sr_peri_id: { value: '', validateStatus: '', errorMsg: '' }
   },
+
   messageInfoFn: (item, type, title, validateStatus, errorMsg, val) => {
     set(state =>
       produce(state, draft => {
@@ -206,6 +236,7 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
       })
     )
   },
+
   // 校验名称格式
   frontendCheckoutName: (val, title, type, fn1, fn2) => {
     const item = titleMap[title as keyof typeof titleMap]
@@ -220,6 +251,7 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
 
     messageInfoFn(item, type, title, 'success', null, val)
   },
+
   // 校验基地址,地址大小
   checkoutBase_addreeAndLength: (val, title, type, fn1) => {
     const { messageInfoFn } = get()
@@ -229,6 +261,7 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     }
     messageInfoFn(item, type, title, '', null, val)
   },
+
   // 失焦异步校验  fn1 更新函数
   onBlurAsyncCheckoutNameFormValues: async (val, title, type, fn1) => {
     const { checkEveryItemIsError, messageInfoFn } = get()
@@ -253,10 +286,9 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
   // 用户点击左侧列表,或者失焦更新表单数据
   updateTimerFormValue: (title, type, value) => {
     const item = titleMap[title as keyof typeof titleMap]
-    const { platform_id, id } = value
-    set({ platform_id })
+    const { id } = value
     if (value?.registers?.length > 0) {
-      set({ registerList: value.registers })
+      updateRegisterFn(value.registers)
     }
     if ([0, 1].includes(value.variety) && value.variety !== undefined && item === 'peripheral') {
       set(state =>
@@ -289,7 +321,11 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     const { messageInfoFn } = get()
     const item = titleMap[title as keyof typeof titleMap]
     messageInfoFn(item, type, title, '', null, val)
+    if (type === 'sr_peri_id') {
+      getPeripheralAttributesFn(val as any, 'rightList')
+    }
   },
+
   // 校验定时器的中断号,间隔
   checkoutTimerPeriodAndInterrupt: (val, title, type, fn1) => {
     if (val.length === 0) return
@@ -305,6 +341,7 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     if (checkEveryItemIsError(title)) return
     updateTimer()
   },
+
   // 校验数据处理器 中断号 ,帧头, 帧尾 基地址
   checkoutProcessor: (val, title, type, fn1, fn2) => {
     if (val.length === 0) return
@@ -327,6 +364,7 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     if (checkEveryItemIsError(title)) return
     fn2()
   },
+
   // 过滤有值的key
   filterObject: (obj: any) => {
     const result = {} as any
@@ -337,6 +375,7 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     }
     return result
   },
+
   // 更新定时器
   updateTimer: async () => {
     const { timer, platform_id } = get()
@@ -347,8 +386,12 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
       interrupt: timer.interrupt.value
     }
     const res = await updateTimer(timer.id, params)
+    if (res.data) {
+      getModelListDetails(platform_id as number, 'time')
+    }
     // return res
   },
+
   // 更新数据处理器
   updateProcessor: async () => {
     const { processor, platform_id } = get()
@@ -366,9 +409,12 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
       peripheral_id: processor.peripheral_id.value,
       register_id: processor.register_id.value
     }
-
     const res = await updateDataHandler(processor.id, params)
+    if (res.data) {
+      getModelListDetails(platform_id as number, 'dataHandlerNotReferenced')
+    }
   },
+
   // 更新外设
   updatePeripheral: async () => {
     const { peripheral, platform_id } = get()
@@ -377,45 +423,137 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
       name: peripheral.name.value,
       kind: peripheral.kind.value,
       base_address:
-        (peripheral.base_address.value as string)?.trim().length % 2 === 0 ? peripheral.base_address.value : `0x${peripheral.base_address.value}`,
+        (peripheral.base_address.value as string)?.trim().length % 2 === 0 ? peripheral.base_address.value : `0${peripheral.base_address.value}`,
       id: peripheral.id,
       address_length:
-        (peripheral.address_length.value as string).trim().length % 2 === 0
-          ? peripheral.address_length.value
-          : `0x${peripheral.address_length.value}`,
+        (peripheral.address_length.value as string).trim().length % 2 === 0 ? peripheral.address_length.value : `0${peripheral.address_length.value}`,
       desc: peripheral.desc.value
     }
 
     const res = await updatePeripherals(peripheral.id as string, params)
     if (res.data) {
-      saveCanvasAndUpdateNodeName(String(res.data.id), { label: res.data.name })
-      console.log(res.data)
+      saveCanvasAndUpdateNodeName(String(res.data.id), platform_id as string, { label: res.data.name })
+      getModelListDetails(platform_id as number, 'customMadePeripheral')
     }
   },
+
   // 更新寄存器
   updateRegister: async () => {
-    const { register } = get()
+    const { register, platform_id } = get()
     const params = {
       name: register.name.value,
       kind: register.kind.value,
       finish: register.finish.value,
       peripheral_id: register.peripheral_id.value,
-      relative_address: register.relative_address.value,
+      relative_address:
+        (register.relative_address.value as string)?.trim().length % 2 === 0
+          ? register.relative_address.value
+          : `0${register.relative_address.value}`,
       variety: register.variety.value
     }
     const additionalParamsTrue = {
       set_cmd: register.set_cmd.value,
       restore_cmd: register.restore_cmd.value,
-      set_value: register.set_value.value,
-      restore_value: register.restore_value.value
+      set_value: (register.set_value.value as string)?.trim().length % 2 === 0 ? register.set_value.value : `0${register.set_value.value}`,
+      restore_value:
+        (register.restore_value.value as string)?.trim().length % 2 === 0 ? register.restore_value.value : `0${register.restore_value.value}`
     }
     const additionalParamsFalse = {
       sr_id: register.sr_id.value
     }
-
-    const paramsIsOrNot = register.kind.value === 0 ? additionalParamsFalse : additionalParamsTrue
+    const paramsIsOrNot = register.kind.value === 0 ? additionalParamsTrue : additionalParamsFalse
     const paramsObject = { ...params, ...paramsIsOrNot }
     const res = await updateRegister(register.id, paramsObject)
+    if (res.data) {
+      saveCanvasAndUpdateNodeName(String(res.data.id), platform_id as string, { label: res.data.name })
+      getModelListDetails(platform_id as number, 'processor')
+    }
+  },
+
+  // 初始化仓库
+  initRightListStore: () => {
+    set({
+      timer: {
+        id: null,
+        name: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        },
+        period: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        },
+        interrupt: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        }
+      },
+      // 数据处理器表单数据
+      processor: {
+        id: null,
+        name: { value: '', validateStatus: '', errorMsg: '' },
+        port: { value: '', validateStatus: '', errorMsg: '' },
+        interrupt: { value: '', validateStatus: '', errorMsg: '' },
+        sof: { value: '', validateStatus: '', errorMsg: '' },
+        eof: { value: '', validateStatus: '', errorMsg: '' },
+        algorithm: { value: [], validateStatus: '', errorMsg: '' },
+        length_member: { value: [], validateStatus: '', errorMsg: '' },
+        checksum_member: { value: [], validateStatus: '', errorMsg: '' },
+        framing_member: { value: [], validateStatus: '', errorMsg: '' },
+        peripheral_id: { value: '', validateStatus: '', errorMsg: '' },
+        register_id: { value: '', validateStatus: '', errorMsg: '' }
+      },
+      // 外设
+      peripheral: {
+        id: null,
+        variety: null,
+        name: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        },
+        kind: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        },
+        address_length: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        },
+        base_address: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        },
+        desc: {
+          value: '',
+          validateStatus: '',
+          errorMsg: ''
+        }
+      },
+      // 寄存器  Register: ['peripheral_id', 'name', 'relative_address', 'kind', 'finish', 'variety']
+      register: {
+        id: null,
+        name: { value: '', validateStatus: '', errorMsg: '' },
+        peripheral: { value: '', validateStatus: '', errorMsg: '' },
+        peripheral_id: { value: '', validateStatus: '', errorMsg: '' },
+        relative_address: { value: '', validateStatus: '', errorMsg: '' },
+        kind: { value: '', validateStatus: '', errorMsg: '' },
+        finish: { value: '', validateStatus: '', errorMsg: '' },
+        variety: { value: '', validateStatus: '', errorMsg: '' },
+        set_cmd: { value: '', validateStatus: '', errorMsg: '' },
+        restore_cmd: { value: '', validateStatus: '', errorMsg: '' },
+        set_value: { value: '', validateStatus: '', errorMsg: '' },
+        restore_value: { value: '', validateStatus: '', errorMsg: '' },
+        sr_id: { value: '', validateStatus: '', errorMsg: '' },
+        sr_peri_id: { value: '', validateStatus: '', errorMsg: '' }
+      }
+    })
   }
 }))
 

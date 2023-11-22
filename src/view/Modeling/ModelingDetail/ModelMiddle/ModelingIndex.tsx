@@ -16,7 +16,7 @@ import PaginationsAge from 'Src/components/Pagination/Pagina'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { throwErrorMessage } from 'Src/util/common'
 import { useHistory } from 'react-router'
-import { RightDetailsAttributesStore } from './Store/ModeleRightListStore/RightListStoreList'
+import { RightDetailsAttributesStore } from '../../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
 
 const customizeRender = () => <DefaultValueTips content='暂无外设建模' />
 

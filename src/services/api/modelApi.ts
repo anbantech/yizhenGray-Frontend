@@ -136,7 +136,15 @@ function getCanvas(id: number) {
 function saveCanvasAsync(params: any) {
   return request.post('/api/v1.0/models/canvas/save', params)
 }
+
+// 删除控件
+
+function deleteConrolsFn(id: any) {
+  return request.delete('/api/v1.0/models/controls/remove', { params: id })
+}
+
 export {
+  deleteConrolsFn,
   updateDataHandler,
   getDataHandlerDetails,
   saveCanvasAsync,

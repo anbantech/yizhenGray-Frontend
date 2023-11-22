@@ -40,7 +40,7 @@ const direction = 'LR'
 function useExpandCollapse(
   nodes: Node[],
   edges: Edge[],
-  { layoutNodes = true, treeWidth = 240, treeHeight = 130 }: UseExpandCollapseOptions = {}
+  { layoutNodes = true, treeWidth = 300, treeHeight = 150 }: UseExpandCollapseOptions = {}
 ): { nodes: Node[]; edges: Edge[] } {
   return useMemo(() => {
     const hierarchy = stratify<ExpandCollapseNode>()

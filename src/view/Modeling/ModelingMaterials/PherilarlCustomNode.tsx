@@ -5,10 +5,10 @@ import classNames from 'classnames'
 import styles from '../model.less'
 import MiddleStore from '../Store/ModelMiddleStore/MiddleStore'
 import ContextMenu from './Menus'
-import { RightDetailsAttributesStore } from '../Store/ModeleRightListStore/RightListStoreList'
+import { RightDetailsAttributesStore } from '../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
 
 function PherilarlCustomNode(Node: NodeProps) {
-  const { expandNode, getChildernNums } = MiddleStore()
+  const { expandNodeTree, getChildernNums } = MiddleStore()
   const nodes = MiddleStore(state => state.nodes)
   const menuStatusObj = MiddleStore(state => state.menuStatusObj)
   const focusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
@@ -22,19 +22,31 @@ function PherilarlCustomNode(Node: NodeProps) {
   }, [menuStatusObj, Node])
 
   const showNode = React.useCallback(() => {
-    expandNode(Node.id)
-  }, [Node.id, expandNode])
+    expandNodeTree(Node.id)
+  }, [Node.id, expandNodeTree])
 
   const expand = React.useMemo(() => {
     const isExpand = Node.data.expanded
     return isExpand
   }, [Node])
+
   const NodeNums = React.useMemo(() => {
     return getChildernNums(Node.id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nodes.length])
-  const style = classNames({ [styles.pherilarNode]: !foucusStatus }, { [styles.pherilarNodeBorder]: foucusStatus })
+
+  const hasError = React.useMemo(() => {
+    return Node.data.error_code !== 0
+  }, [Node])
+
+  const style = classNames(
+    { [styles.hasErrorRegisterNode]: hasError },
+    { [styles.pherilarNode]: !foucusStatus },
+    { [styles.pherilarNodeBorder]: foucusStatus }
+  )
+
   const menuLoookStyle = classNames({ [styles.menuPostion]: isOpen })
+
   return (
     <div className={menuLoookStyle}>
       <div className={style}>

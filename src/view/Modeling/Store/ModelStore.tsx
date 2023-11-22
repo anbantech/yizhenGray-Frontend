@@ -108,8 +108,6 @@ const useNewModelingStore = create<NewModelListStore>((set, get) => ({
 // 侧边栏获取列表store
 const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
   keyWord: '',
-  foucsId: null,
-  showNode: [],
   tabs: 'customMadePeripheral',
   fn: () => {},
   targetDetails: { name: '', desc: '', processor: '' },
@@ -118,7 +116,6 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
   timerNums: 0,
   handlerDataNums: 0,
   boardPeripheralNums: 0,
-
   // 全部外设数据参数获取
   AllPeripheral: {
     platform_id: 0,
@@ -162,27 +159,24 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
   processorList: [],
   boardLevelPeripheralsList: [],
   AllPeripheralList: [],
-  setExpand: (val: any) => {
-    const idArray: [] | string[] = []
-    const extractIdsFromTree = (tree: any, resultArray: any[]) => {
-      // 遍历树结构
-      for (const node of tree) {
-        // 提取当前节点的id并添加到结果数组
-        resultArray.push(node.id)
+  // setExpand: (val: any) => {
+  //   const idArray: [] | string[] = []
+  //   const extractIdsFromTree = (tree: any, resultArray: any[]) => {
+  //     // 遍历树结构
+  //     for (const node of tree) {
+  //       // 提取当前节点的id并添加到结果数组
+  //       resultArray.push(node.id)
 
-        // 如果当前节点有子节点，递归调用该函数
-        if (node.children && node.children.length > 0) {
-          extractIdsFromTree(node.children, resultArray)
-        }
-      }
-    }
-    extractIdsFromTree(val, idArray)
-    set({ showNode: idArray })
-  },
+  //       // 如果当前节点有子节点，递归调用该函数
+  //       if (node.children && node.children.length > 0) {
+  //         extractIdsFromTree(node.children, resultArray)
+  //       }
+  //     }
+  //   }
+  //   extractIdsFromTree(val, idArray)
+  //   set({ showNode: idArray })
+  // },
 
-  setItemExpand: val => {
-    set({ showNode: val })
-  },
   setParams: (tabs: string, val) => {
     const { processorListParams, timerListParams, cusomMadePeripheralListParams } = get()
     switch (tabs) {
@@ -218,16 +212,13 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
     }))
   },
 
-  setFousId: (val: number) => {
-    set({ foucsId: val })
-  },
   setKeyWord: (val: string, tabs: string) => {
-    const { cusomMadePeripheralListParams, processorListParams, setTags, timerListParams, setExpand } = get()
+    const { cusomMadePeripheralListParams, processorListParams, setTags, timerListParams } = get()
     if (!val) {
       setTags('0')
     }
     if (['', undefined].includes(val)) {
-      setExpand([])
+      // setExpand([])
     }
     switch (tabs) {
       case 'customMadePeripheral':
@@ -248,7 +239,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
     set({ keyWord: val })
   },
   getCustomMadePeripheralStore: async (id: number) => {
-    const { cusomMadePeripheralListParams, setExpand } = get()
+    const { cusomMadePeripheralListParams } = get()
     try {
       const params = { ...cusomMadePeripheralListParams, platform_id: id }
       const res = await getCustomMadePeripheralList(params)
@@ -257,7 +248,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
         set({ customMadePeripheralList: [...res.data.results] })
       }
       if (!['', undefined].includes(cusomMadePeripheralListParams.key_word) && cusomMadePeripheralListParams.tag === '0') {
-        setExpand(res.data.results)
+        //
       }
       return res
     } catch (error) {
@@ -266,7 +257,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
     }
   },
   getBoardCustomMadePeripheralStore: async (id: number) => {
-    const { cusomMadePeripheralListParams, setExpand } = get()
+    const { cusomMadePeripheralListParams } = get()
     try {
       const params = { ...cusomMadePeripheralListParams, platform_id: id, variety: '1' }
       const res = await getCustomMadePeripheralList(params)
@@ -274,7 +265,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
         set({ boardLevelPeripheralsList: [...res.data.results] })
       }
       if (!['', undefined].includes(cusomMadePeripheralListParams.key_word) && cusomMadePeripheralListParams.tag === '0') {
-        setExpand(res.data.results)
+        // setExpand(res.data.results)
       }
       return res
     } catch (error) {
@@ -405,6 +396,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
         })
         // 画布添加数据和左侧列表所选tabs是否一致 如果一致更新列表
         if (headertabs === tabs) {
+          console.log('222')
           getList(tabs, id)
         }
       }
@@ -420,9 +412,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
   initStore: () => {
     set({
       keyWord: '',
-      foucsId: null,
       hasMoreData: true, // 共用
-      showNode: [],
       cusomMadePeripheralListParams: {
         variety: '0',
         platform_id: 0,
@@ -450,6 +440,13 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
         sort_order: 'descend'
       }
     })
+  },
+  // 创建目标元素 打开侧边栏 聚焦侧边id
+  openSiderMenu: (tabs: string) => {
+    const { fn, initStore } = get()
+    fn()
+    initStore()
+    set({ tabs })
   }
 }))
 
