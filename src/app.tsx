@@ -24,16 +24,19 @@ function Main() {
   const firstEnter = JSON.parse(sessionStorage.getItem('fe') || 'true')
   const [flag, setFlag] = useState(firstEnter)
   const getSystemList = getSystemConstantsStore(state => state.getSystemList)
+
   setTimeout(() => {
     if (flag) {
       setFlag(false)
       sessionStorage.setItem('fe', 'false')
     }
   }, 3500)
+
   React.useEffect(() => {
     getSystemList()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
   return (
     <GlobalContextProvider>
       {flag && ifNeedShowLogo ? (

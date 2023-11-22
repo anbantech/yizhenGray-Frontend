@@ -10,7 +10,7 @@ import StyleSheet from './modelMiddle.less'
 import { checkUtilFnStore, formItemParamsCheckStore, publicAttributes, useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
 import MiddleStore from '../../Store/ModelMiddleStore/MiddleStore'
-import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
+import { RightDetailsAttributesStore } from '../../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
 
 type TabsSelect = {
   tabs: string
@@ -82,8 +82,8 @@ const FormFooter = () => {
       name: name?.value,
       kind: kind?.value,
       desc: desc?.value,
-      address_length: (address_length?.value as string)?.trim().length % 2 === 0 ? address_length?.value : `0x${address_length?.value}`,
-      base_address: (base_address?.value as string)?.trim().length % 2 === 0 ? base_address?.value : `0x${base_address?.value}`
+      address_length: (address_length?.value as string)?.trim().length % 2 === 0 ? address_length?.value : `0${address_length?.value}`,
+      base_address: (base_address?.value as string)?.trim().length % 2 === 0 ? base_address?.value : `0${base_address?.value}`
     }
 
     const timerParams = {
@@ -104,7 +104,7 @@ const FormFooter = () => {
       name: name?.value,
       peripheral_id: peripheral_id?.value,
       kind: 0,
-      relative_address: (relative_address?.value as string)?.trim().length % 2 === 0 ? relative_address?.value : `0x${relative_address?.value}`
+      relative_address: (relative_address?.value as string)?.trim().length % 2 === 0 ? relative_address?.value : `0${relative_address?.value}`
     }
 
     const mapParams = {
@@ -115,6 +115,7 @@ const FormFooter = () => {
     }
 
     const info = mapParams[Tabs as keyof typeof mapParams]
+    // openSiderMenu(Tabs)
 
     createElement(Tabs, info, getModelListDetails, platformsIdmemo, cancel, rightAttrubutesMap)
   }, [optionalParameters, platformsIdmemo, Tabs, createElement, getModelListDetails, cancel, rightAttrubutesMap])

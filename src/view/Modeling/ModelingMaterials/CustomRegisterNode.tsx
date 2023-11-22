@@ -5,24 +5,29 @@ import classNames from 'classnames'
 import styles from '../model.less'
 import MiddleStore from '../Store/ModelMiddleStore/MiddleStore'
 import ContextMenu from './Menus'
-import { RightDetailsAttributesStore } from '../Store/ModeleRightListStore/RightListStoreList'
+import { RightDetailsAttributesStore } from '../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
 
 function CustomRegisterNode(Node: NodeProps) {
-  const { expandNode } = MiddleStore()
+  const { expandNodeTree } = MiddleStore()
   const menuStatusObj = MiddleStore(state => state.menuStatusObj)
   const focusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
 
   const foucusStatus = React.useMemo(() => {
     return focusNodeId === Node.data.id
   }, [focusNodeId, Node])
+
+  const hasError = React.useMemo(() => {
+    return Node.data.error_code !== 0
+  }, [Node])
+
   const isOpen = useMemo(() => {
     const idBol = menuStatusObj.id === Node.data.id
     return idBol && menuStatusObj.status
   }, [menuStatusObj, Node])
 
   const showNode = React.useCallback(() => {
-    expandNode(Node.id)
-  }, [Node.id, expandNode])
+    expandNodeTree(Node.id)
+  }, [Node.id, expandNodeTree])
 
   const expand = React.useMemo(() => {
     const isExpand = Node.data.expanded
@@ -33,7 +38,11 @@ function CustomRegisterNode(Node: NodeProps) {
     return Node.data.nums
   }, [Node])
 
-  const style = classNames({ [styles.registerNode]: !foucusStatus }, { [styles.registerNodeBorder]: foucusStatus })
+  const style = classNames(
+    { [styles.hasErrorRegisterNode]: hasError },
+    { [styles.registerNode]: !foucusStatus },
+    { [styles.registerNodeBorder]: foucusStatus }
+  )
   return (
     <>
       <div className={style}>

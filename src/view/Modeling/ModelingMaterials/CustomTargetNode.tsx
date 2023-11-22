@@ -5,10 +5,10 @@ import classNames from 'classnames'
 import styles from '../model.less'
 import MiddleStore from '../Store/ModelMiddleStore/MiddleStore'
 import ContextMenu from './Menus'
-import { RightDetailsAttributesStore } from '../Store/ModeleRightListStore/RightListStoreList'
+import { RightDetailsAttributesStore } from '../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
 
 function CustomTargetNode(Node: NodeProps) {
-  const { expandNode, getChildernNums } = MiddleStore()
+  const { expandNodeTree, getChildernNums } = MiddleStore()
   const menuStatusObj = MiddleStore(state => state.menuStatusObj)
   const nodes = MiddleStore(state => state.nodes)
 
@@ -26,9 +26,9 @@ function CustomTargetNode(Node: NodeProps) {
   const showNode = React.useCallback(
     e => {
       e.stopPropagation()
-      expandNode(Node.id)
+      expandNodeTree(Node.id)
     },
-    [Node.id, expandNode]
+    [Node.id, expandNodeTree]
   )
   const NodeNums = React.useMemo(() => {
     return getChildernNums(Node.id) - 1

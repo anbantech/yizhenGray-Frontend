@@ -1,18 +1,28 @@
 import React, { useCallback, useEffect } from 'react'
 import ReactFlow, { ReactFlowProvider, Background, Node, Edge, NodeTypes, SelectionMode, BackgroundVariant, Controls, getOutgoers } from 'reactflow'
 import { useLocation } from 'react-router'
+import DeleteNodeModal from 'Src/components/Modal/nodeDraw/deleteNodeMoal'
 import useAnimatedNodes from '../../ModelingMaterials/useAnimatedNodes'
 import useExpandCollapse from '../../ModelingMaterials/useExpandCollapse'
 import 'reactflow/dist/style.css'
 import styles from '../../model.less'
 import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
-import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
+
+import { RightDetailsAttributesStore } from '../../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
 import CustomNode from '../../ModelingMaterials/CustomNode'
 import CustomTargetNode from '../../ModelingMaterials/CustomTargetNode'
+
 import PherilarlCustomNode from '../../ModelingMaterials/PherilarlCustomNode'
+
 import CustomRegisterNode from '../../ModelingMaterials/CustomRegisterNode'
 import MiddleStore from '../../Store/ModelMiddleStore/MiddleStore'
+
 import { AttributesType } from '../../Store/MapStore'
+import { useLeftModelDetailsStore } from '../../Store/ModelStore'
+
+import { getModelListDetails } from '../ModelingRight/ModelingRightCompoents'
+import { useEventListener } from 'ahooks-v2'
+import { Tabs } from 'antd'
 
 const proOptions = { account: 'paid-pro', hideAttribution: true }
 
@@ -32,19 +42,22 @@ type ExpandCollapseExampleProps = {
 }
 const panOnDrag = [1, 2]
 
-// processor: createRegister,
-// dataHandlerNotReferenced: createDataHandler,
-// time: createTimer
-
-function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 100, treeHeight = 220, animationDuration = 300 }: ExpandCollapseExampleProps) {
+function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 120, treeHeight = 250, animationDuration = 300 }: ExpandCollapseExampleProps) {
   const rightAttrubutesMap = RightDetailsAttributesStore(state => state.rightAttrubutesMap)
+  const platform_id = MiddleStore(state => state.platform_id)
+  const setTabs = useLeftModelDetailsStore(state => state.setTabs)
   const onEdgesChange = MiddleStore(state => state.onEdgesChange)
   const onNodesChange = MiddleStore(state => state.onNodesChange)
   const upDateNodesAndEdges = MiddleStore(state => state.upDateNodesAndEdges)
   const setMenuStatus = MiddleStore(state => state.setMenuStatus)
   const setOpenMenu = MiddleStore(state => state.setOpenMenu)
+  const upDateLeftExpandArrayFn = MiddleStore(state => state.upDateLeftExpandArrayFn)
+  const deleteInfo = MiddleStore(state => state.deleteInfo)
+  const saveCanvas = MiddleStore(state => state.saveCanvas)
+  const Tabs = useLeftModelDetailsStore(state => state.Tabs)
+  const deleteTreeNode = MiddleStore(state => state.deleteTreeNode)
   const ref = React.useRef(null)
-  // const { fitView } = useReactFlow()
+
   const { nodes: visibleNodes, edges: visibleEdges } = useExpandCollapse(nodeStore, edgeStore, {
     treeWidth,
     treeHeight
@@ -53,7 +66,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 100, treeHeight = 220,
   const { nodes: animatedNodes } = useAnimatedNodes(visibleNodes, {
     animationDuration
   })
-
+  // console.log(visibleEdges)
   // 获取筛选节点数据
   const onNodeContextMenu = useCallback(
     (event, Node) => {
@@ -95,28 +108,110 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 100, treeHeight = 220,
       const edge = edgeStore.filter(item => {
         return !deleteNodeArray.some(data => data.id === item.target)
       })
+      saveCanvas([...node], [...edge], platform_id as string)
+      if (platform_id) getModelListDetails(+platform_id, Tabs)
       upDateNodesAndEdges([...node], [...edge])
+      deleteTreeNode(false, { node: [] })
     },
-    [getDeleteNodeAndAdge, nodeStore, edgeStore, upDateNodesAndEdges]
+    [Tabs, deleteTreeNode, edgeStore, getDeleteNodeAndAdge, nodeStore, platform_id, saveCanvas, upDateNodesAndEdges]
+  )
+  const getParentNode = React.useCallback(
+    (node: Node<any, string | undefined>) => {
+      const selectId: string[] = []
+
+      const getAllParentId = (id: string, item: Node[]) => {
+        item.map(element => {
+          if (element.id === id && id !== element.data.parentId) {
+            selectId.push(element.id)
+            if (element.data.parentId) {
+              getAllParentId(element.data.parentId, animatedNodes)
+            }
+            return
+          }
+          return []
+        })
+      }
+      getAllParentId(node.id, animatedNodes)
+
+      return selectId
+    },
+    [animatedNodes]
   )
 
   const onNodeClick = useCallback(
     (event, node) => {
       event.stopPropagation()
       event.preventDefault()
-      const { flag, id } = node.data
+      const { flag, id, builtIn } = node.data
+      if (builtIn && platform_id) {
+        setTabs('boardLevelPeripherals')
+        getModelListDetails(+platform_id, 'boardLevelPeripherals')
+      }
       setOpenMenu()
       rightAttrubutesMap(AttributesType[flag as keyof typeof AttributesType], id)
+      const res = getParentNode(node)
+      upDateLeftExpandArrayFn(res)
     },
-    [rightAttrubutesMap, setOpenMenu]
+    [setOpenMenu, rightAttrubutesMap, getParentNode, upDateLeftExpandArrayFn, setTabs, platform_id]
   )
+
+  // const foucsNode = (nodeId: string) => {
+  //   // 获取点击的节点的位置
+  //   const node = animatedNodes.find(element => element.id === nodeId)
+  //   // 聚焦到指定的节点位置
+  //   if (node) {
+  //     fitView({ duration: 500, nodes: [{ id: nodeId }] })
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   if (focusNodeId) {
+  //     // foucsNode(String(focusNodeId))
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [focusNodeId])
+  const keyDownHandler = React.useCallback(
+    (ev: KeyboardEvent) => {
+      if (ev.code !== 'Delete') return
+      const { node } = deleteInfo
+      if (!node?.node?.length) return
+      deleteTreeNode(true)
+    },
+    [deleteInfo, deleteTreeNode]
+  )
+
+  useEventListener('keydown', keyDownHandler)
+
+  const onSelectionChange = React.useCallback(
+    (params: { nodes: Node[]; edges: Edge[] }) => {
+      // console.log(params)
+      const { nodes, edges } = params
+      if (nodes.length === 0) return deleteTreeNode(false, { node: [], edge: [] })
+      // 不符合要求的节点
+      const notNodeArray: Node[] = []
+      const node = nodes.filter((item: Node) => {
+        if ([1, 2].includes(item.data.flag) && item.data.builtIn) {
+          notNodeArray.push(item)
+        }
+        return [1, 2].includes(item.data.flag) && !item.data.builtIn
+      })
+      const edge = edges.filter((item: Edge) => {
+        return !notNodeArray.find(node => {
+          return node.id === item.target
+        })
+      })
+      deleteTreeNode(false, { node, edge })
+    },
+    [deleteTreeNode]
+  )
+
   return (
     <div className={styles.container}>
-      {/* <MiddleHeaderBar /> */}
       {animatedNodes && (
         <ReactFlow
           fitView
           ref={ref}
+          deleteKeyCode={null}
           nodes={animatedNodes}
           edges={visibleEdges}
           onNodeClick={onNodeClick}
@@ -125,23 +220,28 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 100, treeHeight = 220,
           onEdgesChange={onEdgesChange}
           proOptions={proOptions}
           nodeTypes={nodeTypes}
-          className={styles.viewport}
           zoomOnDoubleClick={false}
           selectionOnDrag
           panOnScroll
           elevateNodesOnSelect
           onPaneClick={onPaneClick}
           onNodeContextMenu={onNodeContextMenu}
-          onNodesDelete={onNodesDelete}
           panOnDrag={panOnDrag}
           selectionMode={SelectionMode.Partial}
-          // minZoom={-Infinity}
-          // maxZoom={Infinity}
+          onSelectionChange={onSelectionChange}
+          minZoom={-Infinity}
+          maxZoom={Infinity}
+          // onSelectionEnd={e => {
+          //   selectEndNode(e)
+          // }}
           // zoomActivationKeyCode=
         >
           <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
           <Controls />
         </ReactFlow>
+      )}
+      {deleteInfo.visibility && (
+        <DeleteNodeModal deleteInfo={deleteInfo} deleteTreeNode={deleteTreeNode} visibility={deleteInfo.visibility} onNodesDelete={onNodesDelete} />
       )}
     </div>
   )

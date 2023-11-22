@@ -8,7 +8,7 @@ import {
   TimerDetailsAttributesMemo
 } from './ModelingRightCompoents'
 import StyleSheet from './ModelingRight.less'
-import { RightListStore, RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
+import { RightListStore, RightDetailsAttributesStore } from '../../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
 
 const Header = () => {
   return (

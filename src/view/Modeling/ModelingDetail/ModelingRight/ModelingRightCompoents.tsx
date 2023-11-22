@@ -4,9 +4,9 @@ import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import StyleSheet from './ModelingRight.less'
-import { checkUtilFnStore, useLeftModelDetailsStore } from '../../Store/ModelStore'
+import { checkUtilFnStore, publicAttributes, useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { valueParams, valueParamsArray } from '../../Store/ModleStore'
-import { RightListStore, RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
+import { RightListStore, RightDetailsAttributesStore } from '../../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
 import MiddleStore from '../../Store/ModelMiddleStore/MiddleStore'
 
 const { Option } = Select
@@ -40,25 +40,28 @@ const isFinish = [
 
 export const { saveCanvasAndUpdateNodeName } = MiddleStore.getState()
 
+// 更新名称 左侧列表更新
+export const { getModelListDetails } = useLeftModelDetailsStore.getState()
+
 // 定义名称为处理器属性的组件
 // 中断号,帧头,帧尾 做校验
 const ProcessorDetailsAttributes = () => {
   const [form] = Form.useForm()
-
-  const idRef = useRef({ id: -1 })
+  const idRef = useRef<{ id: string | number }>({ id: '' })
   const processor = RightListStore(state => state.processor)
   const AllPeripheralList = useLeftModelDetailsStore(state => state.AllPeripheralList)
   const register = RightDetailsAttributesStore(state => state.register)
-  // 非状态寄存器
+
+  //  kind 0是状态  1非状态 非状态寄存器
   const notRegsiterList = useMemo(() => {
-    return register.registers?.filter((item: any) => item.kind === 1)
+    return register.filter((item: any) => item.kind === 1)
   }, [register])
 
   //  寄存器的disablled
 
-  // const resgiedDisabled = useMemo(() => {
-  //   return processor.peripheral_id.value
-  // }, [processor])
+  const resgiedDisabled = useMemo(() => {
+    return Boolean(processor.peripheral_id.value)
+  }, [processor])
 
   // 校验子项
   const checkoutChild = useMemo(() => {
@@ -108,10 +111,11 @@ const ProcessorDetailsAttributes = () => {
     return res
   }, [processor.length_member])
 
+  const { portList } = publicAttributes()
   const ALGORITHM = getSystemConstantsStore(state => state.ALGORITHM)
-  const { checkoutProcessor, updateOnceFormValue, updateProcessor } = RightListStore()
+  const { checkoutProcessor, updateOnceFormValue, updateProcessor, frontendCheckoutName, onBlurAsyncCheckoutNameFormValues } = RightListStore()
   const { getPeripheralAttributes } = RightDetailsAttributesStore()
-  const { checkInterrupt, checkHex } = checkUtilFnStore()
+  const { checkInterrupt, checkHex, checkNameLength, checkNameFormat } = checkUtilFnStore()
   const DropdownRender = React.useCallback(
     (props: { title: string; type: string }) => {
       const { title, type } = props
@@ -176,27 +180,61 @@ const ProcessorDetailsAttributes = () => {
     },
     [updateOnceFormValue, updateProcessor]
   )
+
   // 获取非状态寄存器
   const closeMenuAndGetRegisterList = React.useCallback(
     async (visible: boolean) => {
       if (!visible) {
         updateProcessor()
         const ids = idRef.current.id
-        getPeripheralAttributes(ids as number, 'getList')
+        getPeripheralAttributes(ids as number, 'rightList')
+        idRef.current = { id: '' }
       }
     },
-    [updateProcessor, getPeripheralAttributes]
+    [getPeripheralAttributes, updateProcessor]
   )
 
   return (
     <div className={StyleSheet.rightConcentBody} id='area'>
       <Form form={form} layout='vertical' className={StyleSheet.rightFromCommonStyle}>
         <div style={{ padding: '8px 16px' }}>
-          <Form.Item label='数据处理器名称'>
-            <Input disabled value={processor.name.value} />
+          <Form.Item label='数据处理器名称' help={processor.name.errorMsg} hasFeedback validateStatus={processor.name.validateStatus}>
+            <Input
+              value={processor.name.value}
+              placeholder='请输入数据处理器名称'
+              onChange={e => {
+                frontendCheckoutName(e.target.value, '数据处理器', 'name', checkNameLength, checkNameFormat)
+              }}
+              onBlur={e => {
+                onBlurAsyncCheckoutNameFormValues(e.target.value, '数据处理器', 'name', updateProcessor)
+              }}
+            />
           </Form.Item>
           <Form.Item label='端口'>
-            <Input value={processor.port.value} disabled />
+            <Select
+              value={processor.port.value as string}
+              // getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
+              placeholder='请选择端口'
+              onChange={(value: string) => {
+                updateOnceFormValue(value, '数据处理器', 'port')
+              }}
+              onDropdownVisibleChange={visible => {
+                closeMenu(visible)
+              }}
+            >
+              {
+                /**
+                 * 下拉选择端口
+                 */
+                portList?.map((rate: any) => {
+                  return (
+                    <Option key={rate} value={rate}>
+                      {rate}
+                    </Option>
+                  )
+                })
+              }
+            </Select>
           </Form.Item>
           <Form.Item label='中断号' help={processor.interrupt.errorMsg} hasFeedback validateStatus={processor.interrupt.validateStatus}>
             <Input
@@ -317,9 +355,12 @@ const ProcessorDetailsAttributes = () => {
           <span className={StyleSheet.spanTitle}>数据加工与输出格式编排</span>
           <Form.Item label='外设'>
             <Select
+              value={processor.peripheral_id.value}
+              showSearch={Boolean(0)}
+              allowClear
               onChange={value => {
                 idRef.current.id = value
-                updateOnceFormValue(value, '数据处理器', 'peripheral_id')
+                updateOnceFormValue(value as string, '数据处理器', 'peripheral_id')
               }}
               onClear={() => {
                 clearValue('数据处理器', 'peripheral_id')
@@ -339,6 +380,7 @@ const ProcessorDetailsAttributes = () => {
           </Form.Item>
           <Form.Item label='寄存器'>
             <Select
+              disabled={!resgiedDisabled}
               onClear={() => {
                 clearValue('数据处理器', 'register_id')
               }}
@@ -378,10 +420,13 @@ const PeripheralDetailsAttributes = () => {
     checkoutBase_addreeAndLength,
     updateOnceFormValue
   } = RightListStore()
+
   const { checkHex, checkNameFormat, checkNameLength } = checkUtilFnStore()
+
   const disabledStatus = useMemo(() => {
     return peripheral.variety === 1
   }, [peripheral])
+
   return (
     <div className={StyleSheet.rightFromCommonStyle} style={{ padding: '8px 16px' }}>
       <Form form={form} layout='vertical'>
@@ -457,28 +502,30 @@ const PeripheralDetailsAttributesMemo = React.memo(PeripheralDetailsAttributes)
 // 定义寄存器
 const RegisterDetailsAttributes = () => {
   const [form] = Form.useForm()
-
   const rightArrributes = RightDetailsAttributesStore(state => state.rightArrributes)
-  console.log(rightArrributes)
+  const registerListOkr = RightDetailsAttributesStore(state => state.register)
   const isCustomMadePeripheralOrboardPeripheralNums = useMemo(() => {
-    return rightArrributes.kind === 1
-  }, [rightArrributes.kind])
+    return rightArrributes.variety === 1
+  }, [rightArrributes.variety])
   const register = RightListStore(state => state.register)
   const {
     updateRegister,
     checkoutBase_addreeAndLength,
     updateOnceFormValue,
     frontendCheckoutName,
-    onBlurAsyncCheckoutNameFormValues,
-    registerList
+    onBlurAsyncCheckoutNameFormValues
   } = RightListStore()
+
   const { AllPeripheralList } = useLeftModelDetailsStore()
+
   const registerListStatus = useMemo(() => {
-    const registerListArray = registerList.filter(item => {
-      return item.kind === 1
+    if (!registerListOkr?.length) return []
+    const registerListArray = registerListOkr?.filter((item: any) => {
+      return item.kind === 0
     })
     return registerListArray
-  }, [registerList])
+  }, [registerListOkr])
+
   const {
     peripheral_id,
     peripheral,
@@ -504,15 +551,18 @@ const RegisterDetailsAttributes = () => {
   const isKind = useMemo(() => {
     return kind.value === 0
   }, [kind])
+
   const clearValue = async (title: string, type: string) => {
     await updateOnceFormValue([], title, type)
     await updateRegister()
   }
+
   const closeMenu = (visible: boolean) => {
     if (!visible) {
       updateRegister()
     }
   }
+
   const SelectBefore = (props: { type: string; title: string; values: string; fn: (value: string, title: string, type: string) => void }) => {
     const { type, title, values, fn } = props
     return (
@@ -574,7 +624,7 @@ const RegisterDetailsAttributes = () => {
                 frontendCheckoutName(e.target.value, '寄存器', 'name', checkNameLength, checkNameFormat)
               }}
               onBlur={e => {
-                onBlurAsyncCheckoutNameFormValues(e.target.value, '寄存器', 'name', updateRegister, register, updateNodeName)
+                onBlurAsyncCheckoutNameFormValues(e.target.value, '寄存器', 'name', updateRegister, register)
               }}
               disabled={isCustomMadePeripheralOrboardPeripheralNums}
             />
@@ -643,7 +693,7 @@ const RegisterDetailsAttributes = () => {
           </Form.Item>
         </div>
 
-        {isKind ? (
+        {!isKind ? (
           <div style={{ padding: '8px 16px' }}>
             <span className={StyleSheet.spanTitle}>关联状态寄存器</span>
             <Form.Item label='外设'>
@@ -658,7 +708,7 @@ const RegisterDetailsAttributes = () => {
                   updateOnceFormValue(value as string, '寄存器', 'sr_peri_id')
                 }}
                 onClear={() => {
-                  clearValue('寄存器', 'sr_peri_id')
+                  clearValue('外设', 'sr_peri_id')
                 }}
                 value={sr_peri_id.value}
                 placeholder='请选择关联状态寄存器外设'
@@ -758,7 +808,6 @@ const TimerDetailsAttributes = () => {
   const { checkInterrupt, checkInterval, checkNameFormat, checkNameLength } = checkUtilFnStore()
 
   const { name, period, interrupt } = timer
-
   return (
     <div className={StyleSheet.rightFromCommonStyle} style={{ padding: '8px 16px' }}>
       <Form form={form} layout='vertical'>

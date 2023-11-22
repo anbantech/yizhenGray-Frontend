@@ -39,6 +39,12 @@ const NodeType = {
   5: 'targetNode'
 }
 
+const deleteMap = {
+  1: 'peripherals',
+  2: 'registers',
+  3: 'processors',
+  4: 'timers'
+}
 const NodeZindex = {
   1: 1002,
   2: 1001,
@@ -54,4 +60,26 @@ const AttributesType = {
   4: 'Timer',
   5: 'Target'
 }
-export { rightFormCheckMap, titleMap, checkAsyncMap, NodeType, NodeZindex, AttributesType }
+
+const errorCodeMapFn = (code: number, node: any) => {
+  switch (code) {
+    case 1005:
+      return `名称${node?.data?.name || node?.name}重复`
+    case 7020:
+      return '地址冲突'
+    case 7019:
+      return '端口冲突'
+    case 7018:
+      return '偏移地址越界'
+    case 7022:
+      return '偏移地址冲突'
+    case 7023:
+      return '地址大小不足'
+    default:
+      break
+  }
+}
+
+const titleFlagMap = { 1: ['删除自定义外设', '是否确认删除该自定义外设'], 2: ['删除寄存器', '是否确认删除该寄存器'] }
+
+export { rightFormCheckMap, titleMap, checkAsyncMap, NodeType, NodeZindex, AttributesType, errorCodeMapFn, titleFlagMap, deleteMap }
