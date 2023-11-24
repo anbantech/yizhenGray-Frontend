@@ -84,6 +84,10 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   const createOneExcitationFn = React.useCallback(async () => {
     setModalData({ ...modalData, spinning: true })
     const values = await form.validateFields()
+
+    const processorResult: any = nodeList.filter((Item: any) => {
+      return Item.node === values.simu_instance_id
+    })
     try {
       if (values) {
         const params = {
@@ -94,7 +98,8 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
           simu_instance_id: values.simu_instance_id,
           work_time: values.work_time,
           crash_num: values.crash_num,
-          sender_id: values.sender_id
+          sender_id: values.sender_id,
+          processor: processorResult[0].processor
         }
         if (taskInfo?.editTaskMode) {
           const result = await updateTask(taskInfo.data.id, params)
@@ -124,7 +129,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
       setModalData({ ...modalData, spinning: false })
       return error
     }
-  }, [cancenlForm, form, id, modalData, taskInfo?.data?.id, taskInfo?.editTaskMode])
+  }, [cancenlForm, form, id, modalData, nodeList, taskInfo.data?.id, taskInfo?.editTaskMode])
 
   const matchItem = React.useCallback(async () => {
     setModalData({ ...modalData, isModalVisible: true })
@@ -147,6 +152,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
   const getNode = async () => {
     try {
       const result = await getSimulateNode()
+
       if (result.data) {
         setNodeList(result.data)
       }
@@ -301,8 +307,8 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
                */
               nodeList?.map((rate: any) => {
                 return (
-                  <Option key={rate} disabled={rate.disabled} value={rate}>
-                    {rate}
+                  <Option key={rate.node} disabled={rate.disabled} value={rate.node}>
+                    {`${rate.node}(${rate.processor})`}
                   </Option>
                 )
               })

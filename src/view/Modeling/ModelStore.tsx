@@ -17,7 +17,7 @@ import {
 import { getPortList } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import { ModelDetails, NewModelListStore, PublicAttributesStoreParams, FormItemCheckStoreParams, CheckUtilFnStoreParams } from './ModleStore'
-import { AssembleDataHandlerFn, extractIdsFromTree } from './MapStore'
+import { AssembleDataHandlerFn } from './Store/MapStore'
 
 interface MyObject {
   object: string
@@ -115,7 +115,6 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
   timerNums: 0,
   handlerDataNums: 0,
   boardPeripheralNums: 0,
-  loading: true,
   // 全部外设数据参数获取
   AllPeripheral: {
     platform_id: 0,
@@ -132,7 +131,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
     tag: '0',
     key_word: '',
     page: 1,
-    page_size: 30,
+    page_size: 25,
     sort_field: 'create_time',
     sort_order: 'descend'
   },
@@ -141,7 +140,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
     platform_id: 0,
     key_word: '',
     page: 1,
-    page_size: 30,
+    page_size: 25,
     sort_field: 'create_time',
     sort_order: 'descend'
   },
@@ -150,7 +149,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
     platform_id: 0,
     key_word: '',
     page: 1,
-    page_size: 30,
+    page_size: 25,
     sort_field: 'create_time',
     sort_order: 'descend'
   },
@@ -159,6 +158,23 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
   processorList: [],
   boardLevelPeripheralsList: [],
   AllPeripheralList: [],
+  // setExpand: (val: any) => {
+  //   const idArray: [] | string[] = []
+  //   const extractIdsFromTree = (tree: any, resultArray: any[]) => {
+  //     // 遍历树结构
+  //     for (const node of tree) {
+  //       // 提取当前节点的id并添加到结果数组
+  //       resultArray.push(node.id)
+
+  //       // 如果当前节点有子节点，递归调用该函数
+  //       if (node.children && node.children.length > 0) {
+  //         extractIdsFromTree(node.children, resultArray)
+  //       }
+  //     }
+  //   }
+  //   extractIdsFromTree(val, idArray)
+  //   set({ showNode: idArray })
+  // },
 
   setParams: (tabs: string, val) => {
     const { processorListParams, timerListParams, cusomMadePeripheralListParams } = get()
@@ -183,13 +199,10 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
   setTabs: val => {
     set({ tabs: val })
   },
-  setLoading: val => {
-    set({ loading: val })
-  },
 
   setTags: val => {
     const { cusomMadePeripheralListParams } = get()
-    set({ cusomMadePeripheralListParams: { ...cusomMadePeripheralListParams, tag: val, page: 1, page_size: val === '1' ? 9999 : 30 } })
+    set({ cusomMadePeripheralListParams: { ...cusomMadePeripheralListParams, tag: val, page: 1, page_size: 10 } })
   },
 
   setHasMore: (val: boolean) => {
@@ -203,12 +216,15 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
     if (!val) {
       setTags('0')
     }
+    if (['', undefined].includes(val)) {
+      // setExpand([])
+    }
     switch (tabs) {
       case 'customMadePeripheral':
-        set({ cusomMadePeripheralListParams: { ...cusomMadePeripheralListParams, key_word: val, tag: '0' } })
+        set({ cusomMadePeripheralListParams: { ...cusomMadePeripheralListParams, key_word: val } })
         break
       case 'boardLevelPeripherals':
-        set({ cusomMadePeripheralListParams: { ...cusomMadePeripheralListParams, key_word: val, tag: '0' } })
+        set({ cusomMadePeripheralListParams: { ...cusomMadePeripheralListParams, key_word: val } })
         break
       case 'dataHandlerNotReferenced':
         set({ processorListParams: { ...processorListParams, key_word: val } })
@@ -223,51 +239,40 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
   },
 
   getCustomMadePeripheralStore: async (id: number) => {
-    const { cusomMadePeripheralListParams, setLoading } = get()
+    const { cusomMadePeripheralListParams } = get()
     try {
       const params = { ...cusomMadePeripheralListParams, platform_id: id }
       const res = await getCustomMadePeripheralList(params)
       if (res.data) {
-        if (['2', '3'].includes(params.tag)) {
-          const result = AssembleDataHandlerFn(res.data.results, params.tag)
-          setLoading(false)
-          set({ expandNodeArray: extractIdsFromTree([...result]) })
-          return set({ customMadePeripheralList: [...result] })
-        }
-        set({ expandNodeArray: extractIdsFromTree([...res.data.results]) })
         set({ customMadePeripheralList: [...res.data.results] })
       }
-      setLoading(false)
+      if (!['', undefined].includes(cusomMadePeripheralListParams.key_word) && cusomMadePeripheralListParams.tag === '0') {
+        //
+      }
       return res
     } catch (error) {
-      setLoading(false)
       throwErrorMessage(error, { 1006: '参数错误' })
       return error
     }
   },
   getBoardCustomMadePeripheralStore: async (id: number) => {
-    const { cusomMadePeripheralListParams, setLoading } = get()
+    const { cusomMadePeripheralListParams } = get()
     try {
       const params = { ...cusomMadePeripheralListParams, platform_id: id, variety: '1' }
       const res = await getCustomMadePeripheralList(params)
       // 2 寄存器  3 数据处理器
       if (res.data) {
-        if (['2', '3'].includes(params.tag)) {
-          const result = AssembleDataHandlerFn(res.data.results, params.tag)
-          setLoading(false)
-          const allIds: string[] = []
-          result.forEach(peripheral => {
-            allIds.push(...extractIdsFromTree(peripheral))
-          })
-          set({ expandNodeArray: allIds })
-          return set({ boardLevelPeripheralsList: [...result] })
+        if (params.tag === '3') {
+          const [endArray, idArray] = AssembleDataHandlerFn(res.data.results)
+
+          set({ boardLevelPeripheralsList: [...endArray], expandNodeArray: idArray })
         }
-        set({ boardLevelPeripheralsList: res.data.results })
       }
-      setLoading(false)
+      if (!['', undefined].includes(cusomMadePeripheralListParams.key_word) && cusomMadePeripheralListParams.tag === '0') {
+        // setExpand(res.data.results)
+      }
       return res
     } catch (error) {
-      setLoading(false)
       throwErrorMessage(error, { 1006: '参数错误' })
       return error
     }
@@ -360,15 +365,12 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
   },
   baseKeyWordAndTagsGetList: (val: string, id: number) => {
     // 根据val获取对应的数据
-    const { setLoading, getProcessorListStore, getCustomMadePeripheralStore, getTimeListStore, getBoardCustomMadePeripheralStore } = get()
-
+    const { getProcessorListStore, getCustomMadePeripheralStore, getTimeListStore, getBoardCustomMadePeripheralStore } = get()
     switch (val) {
       case 'customMadePeripheral':
-        setLoading(true)
         getCustomMadePeripheralStore(id)
         break
       case 'boardLevelPeripherals':
-        setLoading(true)
         getBoardCustomMadePeripheralStore(id)
         break
       case 'dataHandlerNotReferenced':
@@ -414,28 +416,13 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
     set({
       keyWord: '',
       hasMoreData: true, // 共用
-      expandNodeArray: [],
-      customMadePeripheralList: [],
-      timerList: [],
-      processorList: [],
-      boardLevelPeripheralsList: [],
-      AllPeripheralList: [],
-      AllPeripheral: {
-        platform_id: 0,
-        tag: '1',
-        key_word: '',
-        page: 1,
-        page_size: 3000,
-        sort_field: 'create_time',
-        sort_order: 'descend'
-      },
       cusomMadePeripheralListParams: {
         variety: '0',
         platform_id: 0,
         tag: '0',
         key_word: '',
         page: 1,
-        page_size: 30,
+        page_size: 20,
         sort_field: 'create_time',
         sort_order: 'descend'
       },
@@ -443,7 +430,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
         platform_id: 0,
         key_word: '',
         page: 1,
-        page_size: 30,
+        page_size: 20,
         sort_field: 'create_time',
         sort_order: 'descend'
       },
@@ -451,7 +438,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
         platform_id: 0,
         key_word: '',
         page: 1,
-        page_size: 30,
+        page_size: 20,
         sort_field: 'create_time',
         sort_order: 'descend'
       }
@@ -707,43 +694,6 @@ const checkUtilFnStore = create<CheckUtilFnStoreParams>(() => ({
     const checkoutResult = Number(val) >= 0 && Number(val) <= 255
     return checkoutResult
   }
-  // asyncCheckUtil: (val, title, type, id, params) => {
-  //   const param = {
-  //     object: titleMap[title as keyof typeof titleMap],
-  //     platform_id: id,
-  //     [type]: val
-  //   }
-  //   const base_address = {
-  //     object: titleMap[title as keyof typeof titleMap],
-  //     platform_id: id,
-  //     [type]: val,
-  //     address_length: params.address_length?.value
-  //   }
-
-  //   const address_length = {
-  //     object: titleMap[title as keyof typeof titleMap],
-  //     platform_id: id,
-  //     [type]: val,
-  //     base_address: params.base_address?.value
-  //   }
-
-  //   const relative_address = {
-  //     object: titleMap[title as keyof typeof titleMap],
-  //     platform_id: id,
-  //     [type]: val,
-  //     relative_address: params.relative_address?.value
-  //   }
-
-  //   const paramsData =
-  //     type === 'address_length'
-  //       ? { ...address_length }
-  //       : type === 'base_address'
-  //       ? { ...base_address }
-  //       : type === 'relative_address'
-  //       ? { ...relative_address }
-  //       : param
-  //   return validatorParams(paramsData)
-  // }
 }))
 
 export { checkUtilFnStore, formItemParamsCheckStore, useNewModelingStore, publicAttributes, useLeftModelDetailsStore }

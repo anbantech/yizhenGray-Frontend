@@ -3,9 +3,9 @@ import { Handle, NodeProps, Position } from 'reactflow'
 import { IconMinus } from '@anban/iconfonts'
 import classNames from 'classnames'
 import styles from '../model.less'
-import MiddleStore from '../Store/ModelMiddleStore/MiddleStore'
+import { MiddleStore } from '../Store/ModelMiddleStore/MiddleStore'
 import ContextMenu from './Menus'
-import { RightDetailsAttributesStore } from '../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
+import { RightDetailsAttributesStore } from '../Store/ModeleRightListStore/RightListStoreList'
 
 function CustomTargetNode(Node: NodeProps) {
   const { expandNodeTree, getChildernNums } = MiddleStore()
@@ -44,6 +44,7 @@ function CustomTargetNode(Node: NodeProps) {
     e.preventDefault()
     e.stopPropagation()
   }, [])
+
   return (
     <>
       <div className={style}>

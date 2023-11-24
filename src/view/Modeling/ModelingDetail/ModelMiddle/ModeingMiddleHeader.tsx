@@ -9,8 +9,8 @@ import StyleSheet from './modelMiddle.less'
 
 import { checkUtilFnStore, formItemParamsCheckStore, publicAttributes, useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
-import MiddleStore from '../../Store/ModelMiddleStore/MiddleStore'
-import { RightDetailsAttributesStore } from '../../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
+import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
+import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
 
 type TabsSelect = {
   tabs: string
@@ -224,7 +224,7 @@ const PeripheralsForm = () => {
             onChange={e => {
               updateFormValue('desc', e.target.value, '描述', null, 'success')
             }}
-            placeholder='请添加针对项目的相关描述'
+            placeholder='请添加针对外设的相关描述'
             autoSize={{ minRows: 2, maxRows: 3 }}
             showCount={{
               formatter({ count }) {
@@ -308,7 +308,7 @@ const DataHandlerForm = () => {
   const [form] = Form.useForm()
   const { optionalParameters, onChange } = formItemParamsCheckStore()
   const { name, port } = optionalParameters
-  const { portList } = publicAttributes()
+  const portList = publicAttributes(state => state.portList)
   const { checkNameFormat, checkNameLength } = checkUtilFnStore()
   return (
     <div className={StyleSheet.DataHandlerFormBody}>

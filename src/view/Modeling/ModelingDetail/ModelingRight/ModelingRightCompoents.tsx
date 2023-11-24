@@ -1,13 +1,13 @@
 import { Checkbox, Form, Input, Select, Tag } from 'antd'
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo } from 'react'
 import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import StyleSheet from './ModelingRight.less'
 import { checkUtilFnStore, publicAttributes, useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { valueParams, valueParamsArray } from '../../Store/ModleStore'
-import { RightListStore, RightDetailsAttributesStore } from '../../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
-import MiddleStore from '../../Store/ModelMiddleStore/MiddleStore'
+import { RightListStore, RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
+import { MiddleStore, getAll } from '../../Store/ModelMiddleStore/MiddleStore'
 
 const { Option } = Select
 
@@ -38,7 +38,7 @@ const isFinish = [
   { label: 'True', value: true }
 ]
 
-export const { saveCanvasAndUpdateNodeName } = MiddleStore.getState()
+export const { saveCanvasAndUpdateNodeName, upDateLeftExpandArrayFn, baseOnUpdateNodeAndEdge } = MiddleStore.getState()
 
 // 更新名称 左侧列表更新
 export const { getModelListDetails } = useLeftModelDetailsStore.getState()
@@ -47,10 +47,10 @@ export const { getModelListDetails } = useLeftModelDetailsStore.getState()
 // 中断号,帧头,帧尾 做校验
 const ProcessorDetailsAttributes = () => {
   const [form] = Form.useForm()
-  const idRef = useRef<{ id: string | number }>({ id: '' })
   const processor = RightListStore(state => state.processor)
   const AllPeripheralList = useLeftModelDetailsStore(state => state.AllPeripheralList)
   const register = RightDetailsAttributesStore(state => state.register)
+  const platform_id = MiddleStore(state => state.platform_id)
 
   //  kind 0是状态  1非状态 非状态寄存器
   const notRegsiterList = useMemo(() => {
@@ -114,7 +114,7 @@ const ProcessorDetailsAttributes = () => {
   const { portList } = publicAttributes()
   const ALGORITHM = getSystemConstantsStore(state => state.ALGORITHM)
   const { checkoutProcessor, updateOnceFormValue, updateProcessor, frontendCheckoutName, onBlurAsyncCheckoutNameFormValues } = RightListStore()
-  const { getPeripheralAttributes } = RightDetailsAttributesStore()
+  // const { getPeripheralAttributes } = RightDetailsAttributesStore()
   const { checkInterrupt, checkHex, checkNameLength, checkNameFormat } = checkUtilFnStore()
   const DropdownRender = React.useCallback(
     (props: { title: string; type: string }) => {
@@ -169,29 +169,19 @@ const ProcessorDetailsAttributes = () => {
     }
   }
 
-  const clearValue = React.useCallback(
-    async (title: string, type: string) => {
-      if (type === 'register_id') {
-        await updateOnceFormValue('', title, type)
-      } else {
-        await updateOnceFormValue([], title, type)
-      }
-      await updateProcessor()
-    },
-    [updateOnceFormValue, updateProcessor]
-  )
+  const clearValue = React.useCallback(() => {
+    updateProcessor()
+  }, [updateProcessor])
 
   // 获取非状态寄存器
   const closeMenuAndGetRegisterList = React.useCallback(
     async (visible: boolean) => {
       if (!visible) {
         updateProcessor()
-        const ids = idRef.current.id
-        getPeripheralAttributes(ids as number, 'rightList')
-        idRef.current = { id: '' }
       }
+      if (platform_id && visible) getAll(+platform_id)
     },
-    [getPeripheralAttributes, updateProcessor]
+    [platform_id, updateProcessor]
   )
 
   return (
@@ -210,6 +200,7 @@ const ProcessorDetailsAttributes = () => {
               }}
             />
           </Form.Item>
+
           <Form.Item label='端口'>
             <Select
               value={processor.port.value as string}
@@ -281,7 +272,8 @@ const ProcessorDetailsAttributes = () => {
                 closeMenu(visible)
               }}
               onClear={() => {
-                clearValue('数据处理器', 'length_member')
+                updateOnceFormValue([], '数据处理器', 'length_member')
+                clearValue()
               }}
               mode='tags'
               dropdownRender={() => <DropdownRender title='数据处理器' type='length_member' />}
@@ -302,7 +294,8 @@ const ProcessorDetailsAttributes = () => {
                 updateOnceFormValue(value, '数据处理器', 'algorithm')
               }}
               onClear={() => {
-                clearValue('数据处理器', 'algorithm')
+                updateOnceFormValue([], '数据处理器', 'algorithm')
+                clearValue()
               }}
             >
               {ALGORITHM?.map((rate: any) => {
@@ -317,7 +310,8 @@ const ProcessorDetailsAttributes = () => {
           <Form.Item label='校验子项'>
             <Select
               onClear={() => {
-                clearValue('数据处理器', 'checksum_member')
+                updateOnceFormValue([], '数据处理器', 'checksum_member')
+                clearValue()
               }}
               showSearch={Boolean(0)}
               allowClear
@@ -337,7 +331,8 @@ const ProcessorDetailsAttributes = () => {
               showSearch={Boolean(0)}
               allowClear
               onClear={() => {
-                clearValue('数据处理器', 'framing_member')
+                updateOnceFormValue([], '数据处理器', 'framing_member')
+                clearValue()
               }}
               value={framing_memberValue}
               onDropdownVisibleChange={visible => {
@@ -359,11 +354,13 @@ const ProcessorDetailsAttributes = () => {
               showSearch={Boolean(0)}
               allowClear
               onChange={value => {
-                idRef.current.id = value
+                updateOnceFormValue('', '数据处理器', 'register_id')
                 updateOnceFormValue(value as string, '数据处理器', 'peripheral_id')
               }}
               onClear={() => {
-                clearValue('数据处理器', 'peripheral_id')
+                updateOnceFormValue('', '数据处理器', 'peripheral_id')
+                updateOnceFormValue('', '数据处理器', 'register_id')
+                clearValue()
               }}
               onDropdownVisibleChange={visible => {
                 closeMenuAndGetRegisterList(visible)
@@ -380,12 +377,14 @@ const ProcessorDetailsAttributes = () => {
           </Form.Item>
           <Form.Item label='寄存器'>
             <Select
+              value={processor.register_id.value}
               disabled={!resgiedDisabled}
               onClear={() => {
-                clearValue('数据处理器', 'register_id')
+                updateOnceFormValue('', '数据处理器', 'register_id')
+                clearValue()
               }}
               onChange={value => {
-                updateOnceFormValue(value, '数据处理器', 'register_id')
+                updateOnceFormValue(value as string, '数据处理器', 'register_id')
               }}
               onDropdownVisibleChange={visible => {
                 closeMenu(visible)

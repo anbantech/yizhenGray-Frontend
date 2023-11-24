@@ -2,15 +2,19 @@ import { useRequest } from 'ahooks-v2'
 import { message, Radio } from 'antd'
 import * as React from 'react'
 import { useLocation } from 'react-router'
+
 import SearchInput from 'Src/components/Input/searchInput/searchInput'
 import { useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { LoactionState } from './ModelingLeftIndex'
+
 import StyleSheet from './modelLeft.less'
+import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
 
 function ModelingInputMemo() {
   const tabs = useLeftModelDetailsStore(state => state.tabs)
   const platformsId = (useLocation() as LoactionState).state?.id
   const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
+  const upDateLeftExpandArrayFn = MiddleStore(state => state.upDateLeftExpandArrayFn)
   const { setKeyWord, setTags, baseKeyWordAndTagsGetList, clearKeyWord } = useLeftModelDetailsStore()
   const cusomMadePeripheralListParams = useLeftModelDetailsStore(state => state.cusomMadePeripheralListParams)
   const ref = React.useRef<any>()
@@ -20,12 +24,15 @@ function ModelingInputMemo() {
         setTags(val)
       }
       if (type === 'key_words') {
+        if (!val) {
+          upDateLeftExpandArrayFn([])
+        }
         setKeyWord(val, tabs)
       }
       const res = await baseKeyWordAndTagsGetList(tabs, platformsIdmemo)
       return res
     },
-    [setTags, setKeyWord, tabs, baseKeyWordAndTagsGetList, platformsIdmemo]
+    [baseKeyWordAndTagsGetList, tabs, platformsIdmemo, setTags, setKeyWord, upDateLeftExpandArrayFn]
   )
   const { run } = useRequest(updateParams, {
     debounceInterval: 20,

@@ -3,15 +3,15 @@ import { Handle, NodeProps, Position } from 'reactflow'
 import { IconMinus, IconYifuRegister } from '@anban/iconfonts'
 import classNames from 'classnames'
 import styles from '../model.less'
-import MiddleStore from '../Store/ModelMiddleStore/MiddleStore'
+import { MiddleStore } from '../Store/ModelMiddleStore/MiddleStore'
 import ContextMenu from './Menus'
-import { RightDetailsAttributesStore } from '../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
+import { RightDetailsAttributesStore } from '../Store/ModeleRightListStore/RightListStoreList'
 
 function CustomRegisterNode(Node: NodeProps) {
-  const { expandNodeTree } = MiddleStore()
+  const { expandNodeTree, getChildernNums } = MiddleStore()
   const menuStatusObj = MiddleStore(state => state.menuStatusObj)
   const focusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
-
+  const nodes = MiddleStore(state => state.nodes)
   const foucusStatus = React.useMemo(() => {
     return focusNodeId === Node.data.id
   }, [focusNodeId, Node])
@@ -34,9 +34,10 @@ function CustomRegisterNode(Node: NodeProps) {
     return isExpand
   }, [Node])
 
-  const nums = React.useMemo(() => {
-    return Node.data.nums
-  }, [Node])
+  const NodeNums = React.useMemo(() => {
+    return getChildernNums(Node.id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nodes.length])
 
   const style = classNames(
     { [styles.hasErrorRegisterNode]: hasError },
@@ -54,14 +55,14 @@ function CustomRegisterNode(Node: NodeProps) {
           <span className={styles.labelName}> {Node.data.label}</span>
         </div>
       </div>
-      {nums > 0 ? (
+      {NodeNums !== 0 ? (
         <>
           <div className={!expand ? styles.handleNums : styles.handleNumsExpand} role='time' onClick={showNode}>
-            {!expand ? <span>{Node.data.nums}</span> : <IconMinus />}
+            {!expand ? <span>{NodeNums}</span> : <IconMinus />}
           </div>
         </>
       ) : null}
-      {isOpen && <ContextMenu flag={Node.data.flag} Node={Node} />}
+      {isOpen && !Node.data.builtIn && <ContextMenu flag={Node.data.flag} Node={Node} />}
     </>
   )
 }

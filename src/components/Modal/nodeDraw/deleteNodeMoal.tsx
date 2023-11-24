@@ -4,7 +4,7 @@ import { Modal, Button, message } from 'antd'
 
 import styles from 'Src/components/Modal/newModalOrFixModal/modelingModal.less'
 import { deleteConrolsFn } from 'Src/services/api/modelApi'
-import MiddleStore from 'Src/view/Modeling/Store/ModelMiddleStore/MiddleStore'
+
 import { deleteMap } from 'Src/view/Modeling/Store/MapStore'
 
 interface ModelProps {
@@ -87,7 +87,7 @@ function DeleteNodeModal(props: ModelProps) {
         >
           取消
         </Button>,
-        <Button className={styles.btn_create} key='submit' type='primary' onClick={asyncDeleteControlsFn}>
+        <Button className={styles.btn_create} key='submit' type='primary' onClick={asyncDeleteControlsFn} loading={loading}>
           删除
         </Button>
       ]}

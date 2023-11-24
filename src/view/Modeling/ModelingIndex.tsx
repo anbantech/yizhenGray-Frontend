@@ -16,7 +16,7 @@ import PaginationsAge from 'Src/components/Pagination/Pagina'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { throwErrorMessage } from 'Src/util/common'
 import { useHistory } from 'react-router'
-import { RightDetailsAttributesStore } from './Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
+import { RightDetailsAttributesStore } from './Store/ModeleRightListStore/RightListStoreList'
 
 const customizeRender = () => <DefaultValueTips content='暂无外设建模' />
 
@@ -37,6 +37,7 @@ function ModelingIndex() {
   const total = useNewModelingStore(state => state.total)
 
   const rightAttrubutesMap = RightDetailsAttributesStore(state => state.rightAttrubutesMap)
+
   // 关键字搜索
   const updateParams = useCallback(
     (value: string) => {
@@ -44,6 +45,7 @@ function ModelingIndex() {
     },
     [setKeyWords]
   )
+
   // 新建建模任务
   const creatModalOrFixModal = useCallback(val => {
     setVisible(val)
@@ -142,9 +144,10 @@ function ModelingIndex() {
           <Tooltip title={row.name} placement='bottomLeft' overlayClassName={styles.overlay}>
             <span
               className={styles.tableProjectName}
-              role='time'
+              role='button'
+              tabIndex={0}
               onClick={() => {
-                // jumpTask(row)
+                jumpModelingDetails(row.id, row.name)
               }}
             >
               {row.name}
@@ -215,6 +218,7 @@ function ModelingIndex() {
       }
     }
   ]
+
   return (
     <div className={styles.AnBan_main}>
       <div className={styles.AnBan_header}>

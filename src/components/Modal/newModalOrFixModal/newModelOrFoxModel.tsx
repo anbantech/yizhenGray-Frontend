@@ -4,7 +4,7 @@ import { Modal, Input, Form, Button, Select, message } from 'antd'
 import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
 import { throwErrorMessage } from 'Src/util/message'
 import { useNewModelingStore } from 'Src/view/Modeling/Store/ModelStore'
-import MiddleStore from 'Src/view/Modeling/Store/ModelMiddleStore/MiddleStore'
+import { MiddleStore } from 'Src/view/Modeling/Store/ModelMiddleStore/MiddleStore'
 import styles from './modelingModal.less'
 
 interface FormInstance {

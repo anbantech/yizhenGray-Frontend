@@ -3,16 +3,15 @@ import { Handle, NodeProps, Position } from 'reactflow'
 import { IconMinus, IconPeripheral } from '@anban/iconfonts'
 import classNames from 'classnames'
 import styles from '../model.less'
-import MiddleStore from '../Store/ModelMiddleStore/MiddleStore'
+import { MiddleStore } from '../Store/ModelMiddleStore/MiddleStore'
 import ContextMenu from './Menus'
-import { RightDetailsAttributesStore } from '../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
+import { RightDetailsAttributesStore } from '../Store/ModeleRightListStore/RightListStoreList'
 
 function PherilarlCustomNode(Node: NodeProps) {
   const { expandNodeTree, getChildernNums } = MiddleStore()
   const nodes = MiddleStore(state => state.nodes)
   const menuStatusObj = MiddleStore(state => state.menuStatusObj)
   const focusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
-
   const foucusStatus = React.useMemo(() => {
     return focusNodeId === Node.data.id
   }, [focusNodeId, Node])
@@ -66,7 +65,7 @@ function PherilarlCustomNode(Node: NodeProps) {
           </div>
         </>
       ) : null}
-      {isOpen && <ContextMenu flag={Node.data.flag} Node={Node} />}
+      {isOpen && !Node.data.builtIn && <ContextMenu flag={Node.data.flag} Node={Node} />}
     </div>
   )
 }
