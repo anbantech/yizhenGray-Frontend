@@ -7,7 +7,7 @@ import zhCN from 'antd/lib/locale/zh_CN'
 import delete_icon from 'Src/assets/image/icon_delete.svg'
 import inputStyle from 'Src/components/Input/searchInput/searchInput.less'
 import styles from 'Src/view/Project/project/project.less'
-import { publicAttributes, useNewModelingStore } from 'Src/view/Modeling/Store/ModelStore'
+import { useNewModelingStore } from 'Src/view/Modeling/Store/ModelStore'
 import ModelModal from 'Components/Modal/newModalOrFixModal/newModelOrFoxModel'
 import { getTargetDetails } from 'Src/services/api/modelApi'
 import { ConfigProvider, message, Table, Tooltip } from 'antd'
@@ -16,7 +16,7 @@ import PaginationsAge from 'Src/components/Pagination/Pagina'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import { throwErrorMessage } from 'Src/util/common'
 import { useHistory } from 'react-router'
-import { RightDetailsAttributesStore } from '../../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
+import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
 
 const customizeRender = () => <DefaultValueTips content='暂无外设建模' />
 
@@ -31,7 +31,7 @@ function ModelingIndex() {
   // 路由
   const history = useHistory()
   const { setPage, setKeyWords, initParams, getModelTargetList, modelList, deleteModelTarget, setModelId } = useNewModelingStore()
-  const { setPortList } = publicAttributes()
+
   const params = useNewModelingStore(state => state.params)
   const loading = useNewModelingStore(state => state.loading)
   const total = useNewModelingStore(state => state.total)
@@ -116,12 +116,6 @@ function ModelingIndex() {
     },
     [rightAttrubutesMap, history]
   )
-
-  // 获取端口
-  useEffect(() => {
-    setPortList()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   // Todo
   useEffect(() => {

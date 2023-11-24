@@ -1,13 +1,10 @@
-import { Tooltip, Tree, TreeDataNode } from 'antd'
+import { Skeleton, Tooltip, Tree } from 'antd'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { IconPeripheral, IconYifuRegister, IconDelete, IconCommon, IconClock, IconCloseCircleFill } from '@anban/iconfonts'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import styles from 'Src/view/Project/task/taskList/task.less'
-import { useLocation } from 'react-router'
+import { IconPeripheral, IconYifuRegister, IconDelete, IconCommon, IconClock, IconExclamationTriangleFill } from '@anban/iconfonts'
 import StyleSheet from './modelLeft.less'
 import { useLeftModelDetailsStore } from '../../Store/ModelStore'
-import { RightDetailsAttributesStore } from '../../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
-import MiddleStore from '../../Store/ModelMiddleStore/MiddleStore'
+import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
+import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
 import { errorCodeMapFn, titleFlagMap } from '../../Store/MapStore'
 
 interface LoactionState {
@@ -28,102 +25,6 @@ const Image = {
   3: <IconCommon style={{ width: '16px', height: '16px', color: '#CCCCCC' }} />,
   4: <IconClock style={{ width: '16px', height: '16px', color: '#CCCCCC' }} />
 }
-const { DirectoryTree, TreeNode } = Tree
-
-const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
-  const { listData, height } = props
-  const focusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
-  const tabs = useLeftModelDetailsStore(state => state.tabs)
-  const hasMoreData = useLeftModelDetailsStore(state => state.hasMoreData)
-  const setParams = useLeftModelDetailsStore(state => state.setParams)
-  const cusomMadePeripheralListParams = useLeftModelDetailsStore(state => state.cusomMadePeripheralListParams)
-  const processorListParams = useLeftModelDetailsStore(state => state.processorListParams)
-  const timerListParams = useLeftModelDetailsStore(state => state.timerListParams)
-  const baseKeyWordAndTagsGetList = useLeftModelDetailsStore(state => state.baseKeyWordAndTagsGetList)
-  const rightAttrubutesMap = RightDetailsAttributesStore(state => state.rightAttrubutesMap)
-
-  const platformsId = (useLocation() as LoactionState).state?.id
-  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
-  const map = {
-    customMadePeripheral: cusomMadePeripheralListParams,
-    boardLevelPeripherals: cusomMadePeripheralListParams,
-    dataHandlerNotReferenced: processorListParams,
-    time: timerListParams
-  }
-
-  const loadMoreData = React.useCallback(() => {
-    const data = map[tabs as keyof typeof map]
-    const newPage = data.page_size + 10
-    setParams(tabs, { page_size: newPage })
-    baseKeyWordAndTagsGetList(tabs, platformsIdmemo)
-  }, [map, tabs, setParams, baseKeyWordAndTagsGetList, platformsIdmemo])
-
-  const updataMidleAndRightUI = useCallback(
-    item => {
-      const { flag } = item
-      rightAttrubutesMap(AttributesType[flag as keyof typeof AttributesType], item.id)
-    },
-    [rightAttrubutesMap]
-  )
-
-  return (
-    <>
-      {listData?.length >= 1 && (
-        <InfiniteScroll
-          dataLength={listData.length}
-          next={loadMoreData}
-          hasMore={hasMoreData}
-          height={height}
-          style={{ overflowX: 'hidden' }}
-          loader={
-            <p style={{ textAlign: 'center', width: '216px' }}>
-              <span className={styles.listLine} />
-              <span className={styles.concentList}>内容已经加载完毕</span>
-            </p>
-          }
-          endMessage={
-            <p style={{ textAlign: 'center', width: '216px' }}>
-              <span className={styles.listLine} />
-              <span className={styles.concentList}>内容已经加载完毕</span>
-            </p>
-          }
-        >
-          {listData.map((item: any) => {
-            return (
-              <div
-                key={item.id}
-                className={String(item.id) === focusNodeId ? StyleSheet.activeTagItem : StyleSheet.tagItem}
-                style={{ paddingRight: '4px' }}
-              >
-                <div
-                  className={StyleSheet.leftTagItem}
-                  role='time'
-                  onClick={() => {
-                    updataMidleAndRightUI(item)
-                  }}
-                >
-                  {Image[item.flag as keyof typeof Image]}
-                  <div>
-                    {item?.error_code ? (
-                      <Tooltip title={errorCodeMapFn(item.error_code, item)} color='red' placement='right'>
-                        {' '}
-                        <IconCloseCircleFill style={{ color: 'red', paddingLeft: '2px' }} />
-                      </Tooltip>
-                    ) : null}
-                    <span style={{ paddingLeft: '6px', color: item.error_code !== 0 ? 'red' : '' }}>{item.name}</span>
-                  </div>
-                </div>
-                <IconDelete style={{ color: '#cccccc' }} className={StyleSheet.icon} />
-              </div>
-            )
-          })}
-        </InfiniteScroll>
-      )}
-    </>
-  )
-}
-
-const OthersCompoents = React.memo(OthersCompoentsMemo)
 
 const TreeDataMemo = (props: { listData: any; height: number }) => {
   const { listData, height } = props
@@ -136,9 +37,15 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
   const leftListExpandArray = MiddleStore(state => state.leftListExpandArray)
   // 控制树展开节点函数
   const upDateLeftExpandArrayFn = MiddleStore(state => state.upDateLeftExpandArrayFn)
+  // 树节点 筛选结果
+  const expandNodeArray = useLeftModelDetailsStore(state => state.expandNodeArray)
 
+  const loading = useLeftModelDetailsStore(state => state.loading)
   // 删除
   const deleteTreeNode = MiddleStore(state => state.deleteTreeNode)
+  const leftListExpandArrayMemo = useMemo(() => {
+    return [...leftListExpandArray]
+  }, [leftListExpandArray])
   const onExpand = React.useCallback(
     (newExpandedKeys: React.Key[]) => {
       const res = [...newExpandedKeys]
@@ -150,8 +57,8 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
 
   const updataMidleAndRightUI = useCallback(
     (selectedKeys, e) => {
-      const { flag } = e.node.data
-      rightAttrubutesMap(AttributesType[flag as keyof typeof AttributesType], selectedKeys[0], selectIdExpandDrawTree)
+      const { flag, id } = e.node
+      rightAttrubutesMap(AttributesType[flag as keyof typeof AttributesType], String(id), selectIdExpandDrawTree)
     },
     [rightAttrubutesMap, selectIdExpandDrawTree]
   )
@@ -159,44 +66,49 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
   const deleteTreeNodeHandle = React.useCallback(
     (e, node) => {
       e.stopPropagation()
-      const nodeArray = [{ id: String(node.data.id), data: { flag: node.data.flag } }]
+      const nodeArray = [{ id: String(node.id), data: { flag: node.flag } }]
       const nodeInfo = {
         node: nodeArray,
-        title: titleFlagMap[node.data.flag as keyof typeof titleFlagMap][0],
-        content: `${titleFlagMap[node.data.flag as keyof typeof titleFlagMap][1]}${node.data.name}`
+        title: titleFlagMap[node.flag as keyof typeof titleFlagMap][0],
+        content: `${titleFlagMap[node.flag as keyof typeof titleFlagMap][1]}${node.name}`
       }
       deleteTreeNode(true, nodeInfo)
     },
     [deleteTreeNode]
   )
-
+  useEffect(() => {
+    if (expandNodeArray) {
+      upDateLeftExpandArrayFn([...expandNodeArray])
+    }
+  }, [expandNodeArray, upDateLeftExpandArrayFn])
   return (
     <>
-      {listData?.length >= 1 && (
-        <DirectoryTree
+      <Skeleton loading={loading}>
+        <Tree
+          treeData={listData}
           className={StyleSheet.treeItem}
           showIcon
           onExpand={onExpand}
           onSelect={updataMidleAndRightUI}
           autoExpandParent={autoExpandParent}
           selectedKeys={[`${foucusNodeId}`]}
-          expandedKeys={leftListExpandArray}
+          expandedKeys={[...leftListExpandArrayMemo]}
           height={height}
           titleRender={(node: any) => {
             return (
               <div className={StyleSheet.node} style={{ paddingRight: '4px' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  {node.data.error_code ? (
+                  <span style={{ paddingLeft: '6px' }}>{node.title}</span>
+                  {node?.error_code ? (
                     <div>
-                      <Tooltip title={errorCodeMapFn(node.data.error_code, node)} placement='right' color='red'>
+                      <Tooltip title={errorCodeMapFn(node.error_code, node)} placement='right' color='red'>
                         {' '}
-                        <IconCloseCircleFill style={{ color: 'red', paddingLeft: '2px' }} />
+                        <IconExclamationTriangleFill style={{ width: '16px', height: '16px', color: 'red', paddingLeft: '2px', paddingTop: 3 }} />
                       </Tooltip>
                     </div>
                   ) : null}
-                  <span style={{ paddingLeft: '6px' }}>{node.title}</span>
                 </div>
-                {node.data.tabs !== 'boardLevelPeripherals' ? (
+                {node.tabs !== 'boardLevelPeripherals' ? (
                   <IconDelete
                     style={{ color: '#cccccc' }}
                     className={StyleSheet.icon}
@@ -208,44 +120,8 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
               </div>
             )
           }}
-        >
-          {listData.map(
-            (node: {
-              error_code: number
-              title: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined
-              key: React.Key | undefined
-              icon: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined
-              children: any[]
-            }) => (
-              <TreeNode
-                title={node.title}
-                data={node as any}
-                key={node.key}
-                icon={node.icon}
-                className={node.children?.length === 0 ? `${StyleSheet.nodeIcon}` : ''}
-              >
-                {node.children?.map(
-                  (childNode: {
-                    title:
-                      | boolean
-                      | React.ReactChild
-                      | React.ReactFragment
-                      | React.ReactPortal
-                      | ((data: TreeDataNode) => React.ReactNode)
-                      | null
-                      | undefined
-                    key: React.Key | undefined
-                    error_code: number
-                    icon: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined
-                  }) => (
-                    <TreeNode data={childNode as any} title={childNode.title} key={childNode.key} icon={childNode.icon} />
-                  )
-                )}
-              </TreeNode>
-            )
-          )}
-        </DirectoryTree>
-      )}
+        />
+      </Skeleton>
     </>
   )
 }
@@ -262,7 +138,7 @@ function ModelingLeftTabList() {
   const timerList = useLeftModelDetailsStore(state => state.timerList)
   const processorList = useLeftModelDetailsStore(state => state.processorList)
   const boardLevelPeripheralsList = useLeftModelDetailsStore(state => state.boardLevelPeripheralsList)
-  const cusomMadePeripheralListParams = useLeftModelDetailsStore(state => state.cusomMadePeripheralListParams)
+  const expandNodeArray = useLeftModelDetailsStore(state => state.expandNodeArray)
 
   const map = {
     customMadePeripheral: customMadePeripheralList,
@@ -270,9 +146,6 @@ function ModelingLeftTabList() {
     dataHandlerNotReferenced: processorList,
     time: timerList
   }
-  const tagsMemo = useMemo(() => {
-    return cusomMadePeripheralListParams.tag
-  }, [cusomMadePeripheralListParams.tag])
 
   const treeData = (defaultData: any[]) => {
     const loop = (data: any) => {
@@ -282,10 +155,9 @@ function ModelingLeftTabList() {
             {item.name}
           </span>
         )
-        const key = item.id
+        const key = String(item.id)
         const { id, flag, error_code, name } = item
         const icon = Image[item.flag as keyof typeof Image]
-
         if (item.children) {
           return {
             title,
@@ -316,14 +188,10 @@ function ModelingLeftTabList() {
 
   const listData = React.useMemo(() => {
     const data = map[tabs as keyof typeof map]
+
     return treeData(data)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, tabs])
-
-  const normalListData = React.useMemo(() => {
-    const data = map[tabs as keyof typeof map]
-    return data
-  }, [map, tabs])
+  }, [map, tabs, expandNodeArray])
 
   const updatePage = React.useCallback(() => {
     setParams(tabs, { page_size: 50 })
@@ -352,11 +220,7 @@ function ModelingLeftTabList() {
 
   return (
     <div style={{ padding: '0 12px' }} ref={layoutRef} className={StyleSheet.concentBody}>
-      {['1', '2', '3'].includes(tagsMemo) || ['dataHandlerNotReferenced', 'time'].includes(tabs) ? (
-        <OthersCompoents listData={normalListData} height={height} />
-      ) : (
-        <>{listData?.length >= 1 && <TreeData listData={listData} height={height} />}</>
-      )}
+      <TreeData listData={listData} height={height} />
     </div>
   )
 }

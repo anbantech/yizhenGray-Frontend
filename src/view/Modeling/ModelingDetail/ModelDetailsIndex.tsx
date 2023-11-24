@@ -3,15 +3,17 @@ import ModelingLeftIndex from './ModelLeft/ModelingLeftIndex'
 import MiddleHeaderBar from './ModelMiddle/ModeingMiddleHeader'
 import StyleSheet from './ModelDetaiIsIndex.less'
 import ModelingRight from './ModelingRight/ModelingRightIndex'
+
 import FlowWrapper from './ModelMiddle/ModelingCanvas'
 import { formItemParamsCheckStore } from '../Store/ModelStore'
-import MiddleStore from '../Store/ModelMiddleStore/MiddleStore'
-import { RightListStore } from '../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
+import { MiddleStore } from '../Store/ModelMiddleStore/MiddleStore'
+import { RightListStore } from '../Store/ModeleRightListStore/RightListStoreList'
 
 function ModelDetailsIndex() {
   const unSetTabs = formItemParamsCheckStore(state => state.unSetTabs)
   const clearNodeAndEdge = MiddleStore(state => state.clearNodeAndEdge)
   const initRightListStore = RightListStore(state => state.initRightListStore)
+
   React.useEffect(() => {
     return () => {
       unSetTabs()

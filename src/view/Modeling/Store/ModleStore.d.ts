@@ -63,7 +63,9 @@ export interface NewModelListStore {
 
 export interface ModelDetails {
   tabs: string
+  loading: boolean
   keyWord: string
+  expandNodeArray: string[]
   cusomMadePeripheralListParams: CustomMadePeripheralListParams
   processorListParams: ProcessorListParams
   timerListParams: TimerListParams
@@ -84,6 +86,7 @@ export interface ModelDetails {
     desc: string
   }
   fn: () => void
+  setLoading: (val: boolean) => void
   openSiderMenu: (tabs: string) => void
   clearKeyWord: (val: () => void) => any
   initStore: () => void
@@ -110,7 +113,7 @@ export interface RightDetailsAttributesStoreParams {
   rightArrributes: any
   register: any
   updateRegister: (val: any) => void
-  setTypeDetailsAttributes: (val: string, id: number) => void
+  setTypeDetailsAttributes: (val: string, id: number | null) => void
   getTimerAttributes: (id: number) => void
   getDataHandlerAttributes: (id: number, fn?: (val: string | string[]) => void) => void
   getPeripheralAttributes: (id: number, type?: string, fn1?: any) => void
@@ -135,6 +138,77 @@ type valueParamsArray = {
   value: string[]
   validateStatus?: '' | 'success' | 'error' | 'warning' | 'validating' | undefined
   errorMsg?: string | null
+}
+
+interface RFState {
+  platform_id: null | string
+  nodes: any
+  edges: any
+  menuStatusObj: { status: boolean; id: null | string }
+  changeView: boolean
+  canvasData: any
+  onNodesChange: OnNodesChange
+  onEdgesChange: OnEdgesChange
+  onConnect: OnConnect
+  leftListExpandArray: string[]
+  upDateLeftExpandArrayFn: (val: string[]) => void
+  setChangeView: (val: boolean) => void
+  setMenuStatus: (id: string) => void
+  setOpenMenu: () => void
+  getModelDetails: (id: number) => any
+  setNodes: (nodesValue: any) => void
+  setEdges: (edgesValue: Edge[]) => void
+  getSumNodeId: (nodeArray: Node[]) => string
+  upDateNodesAndEdges: (newNode: Node[], newEdge: Edge[]) => void
+  expandNode: (nodeId: string[]) => void
+  expandNodeTree: (nodeId: string) => void
+  addChildNode: (Node: NodeProps, parentId: string) => void
+  getChildernNums: (id: string) => number
+  onEdgeUpdate: any
+  baseOnUpdateNodeAndEdge: (preParentId, parentId, id, rightArrributesInfo) => void
+  createPeripheral: (
+    params: any,
+    fn: (val: number, tabs: string) => void,
+    id: number,
+    cancel: () => void,
+    fn2: (val: string, id: string) => void
+  ) => void
+  createRegister: (
+    params: any,
+    fn: (val: number, tabs: string) => void,
+    id: number,
+    cancel: () => void,
+    fn2: (val: string, id: string) => void
+  ) => void
+  createDataHandler: (
+    params: any,
+    fn: (val: number, tabs: string) => void,
+    id: number,
+    cancel: () => void,
+    fn2: (val: string, id: string) => void
+  ) => void
+  createTimer: (params: any, fn: (val: number, tabs: string) => void, id: number, cancel: () => void, fn2: (val: string, id: string) => void) => void
+  createElement: (
+    tabs: string,
+    params: any,
+    fn: (val: number, tabs: string) => void,
+    id: number,
+    cancel: () => void,
+    fn2: (val: string, id: string) => void
+  ) => void
+  initTreeToNodeAndToEedg: (initData: any) => void
+  zindexNode: (nodeId: string, zIndex: number) => void
+  nodeTemplate: (node: NodeProps, parentId: string) => any
+  edgeTemplate: (node: NodeProps, source: string, target: string) => any
+  saveCanvas: (nodes: any[], edges: Edge[], id: string) => void
+  clearNodeAndEdge: () => void
+  updateNodeName: (id: string, typeAndValue?: Record<string, any>) => void
+  saveCanvasAndUpdateNodeName: (id: string, platform_id?: string, typeAndValue?: Record<string, any>) => void
+  selectIdExpandDrawTree: (id: string | string[]) => void
+  deleteTreeNode: (visibility: boolean, node?: any) => void
+  deleteInfo: { node: any; visibility: boolean }
+  expandTreeArray: string[]
+  sumData: any
 }
 
 interface optionalParametersParams {
@@ -212,10 +286,11 @@ export interface RightFormCheckStoreParams {
     sr_peri_id: valueParams
   }
 
-  updateTimerFormValue: (title: string, type: string, value: any) => void
+  clickLeftListAndFoucsIdAndRightAtturbuites: (title: string, type: string, value: any) => void
   frontendCheckoutName: (val: string, title: string, type: string, fn1: (val: string) => boolean, fn2: (val: string) => boolean) => void
   checkoutBase_addreeAndLength: (val: string, title: string, type: string, fn1: (val: string) => boolean) => void
   onBlurAsyncCheckoutNameFormValues: (val: string, title: name, type: string, fn1: () => void, params?: any) => void
+
   updateTimer: () => void
   updateProcessor: () => void
   updatePeripheral: () => void

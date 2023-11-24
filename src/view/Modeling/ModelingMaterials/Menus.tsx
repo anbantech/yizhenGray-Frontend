@@ -3,7 +3,8 @@ import { IconPeripheral, IconYifuRegister, IconCommon, IconDelete } from '@anban
 import { NodeProps } from 'reactflow'
 import styles from '../model.less'
 import { formItemParamsCheckStore } from '../Store/ModelStore'
-import MiddleStore from '../Store/ModelMiddleStore/MiddleStore'
+import { MiddleStore } from '../Store/ModelMiddleStore/MiddleStore'
+import { titleFlagMap } from '../Store/MapStore'
 
 const Flag5 = () => {
   const setTabs = formItemParamsCheckStore(state => state.setTabs)
@@ -30,7 +31,6 @@ const Flag5 = () => {
 }
 
 const Flag1 = (Node: NodeProps) => {
-  const { data, id } = Node
   const setTabs = formItemParamsCheckStore(state => state.setTabs)
   const setOpenMenu = MiddleStore(state => state.setOpenMenu)
   const processor = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -43,7 +43,14 @@ const Flag1 = (Node: NodeProps) => {
   const createNodeInfoAndOpenModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation()
     e.preventDefault()
-    const nodeInfo = { name: data.name, id, title: '删除自定义外设', concent: `是否确认删除该自定义外设${data.label}` }
+
+    const nodeArray = [{ id: String(Node.data.id), data: { flag: Node.data.flag } }]
+    const nodeInfo = {
+      node: nodeArray,
+      title: titleFlagMap[Node.data.flag as keyof typeof titleFlagMap][0],
+      content: `${titleFlagMap[Node.data.flag as keyof typeof titleFlagMap][1]}${Node.data.label}`
+    }
+
     deleteTreeNode(true, nodeInfo)
   }
   return (
@@ -67,7 +74,6 @@ const Flag1 = (Node: NodeProps) => {
 }
 
 const Flag2 = (Node: NodeProps) => {
-  const { data, id } = Node
   const setTabs = formItemParamsCheckStore(state => state.setTabs)
   const setOpenMenu = MiddleStore(state => state.setOpenMenu)
   const deleteTreeNode = MiddleStore(state => state.deleteTreeNode)
@@ -81,7 +87,12 @@ const Flag2 = (Node: NodeProps) => {
   const createNodeInfoAndOpenModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation()
     e.preventDefault()
-    const nodeInfo = { name: data.name, id, title: '删除寄存器', concent: `是否确认删除该寄存器${data.label}` }
+    const nodeArray = [{ id: String(Node.data.id), data: { flag: Node.data.flag } }]
+    const nodeInfo = {
+      node: nodeArray,
+      title: titleFlagMap[Node.data.flag as keyof typeof titleFlagMap][0],
+      content: `${titleFlagMap[Node.data.flag as keyof typeof titleFlagMap][1]}${Node.data.label}`
+    }
     deleteTreeNode(true, nodeInfo)
   }
   return (
@@ -103,17 +114,39 @@ const Flag2 = (Node: NodeProps) => {
     </div>
   )
 }
+const Flag3 = (Node: NodeProps) => {
+  const deleteTreeNode = MiddleStore(state => state.deleteTreeNode)
+  const createNodeInfoAndOpenModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation()
+    e.preventDefault()
+    const nodeArray = [{ id: String(Node.data.id), data: { flag: Node.data.flag } }]
+    const nodeInfo = {
+      node: nodeArray,
+      title: titleFlagMap[Node.data.flag as keyof typeof titleFlagMap][0],
+      content: `${titleFlagMap[Node.data.flag as keyof typeof titleFlagMap][1]}${Node.data.label}`
+    }
+    deleteTreeNode(true, nodeInfo)
+  }
 
+  return (
+    <div className={styles.Flag5} role='time' onClick={createNodeInfoAndOpenModal}>
+      <IconCommon style={{ width: '16px', height: '16px', color: '#666', marginRight: '4px' }} />
+      <span>删除 </span>
+    </div>
+  )
+}
 const mapFlagCompoents = {
   5: Flag5,
   1: Flag1,
-  2: Flag2
+  2: Flag2,
+  3: Flag3
 }
 
 const mapFlagCompoentsStyle = {
   5: styles.contextMenu5,
   1: styles.contextMenu1,
-  2: styles.contextMenu2
+  2: styles.contextMenu2,
+  3: styles.contextMenu5
 }
 export default function ContextMenu(props: { flag: number; Node: NodeProps }) {
   const { flag, Node } = props

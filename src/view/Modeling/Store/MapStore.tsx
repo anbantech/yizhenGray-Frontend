@@ -80,6 +80,70 @@ const errorCodeMapFn = (code: number, node: any) => {
   }
 }
 
-const titleFlagMap = { 1: ['删除自定义外设', '是否确认删除该自定义外设'], 2: ['删除寄存器', '是否确认删除该寄存器'] }
+const titleFlagMap = {
+  1: ['删除自定义外设', '是否确认删除该自定义外设'],
+  2: ['删除寄存器', '是否确认删除该寄存器'],
+  3: ['删除数据处理器', '是否确认删除寄存器']
+}
 
-export { rightFormCheckMap, titleMap, checkAsyncMap, NodeType, NodeZindex, AttributesType, errorCodeMapFn, titleFlagMap, deleteMap }
+// 后端接口返回数据结构不统一 , 无法确定ts接口定义 返回
+const AssembleDataHandlerFn = (data: any, tag: string) => {
+  if (tag === '3') {
+    const treeMap = new Map()
+    data.forEach((element: any) => {
+      const { register } = element
+      register.forEach((item: any) => {
+        if (item.peripheral) {
+          const existingNode = treeMap.get(item.peripheral.id)
+          const newNode = { ...item, children: [{ ...element }] }
+          if (existingNode) {
+            existingNode.children.push(newNode)
+          } else {
+            treeMap.set(item.peripheral.id, { ...item.peripheral, children: [newNode] })
+          }
+        }
+      })
+    })
+    const result = [...treeMap.values()]
+    return result
+  }
+  if (tag === '2') {
+    const treeMap = new Map()
+    data.forEach((item: any) => {
+      const { peripheral } = item
+      const existingNode = treeMap.get(peripheral.id)
+      if (existingNode) {
+        existingNode.children.push(item)
+      } else {
+        treeMap.set(peripheral.id, { ...peripheral, children: [item] })
+      }
+    })
+    const result = [...treeMap.values()]
+    return result
+  }
+  return []
+}
+
+const extractIdsFromTree = (node: any): string[] => {
+  let ids: string[] = [String(node.id)]
+  if (node.children && node.children.length > 0) {
+    node.children.forEach((child: any) => {
+      ids = [...ids, ...extractIdsFromTree(child)]
+    })
+  }
+  return ids
+}
+
+export {
+  rightFormCheckMap,
+  extractIdsFromTree,
+  titleMap,
+  checkAsyncMap,
+  NodeType,
+  NodeZindex,
+  AttributesType,
+  errorCodeMapFn,
+  AssembleDataHandlerFn,
+  titleFlagMap,
+  deleteMap
+}

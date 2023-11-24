@@ -71,8 +71,7 @@ function useExpandCollapse(
       })),
       edges: edges.filter(edge => root.find(h => h.id === edge.source) && root.find(h => h.id === edge.target))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nodes, edges, layoutNodes, treeWidth, treeHeight, nodes.length, edges.length])
+  }, [nodes, edges, layoutNodes, treeWidth, treeHeight])
 }
 
 export default useExpandCollapse

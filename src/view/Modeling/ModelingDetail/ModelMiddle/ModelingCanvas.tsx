@@ -1,28 +1,28 @@
 import React, { useCallback, useEffect } from 'react'
+import { useEventListener } from 'ahooks-v2'
 import ReactFlow, { ReactFlowProvider, Background, Node, Edge, NodeTypes, SelectionMode, BackgroundVariant, Controls, getOutgoers } from 'reactflow'
 import { useLocation } from 'react-router'
 import DeleteNodeModal from 'Src/components/Modal/nodeDraw/deleteNodeMoal'
 import useAnimatedNodes from '../../ModelingMaterials/useAnimatedNodes'
 import useExpandCollapse from '../../ModelingMaterials/useExpandCollapse'
+
 import 'reactflow/dist/style.css'
 import styles from '../../model.less'
 import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
 
-import { RightDetailsAttributesStore } from '../../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
+import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
 import CustomNode from '../../ModelingMaterials/CustomNode'
 import CustomTargetNode from '../../ModelingMaterials/CustomTargetNode'
 
 import PherilarlCustomNode from '../../ModelingMaterials/PherilarlCustomNode'
 
 import CustomRegisterNode from '../../ModelingMaterials/CustomRegisterNode'
-import MiddleStore from '../../Store/ModelMiddleStore/MiddleStore'
+import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
 
 import { AttributesType } from '../../Store/MapStore'
-import { useLeftModelDetailsStore } from '../../Store/ModelStore'
+import { publicAttributes, useLeftModelDetailsStore } from '../../Store/ModelStore'
 
 import { getModelListDetails } from '../ModelingRight/ModelingRightCompoents'
-import { useEventListener } from 'ahooks-v2'
-import { Tabs } from 'antd'
 
 const proOptions = { account: 'paid-pro', hideAttribution: true }
 
@@ -46,6 +46,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 120, treeHeight = 250,
   const rightAttrubutesMap = RightDetailsAttributesStore(state => state.rightAttrubutesMap)
   const platform_id = MiddleStore(state => state.platform_id)
   const setTabs = useLeftModelDetailsStore(state => state.setTabs)
+  const setTypeDetailsAttributes = RightDetailsAttributesStore(state => state.setTypeDetailsAttributes)
   const onEdgesChange = MiddleStore(state => state.onEdgesChange)
   const onNodesChange = MiddleStore(state => state.onNodesChange)
   const upDateNodesAndEdges = MiddleStore(state => state.upDateNodesAndEdges)
@@ -54,7 +55,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 120, treeHeight = 250,
   const upDateLeftExpandArrayFn = MiddleStore(state => state.upDateLeftExpandArrayFn)
   const deleteInfo = MiddleStore(state => state.deleteInfo)
   const saveCanvas = MiddleStore(state => state.saveCanvas)
-  const Tabs = useLeftModelDetailsStore(state => state.Tabs)
+  const tabs = useLeftModelDetailsStore(state => state.tabs)
   const deleteTreeNode = MiddleStore(state => state.deleteTreeNode)
   const ref = React.useRef(null)
 
@@ -109,11 +110,12 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 120, treeHeight = 250,
         return !deleteNodeArray.some(data => data.id === item.target)
       })
       saveCanvas([...node], [...edge], platform_id as string)
-      if (platform_id) getModelListDetails(+platform_id, Tabs)
+      if (platform_id) getModelListDetails(+platform_id, tabs)
       upDateNodesAndEdges([...node], [...edge])
+      setTypeDetailsAttributes('Target', null)
       deleteTreeNode(false, { node: [] })
     },
-    [Tabs, deleteTreeNode, edgeStore, getDeleteNodeAndAdge, nodeStore, platform_id, saveCanvas, upDateNodesAndEdges]
+    [getDeleteNodeAndAdge, nodeStore, edgeStore, saveCanvas, platform_id, tabs, upDateNodesAndEdges, setTypeDetailsAttributes, deleteTreeNode]
   )
   const getParentNode = React.useCallback(
     (node: Node<any, string | undefined>) => {
@@ -155,21 +157,6 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 120, treeHeight = 250,
     [setOpenMenu, rightAttrubutesMap, getParentNode, upDateLeftExpandArrayFn, setTabs, platform_id]
   )
 
-  // const foucsNode = (nodeId: string) => {
-  //   // 获取点击的节点的位置
-  //   const node = animatedNodes.find(element => element.id === nodeId)
-  //   // 聚焦到指定的节点位置
-  //   if (node) {
-  //     fitView({ duration: 500, nodes: [{ id: nodeId }] })
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   if (focusNodeId) {
-  //     // foucsNode(String(focusNodeId))
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [focusNodeId])
   const keyDownHandler = React.useCallback(
     (ev: KeyboardEvent) => {
       if (ev.code !== 'Delete') return
@@ -231,10 +218,6 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 120, treeHeight = 250,
           onSelectionChange={onSelectionChange}
           minZoom={-Infinity}
           maxZoom={Infinity}
-          // onSelectionEnd={e => {
-          //   selectEndNode(e)
-          // }}
-          // zoomActivationKeyCode=
         >
           <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
           <Controls />
@@ -253,8 +236,10 @@ function ReactFlowWrapper() {
   const getModelDetails = MiddleStore(state => state.getModelDetails)
   const nodeStore = MiddleStore(state => state.nodes)
   const edgeStore = MiddleStore(state => state.edges)
+  const setPortList = publicAttributes(state => state.setPortList)
   useEffect(() => {
     if (platformsIdmemo) {
+      setPortList()
       getModelDetails(platformsIdmemo)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

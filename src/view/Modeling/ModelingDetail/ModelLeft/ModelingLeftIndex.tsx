@@ -5,7 +5,8 @@ import ModelingInput from './ModelingInput'
 import ModelingLeftTabList from './ModelingLeftTabList'
 import ModelLeftHeaderLeftMemo from './ModelItemTabsComponents'
 import StyleSheet from './modelLeft.less'
-import { RightListStore } from '../../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
+import { RightListStore } from '../../Store/ModeleRightListStore/RightListStoreList'
+import TImerAndDataHand from './TImerAndDataHand'
 
 export interface LoactionState {
   state: Record<any, any>
@@ -33,7 +34,7 @@ function ModelingLeftIndex() {
     <div className={StyleSheet.ModelingLeftBody}>
       <ModelLeftHeaderLeftMemo />
       <ModelingInput />
-      <ModelingLeftTabList />
+      {['customMadePeripheral', 'boardLevelPeripherals'].includes(tabs) ? <ModelingLeftTabList /> : <TImerAndDataHand />}
     </div>
   )
 }

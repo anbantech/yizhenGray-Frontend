@@ -8,7 +8,7 @@ import {
   TimerDetailsAttributesMemo
 } from './ModelingRightCompoents'
 import StyleSheet from './ModelingRight.less'
-import { RightListStore, RightDetailsAttributesStore } from '../../Store/ModelMiddleStore/ModeleRightListStore/RightListStoreList'
+import { RightListStore, RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
 
 const Header = () => {
   return (
@@ -41,10 +41,10 @@ function ModelingRight() {
   const rightArrributes = RightDetailsAttributesStore(state => state.rightArrributes)
   //  目标机详情
   const targetDetails = useLeftModelDetailsStore(state => state.targetDetails)
-  const { updateTimerFormValue } = RightListStore()
+  const { clickLeftListAndFoucsIdAndRightAtturbuites } = RightListStore()
   React.useEffect(() => {
     if (typeAttributes !== 'Target') {
-      updateTimerFormValue(FormType[typeAttributes as keyof typeof FormType], typeAttributes, rightArrributes)
+      clickLeftListAndFoucsIdAndRightAtturbuites(FormType[typeAttributes as keyof typeof FormType], typeAttributes, rightArrributes)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rightArrributes, typeAttributes])

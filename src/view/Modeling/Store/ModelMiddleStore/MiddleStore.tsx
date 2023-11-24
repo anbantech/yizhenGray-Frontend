@@ -3,97 +3,19 @@ import { throwErrorMessage } from 'Src/util/message'
 import crc32 from 'crc-32'
 // import pako from 'pako'
 
-import {
-  Connection,
-  Edge,
-  EdgeChange,
-  Node,
-  NodeChange,
-  addEdge,
-  OnNodesChange,
-  OnEdgesChange,
-  OnConnect,
-  applyNodeChanges,
-  applyEdgeChanges
-} from 'reactflow'
+import { Connection, Edge, EdgeChange, Node, NodeChange, addEdge, applyNodeChanges, applyEdgeChanges, updateEdge } from 'reactflow'
 
 import { create } from 'zustand'
 
 import { AttributesType, NodeType, NodeZindex } from '../MapStore'
 import { useLeftModelDetailsStore } from '../ModelStore'
+import { RFState } from '../ModleStore'
 
 // 切换tabs 并且拉数据
 const setTabsFn = useLeftModelDetailsStore.getState().setTabs
-const pako = require('pako')
+export const getAll = useLeftModelDetailsStore.getState().getAllPeripheral
 
-type RFState = {
-  platform_id: null | string
-  nodes: any
-  edges: any
-  menuStatusObj: { status: boolean; id: null | string }
-  changeView: boolean
-  canvasData: any
-  onNodesChange: OnNodesChange
-  onEdgesChange: OnEdgesChange
-  onConnect: OnConnect
-  leftListExpandArray: string[]
-  upDateLeftExpandArrayFn: (val: string[]) => void
-  setChangeView: (val: boolean) => void
-  setMenuStatus: (id: string) => void
-  setOpenMenu: () => void
-  getModelDetails: (id: number) => any
-  setNodes: (nodesValue: any) => void
-  setEdges: (edgesValue: Edge[]) => void
-  getSumNodeId: (nodeArray: Node[]) => string
-  upDateNodesAndEdges: (newNode: Node[], newEdge: Edge[]) => void
-  expandNode: (nodeId: string[]) => void
-  expandNodeTree: (nodeId: string) => void
-  addChildNode: (Node: NodeProps, parentId: string) => void
-  getChildernNums: (id: string) => number
-  createPeripheral: (
-    params: any,
-    fn: (val: number, tabs: string) => void,
-    id: number,
-    cancel: () => void,
-    fn2: (val: string, id: string) => void
-  ) => void
-  createRegister: (
-    params: any,
-    fn: (val: number, tabs: string) => void,
-    id: number,
-    cancel: () => void,
-    fn2: (val: string, id: string) => void
-  ) => void
-  createDataHandler: (
-    params: any,
-    fn: (val: number, tabs: string) => void,
-    id: number,
-    cancel: () => void,
-    fn2: (val: string, id: string) => void
-  ) => void
-  createTimer: (params: any, fn: (val: number, tabs: string) => void, id: number, cancel: () => void, fn2: (val: string, id: string) => void) => void
-  createElement: (
-    tabs: string,
-    params: any,
-    fn: (val: number, tabs: string) => void,
-    id: number,
-    cancel: () => void,
-    fn2: (val: string, id: string) => void
-  ) => void
-  initTreeToNodeAndToEedg: (initData: any) => void
-  zindexNode: (nodeId: string, zIndex: number) => void
-  nodeTemplate: (node: NodeProps, parentId: string) => any
-  edgeTemplate: (node: NodeProps, source: string, target: string) => any
-  saveCanvas: (nodes: any[], edges: Edge[], id: string) => void
-  clearNodeAndEdge: () => void
-  updateNodeName: (id: string, typeAndValue?: Record<string, any>) => void
-  saveCanvasAndUpdateNodeName: (id: string, platform_id?: string, typeAndValue?: Record<string, any>) => void
-  selectIdExpandDrawTree: (id: string | string[]) => void
-  deleteTreeNode: (visibility: boolean, node?: any) => void
-  deleteInfo: { node: any; visibility: boolean }
-  expandTreeArray: string[]
-  sumData: any
-}
+const pako = require('pako')
 
 type NodeProps = {
   name: string
@@ -102,6 +24,7 @@ type NodeProps = {
   error_code: number
   children?: NodeProps[]
 }
+
 //  1. 外设 2. 寄存器 3.数据处理器 4.定时器，5 建模任务
 const MiddleStore = create<RFState>((set, get) => ({
   platform_id: null,
@@ -233,7 +156,6 @@ const MiddleStore = create<RFState>((set, get) => ({
 
   addChildNode: (node: NodeProps, parentId: string) => {
     const { saveCanvas, platform_id, expandNode } = get()
-    expandNode([String(parentId)])
     const newNode = {
       data: {
         label: node.name,
@@ -266,6 +188,7 @@ const MiddleStore = create<RFState>((set, get) => ({
       nodes: [...get().nodes, newNode],
       edges: [...get().edges, newEdge]
     })
+    expandNode([String(parentId)])
   },
 
   onNodesChange: (changes: NodeChange[]) => {
@@ -287,6 +210,11 @@ const MiddleStore = create<RFState>((set, get) => ({
     })
   },
 
+  onEdgeUpdate: (oldEdge: Edge, newConnection: Connection) => {
+    set({
+      edges: updateEdge(oldEdge, newConnection, get().edges)
+    })
+  },
   // 创建目标机时初始化节点和边
   initTreeToNodeAndToEedg: initData => {
     const { saveCanvas } = get()
@@ -367,6 +295,7 @@ const MiddleStore = create<RFState>((set, get) => ({
 
     try {
       const res = await saveCanvasAsync(params)
+      if (res.code === 0) return
     } catch (error) {
       throwErrorMessage(error)
     }
@@ -411,8 +340,52 @@ const MiddleStore = create<RFState>((set, get) => ({
       throwErrorMessage(error)
     }
   },
-  // fn : 更新侧边栏 拉数据  cancel  关闭弹窗  addChildNode 画布中添加节点
+  // 根据id更新节点和边
+  baseOnUpdateNodeAndEdge: (preParentId, parentId, id, rightArrributesInfo) => {
+    const { nodes, edges, expandNode, saveCanvas, platform_id } = get()
 
+    const hasSameParentNode = nodes.some((item: Node) => item.data.parentId === String(parentId))
+    if (hasSameParentNode) return
+    const hasThisNode = nodes.some((item: Node) => item.id === String(id))
+    const newNode = {
+      data: {
+        label: `${rightArrributesInfo}`,
+        id: String(id),
+        parentId: String(parentId),
+        builtIn: false,
+        expanded: false,
+        error_code: 0,
+        position: { x: 0, y: 0 },
+        draggable: false,
+        flag: 3
+      },
+      type: NodeType[3 as keyof typeof NodeType],
+      id: String(id),
+      position: { x: 0, y: 0 },
+      draggable: false,
+      zIndex: NodeZindex[3 as keyof typeof NodeZindex]
+    }
+
+    const newEdge = {
+      flag: 3,
+      id: `${preParentId}->${id}`,
+      source: String(parentId),
+      target: String(id),
+      type: 'smoothstep'
+    }
+
+    if (!hasSameParentNode && !hasThisNode) {
+      set({ nodes: [...get().nodes, newNode], edges: [...get().edges, newEdge] })
+    } else if (hasThisNode) {
+      const updatedNodes = nodes.filter((item: any) => item.id !== String(id))
+      const updatedEdges = edges.filter((item: any) => item.target !== String(id))
+      set({ nodes: [...updatedNodes, newNode], edges: [...updatedEdges, newEdge] })
+    }
+    expandNode([String(preParentId), String(parentId), String(id)])
+    saveCanvas([...get().nodes], [...get().edges], platform_id as string)
+  },
+
+  // fn : 更新侧边栏 拉数据  cancel  关闭弹窗  addChildNode 画布中添加节点
   createRegister: async (params, fn, id, cancel, fn2) => {
     setTabsFn('customMadePeripheral')
     const { addChildNode, upDateLeftExpandArrayFn } = get()
@@ -506,9 +479,10 @@ const MiddleStore = create<RFState>((set, get) => ({
       const NodeTreeArray = [String(platform_id), String(id)]
       expandNode([...NodeTreeArray])
     } else {
-      expandNode([...(platform_id as string)])
+      expandNode([String(platform_id)])
     }
   },
+
   // 删除节点
   deleteTreeNode: (visibility, node) => {
     const { deleteInfo } = get()
@@ -520,4 +494,4 @@ const MiddleStore = create<RFState>((set, get) => ({
   }
 }))
 
-export default MiddleStore
+export { MiddleStore }

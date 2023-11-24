@@ -12,9 +12,12 @@ import {
   updateRegister,
   updateTimer
 } from 'Src/services/api/modelApi'
-import { RightDetailsAttributesStoreParams, RightFormCheckStoreParams } from '../../ModleStore'
-import { rightFormCheckMap, titleMap } from '../../MapStore'
-import { getModelListDetails, saveCanvasAndUpdateNodeName } from '../../../ModelingDetail/ModelingRight/ModelingRightCompoents'
+import { RightDetailsAttributesStoreParams, RightFormCheckStoreParams } from '../ModleStore'
+import { rightFormCheckMap, titleMap } from '../MapStore'
+import { saveCanvasAndUpdateNodeName, baseOnUpdateNodeAndEdge } from '../../ModelingDetail/ModelingRight/ModelingRightCompoents'
+import { useLeftModelDetailsStore } from '../ModelStore'
+
+const getListFn = useLeftModelDetailsStore.getState().getList
 
 // 右侧属性
 const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((set, get) => ({
@@ -46,6 +49,9 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
       const res = await getDataHandlerDetails(id)
       if (res.data) {
         set({ rightArrributes: res.data })
+        if (Object.keys(res.data.register)?.length !== 0) {
+          set({ register: [res.data.register] })
+        }
       }
     } catch (error) {
       // todo Error
@@ -53,7 +59,7 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
     }
   },
 
-  // 获取外设属性
+  // 获取外设属性  fn1 展开节点
   getPeripheralAttributes: async (id, type, fn1) => {
     try {
       const res = await getPeripheralsDetails(id)
@@ -64,6 +70,7 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
         } else {
           set({ rightArrributes: res.data })
         }
+
         if (fn1) {
           fn1()
         }
@@ -139,10 +146,7 @@ const updateRegisterFn = RightDetailsAttributesStore.getState().updateRegister
 const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
   // 目标机id
   platform_id: null,
-  //  更新目标机id
-  setPlatFormId: val => {
-    set({ platform_id: val })
-  },
+
   // 定时器表单数据
   timer: {
     id: null,
@@ -225,7 +229,10 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     sr_id: { value: '', validateStatus: '', errorMsg: '' },
     sr_peri_id: { value: '', validateStatus: '', errorMsg: '' }
   },
-
+  //  更新目标机id
+  setPlatFormId: val => {
+    set({ platform_id: val })
+  },
   messageInfoFn: (item, type, title, validateStatus, errorMsg, val) => {
     set(state =>
       produce(state, draft => {
@@ -284,7 +291,7 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
   },
 
   // 用户点击左侧列表,或者失焦更新表单数据
-  updateTimerFormValue: (title, type, value) => {
+  clickLeftListAndFoucsIdAndRightAtturbuites: (title, type, value) => {
     const item = titleMap[title as keyof typeof titleMap]
     const { id } = value
     if (value?.registers?.length > 0) {
@@ -386,12 +393,11 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
       interrupt: timer.interrupt.value
     }
     const res = await updateTimer(timer.id, params)
-    if (res.data) {
-      getModelListDetails(platform_id as number, 'time')
+    if (res.data && platform_id) {
+      getListFn('time', +platform_id)
     }
     // return res
   },
-
   // 更新数据处理器
   updateProcessor: async () => {
     const { processor, platform_id } = get()
@@ -407,11 +413,19 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
       checksum_member: processor.checksum_member.value,
       framing_member: processor.framing_member.value,
       peripheral_id: processor.peripheral_id.value,
-      register_id: processor.register_id.value
+      register_id: processor.register_id.value ? processor.register_id.value : null
     }
+
     const res = await updateDataHandler(processor.id, params)
-    if (res.data) {
-      getModelListDetails(platform_id as number, 'dataHandlerNotReferenced')
+
+    if (res.data && platform_id && processor.peripheral_id.value) {
+      getPeripheralAttributesFn(+processor.peripheral_id.value, 'rightList')
+      getListFn('dataHandlerNotReferenced', +platform_id)
+    }
+
+    if (processor.peripheral_id.value && processor.register_id.value) {
+      // 寄存器 ---> 数据处理器
+      baseOnUpdateNodeAndEdge(processor.peripheral_id.value, processor.register_id.value, processor.id, processor.name.value)
     }
   },
 
@@ -431,9 +445,9 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     }
 
     const res = await updatePeripherals(peripheral.id as string, params)
-    if (res.data) {
-      saveCanvasAndUpdateNodeName(String(res.data.id), platform_id as string, { label: res.data.name })
-      getModelListDetails(platform_id as number, 'customMadePeripheral')
+    if (res.data && platform_id) {
+      saveCanvasAndUpdateNodeName(String(res.data.id), platform_id as string, { label: res.data.name, error_code: res.data.error_code })
+      getListFn('customMadePeripheral', +platform_id)
     }
   },
 
@@ -464,9 +478,9 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     const paramsIsOrNot = register.kind.value === 0 ? additionalParamsTrue : additionalParamsFalse
     const paramsObject = { ...params, ...paramsIsOrNot }
     const res = await updateRegister(register.id, paramsObject)
-    if (res.data) {
-      saveCanvasAndUpdateNodeName(String(res.data.id), platform_id as string, { label: res.data.name })
-      getModelListDetails(platform_id as number, 'processor')
+    if (res.data && platform_id) {
+      saveCanvasAndUpdateNodeName(String(res.data.id), platform_id as string, { label: res.data.name, error_code: res.data.error_code })
+      getListFn('customMadePeripheral', +platform_id)
     }
   },
 
