@@ -1,16 +1,32 @@
 /* eslint-disable unicorn/prefer-query-selector */
 import React, { useMemo } from 'react'
-import { Button, Form, Input, Select } from 'antd'
+import { Button, Form, Input, Select, Tooltip, message } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
 import { IconPeripheral, IconYifuRegister, IconClock, IconCommon, IconDownload, IconFileText } from '@anban/iconfonts'
 import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
 import { useLocation } from 'react-router'
+import { downLoadScript, scriptGenerator } from 'Src/services/api/modelApi'
+import { throwErrorMessage } from 'Src/util/message'
+import { warn } from 'Src/util/common'
 import StyleSheet from './modelMiddle.less'
-
 import { checkUtilFnStore, formItemParamsCheckStore, publicAttributes, useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
 import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
 import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
+
+const browserDownload = {
+  ifHasDownloadAPI: 'download' in document.createElement('a'),
+  createFrontendDownloadAction(name: string, content: Blob) {
+    if ('download' in document.createElement('a')) {
+      const link = document.createElement('a')
+      link.download = `${name}`
+      link.href = URL.createObjectURL(content)
+      link.click()
+    } else {
+      warn(true, '您的浏览器不支持下载方法，请更新您的浏览器到最新版本')
+    }
+  }
+}
 
 type TabsSelect = {
   tabs: string
@@ -435,6 +451,7 @@ const HeaderBarMemo = () => {
   const tabsSelect = React.useMemo(() => tabs, [tabs])
   const unSelect = formItemParamsCheckStore(state => state.unSetTabs)
   const { initFormValue } = formItemParamsCheckStore()
+  const platform_id = MiddleStore(state => state.platform_id)
   const showOrHide = React.useCallback(
     (val: string) => {
       if (tabsSelect === val) {
@@ -447,6 +464,34 @@ const HeaderBarMemo = () => {
     },
     [initFormValue, setTabs, tabsSelect, unSelect]
   )
+
+  // 下载与生成函数
+  const downloadAndCreate = React.useCallback(
+    async (type: string) => {
+      try {
+        if (!platform_id) return
+        if (type === 'download') {
+          const res: any = await downLoadScript(platform_id)
+          // 目前下载3-4次服务器响应较长
+          if (res.code === 0) {
+            message.success('建模脚本下载成功')
+            browserDownload.createFrontendDownloadAction(decodeURIComponent(res.fileName), new Blob([res.data]))
+          }
+        } else {
+          const res: any = await scriptGenerator(platform_id)
+          if (res.code === 0) {
+            message.success('生成建模脚本成功')
+          }
+        }
+      } catch (error) {
+        if (error.code) {
+          throwErrorMessage(error, { 7025: '还未生成建模脚本,请生成建模脚本之后继续下载' })
+        }
+      }
+    },
+    [platform_id]
+  )
+
   return (
     <div className={StyleSheet.middleLeftHeaderBar}>
       <div className={StyleSheet.middleLeftHeaderBarLeft}>
@@ -471,10 +516,37 @@ const HeaderBarMemo = () => {
       <div className={StyleSheet.middleLeftHeaderBarRight}>
         {RightHeaderBarArray.map(item => {
           return (
-            <div key={item.type} role='time' onClick={() => {}} className={StyleSheet.middleLeftHeaderBarItem} style={item.style}>
-              {item.icon}
-              <span style={{ paddingLeft: '3px' }}>{item.name}</span>
-            </div>
+            <>
+              {item.type === 'download' ? (
+                <Tooltip title='要获取最新脚本，请先点击“生成脚本”，再下载'>
+                  <div
+                    key={item.type}
+                    role='time'
+                    onClick={() => {
+                      downloadAndCreate(item.type)
+                    }}
+                    className={StyleSheet.middleLeftHeaderBarItem}
+                    style={item.style}
+                  >
+                    {item.icon}
+                    <span style={{ paddingLeft: '3px' }}>{item.name}</span>
+                  </div>
+                </Tooltip>
+              ) : (
+                <div
+                  key={item.type}
+                  role='time'
+                  onClick={() => {
+                    downloadAndCreate(item.type)
+                  }}
+                  className={StyleSheet.middleLeftHeaderBarItem}
+                  style={item.style}
+                >
+                  {item.icon}
+                  <span style={{ paddingLeft: '3px' }}>{item.name}</span>
+                </div>
+              )}
+            </>
           )
         })}
       </div>

@@ -143,8 +143,19 @@ function deleteConrolsFn(id: any) {
   return request.delete('/api/v1.0/models/controls/remove', { params: id })
 }
 
+// 生成脚本
+function scriptGenerator(id: number | string) {
+  return request.get(`/api/v1.0/models/script/generate/${id}`)
+}
+
+// 下载脚本
+function downLoadScript(id: number | string) {
+  return request.get(`/api/v1.0/models/script/download/${id}`)
+}
 export {
   deleteConrolsFn,
+  scriptGenerator,
+  downLoadScript,
   updateDataHandler,
   getDataHandlerDetails,
   saveCanvasAsync,

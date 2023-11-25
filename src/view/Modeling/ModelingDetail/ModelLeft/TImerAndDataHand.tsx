@@ -7,8 +7,9 @@ import { useLocation } from 'react-router'
 import StyleSheet from './modelLeft.less'
 import { useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
-import { errorCodeMapFn } from '../../Store/MapStore'
+import { errorCodeMapFn, titleFlagMap } from '../../Store/MapStore'
 import { LoactionState } from './ModelingLeftIndex'
+import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
 
 const AttributesType = {
   1: 'Peripheral',
@@ -34,6 +35,8 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
   const baseKeyWordAndTagsGetList = useLeftModelDetailsStore(state => state.baseKeyWordAndTagsGetList)
   const rightAttrubutesMap = RightDetailsAttributesStore(state => state.rightAttrubutesMap)
 
+  // 删除
+  const deleteTreeNode = MiddleStore(state => state.deleteTreeNode)
   const platformsId = (useLocation() as LoactionState).state?.id
   const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
   const map = {
@@ -54,6 +57,20 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
       rightAttrubutesMap(AttributesType[flag as keyof typeof AttributesType], item.id)
     },
     [rightAttrubutesMap]
+  )
+
+  const deleteTreeNodeHandle = React.useCallback(
+    (e, node) => {
+      e.stopPropagation()
+      const nodeArray = [{ id: String(node.id), data: { flag: node.flag } }]
+      const nodeInfo = {
+        node: nodeArray,
+        title: titleFlagMap[node.flag as keyof typeof titleFlagMap][0],
+        content: `${titleFlagMap[node.flag as keyof typeof titleFlagMap][1]}${node.name}`
+      }
+      deleteTreeNode(true, nodeInfo)
+    },
+    [deleteTreeNode]
   )
 
   return (
@@ -101,7 +118,13 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
                 ) : null}
               </div>
             </div>
-            <IconDelete style={{ color: '#cccccc' }} className={StyleSheet.icon} />
+            <IconDelete
+              style={{ color: '#cccccc' }}
+              className={StyleSheet.icon}
+              onClick={e => {
+                deleteTreeNodeHandle(e, item)
+              }}
+            />
           </div>
         )
       })}
