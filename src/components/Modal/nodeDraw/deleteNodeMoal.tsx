@@ -59,6 +59,9 @@ function DeleteNodeModal(props: ModelProps) {
       if (response.code === 0) {
         setLoading(false)
         message.success('删除成功')
+        if (node.node.flag !== 4) {
+          deleteTreeNode(false)
+        }
         onNodesDelete(node.node)
       }
     } catch {
