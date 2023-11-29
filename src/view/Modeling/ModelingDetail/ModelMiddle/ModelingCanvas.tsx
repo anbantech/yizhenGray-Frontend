@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react'
 import { useEventListener } from 'ahooks-v2'
-import ReactFlow, { ReactFlowProvider, Background, Node, Edge, NodeTypes, SelectionMode, BackgroundVariant, Controls, getOutgoers } from 'reactflow'
+import ReactFlow, { ReactFlowProvider, Background, Node, Edge, NodeTypes, SelectionMode, BackgroundVariant, getOutgoers } from 'reactflow'
 import { useLocation } from 'react-router'
 import DeleteNodeModal from 'Src/components/Modal/nodeDraw/deleteNodeMoal'
 import useAnimatedNodes from '../../ModelingMaterials/useAnimatedNodes'
@@ -23,6 +23,7 @@ import { AttributesType } from '../../Store/MapStore'
 import { publicAttributes, useLeftModelDetailsStore } from '../../Store/ModelStore'
 
 import { getModelListDetails } from '../ModelingRight/ModelingRightCompoents'
+import CustomControls from '../../ModelingMaterials/CustomControls'
 
 const proOptions = { account: 'paid-pro', hideAttribution: true }
 
@@ -42,8 +43,8 @@ type ExpandCollapseExampleProps = {
 }
 const panOnDrag = [1, 2]
 
-function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 120, treeHeight = 250, animationDuration = 300 }: ExpandCollapseExampleProps) {
-  const rightAttrubutesMap = RightDetailsAttributesStore(state => state.rightAttrubutesMap)
+function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 80, treeHeight = 250, animationDuration = 100 }: ExpandCollapseExampleProps) {
+  const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
   const platform_id = MiddleStore(state => state.platform_id)
   const setTabs = useLeftModelDetailsStore(state => state.setTabs)
   const setTypeDetailsAttributes = RightDetailsAttributesStore(state => state.setTypeDetailsAttributes)
@@ -86,6 +87,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 120, treeHeight = 250,
   const deleteNodeRef = React.useRef<any[]>([])
   const getDeleteNodeAndAdge = React.useCallback(
     (deleted: any) => {
+      // eslint-disable-next-line array-callback-return
       deleted.reduce((acc: any, node: Node<any, string | undefined>) => {
         const outgoers = getOutgoers(node, nodeStore, edgeStore)
         if (outgoers.length > 0) {
@@ -113,10 +115,11 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 120, treeHeight = 250,
       if (platform_id) getModelListDetails(+platform_id, tabs)
       upDateNodesAndEdges([...node], [...edge])
       setTypeDetailsAttributes('Target', null)
-      deleteTreeNode(false, { node: [] })
+      return deleteTreeNode(false, { node: [] })
     },
     [getDeleteNodeAndAdge, nodeStore, edgeStore, saveCanvas, platform_id, tabs, upDateNodesAndEdges, setTypeDetailsAttributes, deleteTreeNode]
   )
+
   const getParentNode = React.useCallback(
     (node: Node<any, string | undefined>) => {
       const selectId: string[] = []
@@ -145,16 +148,21 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 120, treeHeight = 250,
       event.stopPropagation()
       event.preventDefault()
       const { flag, id, builtIn } = node.data
-      if (builtIn && platform_id) {
-        setTabs('boardLevelPeripherals')
-        getModelListDetails(+platform_id, 'boardLevelPeripherals')
+      if (platform_id) {
+        if (flag === 1) {
+          setTabs(builtIn ? 'boardLevelPeripherals' : 'customMadePeripheral')
+          getModelListDetails(+platform_id, builtIn ? 'boardLevelPeripherals' : 'customMadePeripheral')
+        } else if (flag === 3) {
+          setTabs('dataHandlerNotReferenced')
+          getModelListDetails(+platform_id, 'dataHandlerNotReferenced')
+        }
       }
       setOpenMenu()
-      rightAttrubutesMap(AttributesType[flag as keyof typeof AttributesType], id)
+      rightAttributeMap(AttributesType[flag as keyof typeof AttributesType], id)
       const res = getParentNode(node)
       upDateLeftExpandArrayFn(res)
     },
-    [setOpenMenu, rightAttrubutesMap, getParentNode, upDateLeftExpandArrayFn, setTabs, platform_id]
+    [setOpenMenu, rightAttributeMap, getParentNode, upDateLeftExpandArrayFn, setTabs, platform_id]
   )
 
   const keyDownHandler = React.useCallback(
@@ -196,7 +204,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 120, treeHeight = 250,
     <div className={styles.container}>
       {animatedNodes && (
         <ReactFlow
-          fitView
+          fitView={Boolean(1)}
           ref={ref}
           deleteKeyCode={null}
           nodes={animatedNodes}
@@ -216,11 +224,11 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 120, treeHeight = 250,
           panOnDrag={panOnDrag}
           selectionMode={SelectionMode.Partial}
           onSelectionChange={onSelectionChange}
-          minZoom={-Infinity}
+          minZoom={0.1}
           maxZoom={Infinity}
         >
           <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
-          <Controls />
+          <CustomControls />
         </ReactFlow>
       )}
       {deleteInfo.visibility && (

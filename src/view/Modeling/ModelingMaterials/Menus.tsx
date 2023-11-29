@@ -33,12 +33,17 @@ const Flag5 = () => {
 const Flag1 = (Node: NodeProps) => {
   const setTabs = formItemParamsCheckStore(state => state.setTabs)
   const setOpenMenu = MiddleStore(state => state.setOpenMenu)
-  const processor = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.stopPropagation()
-    e.preventDefault()
-    setTabs('processor')
-    setOpenMenu()
-  }
+  const updateFormValue = formItemParamsCheckStore(state => state.updateFormValue)
+  const processor = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      e.stopPropagation()
+      e.preventDefault()
+      updateFormValue('peripheral_id', Node.data.id, '', null, 'success')
+      setTabs('processor')
+      setOpenMenu()
+    },
+    [Node.data.id, setOpenMenu, setTabs, updateFormValue]
+  )
   const deleteTreeNode = MiddleStore(state => state.deleteTreeNode)
   const createNodeInfoAndOpenModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation()

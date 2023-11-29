@@ -68,7 +68,7 @@ function DeleteNodeModal(props: ModelProps) {
       message.error('删除失败')
       setLoading(false)
     }
-  }, [node.node, onNodesDelete])
+  }, [deleteTreeNode, node.node, onNodesDelete])
 
   return (
     <Modal

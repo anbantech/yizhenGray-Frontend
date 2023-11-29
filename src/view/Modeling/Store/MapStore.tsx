@@ -46,11 +46,11 @@ const deleteMap = {
   4: 'timers'
 }
 const NodeZindex = {
-  1: 1002,
-  2: 1001,
-  3: 1001,
+  1: 1004,
+  2: 1003,
+  3: 1002,
   4: 1001,
-  5: 1003
+  5: 1002
 }
 
 const AttributesType = {
@@ -59,6 +59,11 @@ const AttributesType = {
   3: 'Processor',
   4: 'Timer',
   5: 'Target'
+}
+
+const flagTabsType = {
+  1: 'customMadePeripheral',
+  3: 'dataHandlerNotReferenced'
 }
 
 const errorCodeMapFn = (code: number, node: any) => {
@@ -135,16 +140,26 @@ const extractIdsFromTree = (node: any): string[] => {
   return ids
 }
 
+const getAllIds = (value: any) => {
+  const allIds: string[] = []
+  value.forEach((peripheral: any) => {
+    allIds.push(...extractIdsFromTree(peripheral))
+  })
+  return allIds
+}
+
 export {
   rightFormCheckMap,
   extractIdsFromTree,
   titleMap,
   checkAsyncMap,
   NodeType,
+  getAllIds,
   NodeZindex,
   AttributesType,
   errorCodeMapFn,
   AssembleDataHandlerFn,
   titleFlagMap,
-  deleteMap
+  deleteMap,
+  flagTabsType
 }

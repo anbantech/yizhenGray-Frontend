@@ -14,7 +14,7 @@ import {
 } from 'Src/services/api/modelApi'
 import { RightDetailsAttributesStoreParams, RightFormCheckStoreParams } from '../ModleStore'
 import { rightFormCheckMap, titleMap } from '../MapStore'
-import { saveCanvasAndUpdateNodeName, baseOnUpdateNodeAndEdge } from '../../ModelingDetail/ModelingRight/ModelingRightCompoents'
+import { baseOnUpdateNodeAndEdge, updateRegisterNodeDraw } from '../../ModelingDetail/ModelingRight/ModelingRightCompoents'
 import { useLeftModelDetailsStore } from '../ModelStore'
 
 const getListFn = useLeftModelDetailsStore.getState().getList
@@ -108,7 +108,7 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
   },
 
   // 点击左侧列表获取详情
-  rightAttrubutesMap: (type, id, fn) => {
+  rightAttributeMap: (type, id, fn) => {
     const { getDataHandlerAttributes, getRegisterAttributes, getTimerAttributes, getPeripheralAttributes, getTargetAttributes } = get()
     set({ typeAttributes: type, focusNodeId: id })
     switch (type) {
@@ -327,6 +327,17 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
   updateOnceFormValue: (val, title, type) => {
     const { messageInfoFn } = get()
     const item = titleMap[title as keyof typeof titleMap]
+
+    if (title === '数据处理器' && type === 'peripheral_id') {
+      set(state =>
+        produce(state, draft => {
+          const updatedDraft = draft
+          ;(updatedDraft[item as keyof typeof updatedDraft] as any).register_id.value = null
+        })
+      )
+      messageInfoFn(item, type, title, '', null, val)
+    }
+
     messageInfoFn(item, type, title, '', null, val)
     if (type === 'sr_peri_id') {
       getPeripheralAttributesFn(val as any, 'rightList')
@@ -412,7 +423,7 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
       length_member: processor.length_member.value,
       checksum_member: processor.checksum_member.value,
       framing_member: processor.framing_member.value,
-      peripheral_id: processor.peripheral_id.value,
+      peripheral_id: processor.peripheral_id.value ? processor.peripheral_id.value : null,
       register_id: processor.register_id.value ? processor.register_id.value : null
     }
 
@@ -423,9 +434,9 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
       getListFn('dataHandlerNotReferenced', +platform_id)
     }
 
-    if (processor.peripheral_id.value && processor.register_id.value) {
+    if (res.data) {
       // 寄存器 ---> 数据处理器
-      baseOnUpdateNodeAndEdge(processor.peripheral_id.value, processor.register_id.value, processor.id, processor.name.value)
+      baseOnUpdateNodeAndEdge(processor.peripheral_id.value, processor.register_id.value, processor.id, res.data)
     }
   },
 
@@ -446,8 +457,9 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
 
     const res = await updatePeripherals(peripheral.id as string, params)
     if (res.data && platform_id) {
-      saveCanvasAndUpdateNodeName(String(res.data.id), platform_id as string, { label: res.data.name, error_code: res.data.error_code })
-      getListFn('customMadePeripheral', +platform_id)
+      updateRegisterNodeDraw(res.data)
+
+      getListFn(res.data.variety === 0 ? 'customMadePeripheral' : 'boardLevelPeripherals', +platform_id)
     }
   },
 
@@ -473,14 +485,14 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
         (register.restore_value.value as string)?.trim().length % 2 === 0 ? register.restore_value.value : `0${register.restore_value.value}`
     }
     const additionalParamsFalse = {
-      sr_id: register.sr_id.value
+      sr_id: register.sr_id.value ? register.sr_id.value : null
     }
     const paramsIsOrNot = register.kind.value === 0 ? additionalParamsTrue : additionalParamsFalse
     const paramsObject = { ...params, ...paramsIsOrNot }
     const res = await updateRegister(register.id, paramsObject)
     if (res.data && platform_id) {
-      saveCanvasAndUpdateNodeName(String(res.data.id), platform_id as string, { label: res.data.name, error_code: res.data.error_code })
-      getListFn('customMadePeripheral', +platform_id)
+      updateRegisterNodeDraw(res.data)
+      getListFn(res.data.variety === 0 ? 'customMadePeripheral' : 'boardLevelPeripherals', +platform_id)
     }
   },
 

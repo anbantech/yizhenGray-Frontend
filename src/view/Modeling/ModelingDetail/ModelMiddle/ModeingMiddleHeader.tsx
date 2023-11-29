@@ -87,7 +87,7 @@ const FormFooter = () => {
   const getModelListDetails = useLeftModelDetailsStore(state => state.getModelListDetails)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const btnStatus = useMemo(() => checkEveryItem(optionalParameters), [optionalParameters])
-  const rightAttrubutesMap = RightDetailsAttributesStore(state => state.rightAttrubutesMap)
+  const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
   const cancel = React.useCallback(() => {
     unSetTabs()
   }, [unSetTabs])
@@ -119,7 +119,7 @@ const FormFooter = () => {
       platform_id: platformsIdmemo,
       name: name?.value,
       peripheral_id: peripheral_id?.value,
-      kind: 0,
+      kind: 1,
       relative_address: (relative_address?.value as string)?.trim().length % 2 === 0 ? relative_address?.value : `0${relative_address?.value}`
     }
 
@@ -133,8 +133,8 @@ const FormFooter = () => {
     const info = mapParams[Tabs as keyof typeof mapParams]
     // openSiderMenu(Tabs)
 
-    createElement(Tabs, info, getModelListDetails, platformsIdmemo, cancel, rightAttrubutesMap)
-  }, [optionalParameters, platformsIdmemo, Tabs, createElement, getModelListDetails, cancel, rightAttrubutesMap])
+    createElement(Tabs, info, getModelListDetails, platformsIdmemo, cancel, rightAttributeMap)
+  }, [optionalParameters, platformsIdmemo, Tabs, createElement, getModelListDetails, cancel, rightAttributeMap])
 
   return (
     <div className={StyleSheet.formFooter}>
@@ -258,13 +258,14 @@ const PeripheralsFormMemo = React.memo(PeripheralsForm)
 // 添加寄存器
 const ProcessorForm = () => {
   const customMadePeripheralList = useLeftModelDetailsStore(state => state.customMadePeripheralList)
+
   const customMadePeripheralListMemo = useMemo(() => {
     return customMadePeripheralList.map((item: any) => {
       return { id: item.id, name: item.name }
     })
   }, [customMadePeripheralList])
   const { optionalParameters, onChange } = formItemParamsCheckStore()
-  const { name, relative_address } = optionalParameters
+  const { name, relative_address, peripheral_id } = optionalParameters
 
   const { checkNameFormat, checkNameLength, checkHex } = checkUtilFnStore()
   const [form] = Form.useForm()
@@ -274,15 +275,16 @@ const ProcessorForm = () => {
       <Form form={form} layout='vertical'>
         <Form.Item label='所属外设' required className={StyleSheet.firstFormItem}>
           <Select
+            value={peripheral_id?.value}
             placeholder='请选择所属外设'
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
             onChange={val => {
-              onChange('peripheral_id', val, '数据处理器')
+              onChange('peripheral_id', `${val}`, '数据处理器')
             }}
           >
             {customMadePeripheralListMemo?.map((rate: any) => {
               return (
-                <Option key={rate.id} value={rate.id}>
+                <Option key={String(rate.id)} value={String(rate.id)}>
                   {rate.name}
                 </Option>
               )
@@ -472,8 +474,7 @@ const HeaderBarMemo = () => {
         if (!platform_id) return
         if (type === 'download') {
           const res: any = await downLoadScript(platform_id)
-          // 目前下载3-4次服务器响应较长
-          if (res.code === 0) {
+          if (res.data) {
             message.success('建模脚本下载成功')
             browserDownload.createFrontendDownloadAction(decodeURIComponent(res.fileName), new Blob([res.data]))
           }
