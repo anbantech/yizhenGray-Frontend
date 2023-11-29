@@ -102,6 +102,7 @@ function ModelModal(props: ModelProps) {
       form.resetFields()
     }
   }, [form, detailInfo])
+
   return (
     <Modal
       centered={Boolean(1)}
@@ -149,7 +150,7 @@ function ModelModal(props: ModelProps) {
           validateTrigger={['onBlur']}
           rules={[{ required: true, message: '请选择处理器类型' }]}
         >
-          <Select placeholder='请选择处理器类型' style={{ borderRadius: '4px' }}>
+          <Select disabled={isFix} placeholder='请选择处理器类型' style={{ borderRadius: '4px' }}>
             {
               /**
                * 根据连接方式列表渲染下拉框可选择的设备比特率

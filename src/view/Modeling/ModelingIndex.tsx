@@ -36,7 +36,7 @@ function ModelingIndex() {
   const loading = useNewModelingStore(state => state.loading)
   const total = useNewModelingStore(state => state.total)
 
-  const rightAttrubutesMap = RightDetailsAttributesStore(state => state.rightAttrubutesMap)
+  const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
 
   // 关键字搜索
   const updateParams = useCallback(
@@ -110,13 +110,13 @@ function ModelingIndex() {
   // 跳转到建模详情
   const jumpModelingDetails = useCallback(
     async (id: number, name: string) => {
-      rightAttrubutesMap('Target', id)
+      rightAttributeMap('Target', id)
       history.push({
         pathname: '/Modeling/Detailes',
         state: { name, id }
       })
     },
-    [history, rightAttrubutesMap]
+    [history, rightAttributeMap]
   )
 
   // 获取端口

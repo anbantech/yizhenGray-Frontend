@@ -154,6 +154,7 @@ const MiddleStore = create<RFState>((set, get) => ({
     })
   },
 
+  // 非状态寄存器
   addChildNode: (node: NodeProps, parentId: string) => {
     const { saveCanvas, platform_id, expandNode } = get()
     const newNode = {
@@ -167,7 +168,8 @@ const MiddleStore = create<RFState>((set, get) => ({
         builtIn: false,
         flag: node.flag,
         zIndex: NodeZindex[node.flag as keyof typeof NodeZindex],
-        parentId: String(parentId)
+        parentId: String(parentId),
+        kind: 1
       },
       type: NodeType[node.flag as keyof typeof NodeType],
       id: String(node.id),
@@ -215,7 +217,7 @@ const MiddleStore = create<RFState>((set, get) => ({
       edges: updateEdge(oldEdge, newConnection, get().edges)
     })
   },
-  // 创建目标机时初始化节点和边
+  // 创建目标机时初始化节点和边 非状态寄存器
   initTreeToNodeAndToEedg: initData => {
     const { saveCanvas } = get()
     const converTreeToNode = (node: NodeProps, parentId: string) => {
@@ -226,11 +228,12 @@ const MiddleStore = create<RFState>((set, get) => ({
           id: node.id,
           parentId,
           builtIn: node.flag !== 5,
-          expanded: false,
+          expanded: node.flag === 5,
           error_code: 0,
           position: { x: 0, y: 0 },
           draggable: false,
-          flag: node.flag
+          flag: node.flag,
+          kind: 1
         },
         type: NodeType[node.flag as keyof typeof NodeType],
         id: node.id,
@@ -340,21 +343,137 @@ const MiddleStore = create<RFState>((set, get) => ({
       throwErrorMessage(error)
     }
   },
+  updateRegisterNodeDraw: detailes => {
+    const { nodes, expandNode, saveCanvas, platform_id } = get()
+    const { peripheral_id, id, name, error_code, flag, kind } = detailes
+
+    if (flag === 1) {
+      const hasThisNode = nodes.some((item: Node) => name === item.data.label && error_code === item.data.error_code)
+      if (hasThisNode) return
+      const updatedNodes = get().nodes.filter((item: { id: string }) => item.id !== String(id))
+      const updatedEdges = get().edges.filter((item: { target: string }) => item.target !== String(id))
+      const newNode = {
+        data: {
+          label: `${name}`,
+          id: String(id),
+          parentId: String(flag === 1 ? platform_id : peripheral_id),
+          builtIn: false,
+          expanded: false,
+          error_code,
+          position: { x: 0, y: 0 },
+          draggable: false,
+          flag
+        },
+        type: NodeType[flag as keyof typeof NodeType],
+        id: String(id),
+        position: { x: 0, y: 0 },
+        draggable: false,
+        zIndex: NodeZindex[flag as keyof typeof NodeZindex]
+      }
+
+      const newEdge = {
+        flag,
+        id: `${flag === 1 ? platform_id : peripheral_id}->${id}`,
+        source: String(flag === 1 ? platform_id : peripheral_id),
+        target: String(id),
+        type: 'smoothstep'
+      }
+      set({
+        nodes: [...updatedNodes, newNode],
+        edges: [...updatedEdges, newEdge]
+      })
+      expandNode([String(flag === 1 ? platform_id : peripheral_id), String(id)])
+      saveCanvas([...get().nodes], [...get().edges], platform_id as string)
+    } else {
+      const hasNoStatusRegister = nodes.some((item: Node) => item.data.kind === kind)
+      const hasThisNode = nodes.some(
+        (item: Node) => item.data.parentId === String(peripheral_id) && name === item.data.label && error_code === item.data.error_code
+      )
+      if (hasThisNode && hasNoStatusRegister) return
+      if (!hasThisNode) {
+        const updatedNodes = get().nodes.filter((item: { id: string }) => item.id !== String(id))
+        const updatedEdges = get().edges.filter((item: { target: string }) => item.target !== String(id))
+        const newNode = {
+          data: {
+            label: `${name}`,
+            id: String(id),
+            parentId: String(flag === 1 ? platform_id : peripheral_id),
+            builtIn: false,
+            expanded: false,
+            error_code,
+            position: { x: 0, y: 0 },
+            draggable: false,
+            flag
+          },
+          type: NodeType[flag as keyof typeof NodeType],
+          id: String(id),
+          position: { x: 0, y: 0 },
+          draggable: false,
+          zIndex: NodeZindex[flag as keyof typeof NodeZindex]
+        }
+
+        const newEdge = {
+          flag,
+          id: `${flag === 1 ? platform_id : peripheral_id}->${id}`,
+          source: String(flag === 1 ? platform_id : peripheral_id),
+          target: String(id),
+          type: 'smoothstep'
+        }
+        set({
+          nodes: [...updatedNodes, newNode],
+          edges: [...updatedEdges, newEdge]
+        })
+        expandNode([String(flag === 1 ? platform_id : peripheral_id), String(id)])
+        saveCanvas([...get().nodes], [...get().edges], platform_id as string)
+      }
+      if (!hasNoStatusRegister) {
+        let updatedNodes
+        if (kind === 0) {
+          updatedNodes = get()
+            .nodes.filter((item: { data: any }) => item.data.parentId !== String(id))
+            .map((node: { id: string; data: any }) => {
+              if (node.id === id) {
+                // it's important to create a new object here, to inform React Flow about the changes
+                return { ...node, data: { ...node.data, kind } }
+              }
+              return node
+            })
+        } else {
+          updatedNodes = get().nodes.map((node: { id: string; data: any }) => {
+            if (node.id === id) {
+              // it's important to create a new object here, to inform React Flow about the changes
+              return { ...node, data: { ...node.data, kind } }
+            }
+            return node
+          })
+        }
+
+        const updatedEdges = get().edges.filter((item: { source: string }) => item.source !== String(id))
+        set({
+          nodes: [...updatedNodes],
+          edges: [...updatedEdges]
+        })
+        expandNode([String(flag === 1 ? platform_id : peripheral_id), String(id)])
+        saveCanvas([...get().nodes], [...get().edges], platform_id as string)
+      }
+    }
+  },
+
   // 根据id更新节点和边
   baseOnUpdateNodeAndEdge: (preParentId, parentId, id, rightArrributesInfo) => {
-    const { nodes, edges, expandNode, saveCanvas, platform_id } = get()
+    const { nodes, expandNode, saveCanvas, platform_id, getChildernNums } = get()
 
-    const hasSameParentNode = nodes.some((item: Node) => item.data.parentId === String(parentId))
-    if (hasSameParentNode) return
     const hasThisNode = nodes.some((item: Node) => item.id === String(id))
+
+    if (!parentId && !hasThisNode) return
     const newNode = {
       data: {
-        label: `${rightArrributesInfo}`,
+        label: `${rightArrributesInfo.name}`,
         id: String(id),
         parentId: String(parentId),
         builtIn: false,
         expanded: false,
-        error_code: 0,
+        error_code: rightArrributesInfo.error_code,
         position: { x: 0, y: 0 },
         draggable: false,
         flag: 3
@@ -368,24 +487,33 @@ const MiddleStore = create<RFState>((set, get) => ({
 
     const newEdge = {
       flag: 3,
-      id: `${preParentId}->${id}`,
+      id: `${parentId}->${id}`,
       source: String(parentId),
       target: String(id),
-      type: 'smoothstep'
+      type: getChildernNums(parentId) > 0 ? 'smoothstep' : 'straight'
     }
 
-    if (!hasSameParentNode && !hasThisNode) {
-      set({ nodes: [...get().nodes, newNode], edges: [...get().edges, newEdge] })
-    } else if (hasThisNode) {
-      const updatedNodes = nodes.filter((item: any) => item.id !== String(id))
-      const updatedEdges = edges.filter((item: any) => item.target !== String(id))
-      set({ nodes: [...updatedNodes, newNode], edges: [...updatedEdges, newEdge] })
+    const updatedNodes = get().nodes.filter((item: { id: string }) => item.id !== String(id))
+    const updatedEdges = get().edges.filter((item: { target: string }) => item.target !== String(id))
+
+    if ((!parentId && hasThisNode) || (parentId && hasThisNode)) {
+      set({
+        nodes: parentId ? [...updatedNodes, newNode] : [...updatedNodes],
+        edges: parentId ? [...updatedEdges, newEdge] : [...updatedEdges]
+      })
+    }
+
+    if (parentId && !hasThisNode) {
+      set({
+        nodes: [...get().nodes, newNode],
+        edges: [...get().edges, newEdge]
+      })
     }
     expandNode([String(preParentId), String(parentId), String(id)])
     saveCanvas([...get().nodes], [...get().edges], platform_id as string)
   },
 
-  // fn : 更新侧边栏 拉数据  cancel  关闭弹窗  addChildNode 画布中添加节点
+  // fn : 更新侧边栏 拉数据  cancel  关闭弹窗  addChildNode 画布中添加节点 非状态寄存器
   createRegister: async (params, fn, id, cancel, fn2) => {
     setTabsFn('customMadePeripheral')
     const { addChildNode, upDateLeftExpandArrayFn } = get()

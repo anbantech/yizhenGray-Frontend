@@ -38,7 +38,7 @@ const isFinish = [
   { label: 'True', value: true }
 ]
 
-export const { saveCanvasAndUpdateNodeName, upDateLeftExpandArrayFn, baseOnUpdateNodeAndEdge } = MiddleStore.getState()
+export const { saveCanvasAndUpdateNodeName, upDateLeftExpandArrayFn, baseOnUpdateNodeAndEdge, updateRegisterNodeDraw } = MiddleStore.getState()
 
 // 更新名称 左侧列表更新
 export const { getModelListDetails } = useLeftModelDetailsStore.getState()
@@ -307,7 +307,7 @@ const ProcessorDetailsAttributes = () => {
               })}
             </Select>
           </Form.Item>
-          <Form.Item label='校验子项'>
+          <Form.Item label='校验子项' tooltip='按照校验顺序指定要校验的子项'>
             <Select
               onClear={() => {
                 updateOnceFormValue([], '数据处理器', 'checksum_member')
@@ -326,7 +326,7 @@ const ProcessorDetailsAttributes = () => {
               tagRender={props => <TagRender {...props} title='数据处理器' type='checksum_member' />}
             />
           </Form.Item>
-          <Form.Item label='输出帧结构'>
+          <Form.Item label='输出帧结构' tooltip='指定数据帧元素和顺序,生成预期的输出帧结构'>
             <Select
               showSearch={Boolean(0)}
               allowClear
@@ -354,12 +354,11 @@ const ProcessorDetailsAttributes = () => {
               showSearch={Boolean(0)}
               allowClear
               onChange={value => {
-                updateOnceFormValue('', '数据处理器', 'register_id')
                 updateOnceFormValue(value as string, '数据处理器', 'peripheral_id')
               }}
               onClear={() => {
                 updateOnceFormValue('', '数据处理器', 'peripheral_id')
-                updateOnceFormValue('', '数据处理器', 'register_id')
+
                 clearValue()
               }}
               onDropdownVisibleChange={visible => {
@@ -503,10 +502,13 @@ const RegisterDetailsAttributes = () => {
   const [form] = Form.useForm()
   const rightArrributes = RightDetailsAttributesStore(state => state.rightArrributes)
   const registerListOkr = RightDetailsAttributesStore(state => state.register)
+
   const isCustomMadePeripheralOrboardPeripheralNums = useMemo(() => {
     return rightArrributes.variety === 1
   }, [rightArrributes.variety])
+
   const register = RightListStore(state => state.register)
+
   const {
     updateRegister,
     checkoutBase_addreeAndLength,
@@ -515,7 +517,7 @@ const RegisterDetailsAttributes = () => {
     onBlurAsyncCheckoutNameFormValues
   } = RightListStore()
 
-  const { AllPeripheralList } = useLeftModelDetailsStore()
+  const { AllPeripheralList, customMadePeripheralList } = useLeftModelDetailsStore()
 
   const registerListStatus = useMemo(() => {
     if (!registerListOkr?.length) return []
@@ -540,12 +542,13 @@ const RegisterDetailsAttributes = () => {
     restore_value
   } = register
   const { REGISTER_CMD } = getSystemConstantsStore()
+
   const { checkNameFormat, checkNameLength, checkHex } = checkUtilFnStore()
 
   const isBoardLevePeripherals = useMemo(() => {
-    const res = isCustomMadePeripheralOrboardPeripheralNums ? [peripheral.value] : AllPeripheralList
+    const res = isCustomMadePeripheralOrboardPeripheralNums ? [peripheral.value] : customMadePeripheralList
     return res
-  }, [AllPeripheralList, isCustomMadePeripheralOrboardPeripheralNums, peripheral.value])
+  }, [customMadePeripheralList, isCustomMadePeripheralOrboardPeripheralNums, peripheral.value])
 
   const isKind = useMemo(() => {
     return kind.value === 0
@@ -595,7 +598,6 @@ const RegisterDetailsAttributes = () => {
           <Form.Item label='所属外设'>
             <Select
               showSearch={Boolean(0)}
-              allowClear
               onDropdownVisibleChange={visible => {
                 closeMenu(visible)
               }}
@@ -645,12 +647,8 @@ const RegisterDetailsAttributes = () => {
             <Select
               style={{ borderRadius: '4px' }}
               showSearch={Boolean(0)}
-              allowClear
               onDropdownVisibleChange={visible => {
                 closeMenu(visible)
-              }}
-              onClear={() => {
-                clearValue('寄存器', 'finish')
               }}
               value={finish.value}
               onChange={value => {
@@ -671,7 +669,6 @@ const RegisterDetailsAttributes = () => {
           <Form.Item label='是否为状态寄存器'>
             <Select
               showSearch={Boolean(0)}
-              allowClear
               onDropdownVisibleChange={visible => {
                 closeMenu(visible)
               }}

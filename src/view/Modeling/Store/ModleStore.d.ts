@@ -119,7 +119,7 @@ export interface RightDetailsAttributesStoreParams {
   getPeripheralAttributes: (id: number, type?: string, fn1?: any) => void
   getRegisterAttributes: (id: number, fn?: (val: string | string[]) => void) => void
   getTargetAttributes: (val: number) => void
-  rightAttrubutesMap: (type: string, val: number | string | null, fn?: (val: string | string[]) => void) => void
+  rightAttributeMap: (type: string, val: number | string | null, fn?: (val: string | string[]) => void) => void
 }
 
 // 端口列表
@@ -151,6 +151,7 @@ interface RFState {
   onEdgesChange: OnEdgesChange
   onConnect: OnConnect
   leftListExpandArray: string[]
+  updateRegisterNodeDraw: (detailes: { error_code: number; name: string; id: string; peripheral_id: string; flag: number; kind: number }) => void
   upDateLeftExpandArrayFn: (val: string[]) => void
   setChangeView: (val: boolean) => void
   setMenuStatus: (id: string) => void

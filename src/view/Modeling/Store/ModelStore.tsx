@@ -17,7 +17,7 @@ import {
 import { getPortList } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
 import { ModelDetails, NewModelListStore, PublicAttributesStoreParams, FormItemCheckStoreParams, CheckUtilFnStoreParams } from './ModleStore'
-import { AssembleDataHandlerFn, extractIdsFromTree } from './MapStore'
+import { AssembleDataHandlerFn, getAllIds } from './MapStore'
 
 interface MyObject {
   object: string
@@ -231,10 +231,14 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
         if (['2', '3'].includes(params.tag)) {
           const result = AssembleDataHandlerFn(res.data.results, params.tag)
           setLoading(false)
-          set({ expandNodeArray: extractIdsFromTree([...result]) })
+          const allIds = getAllIds(result)
+          set({ expandNodeArray: allIds })
           return set({ customMadePeripheralList: [...result] })
         }
-        set({ expandNodeArray: extractIdsFromTree([...res.data.results]) })
+        if (params.tag === '0' && params.key_word !== '') {
+          const allIds = getAllIds(res.data.results)
+          set({ expandNodeArray: allIds })
+        }
         set({ customMadePeripheralList: [...res.data.results] })
       }
       setLoading(false)
@@ -255,12 +259,13 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
         if (['2', '3'].includes(params.tag)) {
           const result = AssembleDataHandlerFn(res.data.results, params.tag)
           setLoading(false)
-          const allIds: string[] = []
-          result.forEach(peripheral => {
-            allIds.push(...extractIdsFromTree(peripheral))
-          })
+          const allIds = getAllIds(result)
           set({ expandNodeArray: allIds })
           return set({ boardLevelPeripheralsList: [...result] })
+        }
+        if (params.tag === '0' && params.key_word !== '') {
+          const allIds = getAllIds(res.data.results)
+          set({ expandNodeArray: allIds })
         }
         set({ boardLevelPeripheralsList: res.data.results })
       }
@@ -297,6 +302,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
       return error
     }
   },
+
   getProcessorListStore: async (id: number) => {
     const { processorListParams, setHasMore } = get()
     try {
@@ -322,6 +328,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
       return error
     }
   },
+
   // 获取所有外设数据
   getAllPeripheral: async (id: number) => {
     const { AllPeripheral } = get()
@@ -337,6 +344,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
       return error
     }
   },
+
   getList: (val: string, id: number) => {
     // 根据val获取对应的数据
     const { getProcessorListStore, getCustomMadePeripheralStore, getTimeListStore, getBoardCustomMadePeripheralStore } = get()
@@ -358,6 +366,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
         break
     }
   },
+
   baseKeyWordAndTagsGetList: (val: string, id: number) => {
     // 根据val获取对应的数据
     const { setLoading, getProcessorListStore, getCustomMadePeripheralStore, getTimeListStore, getBoardCustomMadePeripheralStore } = get()
@@ -381,6 +390,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
         break
     }
   },
+
   // 侧边栏数量获取详情
   getModelListDetails: async (id: number, headertabs) => {
     const { tabs, getList } = get()
@@ -405,6 +415,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
       throwErrorMessage(error)
     }
   },
+
   // 清除关键字
   clearKeyWord: fn => {
     set({ fn })

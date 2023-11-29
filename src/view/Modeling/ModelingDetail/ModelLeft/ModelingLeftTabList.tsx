@@ -1,6 +1,7 @@
 import { Skeleton, Tooltip, Tree } from 'antd'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { IconPeripheral, IconYifuRegister, IconDelete, IconCommon, IconClock, IconExclamationTriangleFill } from '@anban/iconfonts'
+import { NoTask } from 'Src/view/NewExcitation/ExcitationComponents/ExcitationDraw/ExcitationDraw'
 import StyleSheet from './modelLeft.less'
 import { useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
@@ -29,7 +30,7 @@ const Image = {
 const TreeDataMemo = (props: { listData: any; height: number }) => {
   const { listData, height } = props
   const [autoExpandParent, setAutoExpandParent] = useState(true)
-  const rightAttrubutesMap = RightDetailsAttributesStore(state => state.rightAttrubutesMap)
+  const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
   const foucusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
   // 点击节点画布展开
   const selectIdExpandDrawTree = MiddleStore(state => state.selectIdExpandDrawTree)
@@ -58,9 +59,9 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
   const updataMidleAndRightUI = useCallback(
     (selectedKeys, e) => {
       const { flag, id } = e.node
-      rightAttrubutesMap(AttributesType[flag as keyof typeof AttributesType], String(id), selectIdExpandDrawTree)
+      rightAttributeMap(AttributesType[flag as keyof typeof AttributesType], String(id), selectIdExpandDrawTree)
     },
-    [rightAttrubutesMap, selectIdExpandDrawTree]
+    [rightAttributeMap, selectIdExpandDrawTree]
   )
 
   const deleteTreeNodeHandle = React.useCallback(
@@ -83,45 +84,51 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
   }, [expandNodeArray, upDateLeftExpandArrayFn])
   return (
     <>
-      <Skeleton loading={loading}>
-        <Tree
-          treeData={listData}
-          className={StyleSheet.treeItem}
-          showIcon
-          onExpand={onExpand}
-          onSelect={updataMidleAndRightUI}
-          autoExpandParent={autoExpandParent}
-          selectedKeys={[`${foucusNodeId}`]}
-          expandedKeys={[...leftListExpandArrayMemo]}
-          height={height}
-          titleRender={(node: any) => {
-            return (
-              <div className={StyleSheet.node} style={{ paddingRight: '4px' }}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={{ paddingLeft: '6px' }}>{node.title}</span>
-                  {node?.error_code ? (
-                    <div>
-                      <Tooltip title={errorCodeMapFn(node.error_code, node)} placement='right' color='red'>
-                        {' '}
-                        <IconExclamationTriangleFill style={{ width: '16px', height: '16px', color: 'red', paddingLeft: '2px', paddingTop: 3 }} />
-                      </Tooltip>
-                    </div>
+      {listData?.length > 0 ? (
+        <Skeleton loading={loading}>
+          <Tree
+            treeData={listData}
+            className={StyleSheet.treeItem}
+            showIcon
+            onExpand={onExpand}
+            onSelect={updataMidleAndRightUI}
+            autoExpandParent={autoExpandParent}
+            selectedKeys={[`${foucusNodeId}`]}
+            expandedKeys={[...leftListExpandArrayMemo]}
+            height={height}
+            titleRender={(node: any) => {
+              return (
+                <div className={StyleSheet.node} style={{ paddingRight: '4px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{ paddingLeft: '6px' }}>{node.title}</span>
+                    {node?.error_code ? (
+                      <div>
+                        <Tooltip title={errorCodeMapFn(node.error_code, node)} placement='right' color='red'>
+                          {' '}
+                          <IconExclamationTriangleFill style={{ width: '16px', height: '16px', color: 'red', paddingLeft: '2px', paddingTop: 3 }} />
+                        </Tooltip>
+                      </div>
+                    ) : null}
+                  </div>
+                  {node.tabs !== 'boardLevelPeripherals' ? (
+                    <IconDelete
+                      style={{ color: '#cccccc' }}
+                      className={StyleSheet.icon}
+                      onClick={e => {
+                        deleteTreeNodeHandle(e, node)
+                      }}
+                    />
                   ) : null}
                 </div>
-                {node.tabs !== 'boardLevelPeripherals' ? (
-                  <IconDelete
-                    style={{ color: '#cccccc' }}
-                    className={StyleSheet.icon}
-                    onClick={e => {
-                      deleteTreeNodeHandle(e, node)
-                    }}
-                  />
-                ) : null}
-              </div>
-            )
-          }}
-        />
-      </Skeleton>
+              )
+            }}
+          />
+        </Skeleton>
+      ) : (
+        <div className={StyleSheet.noList} style={{ height }}>
+          <NoTask />
+        </div>
+      )}
     </>
   )
 }

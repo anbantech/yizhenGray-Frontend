@@ -4,6 +4,7 @@ import { IconDelete, IconCommon, IconClock, IconExclamationTriangleFill } from '
 import InfiniteScroll from 'react-infinite-scroll-component'
 import styles from 'Src/view/Project/task/taskList/task.less'
 import { useLocation } from 'react-router'
+import { NoTask } from 'Src/view/NewExcitation/ExcitationComponents/ExcitationDraw/ExcitationDraw'
 import StyleSheet from './modelLeft.less'
 import { useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
@@ -33,7 +34,7 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
   const processorListParams = useLeftModelDetailsStore(state => state.processorListParams)
   const timerListParams = useLeftModelDetailsStore(state => state.timerListParams)
   const baseKeyWordAndTagsGetList = useLeftModelDetailsStore(state => state.baseKeyWordAndTagsGetList)
-  const rightAttrubutesMap = RightDetailsAttributesStore(state => state.rightAttrubutesMap)
+  const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
 
   // 删除
   const deleteTreeNode = MiddleStore(state => state.deleteTreeNode)
@@ -54,9 +55,9 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
   const updataMidleAndRightUI = useCallback(
     item => {
       const { flag } = item
-      rightAttrubutesMap(AttributesType[flag as keyof typeof AttributesType], item.id)
+      rightAttributeMap(AttributesType[flag as keyof typeof AttributesType], item.id)
     },
-    [rightAttrubutesMap]
+    [rightAttributeMap]
   )
 
   const deleteTreeNodeHandle = React.useCallback(
@@ -74,61 +75,69 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
   )
 
   return (
-    <InfiniteScroll
-      dataLength={listData.length}
-      next={loadMoreData}
-      hasMore={hasMoreData}
-      height={height}
-      style={{ overflowX: 'hidden' }}
-      loader={
-        <p style={{ textAlign: 'center', width: '216px' }}>
-          <span className={styles.listLine} />
-          <span className={styles.concentList}>内容已经加载完毕</span>
-        </p>
-      }
-      endMessage={
-        <p style={{ textAlign: 'center', width: '216px' }}>
-          <span className={styles.listLine} />
-          <span className={styles.concentList}>内容已经加载完毕</span>
-        </p>
-      }
-    >
-      {listData.map((item: any) => {
-        return (
-          <div
-            key={item.id}
-            className={String(item.id) === String(focusNodeId) ? StyleSheet.activeTagItem : StyleSheet.tagItem}
-            style={{ paddingRight: '4px' }}
-          >
-            <div
-              className={StyleSheet.leftTagItem}
-              role='time'
-              onClick={() => {
-                updataMidleAndRightUI(item)
-              }}
-            >
-              {Image[item.flag as keyof typeof Image]}
-              <div>
-                <span style={{ width: '16px', height: '16px', paddingLeft: '6px', color: item.error_code !== 0 ? 'red' : '' }}>{item.name}</span>
-                {item?.error_code ? (
-                  <Tooltip title={errorCodeMapFn(item.error_code, item)} color='red' placement='right'>
-                    {' '}
-                    <IconExclamationTriangleFill style={{ color: 'red', paddingLeft: '2px', paddingTop: 3 }} />
-                  </Tooltip>
-                ) : null}
+    <>
+      {listData?.length > 0 ? (
+        <InfiniteScroll
+          dataLength={listData.length}
+          next={loadMoreData}
+          hasMore={hasMoreData}
+          height={height}
+          style={{ overflowX: 'hidden' }}
+          loader={
+            <p style={{ textAlign: 'center', width: '216px' }}>
+              <span className={styles.listLine} />
+              <span className={styles.concentList}>内容已经加载完毕</span>
+            </p>
+          }
+          endMessage={
+            <p style={{ textAlign: 'center', width: '216px' }}>
+              <span className={styles.listLine} />
+              <span className={styles.concentList}>内容已经加载完毕</span>
+            </p>
+          }
+        >
+          {listData.map((item: any) => {
+            return (
+              <div
+                key={item.id}
+                className={String(item.id) === String(focusNodeId) ? StyleSheet.activeTagItem : StyleSheet.tagItem}
+                style={{ paddingRight: '4px' }}
+              >
+                <div
+                  className={StyleSheet.leftTagItem}
+                  role='time'
+                  onClick={() => {
+                    updataMidleAndRightUI(item)
+                  }}
+                >
+                  {Image[item.flag as keyof typeof Image]}
+                  <div>
+                    <span style={{ width: '16px', height: '16px', paddingLeft: '6px', color: item.error_code !== 0 ? 'red' : '' }}>{item.name}</span>
+                    {item?.error_code ? (
+                      <Tooltip title={errorCodeMapFn(item.error_code, item)} color='red' placement='right'>
+                        {' '}
+                        <IconExclamationTriangleFill style={{ color: 'red', paddingLeft: '2px', paddingTop: 3 }} />
+                      </Tooltip>
+                    ) : null}
+                  </div>
+                </div>
+                <IconDelete
+                  style={{ color: '#cccccc' }}
+                  className={StyleSheet.icon}
+                  onClick={e => {
+                    deleteTreeNodeHandle(e, item)
+                  }}
+                />
               </div>
-            </div>
-            <IconDelete
-              style={{ color: '#cccccc' }}
-              className={StyleSheet.icon}
-              onClick={e => {
-                deleteTreeNodeHandle(e, item)
-              }}
-            />
-          </div>
-        )
-      })}
-    </InfiniteScroll>
+            )
+          })}
+        </InfiniteScroll>
+      ) : (
+        <div className={StyleSheet.noList} style={{ height }}>
+          <NoTask />
+        </div>
+      )}
+    </>
   )
 }
 
