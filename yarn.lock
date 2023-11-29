@@ -3726,9 +3726,9 @@
     "lodash.uniq" "^4.5.0"
 
 "caniuse-lite@^1.0.0", "caniuse-lite@^1.0.30000981", "caniuse-lite@^1.0.30001109", "caniuse-lite@^1.0.30001541":
-  "integrity" "sha512-qRp48dPYSCYaP+KurZLhDYdVE+yEyht/3NlmcJgVQ2VMGt6JL36ndQ/7rgspdZsJuxDPFIo/OzBT2+GmIJ53BA=="
-  "resolved" "http://192.168.5.253:4873/caniuse-lite/-/caniuse-lite-1.0.30001549.tgz"
-  "version" "1.0.30001549"
+  "integrity" "sha512-xrE//a3O7TP0vaJ8ikzkD2c2NgcVUvsEe2IvFTntV4Yd1Z9FVzh+gW+enX96L0psrbaFMcVcH2l90xNuGDWc8w=="
+  "resolved" "http://192.168.5.253:4873/caniuse-lite/-/caniuse-lite-1.0.30001565.tgz"
+  "version" "1.0.30001565"
 
 "ccount@^1.0.0":
   "integrity" "sha1-rIKpRJBaZc4gTrAwIxV+3ylCXBc="
