@@ -126,8 +126,8 @@ function ModelModal(props: ModelProps) {
           label='名称'
           validateTrigger={['onBlur']}
           rules={[
-            { required: true, message: '请输入建模名称' },
-            { type: 'string', min: 2, max: 20, message: '建模名称长度为2到20个字符' },
+            { required: true, message: '请输入建模任务名称' },
+            { type: 'string', min: 2, max: 20, message: '建模任务名称长度为2到20个字符' },
             {
               validateTrigger: 'onBlur',
               validator(_, value) {
@@ -135,12 +135,12 @@ function ModelModal(props: ModelProps) {
                 if (reg.test(value)) {
                   return Promise.resolve()
                 }
-                return Promise.reject(new Error('建模名称由汉字、数字、字母和下划线组成'))
+                return Promise.reject(new Error('建模任务名称由汉字、数字、字母和下划线组成'))
               }
             }
           ]}
         >
-          <Input spellCheck='false' placeholder='请输入建模名称' />
+          <Input spellCheck='false' placeholder='请输入建模任务名称' />
         </Form.Item>
 
         <Form.Item
@@ -173,7 +173,7 @@ function ModelModal(props: ModelProps) {
         >
           <TextArea
             spellCheck='false'
-            placeholder='请添加针对建模的相关描述'
+            placeholder='请输入描述'
             autoSize={{ minRows: 3, maxRows: 4 }}
             showCount={{
               formatter({ count }) {

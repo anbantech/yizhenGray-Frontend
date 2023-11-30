@@ -594,7 +594,7 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
       produce(state, draft => {
         const updatedDraft = draft
         ;(updatedDraft.optionalParameters as any)[item].validateStatus = validateStatus
-        ;(updatedDraft.optionalParameters as any)[item].errorMsg = errorMsg === null ? null : `${title}${errorMsg}`
+        ;(updatedDraft.optionalParameters as any)[item].errorMsg = errorMsg === null ? null : `${errorMsg}`
         ;(updatedDraft.optionalParameters as any)[item].value = val
       })
     )

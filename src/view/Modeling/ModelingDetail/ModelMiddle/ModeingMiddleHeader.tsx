@@ -184,12 +184,14 @@ const PeripheralsForm = () => {
             }}
           />
         </Form.Item>
+
         <Form.Item label='类型' required name='kind'>
           <Select
+            defaultValue={0}
             placeholder='请选择类型'
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
             onChange={value => {
-              onChange('kind', value, '类型')
+              onChange('kind', `${value}`, '类型')
             }}
           >
             {PERIPHERAL_TYPE?.map((rate: any) => {
@@ -201,6 +203,7 @@ const PeripheralsForm = () => {
             })}
           </Select>
         </Form.Item>
+
         <Form.Item
           label='基地址'
           hasFeedback
@@ -240,7 +243,7 @@ const PeripheralsForm = () => {
             onChange={e => {
               updateFormValue('desc', e.target.value, '描述', null, 'success')
             }}
-            placeholder='请添加针对外设的相关描述'
+            placeholder='请输入描述'
             autoSize={{ minRows: 2, maxRows: 3 }}
             showCount={{
               formatter({ count }) {
@@ -275,8 +278,8 @@ const ProcessorForm = () => {
       <Form form={form} layout='vertical'>
         <Form.Item label='所属外设' required className={StyleSheet.firstFormItem}>
           <Select
-            value={peripheral_id?.value}
             placeholder='请选择所属外设'
+            value={peripheral_id?.value ? peripheral_id?.value : undefined}
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
             onChange={val => {
               onChange('peripheral_id', `${val}`, '数据处理器')
@@ -396,7 +399,7 @@ const TimeForm = () => {
           validateStatus={name?.validateStatus}
         >
           <Input
-            placeholder='请输定时器名称'
+            placeholder='请输入定时器名称'
             value={name?.value}
             onChange={e => {
               onChange('name', e.target.value, '定时器', checkNameFormat, checkNameLength)
