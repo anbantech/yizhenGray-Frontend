@@ -29,6 +29,14 @@ const OutputFrameStructureOptionsAndVerifyChildAndFrameLengthObject = {
   4: '帧尾'
 }
 
+const OutputFrameStructureOptionsAndVerifyChildAndFrameLengthLs = [
+  { label: '帧头', value: '1' },
+  { label: '帧长度', value: '5' },
+  { label: '数据段', value: '2' },
+  // { label: '校验段', value: '3' },
+  { label: '帧尾', value: '4' }
+]
+
 const isStatusRegister = [
   { label: 'True', value: 0 },
   { label: 'False', value: 1 }
@@ -129,6 +137,32 @@ const ProcessorDetailsAttributes = () => {
         <div style={{ width: '100%' }}>
           <Checkbox.Group value={(checkedList as unknown) as CheckboxValueType[]} className={StyleSheet.checkBoxGroupBody} onChange={onChange}>
             {OutputFrameStructureOptionsAndVerifyChildAndFrameLength.map(item => {
+              return (
+                <div key={item.value} className={StyleSheet.renderCheckBoxItem}>
+                  <span style={{ lineHeight: '32px' }}> {item.label} </span>
+                  <Checkbox style={{ lineHeight: '32px' }} value={item.value} />
+                </div>
+              )
+            })}
+          </Checkbox.Group>
+        </div>
+      )
+    },
+    [processor, updateOnceFormValue]
+  )
+
+  const DropdownRenderS = React.useCallback(
+    (props: { title: string; type: string }) => {
+      const { title, type } = props
+
+      const checkedList = (processor[type as keyof typeof processor] as valueParams).value
+      const onChange = (list: CheckboxValueType[]) => {
+        updateOnceFormValue(list, title, type)
+      }
+      return (
+        <div style={{ width: '100%' }}>
+          <Checkbox.Group value={(checkedList as unknown) as CheckboxValueType[]} className={StyleSheet.checkBoxGroupBody} onChange={onChange}>
+            {OutputFrameStructureOptionsAndVerifyChildAndFrameLengthLs.map(item => {
               return (
                 <div key={item.value} className={StyleSheet.renderCheckBoxItem}>
                   <span style={{ lineHeight: '32px' }}> {item.label} </span>
@@ -286,6 +320,7 @@ const ProcessorDetailsAttributes = () => {
           <Form.Item label='校验算法'>
             <Select
               showSearch={Boolean(0)}
+              getPopupContainer={() => document.querySelector('#area') as HTMLElement}
               value={processor.algorithm.value}
               allowClear
               onDropdownVisibleChange={visible => {
@@ -321,7 +356,7 @@ const ProcessorDetailsAttributes = () => {
                 closeMenu(visible)
               }}
               mode='tags'
-              dropdownRender={() => <DropdownRender title='数据处理器' type='checksum_member' />}
+              dropdownRender={() => <DropdownRenderS title='数据处理器' type='checksum_member' />}
               getPopupContainer={() => document.querySelector('#area') as HTMLElement}
               showArrow
               tagRender={props => <TagRender {...props} title='数据处理器' type='checksum_member' />}
@@ -359,7 +394,6 @@ const ProcessorDetailsAttributes = () => {
               }}
               onClear={() => {
                 updateOnceFormValue('', '数据处理器', 'peripheral_id')
-
                 clearValue()
               }}
               onDropdownVisibleChange={visible => {
@@ -490,7 +524,7 @@ const PeripheralDetailsAttributes = () => {
           />
         </Form.Item>
         <Form.Item label='描述'>
-          <Input placeholder='请输入描述' value={peripheral.desc.value} disabled={disabledStatus} />
+          <Input placeholder={disabledStatus ? '-' : '请输入描述'} value={peripheral.desc.value} disabled={disabledStatus} />
         </Form.Item>
       </Form>
     </div>
@@ -555,9 +589,9 @@ const RegisterDetailsAttributes = () => {
     return kind.value === 0
   }, [kind])
 
-  const clearValue = async (title: string, type: string) => {
-    await updateOnceFormValue([], title, type)
-    await updateRegister()
+  const clearValue = (title: string, type: string) => {
+    updateOnceFormValue('', title, type)
+    updateRegister()
   }
 
   const closeMenu = (visible: boolean) => {
@@ -706,7 +740,7 @@ const RegisterDetailsAttributes = () => {
                   updateOnceFormValue(value as string, '寄存器', 'sr_peri_id')
                 }}
                 onClear={() => {
-                  clearValue('外设', 'sr_peri_id')
+                  clearValue('寄存器', 'sr_peri_id')
                 }}
                 value={sr_peri_id.value}
                 placeholder='请选择关联状态寄存器所属外设'
@@ -791,7 +825,6 @@ const RegisterDetailsAttributes = () => {
     </div>
   )
 }
-
 const RegisterDetailsAttributesMemo = React.memo(RegisterDetailsAttributes)
 
 // Done 定义定时器组件

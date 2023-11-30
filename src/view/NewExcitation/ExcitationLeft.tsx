@@ -14,6 +14,7 @@ import { message } from 'antd'
 import Leftstyles from './NewExcitation.less'
 import StyleSheet from './ExcitationComponents/ExcitationDraw/excitationDraw.less'
 import { checkListStore, GlobalStatusStore, RouterStore, useExicitationSenderId } from './ExcitaionStore/ExcitaionStore'
+import { NoTask } from './ExcitationComponents/ExcitationDraw/ExcitationDraw'
 
 const request = {
   target_type: '3',
@@ -280,59 +281,65 @@ const ExcitationLeftMemo = React.forwardRef((props, myRef) => {
       </div>
       <SearchInput className={StyleSheet.ExictationInputLeft} placeholder='根据名称搜索' onChangeValue={updateParams} />
       <div className={Leftstyles.concentBody} ref={layoutRef}>
-        <InfiniteScroll
-          dataLength={excitationList.length}
-          next={loadMoreData}
-          hasMore={hasMoreData}
-          height={height - 50}
-          style={{ overflowX: 'hidden' }}
-          loader={
-            <p style={{ textAlign: 'center', width: '216px' }}>
-              <span className={styles.listLine} />
-              <span className={styles.concentList}>内容已经加载完毕</span>
-            </p>
-          }
-          endMessage={
-            <p style={{ textAlign: 'center', width: '216px' }}>
-              <span className={styles.listLine} />
-              <span className={styles.concentList}>内容已经加载完毕</span>
-            </p>
-          }
-        >
-          {excitationList.map((item: any) => {
-            return (
-              <div
-                tabIndex={item.sender_id}
-                role='button'
-                className={sender_id === item.sender_id ? Leftstyles.itemActive : Leftstyles.item}
-                onClick={() => {
-                  leaveModalFn(item.sender_id)
-                }}
-                key={item.sender_id}
-              >
-                <span>{item.name}</span>
-                <div className={Leftstyles.icon_layout}>
-                  <div
-                    role='time'
-                    className={styles.taskListLeft_detailImg}
-                    onClick={e => {
-                      e.stopPropagation()
-                      operationFn(item, CommonModleClose, 'boolean')
-                    }}
-                  />
-                  <div
-                    role='time'
-                    className={styles.taskListLeft_linkInfo}
-                    onClick={e => {
-                      e.stopPropagation()
-                      operationFn(item, getDependenceInfo, 'fn')
-                    }}
-                  />
+        {excitationList.length > 0 ? (
+          <InfiniteScroll
+            dataLength={excitationList.length}
+            next={loadMoreData}
+            hasMore={hasMoreData}
+            height={height - 50}
+            style={{ overflowX: 'hidden' }}
+            loader={
+              <p style={{ textAlign: 'center', width: '216px' }}>
+                <span className={styles.listLine} />
+                <span className={styles.concentList}>内容已经加载完毕</span>
+              </p>
+            }
+            endMessage={
+              <p style={{ textAlign: 'center', width: '216px' }}>
+                <span className={styles.listLine} />
+                <span className={styles.concentList}>内容已经加载完毕</span>
+              </p>
+            }
+          >
+            {excitationList.map((item: any) => {
+              return (
+                <div
+                  tabIndex={item.sender_id}
+                  role='button'
+                  className={sender_id === item.sender_id ? Leftstyles.itemActive : Leftstyles.item}
+                  onClick={() => {
+                    leaveModalFn(item.sender_id)
+                  }}
+                  key={item.sender_id}
+                >
+                  <span>{item.name}</span>
+                  <div className={Leftstyles.icon_layout}>
+                    <div
+                      role='time'
+                      className={styles.taskListLeft_detailImg}
+                      onClick={e => {
+                        e.stopPropagation()
+                        operationFn(item, CommonModleClose, 'boolean')
+                      }}
+                    />
+                    <div
+                      role='time'
+                      className={styles.taskListLeft_linkInfo}
+                      onClick={e => {
+                        e.stopPropagation()
+                        operationFn(item, getDependenceInfo, 'fn')
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
-            )
-          })}
-        </InfiniteScroll>
+              )
+            })}
+          </InfiniteScroll>
+        ) : (
+          <div style={{ height, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <NoTask />
+          </div>
+        )}
       </div>
       <>
         {CommonModleStatus && (

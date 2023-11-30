@@ -23,7 +23,13 @@ function ExcitationDrawMemo() {
   return (
     <div className={StyleSheet.Draw}>
       <DndProvider backend={HTML5Backend}>
-        {sender_id === null ? <NoTask /> : <ExcitationDrop />}
+        {sender_id === null ? (
+          <div style={{ width: '100%', height: '100%', paddingTop: '80px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <NoTask />{' '}
+          </div>
+        ) : (
+          <ExcitationDrop />
+        )}
         <ExcitationList />
       </DndProvider>
     </div>

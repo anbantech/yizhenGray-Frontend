@@ -22,6 +22,7 @@ type NodeProps = {
   id: string
   flag: 0 | 1 | 2 | 3 | 4 | 5
   error_code: number
+  processor: string
   children?: NodeProps[]
 }
 
@@ -225,7 +226,7 @@ const MiddleStore = create<RFState>((set, get) => ({
       const result = []
       result.push({
         data: {
-          label: `${node.name}`,
+          label: node.flag === 5 ? node.processor : `${node.name}`,
           id: node.id,
           parentId,
           builtIn: node.flag !== 5,
@@ -615,6 +616,7 @@ const MiddleStore = create<RFState>((set, get) => ({
   // 删除节点
   deleteTreeNode: (visibility, node) => {
     const { deleteInfo } = get()
+
     if (node) {
       set({ deleteInfo: { node, visibility } })
     } else {

@@ -19,7 +19,7 @@ import PherilarlCustomNode from '../../ModelingMaterials/PherilarlCustomNode'
 import CustomRegisterNode from '../../ModelingMaterials/CustomRegisterNode'
 import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
 
-import { AttributesType } from '../../Store/MapStore'
+import { AttributesType, titleFlagMap } from '../../Store/MapStore'
 import { publicAttributes, useLeftModelDetailsStore } from '../../Store/ModelStore'
 
 import { getModelListDetails } from '../ModelingRight/ModelingRightCompoents'
@@ -169,6 +169,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
     (ev: KeyboardEvent) => {
       if (ev.code !== 'Delete') return
       const { node } = deleteInfo
+
       if (!node?.node?.length) return
       deleteTreeNode(true)
     },
@@ -180,7 +181,8 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
   const onSelectionChange = React.useCallback(
     (params: { nodes: Node[]; edges: Edge[] }) => {
       // console.log(params)
-      const { nodes, edges } = params
+      const { nodes } = params
+
       if (nodes.length === 0) return deleteTreeNode(false, { node: [], edge: [] })
       // 不符合要求的节点
       const notNodeArray: Node[] = []
@@ -188,14 +190,25 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
         if ([1, 2].includes(item.data.flag) && item.data.builtIn) {
           notNodeArray.push(item)
         }
-        return [1, 2].includes(item.data.flag) && !item.data.builtIn
+        return [1, 2, 3].includes(item.data.flag) && !item.data.builtIn
       })
-      const edge = edges.filter((item: Edge) => {
-        return !notNodeArray.find(node => {
-          return node.id === item.target
-        })
-      })
-      deleteTreeNode(false, { node, edge })
+
+      // const edge = edges.filter((item: Edge) => {
+      //   return !notNodeArray.find(node => {
+      //     return node.id === item.target
+      //   })
+      // })
+      if (node.length === 1) {
+        const nodeArray = [{ id: String(node[0].data.id), data: { flag: node[0].data.flag } }]
+        const nodeInfo = {
+          node: nodeArray,
+          title: titleFlagMap[node[0].data.flag as keyof typeof titleFlagMap][0],
+          content: `${titleFlagMap[node[0].data.flag as keyof typeof titleFlagMap][1]}${node[0].data.label}`
+        }
+
+        return deleteTreeNode(false, nodeInfo)
+      }
+      deleteTreeNode(false, { node })
     },
     [deleteTreeNode]
   )
