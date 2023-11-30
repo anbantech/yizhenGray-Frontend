@@ -709,7 +709,7 @@ const RegisterDetailsAttributes = () => {
                   clearValue('外设', 'sr_peri_id')
                 }}
                 value={sr_peri_id.value}
-                placeholder='请选择关联状态寄存器外设'
+                placeholder='请选择关联状态寄存器所属外设'
               >
                 {AllPeripheralList?.map((rate: any) => {
                   return (
@@ -722,6 +722,8 @@ const RegisterDetailsAttributes = () => {
             </Form.Item>
             <Form.Item label='关联状态寄存器'>
               <Select
+                placeholder='请选择关联状态寄存器'
+                disabled={!sr_peri_id.value}
                 showSearch={Boolean(0)}
                 allowClear
                 value={sr_id.value}
