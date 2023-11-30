@@ -21,6 +21,7 @@ function ModalpPop(props: any) {
     }
     return !spinning
   }, [CommonModleClose, spinning])
+
   return (
     <Modal
       centered={Boolean(1)}

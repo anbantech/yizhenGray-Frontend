@@ -238,7 +238,7 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
       produce(state, draft => {
         const updatedDraft = draft
         ;(updatedDraft[item as keyof typeof updatedDraft] as any)[type].validateStatus = validateStatus
-        ;(updatedDraft[item as keyof typeof updatedDraft] as any)[type].errorMsg = errorMsg === null ? null : `${title}${errorMsg}`
+        ;(updatedDraft[item as keyof typeof updatedDraft] as any)[type].errorMsg = errorMsg === null ? null : `${errorMsg}`
         ;(updatedDraft[item as keyof typeof updatedDraft] as any)[type].value = val
       })
     )
@@ -305,12 +305,14 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
         })
       )
     }
+
     set(state =>
       produce(state, draft => {
         const updatedDraft: any = draft
         updatedDraft[item as keyof typeof updatedDraft].id = id
       })
     )
+
     rightFormCheckMap[type as keyof typeof rightFormCheckMap].forEach(element => {
       set(state =>
         produce(state, draft => {

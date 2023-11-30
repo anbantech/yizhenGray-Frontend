@@ -3,6 +3,7 @@ import React, { useMemo } from 'react'
 import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect'
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
+import TextArea from 'antd/lib/input/TextArea'
 import StyleSheet from './ModelingRight.less'
 import { checkUtilFnStore, publicAttributes, useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { valueParams, valueParamsArray } from '../../Store/ModleStore'
@@ -597,6 +598,7 @@ const RegisterDetailsAttributes = () => {
         <div className={StyleSheet.rightFromCommonHeaderStyle} style={{ padding: '8px 16px' }}>
           <Form.Item label='所属外设'>
             <Select
+              placeholder='请选择所属外设'
               showSearch={Boolean(0)}
               onDropdownVisibleChange={visible => {
                 closeMenu(visible)
@@ -870,7 +872,7 @@ const TargetDetailsAttributes = (props: { name: string; processor: string; desc:
           <Input disabled value={formValueMemo.processor} />
         </Form.Item>
         <Form.Item label='描述'>
-          <Input disabled value={formValueMemo.desc} />
+          <TextArea disabled value={formValueMemo.desc} autoSize={{ minRows: 3, maxRows: 4 }} />
         </Form.Item>
       </Form>
     </div>

@@ -49,6 +49,9 @@ function ModelingIndex() {
   // 新建建模任务
   const creatModalOrFixModal = useCallback(val => {
     setVisible(val)
+    if (!val) {
+      setIsFix(false)
+    }
   }, [])
 
   // 删除建模模态框打开,关闭
@@ -134,7 +137,7 @@ function ModelingIndex() {
   const columns = [
     {
       width: '20%',
-      title: '外设建模名称',
+      title: '名称',
       dataIndex: 'name',
       key: 'name',
       ellipsis: true,
@@ -165,14 +168,14 @@ function ModelingIndex() {
     },
     {
       width: '20%',
-      title: '外设建模描述',
+      title: '描述',
       dataIndex: 'desc',
       ellipsis: true,
       key: 'desc',
       // eslint-disable-next-line react/display-name
       render: (_: any, row: any) => {
         return (
-          <Tooltip title={row.name} placement='bottomLeft' overlayClassName={styles.overlay}>
+          <Tooltip title={row.desc} placement='bottomLeft' overlayClassName={styles.overlay}>
             <span style={{ color: '#333333' }}>{row.desc ? row.desc : '暂无描述'}</span>
           </Tooltip>
         )
@@ -223,7 +226,7 @@ function ModelingIndex() {
     <div className={styles.AnBan_main}>
       <div className={styles.AnBan_header}>
         <div className={styles.AnBan_header_bottom}>
-          <SearchInput className={inputStyle.searchInput} placeholder='根据名称搜索建模' onChangeValue={updateParams} />
+          <SearchInput className={inputStyle.searchInput} placeholder='根据名称搜索' onChangeValue={updateParams} />
           <CreateButton
             width='146px'
             name='新建建模任务'

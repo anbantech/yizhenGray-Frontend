@@ -29,7 +29,21 @@ const rightFormCheckMap = {
     'register_id'
   ],
   Peripheral: ['name', 'kind', 'base_address', 'address_length', 'desc'],
-  Register: ['peripheral_id', 'peripheral', 'name', 'relative_address', 'kind', 'finish', 'variety']
+  Register: [
+    'peripheral_id',
+    'peripheral',
+    'name',
+    'relative_address',
+    'kind',
+    'finish',
+    'variety',
+    'set_cmd',
+    'restore_cmd',
+    'set_value',
+    'restore_value',
+    'sr_id',
+    'sr_peri_id'
+  ]
 }
 const NodeType = {
   1: 'peripheralNode',
