@@ -165,12 +165,7 @@ function ModelModal(props: ModelProps) {
             }
           </Select>
         </Form.Item>
-        <Form.Item
-          name='desc'
-          label='建模描述'
-          className={styles.modelFormItemDesc}
-          rules={[{ type: 'string', max: 50, message: '字数不能超过50个' }]}
-        >
+        <Form.Item name='desc' label='描述' className={styles.modelFormItemDesc} rules={[{ type: 'string', max: 50, message: '字数不能超过50个' }]}>
           <TextArea
             spellCheck='false'
             placeholder='请输入描述'

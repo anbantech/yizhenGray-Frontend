@@ -490,7 +490,7 @@ const PeripheralDetailsAttributes = () => {
           />
         </Form.Item>
         <Form.Item label='描述'>
-          <Input placeholder='请输入外设描述' value={peripheral.desc.value} disabled={disabledStatus} />
+          <Input placeholder='请输入描述' value={peripheral.desc.value} disabled={disabledStatus} />
         </Form.Item>
       </Form>
     </div>

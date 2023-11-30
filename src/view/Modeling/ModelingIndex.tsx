@@ -50,6 +50,7 @@ function ModelingIndex() {
   const creatModalOrFixModal = useCallback(val => {
     setVisible(val)
     if (!val) {
+      setDetailInfo({ name: '', processor: '', desc: '' })
       setIsFix(false)
     }
   }, [])
@@ -162,8 +163,8 @@ function ModelingIndex() {
     {
       width: '15%',
       title: '处理器类型',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'processor',
+      key: 'processor',
       ellipsis: true
     },
     {
