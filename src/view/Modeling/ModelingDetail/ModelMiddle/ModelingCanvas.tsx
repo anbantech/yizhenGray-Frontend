@@ -155,11 +155,15 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
         } else if (flag === 3) {
           setTabs('dataHandlerNotReferenced')
           getModelListDetails(+platform_id, 'dataHandlerNotReferenced')
+        } else if (flag === 2) {
+          setTabs(builtIn ? 'boardLevelPeripherals' : 'customMadePeripheral')
+          getModelListDetails(+platform_id, builtIn ? 'boardLevelPeripherals' : 'customMadePeripheral')
         }
       }
       setOpenMenu()
       rightAttributeMap(AttributesType[flag as keyof typeof AttributesType], id)
       const res = getParentNode(node)
+
       upDateLeftExpandArrayFn(res)
     },
     [setOpenMenu, rightAttributeMap, getParentNode, upDateLeftExpandArrayFn, setTabs, platform_id]

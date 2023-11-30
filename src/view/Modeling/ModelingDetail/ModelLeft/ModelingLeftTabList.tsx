@@ -32,21 +32,28 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
   const [autoExpandParent, setAutoExpandParent] = useState(true)
   const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
   const foucusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
+
   // 点击节点画布展开
   const selectIdExpandDrawTree = MiddleStore(state => state.selectIdExpandDrawTree)
+
   // 受控:树
   const leftListExpandArray = MiddleStore(state => state.leftListExpandArray)
+
   // 控制树展开节点函数
   const upDateLeftExpandArrayFn = MiddleStore(state => state.upDateLeftExpandArrayFn)
+
   // 树节点 筛选结果
   const expandNodeArray = useLeftModelDetailsStore(state => state.expandNodeArray)
 
   const loading = useLeftModelDetailsStore(state => state.loading)
+
   // 删除
   const deleteTreeNode = MiddleStore(state => state.deleteTreeNode)
+
   const leftListExpandArrayMemo = useMemo(() => {
     return [...leftListExpandArray]
   }, [leftListExpandArray])
+
   const onExpand = React.useCallback(
     (newExpandedKeys: React.Key[]) => {
       const res = [...newExpandedKeys]
@@ -77,11 +84,13 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
     },
     [deleteTreeNode]
   )
+
   useEffect(() => {
-    if (expandNodeArray) {
+    if (expandNodeArray?.length > 0) {
       upDateLeftExpandArrayFn([...expandNodeArray])
     }
   }, [expandNodeArray, upDateLeftExpandArrayFn])
+
   return (
     <>
       {listData?.length > 0 ? (
