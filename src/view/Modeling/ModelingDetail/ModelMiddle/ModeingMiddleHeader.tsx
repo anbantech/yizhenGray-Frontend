@@ -163,7 +163,6 @@ const PeripheralsForm = () => {
   const { name, base_address, address_length } = optionalParameters
 
   const KindValue = useMemo(() => {
-    console.log(optionalParameters.kind?.value)
     return optionalParameters.kind?.value
   }, [optionalParameters])
   const [form] = Form.useForm()
