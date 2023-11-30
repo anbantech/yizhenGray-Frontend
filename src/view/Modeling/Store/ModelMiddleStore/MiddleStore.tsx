@@ -172,6 +172,7 @@ const MiddleStore = create<RFState>((set, get) => ({
         kind: 1
       },
       type: NodeType[node.flag as keyof typeof NodeType],
+      zIndex: NodeZindex[node.flag as keyof typeof NodeZindex],
       id: String(node.id),
       position: { x: 0, y: 0 },
       draggable: false

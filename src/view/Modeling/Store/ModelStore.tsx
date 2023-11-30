@@ -519,7 +519,7 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
       errorMsg: null
     },
     kind: {
-      value: '',
+      value: 0,
       validateStatus: '',
       errorMsg: null
     },
@@ -634,7 +634,7 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
           errorMsg: ''
         },
         kind: {
-          value: '',
+          value: 0,
           validateStatus: '',
           errorMsg: ''
         },

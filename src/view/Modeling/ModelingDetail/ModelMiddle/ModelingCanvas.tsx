@@ -43,7 +43,7 @@ type ExpandCollapseExampleProps = {
 }
 const panOnDrag = [1, 2]
 
-function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 80, treeHeight = 250, animationDuration = 100 }: ExpandCollapseExampleProps) {
+function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250, animationDuration = 100 }: ExpandCollapseExampleProps) {
   const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
   const platform_id = MiddleStore(state => state.platform_id)
   const setTabs = useLeftModelDetailsStore(state => state.setTabs)

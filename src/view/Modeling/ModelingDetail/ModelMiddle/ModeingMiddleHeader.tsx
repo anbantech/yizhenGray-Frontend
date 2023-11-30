@@ -162,6 +162,10 @@ const PeripheralsForm = () => {
   const { optionalParameters, onChange, updateFormValue } = formItemParamsCheckStore()
   const { name, base_address, address_length } = optionalParameters
 
+  const KindValue = useMemo(() => {
+    console.log(optionalParameters.kind?.value)
+    return optionalParameters.kind?.value
+  }, [optionalParameters])
   const [form] = Form.useForm()
 
   const { checkNameFormat, checkNameLength, checkHex } = checkUtilFnStore()
@@ -185,9 +189,9 @@ const PeripheralsForm = () => {
           />
         </Form.Item>
 
-        <Form.Item label='类型' required name='kind'>
+        <Form.Item label='类型' required>
           <Select
-            defaultValue={0}
+            value={KindValue}
             placeholder='请选择类型'
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
             onChange={value => {
