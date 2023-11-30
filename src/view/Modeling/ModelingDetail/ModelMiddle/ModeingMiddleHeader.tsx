@@ -478,18 +478,18 @@ const HeaderBarMemo = () => {
         if (type === 'download') {
           const res: any = await downLoadScript(platform_id)
           if (res.data) {
-            message.success('建模脚本下载成功')
+            message.success('脚本下载成功')
             browserDownload.createFrontendDownloadAction(decodeURIComponent(res.fileName), new Blob([res.data]))
           }
         } else {
           const res: any = await scriptGenerator(platform_id)
           if (res.code === 0) {
-            message.success('生成建模脚本成功')
+            message.success('生成脚本成功')
           }
         }
       } catch (error) {
         if (error.code) {
-          throwErrorMessage(error, { 7025: '还未生成建模脚本,请生成建模脚本之后继续下载' })
+          throwErrorMessage(error, { 7025: '请先点击生成脚本,然后再尝试下载' })
         }
       }
     },
