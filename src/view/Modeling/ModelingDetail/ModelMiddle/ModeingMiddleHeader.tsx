@@ -282,6 +282,7 @@ const ProcessorForm = () => {
         <Form.Item label='所属外设' required className={StyleSheet.firstFormItem}>
           <Select
             placeholder='请选择所属外设'
+            notFoundContent={<span>暂无自定义外设</span>}
             value={peripheral_id?.value ? peripheral_id?.value : undefined}
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
             onChange={val => {

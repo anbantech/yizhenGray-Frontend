@@ -226,19 +226,19 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     restore_cmd: { value: '', validateStatus: '', errorMsg: '' },
     set_value: { value: '', validateStatus: '', errorMsg: '' },
     restore_value: { value: '', validateStatus: '', errorMsg: '' },
-    sr_id: { value: '', validateStatus: '', errorMsg: '' },
-    sr_peri_id: { value: '', validateStatus: '', errorMsg: '' }
+    sr_peri_id: { value: '', validateStatus: '', errorMsg: '' },
+    sr_id: { value: '', validateStatus: '', errorMsg: '' }
   },
   //  更新目标机id
   setPlatFormId: val => {
     set({ platform_id: val })
   },
-  messageInfoFn: (item, type, title, validateStatus, errorMsg, val) => {
+  messageInfoFn: (item, type, title, validate, error, val) => {
     set(state =>
       produce(state, draft => {
         const updatedDraft = draft
-        ;(updatedDraft[item as keyof typeof updatedDraft] as any)[type].validateStatus = validateStatus
-        ;(updatedDraft[item as keyof typeof updatedDraft] as any)[type].errorMsg = errorMsg === null ? null : `${errorMsg}`
+        ;(updatedDraft[item as keyof typeof updatedDraft] as any)[type].validateStatus = validate || ''
+        ;(updatedDraft[item as keyof typeof updatedDraft] as any)[type].errorMsg = error === null ? null : `${error}`
         ;(updatedDraft[item as keyof typeof updatedDraft] as any)[type].value = val
       })
     )
@@ -337,13 +337,24 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
           ;(updatedDraft[item as keyof typeof updatedDraft] as any).register_id.value = null
         })
       )
-      messageInfoFn(item, type, title, '', null, val)
+      return messageInfoFn(item, type, title, '', null, val)
     }
 
-    messageInfoFn(item, type, title, '', null, val)
-    if (type === 'sr_peri_id') {
-      getPeripheralAttributesFn(val as any, 'rightList')
+    if (type === 'sr_peri_id' && title === '寄存器') {
+      if (val) {
+        getPeripheralAttributesFn(val as any, 'rightList')
+      } else {
+        set(state =>
+          produce(state, draft => {
+            const updatedDraft = draft
+            ;(updatedDraft[item as keyof typeof updatedDraft] as any).sr_id.value = null
+          })
+        )
+      }
+
+      return messageInfoFn(item, type, title, '', null, val)
     }
+    messageInfoFn(item, type, title, '', null, val)
   },
 
   // 校验定时器的中断号,间隔
@@ -479,13 +490,24 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
           : `0${register.relative_address.value}`,
       variety: register.variety.value
     }
+
     const additionalParamsTrue = {
       set_cmd: register.set_cmd.value,
       restore_cmd: register.restore_cmd.value,
-      set_value: (register.set_value.value as string)?.trim().length % 2 === 0 ? register.set_value.value : `0${register.set_value.value}`,
+      set_value:
+        (register.set_value.value as string)?.trim().length % 2 === 0
+          ? register.set_value.value
+          : register.set_value.value
+          ? `0x${register.set_value.value}`
+          : null,
       restore_value:
-        (register.restore_value.value as string)?.trim().length % 2 === 0 ? register.restore_value.value : `0${register.restore_value.value}`
+        (register.restore_value.value as string)?.trim().length % 2 === 0
+          ? register.restore_value.value
+          : register.restore_value.value
+          ? `0x${register.restore_value.value}`
+          : null
     }
+
     const additionalParamsFalse = {
       sr_id: register.sr_id.value ? register.sr_id.value : null
     }
@@ -578,8 +600,8 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
         restore_cmd: { value: '', validateStatus: '', errorMsg: '' },
         set_value: { value: '', validateStatus: '', errorMsg: '' },
         restore_value: { value: '', validateStatus: '', errorMsg: '' },
-        sr_id: { value: '', validateStatus: '', errorMsg: '' },
-        sr_peri_id: { value: '', validateStatus: '', errorMsg: '' }
+        sr_peri_id: { value: '', validateStatus: '', errorMsg: '' },
+        sr_id: { value: '', validateStatus: '', errorMsg: '' }
       }
     })
   }
