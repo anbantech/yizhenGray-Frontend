@@ -15,8 +15,8 @@ import LeftNav from './layout/LeftNav/leftNav'
 import Contents from './layout/content/content'
 
 import { useWebSocketStore, getSystemConstantsStore } from './webSocket/webSocketStore'
-import { useGetVersionHook } from './webSocket/getVersion'
-import VersionModal from './components/Modal/VersionModal'
+// import { useGetVersionHook } from './webSocket/getVersion'
+// import VersionModal from './components/Modal/VersionModal'
 
 const { Header, Content } = Layout
 
@@ -60,7 +60,7 @@ function Main() {
 
 const App: React.FC<RouteComponentProps<any, any, any>> = props => {
   const name = props.location.pathname
-  const [showModalMemo] = useGetVersionHook()
+  // const [showModalMemo] = useGetVersionHook()
   const { connect } = useWebSocketStore()
 
   useEffect(() => {
@@ -106,7 +106,7 @@ const App: React.FC<RouteComponentProps<any, any, any>> = props => {
         />
         <Redirect from='/*' to='/login' />
       </Switch>
-      {showModalMemo && <VersionModal showModalMemo={showModalMemo} />}
+      {/* {showModalMemo && <VersionModal showModalMemo={showModalMemo} />} */}
     </>
   )
 }

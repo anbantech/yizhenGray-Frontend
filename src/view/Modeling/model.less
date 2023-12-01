@@ -20,9 +20,6 @@
   border-radius: 8px;
 }
 
-
-
-
 .nodeDropzone {
   background-color: #ff0072;
   box-shadow: 0 0 9px 0 #ff0072;
@@ -98,30 +95,25 @@
   line-height: 38px;
 }
 
-
-
-.targetNodeBorder {
-  width: 125px;
-  height: 38px;
-  padding: 1px;
-  box-sizing: content-box;
-  border: 4px solid #52aEFF;
-  background-color: #314267;
-  color: #fff;
-  text-align: center;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 700;
-  border-radius: 4px;
-  line-height: 38px;
+.borderNone {
+  padding: 2px;
+  border: 3px solid transparent;
+  border-radius: 6px;
 }
+
+.borderShow{
+  padding: 2px;
+  border: 3px solid #52aEFF;
+  border-radius: 6px;
+}
+
 
 .handleNums {
   width: 30px;
   height: 30px;
   position: absolute;
-  top: -50%;
-  right: -5%;
+  top: -30%;
+  right: -3%;
   transform: translate(100%, 100%);
   display: flex;
   align-items: center;
@@ -141,7 +133,7 @@
   width: 12px;
   height: 12px;
   position: absolute;
-  top: 8%;
+  top: 13%;
   right: -2%;
   transform: translate(100%, 100%);
   display: flex;
@@ -162,8 +154,8 @@
   width: 30px;
   height: 30px;
   position: absolute;
-  top: -55%;
-  right: -5%;
+  top: -50%;
+  right: -3%;
   transform: translate(100%, 100%);
   display: flex;
   align-items: center;
@@ -183,7 +175,7 @@
   width: 12px;
   height: 12px;
   position: absolute;
-  top: 8%;
+  top: 12%;
   right: -2%;
   transform: translate(100%, 100%);
   display: flex;
@@ -201,13 +193,40 @@
 }
 
 
+.registerNode {
+  width: 125px;
+  height: 38px;
+  box-sizing: content-box;
+  padding: 0 12px;
+  box-sizing: content-box;
+  border-radius: 4px;
+  background: #e2e8f3;
+  display: flex;
+  color: #333333;
+  align-items: center;
+  font-family: Source Han Sans CN;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 38px;
+}
+
+
+
+
+.hasErrorRegisterNode{
+  padding: 2px;
+  border-radius: 6px;
+  border: 3px solid rgb(243, 24, 50);
+}
+
+
 .customNode{
   width: 125px;
   height: 38px;
   padding: 0 12px;
-  box-sizing: content-box;
-  border: 2px solid transparent;
   border-radius: 4px;
+  box-sizing: content-box;
   background: #fff;
   display: flex;
   color: #333333;
@@ -219,23 +238,7 @@
   line-height: 38px;
 }
 
-.customNodeBorder{
-    box-sizing: content-box;
-    width: 125px;
-    height: 38px;
-    padding: 0 12px;
-    border-radius: 4px;
-    background: #fff;
-    display: flex;
-    border: 2px solid #52aEFF;
-    color: #333333;
-    align-items: center;
-    font-family: Source Han Sans CN;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 38px;
-}
+
 
 
 .closeImage {
@@ -252,28 +255,12 @@
   right: -20%;
 }
 
-.pherilarNodeBorder {
-  width: 125px;
-  height: 38px;
-  padding-left: 12px;
-  box-sizing: content-box;
-  display: flex;
-  color: #fff;
-  border: 2px solid #52aEFF;
-  align-items: center;
-  border-radius: 4px;
-  background-color: #556da4;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 38px;
-}
+
 
 .pherilarNode {
   width: 125px;
   height: 38px;
   box-sizing: content-box;
-  border: 2px solid transparent;
   padding-left: 12px;
   display: flex;
   color: #fff;
@@ -302,51 +289,10 @@
   text-overflow: ellipsis;
 }
 
-.registerNode {
-  width: 125px;
-  height: 38px;
-  padding: 0 12px;
-  box-sizing: content-box;
-  border: 2px solid transparent;
-  border-radius: 4px;
-  background: #e2e8f3;
-  display: flex;
-  color: #333333;
-  align-items: center;
-  font-family: Source Han Sans CN;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 38px;
-}
-
-
-.registerNodeBorder {
-  box-sizing: content-box;
-  width: 125px;
-  height: 38px;
-  padding: 0 12px;
-  border-radius: 4px;
-  background: #e2e8f3;
-  display: flex;
-  border: 2px solid #52aEFF;
-  color: #333333;
-  align-items: center;
-  font-family: Source Han Sans CN;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 38px;
-}
-
-.hasErrorRegisterNode{
-  box-sizing: content-box;
-  border: 2px solid rgb(243, 24, 50);
-}
 
 
 .contextMenu5{
-  width: 160px;
+  width: 145px;
   padding: 0 4px;
   border-radius: 4px;
   box-shadow: 0px 1px 2px -2px rgba(0, 0, 0, 0.09), 0px 3px 6px 0px rgba(0, 0, 0, 0.06), 0px 5px 12px 4px rgba(0, 0, 0, 0.03);
@@ -359,20 +305,20 @@
 }
 
 .contextMenu1{
-    width: 160px;
+    width: 145px;
     padding: 0 4px;
     border-radius: 4px;
     box-shadow: 0px 1px 2px -2px rgba(0, 0, 0, 0.09), 0px 3px 6px 0px rgba(0, 0, 0, 0.06), 0px 5px 12px 4px rgba(0, 0, 0, 0.03);
     background-color: #fff;
     position: absolute;
     top: -60%;
-    right: 10%;
+    right: 30%;
     transform: translate(100%, 100%);
     cursor: pointer;
 }
 
 .contextMenu2{
-    width: 160px;
+    width: 145px;
     padding: 0 4px;
     border-radius: 4px;
     box-shadow: 0px 1px 2px -2px rgba(0, 0, 0, 0.09), 0px 3px 6px 0px rgba(0, 0, 0, 0.06), 0px 5px 12px 4px rgba(0, 0, 0, 0.03);

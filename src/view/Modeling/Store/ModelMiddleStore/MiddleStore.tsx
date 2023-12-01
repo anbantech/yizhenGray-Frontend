@@ -463,7 +463,7 @@ const MiddleStore = create<RFState>((set, get) => ({
 
   // 根据id更新节点和边
   baseOnUpdateNodeAndEdge: (preParentId, parentId, id, rightArrributesInfo) => {
-    const { nodes, expandNode, saveCanvas, platform_id, getChildernNums } = get()
+    const { nodes, expandNode, saveCanvas, platform_id } = get()
 
     const hasThisNode = nodes.some((item: Node) => item.id === String(id))
 
@@ -492,7 +492,7 @@ const MiddleStore = create<RFState>((set, get) => ({
       id: `${parentId}->${id}`,
       source: String(parentId),
       target: String(id),
-      type: getChildernNums(parentId) > 0 ? 'smoothstep' : 'straight'
+      type: 'smoothstep'
     }
 
     const updatedNodes = get().nodes.filter((item: { id: string }) => item.id !== String(id))

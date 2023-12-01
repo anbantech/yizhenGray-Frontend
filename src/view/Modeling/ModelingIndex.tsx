@@ -35,7 +35,6 @@ function ModelingIndex() {
   const params = useNewModelingStore(state => state.params)
   const loading = useNewModelingStore(state => state.loading)
   const total = useNewModelingStore(state => state.total)
-
   const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
 
   // 关键字搜索
@@ -133,6 +132,13 @@ function ModelingIndex() {
   useEffect(() => {
     getModelTargetList()
   }, [getModelTargetList, params])
+
+  useEffect(() => {
+    return () => {
+      initParams()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // 表格cloumn
   const columns = [

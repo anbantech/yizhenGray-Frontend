@@ -39,7 +39,7 @@ function CustomTargetNode(Node: NodeProps) {
     return isExpand
   }, [Node])
 
-  const style = classNames({ [styles.targetNode]: !foucusStatus }, { [styles.targetNodeBorder]: foucusStatus })
+  const style = classNames({ [styles.borderNone]: !foucusStatus || !isOpen }, { [styles.borderShow]: foucusStatus || isOpen })
   const handleContextMenu = React.useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault()
     e.stopPropagation()
@@ -48,8 +48,10 @@ function CustomTargetNode(Node: NodeProps) {
   return (
     <>
       <div className={style}>
-        <Handle className={styles.handle} type='source' position={Node.sourcePosition || Position.Bottom} />
-        {Node.data.label}
+        <div className={styles.targetNode}>
+          <Handle className={styles.handle} type='source' position={Node.sourcePosition || Position.Bottom} />
+          {Node.data.label}
+        </div>
       </div>
       {NodeNums > 0 ? (
         <div

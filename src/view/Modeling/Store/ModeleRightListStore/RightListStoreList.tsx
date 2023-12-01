@@ -49,8 +49,8 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
       const res = await getDataHandlerDetails(id)
       if (res.data) {
         set({ rightArrributes: res.data })
-        if (Object.keys(res.data.register)?.length !== 0) {
-          set({ register: [res.data.register] })
+        if (res.data.register !== 0) {
+          set({ register: res.data.register })
         }
       }
     } catch (error) {
@@ -477,7 +477,6 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     const res = await updatePeripherals(peripheral.id as string, params)
     if (res.data && platform_id) {
       updateRegisterNodeDraw(res.data)
-
       getListFn(res.data.variety === 0 ? 'customMadePeripheral' : 'boardLevelPeripherals', +platform_id)
     }
   },
@@ -504,13 +503,13 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
         (register.set_value.value as string)?.trim().length % 2 === 0
           ? register.set_value.value
           : register.set_value.value
-          ? `0x${register.set_value.value}`
+          ? `0${register.set_value.value}`
           : null,
       restore_value:
         (register.restore_value.value as string)?.trim().length % 2 === 0
           ? register.restore_value.value
           : register.restore_value.value
-          ? `0x${register.restore_value.value}`
+          ? `0${register.restore_value.value}`
           : null
     }
 
