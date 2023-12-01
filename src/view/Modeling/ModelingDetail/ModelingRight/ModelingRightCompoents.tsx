@@ -330,7 +330,7 @@ const ProcessorDetailsAttributes = () => {
                 updateOnceFormValue(value, '数据处理器', 'algorithm')
               }}
               onClear={() => {
-                updateOnceFormValue([], '数据处理器', 'algorithm')
+                updateOnceFormValue('', '数据处理器', 'algorithm')
                 clearValue()
               }}
             >
