@@ -15,6 +15,7 @@ function PherilarlCustomNode(Node: NodeProps) {
   const foucusStatus = React.useMemo(() => {
     return focusNodeId === Node.data.id
   }, [focusNodeId, Node])
+
   const isOpen = useMemo(() => {
     const idBol = menuStatusObj.id === Node.data.id
     return idBol && menuStatusObj.status
@@ -40,8 +41,8 @@ function PherilarlCustomNode(Node: NodeProps) {
 
   const style = classNames(
     { [styles.hasErrorRegisterNode]: hasError },
-    { [styles.pherilarNode]: !foucusStatus },
-    { [styles.pherilarNodeBorder]: foucusStatus }
+    { [styles.borderNone]: !foucusStatus || !isOpen },
+    { [styles.borderShow]: foucusStatus || isOpen }
   )
 
   const menuLoookStyle = classNames({ [styles.menuPostion]: isOpen })
@@ -49,13 +50,15 @@ function PherilarlCustomNode(Node: NodeProps) {
   return (
     <div className={menuLoookStyle}>
       <div className={style}>
-        {/* <NodeBar isOpen={isOpen} Node={Node} /> */}
-        <Handle className={styles.handle} type='target' position={Node.targetPosition || Position.Top} />
-        <Handle className={styles.handle} type='source' position={Node.sourcePosition || Position.Bottom} />
-        <div className={styles.label}>
-          {' '}
-          <IconPeripheral style={{ width: '14px', height: '14px', color: '#Ffffff' }} />
-          <span className={styles.labelName}> {Node.data.label}</span>
+        <div className={styles.pherilarNode}>
+          {/* <NodeBar isOpen={isOpen} Node={Node} /> */}
+          <Handle className={styles.handle} type='target' position={Node.targetPosition || Position.Top} />
+          <Handle className={styles.handle} type='source' position={Node.sourcePosition || Position.Bottom} />
+          <div className={styles.label}>
+            {' '}
+            <IconPeripheral style={{ width: '14px', height: '14px', color: '#Ffffff' }} />
+            <span className={styles.labelName}> {Node.data.label}</span>
+          </div>
         </div>
       </div>
       {NodeNums !== 0 ? (

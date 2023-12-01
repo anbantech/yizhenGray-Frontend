@@ -41,18 +41,20 @@ function CustomRegisterNode(Node: NodeProps) {
 
   const style = classNames(
     { [styles.hasErrorRegisterNode]: hasError },
-    { [styles.registerNode]: !foucusStatus },
-    { [styles.registerNodeBorder]: foucusStatus }
+    { [styles.borderNone]: !foucusStatus || !isOpen },
+    { [styles.borderShow]: foucusStatus || isOpen }
   )
   return (
     <>
       <div className={style}>
-        <Handle className={styles.handle} type='target' position={Node.targetPosition || Position.Top} />
-        <Handle className={styles.handle} type='source' position={Node.sourcePosition || Position.Bottom} />
-        <div className={styles.label}>
-          {' '}
-          <IconYifuRegister style={{ width: '14px', height: '14px', color: '#333333' }} />
-          <span className={styles.labelName}> {Node.data.label}</span>
+        <div className={styles.registerNode}>
+          <Handle className={styles.handle} type='target' position={Node.targetPosition || Position.Top} />
+          <Handle className={styles.handle} type='source' position={Node.sourcePosition || Position.Bottom} />
+          <div className={styles.label}>
+            {' '}
+            <IconYifuRegister style={{ width: '14px', height: '14px', color: '#333333' }} />
+            <span className={styles.labelName}> {Node.data.label}</span>
+          </div>
         </div>
       </div>
       {NodeNums !== 0 ? (

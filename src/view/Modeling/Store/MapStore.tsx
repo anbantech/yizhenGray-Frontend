@@ -106,6 +106,19 @@ const titleFlagMap = {
   4: ['删除定时器', '是否确认删除定时器']
 }
 
+function comparePeripheralIds(id1: string, id2: string) {
+  const normalizedId1 = id1.charAt(0).toLowerCase()
+  const normalizedId2 = id2.charAt(0).toLowerCase()
+
+  if (normalizedId1 < normalizedId2) {
+    return -1
+  }
+  if (normalizedId1 > normalizedId2) {
+    return 1
+  }
+  return 0
+}
+
 // 后端接口返回数据结构不统一 , 无法确定ts接口定义 返回
 const AssembleDataHandlerFn = (data: any, tag: string) => {
   if (tag === '3') {
@@ -118,13 +131,15 @@ const AssembleDataHandlerFn = (data: any, tag: string) => {
           const newNode = { ...item, children: [{ ...element }] }
           if (existingNode) {
             existingNode.children.push(newNode)
+            const res = existingNode.children
+            existingNode.children = res.sort((a: { name: string }, b: { name: string }) => comparePeripheralIds(a.name, b.name))
           } else {
             treeMap.set(item.peripheral.id, { ...item.peripheral, children: [newNode] })
           }
         }
       })
     })
-    const result = [...treeMap.values()]
+    const result = [...treeMap.values()].sort((a: { name: string }, b: { name: string }) => comparePeripheralIds(a.name, b.name))
     return result
   }
   if (tag === '2') {
@@ -134,11 +149,13 @@ const AssembleDataHandlerFn = (data: any, tag: string) => {
       const existingNode = treeMap.get(peripheral.id)
       if (existingNode) {
         existingNode.children.push(item)
+        const res = existingNode.children
+        existingNode.children = res.sort((a: { name: string }, b: { name: string }) => comparePeripheralIds(a.name, b.name))
       } else {
         treeMap.set(peripheral.id, { ...peripheral, children: [item] })
       }
     })
-    const result = [...treeMap.values()]
+    const result = [...treeMap.values()].sort((a: { name: string }, b: { name: string }) => comparePeripheralIds(a.name, b.name))
     return result
   }
   return []

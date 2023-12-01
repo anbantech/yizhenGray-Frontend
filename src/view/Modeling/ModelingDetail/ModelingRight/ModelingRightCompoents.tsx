@@ -524,7 +524,17 @@ const PeripheralDetailsAttributes = () => {
           />
         </Form.Item>
         <Form.Item label='描述'>
-          <Input placeholder={disabledStatus ? '-' : '请输入描述'} value={peripheral.desc.value} disabled={disabledStatus} />
+          <Input
+            placeholder={disabledStatus ? '-' : '请输入描述'}
+            value={peripheral.desc.value}
+            disabled={disabledStatus}
+            onChange={e => {
+              updateOnceFormValue(e.target.value, '外设', 'desc')
+            }}
+            onBlur={e => {
+              onBlurAsyncCheckoutNameFormValues(e.target.value, '外设', 'desc', updatePeripheral, peripheral)
+            }}
+          />
         </Form.Item>
       </Form>
     </div>
@@ -858,7 +868,7 @@ const TimerDetailsAttributes = () => {
         </Form.Item>
         <Form.Item label='间隔' help={period.errorMsg} hasFeedback validateStatus={period.validateStatus}>
           <Input
-            suffix='毫秒'
+            suffix='微秒'
             value={period.value}
             onChange={e => {
               updateOnceFormValue(e.target.value, '定时器', 'period')

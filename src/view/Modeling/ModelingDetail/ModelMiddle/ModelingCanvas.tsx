@@ -163,7 +163,6 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
       setOpenMenu()
       rightAttributeMap(AttributesType[flag as keyof typeof AttributesType], id)
       const res = getParentNode(node)
-
       upDateLeftExpandArrayFn(res)
     },
     [setOpenMenu, rightAttributeMap, getParentNode, upDateLeftExpandArrayFn, setTabs, platform_id]
@@ -235,7 +234,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
           zoomOnDoubleClick={false}
           selectionOnDrag
           panOnScroll
-          elevateNodesOnSelect
+          // elevateNodesOnSelect
           onPaneClick={onPaneClick}
           onNodeContextMenu={onNodeContextMenu}
           // panOnDrag={panOnDrag}

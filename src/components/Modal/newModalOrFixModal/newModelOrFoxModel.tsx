@@ -43,6 +43,7 @@ function ModelModal(props: ModelProps) {
       setDisabledStatus(true)
     }
   }
+
   const closeModal = React.useCallback(() => {
     form.resetFields()
     creatModalOrFixModal(false)
@@ -59,6 +60,7 @@ function ModelModal(props: ModelProps) {
           creatModalOrFixModal(false)
         }
       } catch (error) {
+        setDisabledStatus(true)
         throwErrorMessage(error, { 1004: '该建模任务不存在', 1005: '建模任务名称重复，请修改', 1007: '操作频繁' })
       }
     },
@@ -75,6 +77,7 @@ function ModelModal(props: ModelProps) {
           creatModalOrFixModal(false)
         }
       } catch (error) {
+        setDisabledStatus(true)
         throwErrorMessage(error, { 1004: '该建模任务不存在', 1005: '建模任务名称重复，请修改', 1007: '操作频繁' })
       }
     },
@@ -126,8 +129,8 @@ function ModelModal(props: ModelProps) {
           label='名称'
           validateTrigger={['onBlur']}
           rules={[
-            { required: true, message: '请输入建模任务名称' },
-            { type: 'string', min: 2, max: 20, message: '建模任务名称长度为2到20个字符' },
+            { required: true, message: '请输入名称' },
+            { type: 'string', min: 2, max: 20, message: '名称长度为2到20个字符' },
             {
               validateTrigger: 'onBlur',
               validator(_, value) {
@@ -135,7 +138,7 @@ function ModelModal(props: ModelProps) {
                 if (reg.test(value)) {
                   return Promise.resolve()
                 }
-                return Promise.reject(new Error('建模任务名称由汉字、数字、字母和下划线组成'))
+                return Promise.reject(new Error('名称由汉字、数字、字母和下划线组成'))
               }
             }
           ]}
