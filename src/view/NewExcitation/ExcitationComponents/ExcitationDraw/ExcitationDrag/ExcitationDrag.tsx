@@ -18,7 +18,6 @@ import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import { generateUUID } from 'Src/util/common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import StyleSheet from '../excitationDraw.less'
-import { NoTask } from '../ExcitationDraw'
 
 type DragableType = {
   sender_id: number
@@ -172,48 +171,42 @@ function ExcitationDragMemo({ onChange }: Props) {
       role='time'
       ref={layoutRef}
     >
-      {rightDragList.length > 0 ? (
-        <InfiniteScroll
-          dataLength={rightDragList.length}
-          next={up}
-          onScroll={() => {
-            setMenuId(-1)
-          }}
-          hasMore={hasMoreData}
-          height={height - 50}
-          loader={
-            <p style={{ textAlign: 'center', marginTop: '12px', marginLeft: '20px', width: '208px' }}>
-              <span className={styles.listLine} />
-              <span className={styles.concentList}>内容已经加载完毕</span>
-            </p>
-          }
-          endMessage={
-            <p style={{ textAlign: 'center', marginTop: '12px', marginLeft: '20px', width: '208px' }}>
-              <span className={styles.concentList}>内容已经加载完毕</span>
-            </p>
-          }
-        >
-          <Checkbox.Group style={{ width: '100%' }} onChange={onChanges} value={checkAllList}>
-            {rightDragList?.map((item: any) => {
-              return (
-                <DragableMemo
-                  sender_id={item.sender_id}
-                  setMenuId={setMenuId}
-                  menuId={menuId}
-                  onChange={onChange}
-                  name={item.name}
-                  item={item}
-                  key={item.sender_id}
-                />
-              )
-            })}
-          </Checkbox.Group>
-        </InfiniteScroll>
-      ) : (
-        <div style={{ height, display: 'flex', paddingLeft: '24px', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-          <NoTask />
-        </div>
-      )}
+      <InfiniteScroll
+        dataLength={rightDragList.length}
+        next={up}
+        onScroll={() => {
+          setMenuId(-1)
+        }}
+        hasMore={hasMoreData}
+        height={height - 50}
+        loader={
+          <p style={{ textAlign: 'center', marginTop: '12px', marginLeft: '20px', width: '208px' }}>
+            <span className={styles.listLine} />
+            <span className={styles.concentList}>内容已经加载完毕</span>
+          </p>
+        }
+        endMessage={
+          <p style={{ textAlign: 'center', marginTop: '12px', marginLeft: '20px', width: '208px' }}>
+            <span className={styles.concentList}>内容已经加载完毕</span>
+          </p>
+        }
+      >
+        <Checkbox.Group style={{ width: '100%' }} onChange={onChanges} value={checkAllList}>
+          {rightDragList?.map((item: any) => {
+            return (
+              <DragableMemo
+                sender_id={item.sender_id}
+                setMenuId={setMenuId}
+                menuId={menuId}
+                onChange={onChange}
+                name={item.name}
+                item={item}
+                key={item.sender_id}
+              />
+            )
+          })}
+        </Checkbox.Group>
+      </InfiniteScroll>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import { Skeleton, Tooltip, Tree } from 'antd'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { IconPeripheral, IconYifuRegister, IconDelete, IconCommon, IconClock, IconExclamationTriangleFill } from '@anban/iconfonts'
-import { NoTask } from 'Src/view/NewExcitation/ExcitationComponents/ExcitationDraw/ExcitationDraw'
+import styles from 'Src/view/Project/task/taskList/task.less'
 import StyleSheet from './modelLeft.less'
 import { useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
@@ -93,8 +93,8 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
 
   return (
     <>
-      {listData?.length > 0 ? (
-        <Skeleton loading={loading}>
+      <Skeleton loading={loading}>
+        {listData.length > 0 ? (
           <Tree
             treeData={listData}
             className={StyleSheet.treeItem}
@@ -132,12 +132,13 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
               )
             }}
           />
-        </Skeleton>
-      ) : (
-        <div className={StyleSheet.noList} style={{ height }}>
-          <NoTask />
-        </div>
-      )}
+        ) : (
+          <p style={{ textAlign: 'center', width: '216px' }}>
+            <span className={styles.listLine} />
+            <span className={styles.concentList}>内容已经加载完毕</span>
+          </p>
+        )}
+      </Skeleton>
     </>
   )
 }

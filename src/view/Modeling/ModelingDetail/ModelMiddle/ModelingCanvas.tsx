@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react'
 import { useEventListener } from 'ahooks-v2'
-import ReactFlow, { ReactFlowProvider, Background, Node, Edge, NodeTypes, SelectionMode, BackgroundVariant, getOutgoers } from 'reactflow'
+import ReactFlow, { ReactFlowProvider, Background, Node, Edge, NodeTypes, BackgroundVariant, getOutgoers } from 'reactflow'
 import { useLocation } from 'react-router'
 import DeleteNodeModal from 'Src/components/Modal/nodeDraw/deleteNodeMoal'
 import useAnimatedNodes from '../../ModelingMaterials/useAnimatedNodes'
@@ -41,7 +41,7 @@ type ExpandCollapseExampleProps = {
   edgeStore: Edge[]
   nodeStore: Node[]
 }
-const panOnDrag = [1, 2]
+// const panOnDrag = [1, 2]
 
 function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250, animationDuration = 100 }: ExpandCollapseExampleProps) {
   const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
@@ -238,8 +238,8 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
           elevateNodesOnSelect
           onPaneClick={onPaneClick}
           onNodeContextMenu={onNodeContextMenu}
-          panOnDrag={panOnDrag}
-          selectionMode={SelectionMode.Partial}
+          // panOnDrag={panOnDrag}
+          // selectionMode={SelectionMode.Partial}
           onSelectionChange={onSelectionChange}
           minZoom={0.1}
           maxZoom={Infinity}
