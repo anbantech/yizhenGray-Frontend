@@ -279,7 +279,7 @@ export interface RightFormCheckStoreParams {
     finish: valueParams
     variety: valueParams
     peripheral: any
-    set_cmd: valueParams
+    set_cmd: any
     restore_cmd: valueParams
     set_value: valueParams
     restore_value: valueParams
