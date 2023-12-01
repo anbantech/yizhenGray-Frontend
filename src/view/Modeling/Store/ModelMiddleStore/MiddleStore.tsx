@@ -616,7 +616,6 @@ const MiddleStore = create<RFState>((set, get) => ({
   // 删除节点
   deleteTreeNode: (visibility, node) => {
     const { deleteInfo } = get()
-
     if (node) {
       set({ deleteInfo: { node, visibility } })
     } else {

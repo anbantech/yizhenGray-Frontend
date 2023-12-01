@@ -13,7 +13,7 @@ import {
   updateTimer
 } from 'Src/services/api/modelApi'
 import { RightDetailsAttributesStoreParams, RightFormCheckStoreParams } from '../ModleStore'
-import { rightFormCheckMap, titleMap } from '../MapStore'
+import { clearInfoObj, rightFormCheckMap, titleMap } from '../MapStore'
 import { baseOnUpdateNodeAndEdge, updateRegisterNodeDraw } from '../../ModelingDetail/ModelingRight/ModelingRightCompoents'
 import { useLeftModelDetailsStore } from '../ModelStore'
 
@@ -213,6 +213,7 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
   },
 
   // 寄存器  Register: ['peripheral_id', 'name', 'relative_address', 'kind', 'finish', 'variety']
+
   register: {
     id: null,
     name: { value: '', validateStatus: '', errorMsg: '' },
@@ -339,7 +340,9 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
       )
       return messageInfoFn(item, type, title, '', null, val)
     }
-
+    if (title === '寄存器' && type === 'kind') {
+      set({ register: { ...get().register, ...clearInfoObj } as any })
+    }
     if (type === 'sr_peri_id' && title === '寄存器') {
       if (val) {
         getPeripheralAttributesFn(val as any, 'rightList')
@@ -442,8 +445,11 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
 
     const res = await updateDataHandler(processor.id, params)
 
-    if (res.data && platform_id && processor.peripheral_id.value) {
-      getPeripheralAttributesFn(+processor.peripheral_id.value, 'rightList')
+    if (res.data && platform_id) {
+      if (+processor.peripheral_id.value) {
+        getPeripheralAttributesFn(+processor.peripheral_id.value, 'rightList')
+      }
+
       getListFn('dataHandlerNotReferenced', +platform_id)
     }
 

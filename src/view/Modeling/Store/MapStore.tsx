@@ -162,6 +162,15 @@ const getAllIds = (value: any) => {
   return allIds
 }
 
+const clearInfoObj = {
+  set_cmd: { value: '', validateStatus: '', errorMsg: '' },
+  restore_cmd: { value: '', validateStatus: '', errorMsg: '' },
+  set_value: { value: '', validateStatus: '', errorMsg: '' },
+  restore_value: { value: '', validateStatus: '', errorMsg: '' },
+  sr_peri_id: { value: '', validateStatus: '', errorMsg: '' },
+  sr_id: { value: '', validateStatus: '', errorMsg: '' }
+}
+
 export {
   rightFormCheckMap,
   extractIdsFromTree,
@@ -175,5 +184,6 @@ export {
   AssembleDataHandlerFn,
   titleFlagMap,
   deleteMap,
-  flagTabsType
+  flagTabsType,
+  clearInfoObj
 }
