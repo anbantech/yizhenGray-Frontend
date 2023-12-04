@@ -42,7 +42,7 @@ interface PriceInputProps {
 const RegCompare = (str: string) => {
   // const isOctal = /^0o[0-7]+$/.test(str) || /^0O[0-7]+$/.test(str)
   // const isDecimal = /^\d+$/.test(str)
-  const isHexadecimal = /^0x[\dA-Fa-f]+$/.test(str) || /^0X[\dA-Fa-f]+$/.test(str)
+  const isHexadecimal = /^[\dA-Fa-f]+$/.test(str)
   if (isHexadecimal) {
     return Promise.resolve()
   }
@@ -122,7 +122,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
   const ref = React.useRef<HTMLDivElement>(null)
   const [isDragItem, setCanDrag] = React.useState(true)
   const onValuesChange = React.useCallback((changedValues: any, allValues: any) => {
-    setformData(allValues)
+    setformData({ ...allValues, value: `0x${allValues.value}` })
   }, [])
 
   const onToggleForbidDrag = React.useCallback(() => {
@@ -255,8 +255,9 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
   React.useEffect(() => {
     if (Item.name) {
       const { name, skip, value, context } = Item
-      setformData({ name, skip, value, context })
-      form.setFieldsValue({ name, skip, value, context })
+      const valueSplit = value.split('0x')
+      setformData({ name, skip, value: valueSplit[1], context })
+      form.setFieldsValue({ name, skip, value: valueSplit[1], context })
     }
   }, [form, Item])
 
@@ -357,7 +358,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
   const [formData, setformData] = React.useState<any>({
     type: 'byte',
     name: '',
-    value: 0,
+    value: '',
     context: false,
     skip: true,
     length: 1
@@ -383,7 +384,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
   }, [setCanDrag])
 
   const onValuesChange = React.useCallback((changedValues: any, allValues: any) => {
-    setformData(allValues)
+    setformData({ ...allValues, value: `0x${allValues.value}` })
   }, [])
 
   const [{ isDragging }, drag] = useDrag(
@@ -594,6 +595,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
           >
             <Input
               spellCheck='false'
+              prefix='0x'
               bordered={false}
               className={styles.IntInputValue}
               onFocus={() => {
@@ -627,7 +629,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
   const [formData, setformData] = React.useState<any>({
     name: '',
     type: 'byte_array',
-    value: 0,
+    value: '',
     context: false,
     count: 10,
     skip: true,
@@ -735,8 +737,9 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
   React.useEffect(() => {
     if (Item.name) {
       const { name, skip, value, length, context, count } = Item
-      setformData({ name, skip, value, length, context, count })
-      form.setFieldsValue({ name, skip, value, length, context, count })
+      const valueSplit = value.split('0x')
+      setformData({ name, skip, value: valueSplit[1], length, context, count })
+      form.setFieldsValue({ name, skip, value: valueSplit[1], length, context, count })
     }
   }, [form, Item])
 
@@ -882,6 +885,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
             ]}
           >
             <Input
+              prefix='0x'
               spellCheck='false'
               autoComplete='off'
               bordered={false}
