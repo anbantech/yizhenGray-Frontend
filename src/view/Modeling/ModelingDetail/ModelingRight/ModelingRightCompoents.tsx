@@ -319,10 +319,11 @@ const ProcessorDetailsAttributes = () => {
           </Form.Item>
           <Form.Item label='校验算法'>
             <Select
-              showSearch={Boolean(0)}
               getPopupContainer={() => document.querySelector('#area') as HTMLElement}
-              value={processor.algorithm.value}
+              value={processor.algorithm.value ? processor.algorithm.value : null}
+              showSearch={Boolean(0)}
               allowClear
+              showArrow
               onDropdownVisibleChange={visible => {
                 closeMenu(visible)
               }}

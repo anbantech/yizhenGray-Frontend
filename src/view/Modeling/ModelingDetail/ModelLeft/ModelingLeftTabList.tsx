@@ -119,7 +119,7 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
                       </div>
                     ) : null}
                   </div>
-                  {node.tabs !== 'boardLevelPeripherals' ? (
+                  {node.tabs !== 'boardLevelPeripherals' || [3].includes(node.flag) ? (
                     <IconDelete
                       style={{ color: '#cccccc' }}
                       className={StyleSheet.icon}
