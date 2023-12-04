@@ -54,10 +54,13 @@ function ModelModal(props: ModelProps) {
       try {
         const res: any = await createTarget(params)
         if (res.code === 0) {
-          message.success('创建成功')
-          initParams()
-          initTreeToNodeAndToEedg(res.data.canvas)
-          creatModalOrFixModal(false)
+          const initTreeResult: any = await initTreeToNodeAndToEedg(res.data.canvas)
+          if (initTreeResult.code === 0) {
+            message.success('创建成功')
+            initParams()
+            creatModalOrFixModal(false)
+          }
+          return initTreeResult
         }
       } catch (error) {
         setDisabledStatus(true)

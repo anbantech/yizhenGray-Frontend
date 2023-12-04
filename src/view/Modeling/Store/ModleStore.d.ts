@@ -197,7 +197,7 @@ interface RFState {
     cancel: () => void,
     fn2: (val: string, id: string) => void
   ) => void
-  initTreeToNodeAndToEedg: (initData: any) => void
+  initTreeToNodeAndToEedg: (initData: any, isVersion?: boolean) => void
   zindexNode: (nodeId: string, zIndex: number) => void
   nodeTemplate: (node: NodeProps, parentId: string) => any
   edgeTemplate: (node: NodeProps, source: string, target: string) => any
