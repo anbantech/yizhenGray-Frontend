@@ -220,7 +220,7 @@ const MiddleStore = create<RFState>((set, get) => ({
     })
   },
   // 创建目标机时初始化节点和边 非状态寄存器
-  initTreeToNodeAndToEedg: initData => {
+  initTreeToNodeAndToEedg: (initData, isVersion) => {
     const { saveCanvas } = get()
     const converTreeToNode = (node: NodeProps, parentId: string) => {
       const result = []
@@ -271,7 +271,13 @@ const MiddleStore = create<RFState>((set, get) => ({
       return links
     }
     const edgeArray = converTreeToEdges(initData)
-    saveCanvas(nodeArray, edgeArray, initData.id)
+    if (isVersion) {
+      set({
+        nodes: [...nodeArray],
+        edges: edgeArray
+      })
+    }
+    return saveCanvas(nodeArray, edgeArray, initData.id)
   },
 
   // 保存画布
@@ -300,18 +306,23 @@ const MiddleStore = create<RFState>((set, get) => ({
 
     try {
       const res = await saveCanvasAsync(params)
-      if (res.code === 0) return
+      if (res.code === 0) return res
     } catch (error) {
       throwErrorMessage(error)
+      return error
     }
   },
 
   // 初始化获取画布数据
   getModelDetails: async id => {
     if (!id) return
+    const { initTreeToNodeAndToEedg } = get()
     set({ platform_id: String(id) })
     try {
       const res = await getCanvas(id)
+      if (res.data.version === 0) {
+        return initTreeToNodeAndToEedg(res.data.canvas, true)
+      }
       const deleteString = JSON.parse(res.data.canvas)
       const decompressed = pako.inflate(deleteString, { to: 'string' })
       const result = JSON.parse(decompressed)
@@ -345,6 +356,7 @@ const MiddleStore = create<RFState>((set, get) => ({
       throwErrorMessage(error)
     }
   },
+
   updateRegisterNodeDraw: detailes => {
     const { nodes, expandNode, saveCanvas, platform_id } = get()
     const { peripheral_id, id, name, error_code, flag, kind } = detailes

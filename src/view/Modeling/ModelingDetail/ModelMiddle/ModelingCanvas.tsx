@@ -24,6 +24,7 @@ import { publicAttributes, useLeftModelDetailsStore } from '../../Store/ModelSto
 
 import { getModelListDetails } from '../ModelingRight/ModelingRightCompoents'
 import CustomControls from '../../ModelingMaterials/CustomControls'
+// import CustomMenu from '../../ModelingMaterials/CustomMenu'
 
 const proOptions = { account: 'paid-pro', hideAttribution: true }
 
@@ -50,6 +51,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
   const setTypeDetailsAttributes = RightDetailsAttributesStore(state => state.setTypeDetailsAttributes)
   const onEdgesChange = MiddleStore(state => state.onEdgesChange)
   const onNodesChange = MiddleStore(state => state.onNodesChange)
+
   const upDateNodesAndEdges = MiddleStore(state => state.upDateNodesAndEdges)
   const setMenuStatus = MiddleStore(state => state.setMenuStatus)
   const setOpenMenu = MiddleStore(state => state.setOpenMenu)
@@ -70,6 +72,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
   })
   // console.log(visibleEdges)
   // 获取筛选节点数据
+
   const onNodeContextMenu = useCallback(
     (event, Node) => {
       // Prevent native context menu from showing
