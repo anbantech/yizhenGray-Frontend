@@ -34,7 +34,8 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
   const timerListParams = useLeftModelDetailsStore(state => state.timerListParams)
   const baseKeyWordAndTagsGetList = useLeftModelDetailsStore(state => state.baseKeyWordAndTagsGetList)
   const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
-
+  // 点击节点画布展开
+  const selectIdExpandDrawTree = MiddleStore(state => state.selectIdExpandDrawTree)
   // 删除
   const deleteTreeNode = MiddleStore(state => state.deleteTreeNode)
   const platformsId = (useLocation() as LoactionState).state?.id
@@ -54,9 +55,9 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
   const updataMidleAndRightUI = useCallback(
     item => {
       const { flag } = item
-      rightAttributeMap(AttributesType[flag as keyof typeof AttributesType], item.id)
+      rightAttributeMap(AttributesType[flag as keyof typeof AttributesType], String(item.id), selectIdExpandDrawTree)
     },
-    [rightAttributeMap]
+    [rightAttributeMap, selectIdExpandDrawTree]
   )
 
   const deleteTreeNodeHandle = React.useCallback(
@@ -110,11 +111,26 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
               >
                 {Image[item.flag as keyof typeof Image]}
                 <div>
-                  <span style={{ width: '16px', height: '16px', paddingLeft: '6px', color: item.error_code !== 0 ? 'red' : '' }}>{item.name}</span>
+                  <span
+                    style={{
+                      width: '16px',
+                      height: '16px',
+                      paddingLeft: '6px',
+                      color: item.error_code !== 0 ? 'red' : ''
+                    }}
+                  >
+                    {item.name}
+                  </span>
                   {item?.error_code ? (
                     <Tooltip title={errorCodeMapFn(item.error_code, item)} color='red' placement='right'>
                       {' '}
-                      <IconExclamationTriangleFill style={{ color: 'red', paddingLeft: '2px', paddingTop: 3 }} />
+                      <IconExclamationTriangleFill
+                        style={{
+                          color: 'red',
+                          paddingLeft: '2px',
+                          paddingTop: 3
+                        }}
+                      />
                     </Tooltip>
                   ) : null}
                 </div>
