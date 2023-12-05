@@ -298,7 +298,7 @@ const ProcessorDetailsAttributes = () => {
               }}
             />
           </Form.Item>
-          <Form.Item label='帧尾'>
+          <Form.Item label='帧尾' help={processor.eof.errorMsg} hasFeedback validateStatus={processor.eof.validateStatus}>
             <Input
               value={processor.eof.value}
               placeholder='请输入帧尾'

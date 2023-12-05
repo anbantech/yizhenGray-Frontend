@@ -448,7 +448,14 @@ const MiddleStore = create<RFState>((set, get) => ({
           type: 'smoothstep'
         }
         set({
-          nodes: [...updatedNodes, newNode],
+          nodes: [...updatedNodes, newNode].map((Node1: Node) => {
+            const matchingItem = ((error_code as unknown) as any).find((item2: any) => Node1.id === String(item2.id))
+            if (matchingItem) {
+              // eslint-disable-next-line no-param-reassign
+              Node1.data.error_code = matchingItem.error_code
+            }
+            return Node1
+          }),
           edges: [...updatedEdges, newEdge]
         })
         expandNode([String(flag === 1 ? platform_id : peripheral_id), String(id)])
@@ -478,7 +485,14 @@ const MiddleStore = create<RFState>((set, get) => ({
 
         const updatedEdges = get().edges.filter((item: { source: string }) => item.source !== String(id))
         set({
-          nodes: [...updatedNodes],
+          nodes: [...updatedNodes].map((Node1: Node) => {
+            const matchingItem = ((error_code as unknown) as any).find((item2: any) => Node1.id === String(item2.id))
+            if (matchingItem) {
+              // eslint-disable-next-line no-param-reassign
+              Node1.data.error_code = matchingItem.error_code
+            }
+            return Node1
+          }),
           edges: [...updatedEdges]
         })
         expandNode([String(flag === 1 ? platform_id : peripheral_id), String(id)])
