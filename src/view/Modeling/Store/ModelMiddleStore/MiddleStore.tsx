@@ -369,7 +369,7 @@ const MiddleStore = create<RFState>((set, get) => ({
     const { peripheral_id, id, name, error_code, flag, kind } = detailes
 
     if (flag === 1) {
-      const hasThisNode = nodes.some((item: Node) => name === item.data.label && error_code === item.data.error_code)
+      const hasThisNode = nodes.some((item: Node) => name === item.data.label)
       if (hasThisNode) return
       const updatedNodes = get().nodes.filter((item: { id: string }) => item.id !== String(id))
       const updatedEdges = get().edges.filter((item: { target: string }) => item.target !== String(id))
@@ -380,7 +380,7 @@ const MiddleStore = create<RFState>((set, get) => ({
           parentId: String(flag === 1 ? platform_id : peripheral_id),
           builtIn: false,
           expanded: false,
-          error_code,
+          error_code: 0,
           position: { x: 0, y: 0 },
           draggable: false,
           flag
@@ -400,7 +400,14 @@ const MiddleStore = create<RFState>((set, get) => ({
         type: 'smoothstep'
       }
       set({
-        nodes: [...updatedNodes, newNode],
+        nodes: [...updatedNodes, newNode].map((Node1: Node) => {
+          const matchingItem = ((error_code as unknown) as any).find((item2: any) => Node1.id === String(item2.id))
+          if (matchingItem) {
+            // eslint-disable-next-line no-param-reassign
+            Node1.data.error_code = matchingItem.error_code
+          }
+          return Node1
+        }),
         edges: [...updatedEdges, newEdge]
       })
       expandNode([String(flag === 1 ? platform_id : peripheral_id), String(id)])
@@ -494,7 +501,7 @@ const MiddleStore = create<RFState>((set, get) => ({
         parentId: String(parentId),
         builtIn: false,
         expanded: false,
-        error_code: rightArrributesInfo.error_code,
+        error_code: 0,
         position: { x: 0, y: 0 },
         draggable: false,
         flag: 3
@@ -526,7 +533,14 @@ const MiddleStore = create<RFState>((set, get) => ({
 
     if (parentId && !hasThisNode) {
       set({
-        nodes: [...get().nodes, newNode],
+        nodes: [...get().nodes, newNode].map((Node1: Node) => {
+          const matchingItem = ((rightArrributesInfo.error_code as unknown) as any).find((item2: any) => Node1.id === String(item2.id))
+          if (matchingItem) {
+            // eslint-disable-next-line no-param-reassign
+            Node1.data.error_code = matchingItem.error_code
+          }
+          return Node1
+        }),
         edges: [...get().edges, newEdge]
       })
     }

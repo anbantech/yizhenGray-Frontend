@@ -649,6 +649,9 @@ const RegisterDetailsAttributes = () => {
         onChange={(value: string) => {
           fn(value, title, type)
         }}
+        onDropdownVisibleChange={visible => {
+          closeMenu(visible)
+        }}
       >
         {REGISTER_CMD?.map(rate => {
           return (
@@ -670,7 +673,7 @@ const RegisterDetailsAttributes = () => {
               placeholder='请选择所属外设'
               showSearch={Boolean(0)}
               onDropdownVisibleChange={visible => {
-                closeMenu(visible)
+                closeMenu(visible, 'peripheral_id')
               }}
               onChange={value => {
                 updateOnceFormValue(value as string, '寄存器', 'peripheral_id')
