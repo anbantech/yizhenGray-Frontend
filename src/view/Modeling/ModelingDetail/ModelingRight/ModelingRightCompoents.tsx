@@ -677,7 +677,7 @@ const RegisterDetailsAttributes = () => {
               disabled={isCustomMadePeripheralOrboardPeripheralNums}
             />
           </Form.Item>
-          <Form.Item label='偏移地址'>
+          <Form.Item label='偏移地址' help={relative_address.errorMsg} hasFeedback validateStatus={relative_address.validateStatus}>
             <Input
               prefix='0x'
               value={relative_address.value}
