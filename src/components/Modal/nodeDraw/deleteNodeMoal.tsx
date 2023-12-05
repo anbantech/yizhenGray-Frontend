@@ -6,6 +6,7 @@ import styles from 'Src/components/Modal/newModalOrFixModal/modelingModal.less'
 import { deleteConrolsFn } from 'Src/services/api/modelApi'
 
 import { deleteMap } from 'Src/view/Modeling/Store/MapStore'
+import { MiddleStore } from 'Src/view/Modeling/Store/ModelMiddleStore/MiddleStore'
 
 interface ModelProps {
   visibility: boolean
@@ -18,6 +19,7 @@ function DeleteNodeModal(props: ModelProps) {
   const { visibility, deleteInfo, onNodesDelete, deleteTreeNode } = props
   const { node } = deleteInfo
   const [loading, setLoading] = React.useState(false)
+  const platform_id = MiddleStore(state => state.platform_id)
   const filterNode = (data: any) => {
     const allIds = new Set(data.map((item: { id: string }) => item.id))
     const flagIdObject: { [key: string]: string[] } = {}
@@ -54,7 +56,7 @@ function DeleteNodeModal(props: ModelProps) {
   const asyncDeleteControlsFn = React.useCallback(async () => {
     const params = filterNode(node.node)
     try {
-      const response = await deleteConrolsFn(params)
+      const response = await deleteConrolsFn({ ...params, platform_id })
       setLoading(true)
       if (response.code === 0) {
         setLoading(false)
@@ -68,7 +70,7 @@ function DeleteNodeModal(props: ModelProps) {
       message.error('删除失败')
       setLoading(false)
     }
-  }, [deleteTreeNode, node.node, onNodesDelete])
+  }, [deleteTreeNode, node.node, onNodesDelete, platform_id])
 
   return (
     <Modal
