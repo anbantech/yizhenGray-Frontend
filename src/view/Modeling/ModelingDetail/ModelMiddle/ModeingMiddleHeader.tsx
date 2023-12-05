@@ -165,6 +165,7 @@ const PeripheralsForm = () => {
   const KindValue = useMemo(() => {
     return optionalParameters.kind?.value
   }, [optionalParameters])
+
   const [form] = Form.useForm()
 
   const { checkNameFormat, checkNameLength, checkHex } = checkUtilFnStore()
@@ -194,7 +195,7 @@ const PeripheralsForm = () => {
             placeholder='请选择类型'
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
             onChange={value => {
-              onChange('kind', `${value}`, '类型')
+              onChange('kind', value as string, '类型')
             }}
           >
             {PERIPHERAL_TYPE?.map((rate: any) => {
@@ -493,8 +494,9 @@ const HeaderBarMemo = () => {
         }
       } catch (error) {
         if (error.code) {
-          throwErrorMessage(error, { 7025: '请先点击生成脚本,然后再尝试下载' })
+          return throwErrorMessage(error, { 7025: '请先点击生成脚本,然后再尝试下载' })
         }
+        message.error('网络连接失败,请检查网络')
       }
     },
     [platform_id]

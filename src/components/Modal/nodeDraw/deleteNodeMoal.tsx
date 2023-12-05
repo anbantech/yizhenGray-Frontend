@@ -10,7 +10,7 @@ import { MiddleStore } from 'Src/view/Modeling/Store/ModelMiddleStore/MiddleStor
 
 interface ModelProps {
   visibility: boolean
-  onNodesDelete: (node: Node[]) => void
+  onNodesDelete: (node: Node[], error_codeArray?: { error_code: number; id: string }[]) => void
   deleteTreeNode: any
   deleteInfo: any
 }
@@ -64,7 +64,7 @@ function DeleteNodeModal(props: ModelProps) {
         if (node.node.flag !== 4) {
           deleteTreeNode(false)
         }
-        onNodesDelete(node.node)
+        onNodesDelete(node.node, response.data.error_code)
       }
     } catch {
       message.error('删除失败')

@@ -47,7 +47,13 @@ const isFinish = [
   { label: 'True', value: true }
 ]
 
-export const { saveCanvasAndUpdateNodeName, upDateLeftExpandArrayFn, baseOnUpdateNodeAndEdge, updateRegisterNodeDraw } = MiddleStore.getState()
+export const {
+  saveCanvasAndUpdateNodeName,
+  upDateLeftExpandArrayFn,
+  baseOnUpdateNodeAndEdge,
+  updateRegisterNodeDraw,
+  updateNodeAttributeInfo
+} = MiddleStore.getState()
 
 // 更新名称 左侧列表更新
 export const { getModelListDetails } = useLeftModelDetailsStore.getState()
@@ -198,21 +204,24 @@ const ProcessorDetailsAttributes = () => {
     },
     [processor, updateOnceFormValue]
   )
-  const closeMenu = (visible: boolean) => {
+  const closeMenu = (visible: boolean, type?: string) => {
     if (!visible) {
-      updateProcessor()
+      updateProcessor(type)
     }
   }
 
-  const clearValue = React.useCallback(() => {
-    updateProcessor()
-  }, [updateProcessor])
+  const clearValue = React.useCallback(
+    (type?: string) => {
+      updateProcessor(type)
+    },
+    [updateProcessor]
+  )
 
   // 获取非状态寄存器
   const closeMenuAndGetRegisterList = React.useCallback(
     async (visible: boolean) => {
       if (!visible) {
-        updateProcessor()
+        updateProcessor('peripheral_id')
       }
       if (platform_id && visible) getAll(+platform_id)
     },
@@ -245,7 +254,7 @@ const ProcessorDetailsAttributes = () => {
                 updateOnceFormValue(value, '数据处理器', 'port')
               }}
               onDropdownVisibleChange={visible => {
-                closeMenu(visible)
+                closeMenu(visible, 'port')
               }}
             >
               {
@@ -265,6 +274,7 @@ const ProcessorDetailsAttributes = () => {
           <Form.Item label='中断号' help={processor.interrupt.errorMsg} hasFeedback validateStatus={processor.interrupt.validateStatus}>
             <Input
               value={processor.interrupt.value}
+              placeholder='请输入中断号'
               onChange={e => {
                 updateOnceFormValue(e.target.value, '数据处理器', 'interrupt')
               }}
@@ -278,6 +288,7 @@ const ProcessorDetailsAttributes = () => {
           <span className={StyleSheet.spanTitle}>数据加工与输出格式编排</span>
           <Form.Item label='帧头' help={processor.sof.errorMsg} hasFeedback validateStatus={processor.sof.validateStatus}>
             <Input
+              placeholder='请输入帧头'
               value={processor.sof.value}
               onChange={e => {
                 updateOnceFormValue(e.target.value, '数据处理器', 'sof')
@@ -290,6 +301,7 @@ const ProcessorDetailsAttributes = () => {
           <Form.Item label='帧尾'>
             <Input
               value={processor.eof.value}
+              placeholder='请输入帧尾'
               onChange={e => {
                 updateOnceFormValue(e.target.value, '数据处理器', 'eof')
               }}
@@ -301,6 +313,7 @@ const ProcessorDetailsAttributes = () => {
           <Form.Item label='帧长度元素'>
             <Select
               showSearch={Boolean(0)}
+              placeholder='请选择帧长度元素'
               allowClear
               value={framing_lengthValue}
               onDropdownVisibleChange={visible => {
@@ -319,6 +332,7 @@ const ProcessorDetailsAttributes = () => {
           </Form.Item>
           <Form.Item label='校验算法'>
             <Select
+              placeholder='请选择校验算法'
               getPopupContainer={() => document.querySelector('#area') as HTMLElement}
               value={processor.algorithm.value ? processor.algorithm.value : null}
               showSearch={Boolean(0)}
@@ -346,6 +360,7 @@ const ProcessorDetailsAttributes = () => {
           </Form.Item>
           <Form.Item label='校验子项' tooltip='按照校验顺序指定要校验的子项'>
             <Select
+              placeholder='请选择校验子项'
               onClear={() => {
                 updateOnceFormValue([], '数据处理器', 'checksum_member')
                 clearValue()
@@ -367,6 +382,7 @@ const ProcessorDetailsAttributes = () => {
             <Select
               showSearch={Boolean(0)}
               allowClear
+              placeholder='请选择输出帧结构'
               onClear={() => {
                 updateOnceFormValue([], '数据处理器', 'framing_member')
                 clearValue()
@@ -387,6 +403,7 @@ const ProcessorDetailsAttributes = () => {
           <span className={StyleSheet.spanTitle}>数据加工与输出格式编排</span>
           <Form.Item label='外设'>
             <Select
+              placeholder='请选择外设'
               value={processor.peripheral_id.value}
               showSearch={Boolean(0)}
               allowClear
@@ -395,7 +412,7 @@ const ProcessorDetailsAttributes = () => {
               }}
               onClear={() => {
                 updateOnceFormValue('', '数据处理器', 'peripheral_id')
-                clearValue()
+                clearValue('peripheral_id')
               }}
               onDropdownVisibleChange={visible => {
                 closeMenuAndGetRegisterList(visible)
@@ -412,6 +429,7 @@ const ProcessorDetailsAttributes = () => {
           </Form.Item>
           <Form.Item label='寄存器'>
             <Select
+              placeholder='请选择寄存器'
               value={processor.register_id.value}
               disabled={!resgiedDisabled}
               onClear={() => {
@@ -422,7 +440,7 @@ const ProcessorDetailsAttributes = () => {
                 updateOnceFormValue(value as string, '数据处理器', 'register_id')
               }}
               onDropdownVisibleChange={visible => {
-                closeMenu(visible)
+                closeMenu(visible, 'register_id')
               }}
             >
               {notRegsiterList?.map((rate: any) => {
@@ -524,11 +542,16 @@ const PeripheralDetailsAttributes = () => {
             disabled={disabledStatus}
           />
         </Form.Item>
-        <Form.Item label='描述'>
-          <Input
+        <Form.Item label='描述' help={peripheral.desc.errorMsg} hasFeedback validateStatus={peripheral.desc.validateStatus}>
+          <TextArea
             placeholder={disabledStatus ? '-' : '请输入描述'}
             value={peripheral.desc.value}
             disabled={disabledStatus}
+            showCount={{
+              formatter({ count }) {
+                return `${count}/50`
+              }
+            }}
             onChange={e => {
               updateOnceFormValue(e.target.value, '外设', 'desc')
             }}
@@ -605,9 +628,9 @@ const RegisterDetailsAttributes = () => {
     updateRegister()
   }
 
-  const closeMenu = (visible: boolean) => {
+  const closeMenu = (visible: boolean, type?: string) => {
     if (!visible) {
-      updateRegister()
+      updateRegister(type)
     }
   }
 
@@ -618,6 +641,7 @@ const RegisterDetailsAttributes = () => {
         onClear={() => {
           clearValue(title, type)
         }}
+        showArrow
         showSearch={Boolean(0)}
         allowClear
         value={values}
@@ -745,7 +769,7 @@ const RegisterDetailsAttributes = () => {
                 showSearch={Boolean(0)}
                 allowClear
                 onDropdownVisibleChange={visible => {
-                  closeMenu(visible)
+                  closeMenu(visible, 'sr_peri_id')
                 }}
                 onChange={value => {
                   updateOnceFormValue(value as string, '寄存器', 'sr_peri_id')
@@ -773,7 +797,7 @@ const RegisterDetailsAttributes = () => {
                 allowClear
                 value={sr_id.value}
                 onDropdownVisibleChange={visible => {
-                  closeMenu(visible)
+                  closeMenu(visible, 'sr_id')
                 }}
                 onChange={value => {
                   updateOnceFormValue(value as string, '寄存器', 'sr_id')
@@ -798,17 +822,19 @@ const RegisterDetailsAttributes = () => {
                   操作数
                 </span>
               </div>
-              <Input
-                prefix='0x'
-                addonBefore={<SelectBefore title='寄存器' type='set_cmd' values={set_cmd.value as string} fn={updateOnceFormValue} />}
-                value={set_value.value}
-                onChange={e => {
-                  checkoutBase_addreeAndLength(e.target.value, '寄存器', 'set_value', checkHex)
-                }}
-                onBlur={e => {
-                  onBlurAsyncCheckoutNameFormValues(e.target.value, '寄存器', 'set_value', updateRegister, register)
-                }}
-              />
+              <Form.Item help={set_value.errorMsg} hasFeedback validateStatus={set_value.validateStatus}>
+                <Input
+                  prefix='0x'
+                  addonBefore={<SelectBefore title='寄存器' type='set_cmd' values={set_cmd.value as string} fn={updateOnceFormValue} />}
+                  value={set_value.value}
+                  onChange={e => {
+                    checkoutBase_addreeAndLength(e.target.value, '寄存器', 'set_value', checkHex)
+                  }}
+                  onBlur={e => {
+                    onBlurAsyncCheckoutNameFormValues(e.target.value, '寄存器', 'set_value', updateRegister, register)
+                  }}
+                />
+              </Form.Item>
             </div>
             <div className={StyleSheet.footerFormTop}>
               <div className={StyleSheet.footerFormChart}>
@@ -817,18 +843,20 @@ const RegisterDetailsAttributes = () => {
                   操作数
                 </span>
               </div>
-              <Input
-                prefix='0x'
-                style={{ borderRadius: 4 }}
-                addonBefore={<SelectBefore title='寄存器' type='restore_cmd' values={restore_cmd.value as string} fn={updateOnceFormValue} />}
-                value={restore_value.value}
-                onChange={e => {
-                  checkoutBase_addreeAndLength(e.target.value, '寄存器', 'restore_value', checkHex)
-                }}
-                onBlur={e => {
-                  onBlurAsyncCheckoutNameFormValues(e.target.value, '寄存器', 'restore_value', updateRegister, register)
-                }}
-              />
+              <Form.Item help={restore_value.errorMsg} hasFeedback validateStatus={restore_value.validateStatus}>
+                <Input
+                  prefix='0x'
+                  style={{ borderRadius: 4 }}
+                  addonBefore={<SelectBefore title='寄存器' type='restore_cmd' values={restore_cmd.value as string} fn={updateOnceFormValue} />}
+                  value={restore_value.value}
+                  onChange={e => {
+                    checkoutBase_addreeAndLength(e.target.value, '寄存器', 'restore_value', checkHex)
+                  }}
+                  onBlur={e => {
+                    onBlurAsyncCheckoutNameFormValues(e.target.value, '寄存器', 'restore_value', updateRegister, register)
+                  }}
+                />
+              </Form.Item>
             </div>
           </>
         )}
@@ -870,6 +898,7 @@ const TimerDetailsAttributes = () => {
         <Form.Item label='间隔' help={period.errorMsg} hasFeedback validateStatus={period.validateStatus}>
           <Input
             suffix='微秒'
+            placeholder='请输入间隔'
             value={period.value}
             onChange={e => {
               updateOnceFormValue(e.target.value, '定时器', 'period')

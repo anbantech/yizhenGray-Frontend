@@ -185,7 +185,14 @@ const MiddleStore = create<RFState>((set, get) => ({
       source: String(parentId),
       target: String(node.id)
     }
-    const nodesOBJ = [...get().nodes, newNode]
+    const nodesOBJ = [...get().nodes, newNode].map((Node1: Node) => {
+      const matchingItem = ((node.error_code as unknown) as { error_code: number; id: string }[]).find((item2: any) => Node1.id === String(item2.id))
+      if (matchingItem) {
+        // eslint-disable-next-line no-param-reassign
+        Node1.data.error_code = matchingItem.error_code
+      }
+      return Node1
+    })
     const edgesOBJ = [...get().edges, newEdge]
     saveCanvas(nodesOBJ, edgesOBJ, platform_id as string)
     set({
@@ -633,6 +640,27 @@ const MiddleStore = create<RFState>((set, get) => ({
     } else {
       set({ deleteInfo: { ...deleteInfo, visibility } })
     }
+  },
+
+  // 更新节点属性
+  updateNodeAttributeInfo: (Details: Record<string, any>) => {
+    const { saveCanvas, platform_id } = get()
+    const { error_code, name, id } = Details
+    set({
+      nodes: get().nodes.map((Node1: Node) => {
+        if (String(id) === Node1.id && Node1.data.label !== name) {
+          // eslint-disable-next-line no-param-reassign
+          Node1.data.label = name
+        }
+        const matchingItem = error_code.find((item2: any) => Node1.id === String(item2.id))
+        if (matchingItem) {
+          // eslint-disable-next-line no-param-reassign
+          Node1.data.error_code = matchingItem.error_code
+        }
+        return Node1
+      })
+    })
+    saveCanvas([...get().nodes], [...get().edges], platform_id as string)
   }
 }))
 

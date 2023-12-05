@@ -84,7 +84,6 @@ export function updateOneExcitaionList(id: number, params: UpdateOneExcitaionLis
 }
 
 //  更新激励单元
-
 export function updatTwoExcitaionList(id: number, params: ExcitationParams) {
   return request.put<any>(`/api/v1.0/temp_and_sti/update/single/${id}`, params)
 }

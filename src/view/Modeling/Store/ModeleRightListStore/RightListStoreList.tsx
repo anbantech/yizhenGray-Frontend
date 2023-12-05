@@ -14,7 +14,7 @@ import {
 } from 'Src/services/api/modelApi'
 import { RightDetailsAttributesStoreParams, RightFormCheckStoreParams } from '../ModleStore'
 import { clearInfoObj, rightFormCheckMap, titleMap } from '../MapStore'
-import { baseOnUpdateNodeAndEdge, updateRegisterNodeDraw } from '../../ModelingDetail/ModelingRight/ModelingRightCompoents'
+import { baseOnUpdateNodeAndEdge, updateNodeAttributeInfo, updateRegisterNodeDraw } from '../../ModelingDetail/ModelingRight/ModelingRightCompoents'
 import { useLeftModelDetailsStore } from '../ModelStore'
 
 const getListFn = useLeftModelDetailsStore.getState().getList
@@ -142,6 +142,8 @@ const getPeripheralAttributesFn = RightDetailsAttributesStore.getState().getPeri
 
 const updateRegisterFn = RightDetailsAttributesStore.getState().updateRegister
 
+// const rightArrributesData = RightDetailsAttributesStore.getState().rightArrributes
+
 // 右侧表单校验
 const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
   // 目标机id
@@ -249,12 +251,15 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
   frontendCheckoutName: (val, title, type, fn1, fn2) => {
     const item = titleMap[title as keyof typeof titleMap]
     const { messageInfoFn } = get()
+    if (!val) {
+      return messageInfoFn(item, type, title, 'error', `请输入${title}名称`, val)
+    }
     if (!fn1(val)) {
       return messageInfoFn(item, type, title, 'error', '名称长度在2-20个字符之间', val)
     }
 
     if (!fn2(val)) {
-      return messageInfoFn(item, type, title, 'error', '名称由数字、字母和下划线组成,不能以数字开头', val)
+      return messageInfoFn(item, type, title, 'error', '名称以字母或下划线开头，并仅限使用字母、数字和下划线', val)
     }
 
     messageInfoFn(item, type, title, 'success', null, val)
@@ -275,9 +280,13 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     const { checkEveryItemIsError, messageInfoFn } = get()
     const item = titleMap[title as keyof typeof titleMap]
     if (val.length === 0) return
+    if (type === 'desc' && val.length > 50) {
+      console.log('22')
+      return messageInfoFn(item, type, title, 'error', '字数不能超过50个', val)
+    }
     if (!checkEveryItemIsError(title)) {
       messageInfoFn(item, type, title, '', null, val)
-      fn1()
+      fn1(type)
     }
   },
 
@@ -340,9 +349,11 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
       )
       return messageInfoFn(item, type, title, '', null, val)
     }
+
     if (title === '寄存器' && type === 'kind') {
       set({ register: { ...get().register, ...clearInfoObj } as any })
     }
+
     if (type === 'sr_peri_id' && title === '寄存器') {
       if (val) {
         getPeripheralAttributesFn(val as any, 'rightList')
@@ -357,14 +368,17 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
 
       return messageInfoFn(item, type, title, '', null, val)
     }
+
     messageInfoFn(item, type, title, '', null, val)
   },
 
   // 校验定时器的中断号,间隔
   checkoutTimerPeriodAndInterrupt: (val, title, type, fn1) => {
-    if (val.length === 0) return
     const { updateTimer, checkEveryItemIsError, messageInfoFn } = get()
     const item = titleMap[title as keyof typeof titleMap]
+    if (!val) {
+      return messageInfoFn(item, type, title, 'error', `请输入${type === 'period' ? '间隔' : '中断号'}`, val)
+    }
     if (type === 'period' && !fn1(val)) {
       return messageInfoFn(item, type, title, 'error', '请输入0-65535的整数', val)
     }
@@ -426,7 +440,7 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     // return res
   },
   // 更新数据处理器
-  updateProcessor: async () => {
+  updateProcessor: async type => {
     const { processor, platform_id } = get()
     const params = {
       name: processor.name.value as string,
@@ -449,13 +463,16 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
       if (+processor.peripheral_id.value) {
         getPeripheralAttributesFn(+processor.peripheral_id.value, 'rightList')
       }
-
       getListFn('dataHandlerNotReferenced', +platform_id)
     }
 
-    if (res.data) {
+    if (res.data && type) {
       // 寄存器 ---> 数据处理器
-      baseOnUpdateNodeAndEdge(processor.peripheral_id.value, processor.register_id.value, processor.id, res.data)
+      if (['name', 'port'].includes(type as string)) {
+        updateNodeAttributeInfo(res.data)
+      } else {
+        baseOnUpdateNodeAndEdge(processor.peripheral_id.value, processor.register_id.value, processor.id, res.data)
+      }
     }
   },
 
@@ -476,13 +493,14 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
 
     const res = await updatePeripherals(peripheral.id as string, params)
     if (res.data && platform_id) {
-      updateRegisterNodeDraw(res.data)
+      // todo 需要优化
+      updateNodeAttributeInfo(res.data)
       getListFn(res.data.variety === 0 ? 'customMadePeripheral' : 'boardLevelPeripherals', +platform_id)
     }
   },
 
   // 更新寄存器
-  updateRegister: async () => {
+  updateRegister: async type => {
     const { register, platform_id } = get()
     const params = {
       name: register.name.value,
@@ -519,8 +537,12 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     const paramsIsOrNot = register.kind.value === 0 ? additionalParamsTrue : additionalParamsFalse
     const paramsObject = { ...params, ...paramsIsOrNot }
     const res = await updateRegister(register.id, paramsObject)
-    if (res.data && platform_id) {
-      updateRegisterNodeDraw(res.data)
+    if (res.data && platform_id && type) {
+      if (['name', 'relative_address'].includes(type)) {
+        updateNodeAttributeInfo(res.data)
+      } else {
+        updateRegisterNodeDraw(res.data)
+      }
       getListFn(res.data.variety === 0 ? 'customMadePeripheral' : 'boardLevelPeripherals', +platform_id)
     }
   },

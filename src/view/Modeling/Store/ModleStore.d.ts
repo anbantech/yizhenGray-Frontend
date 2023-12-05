@@ -210,6 +210,7 @@ interface RFState {
   deleteInfo: { node: any; visibility: boolean }
   expandTreeArray: string[]
   sumData: any
+  updateNodeAttributeInfo: (Details: Record<string, any>) => void
 }
 
 interface optionalParametersParams {
@@ -290,17 +291,17 @@ export interface RightFormCheckStoreParams {
   clickLeftListAndFoucsIdAndRightAtturbuites: (title: string, type: string, value: any) => void
   frontendCheckoutName: (val: string, title: string, type: string, fn1: (val: string) => boolean, fn2: (val: string) => boolean) => void
   checkoutBase_addreeAndLength: (val: string, title: string, type: string, fn1: (val: string) => boolean) => void
-  onBlurAsyncCheckoutNameFormValues: (val: string, title: name, type: string, fn1: () => void, params?: any) => void
+  onBlurAsyncCheckoutNameFormValues: (val: string, title: name, type: string, fn1: (type?: string) => void, params?: any) => void
 
   updateTimer: () => void
-  updateProcessor: () => void
+  updateProcessor: (type?: string) => void
   updatePeripheral: () => void
   checkoutTimerPeriodAndInterrupt: (val: string, title: string, type: string, fn1: (val: string) => boolean) => void
   updateOnceFormValue: (val: string | string[] | CheckboxValueType[], title: string, type: string) => void
   checkoutProcessor: (val: string, title: string, type: string, fn1: (val: string) => boolean, fn2: () => void) => void
   checkEveryItemIsError: (val: string) => boolean
   filterObject: (obj: any) => any
-  updateRegister: () => void
+  updateRegister: (type?: string) => void
   messageInfoFn: (item, type, title, validateStatus, errorMsg, val) => any
 }
 

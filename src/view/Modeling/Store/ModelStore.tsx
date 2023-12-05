@@ -602,11 +602,14 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
   onChange: (item, val, title, fn1, fn2) => {
     const { updateFormValue } = get()
     if (item === 'name' && fn2 && fn1) {
+      if (!val) {
+        return updateFormValue(item, val, title, `请输入${title}名称`, 'error')
+      }
       if (!fn2(val)) {
         return updateFormValue(item, val, title, '名称长度在2-20个字符之间', 'error')
       }
       if (!fn1(val)) {
-        return updateFormValue(item, val, title, '名称由数字、字母和下划线组成,不能以数字开头', 'error')
+        return updateFormValue(item, val, title, '名称以字母或下划线开头，并仅限使用字母、数字和下划线', 'error')
       }
     }
 
@@ -718,43 +721,6 @@ const checkUtilFnStore = create<CheckUtilFnStoreParams>(() => ({
     const checkoutResult = Number(val) >= 0 && Number(val) <= 255
     return checkoutResult
   }
-  // asyncCheckUtil: (val, title, type, id, params) => {
-  //   const param = {
-  //     object: titleMap[title as keyof typeof titleMap],
-  //     platform_id: id,
-  //     [type]: val
-  //   }
-  //   const base_address = {
-  //     object: titleMap[title as keyof typeof titleMap],
-  //     platform_id: id,
-  //     [type]: val,
-  //     address_length: params.address_length?.value
-  //   }
-
-  //   const address_length = {
-  //     object: titleMap[title as keyof typeof titleMap],
-  //     platform_id: id,
-  //     [type]: val,
-  //     base_address: params.base_address?.value
-  //   }
-
-  //   const relative_address = {
-  //     object: titleMap[title as keyof typeof titleMap],
-  //     platform_id: id,
-  //     [type]: val,
-  //     relative_address: params.relative_address?.value
-  //   }
-
-  //   const paramsData =
-  //     type === 'address_length'
-  //       ? { ...address_length }
-  //       : type === 'base_address'
-  //       ? { ...base_address }
-  //       : type === 'relative_address'
-  //       ? { ...relative_address }
-  //       : param
-  //   return validatorParams(paramsData)
-  // }
 }))
 
 export { checkUtilFnStore, formItemParamsCheckStore, useNewModelingStore, publicAttributes, useLeftModelDetailsStore }
