@@ -103,7 +103,7 @@ function ExcitationModal(props: any) {
           label='名称'
           validateTrigger={['onBlur']}
           rules={[
-            { required: true, message: '请输入名称' },
+            { required: true, message: '请输入激励序列名称' },
             { type: 'string', min: 2, max: 20, message: '名称长度为2到20个字符' },
             {
               validateTrigger: 'onBlur',

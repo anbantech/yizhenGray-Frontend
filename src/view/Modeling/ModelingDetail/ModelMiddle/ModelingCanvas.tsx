@@ -88,6 +88,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
 
   //  框选删除更新界面
   const deleteNodeRef = React.useRef<any[]>([])
+
   const getDeleteNodeAndAdge = React.useCallback(
     (deleted: any) => {
       // eslint-disable-next-line array-callback-return
@@ -104,16 +105,26 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
   )
 
   const onNodesDelete = React.useCallback(
-    deleted => {
+    (deleted, error_code) => {
       getDeleteNodeAndAdge(deleted)
       const deleteNodeArray = deleteNodeRef.current.concat(deleted).flat(Infinity)
-      const node = nodeStore.filter(item => {
-        return !deleteNodeArray.some(data => data.id === item.id)
-      })
+      const node = nodeStore
+        .map((Node1: Node) => {
+          const matchingItem = error_code.find((item2: any) => Node1.id === String(item2.id))
+          if (matchingItem) {
+            // eslint-disable-next-line no-param-reassign
+            Node1.data.error_code = matchingItem.error_code
+          }
+          return Node1
+        })
+        .filter(item => {
+          return !deleteNodeArray.some(data => data.id === item.id)
+        })
 
       const edge = edgeStore.filter(item => {
         return !deleteNodeArray.some(data => data.id === item.target)
       })
+
       saveCanvas([...node], [...edge], platform_id as string)
       if (platform_id) getModelListDetails(+platform_id, tabs)
       upDateNodesAndEdges([...node], [...edge])
