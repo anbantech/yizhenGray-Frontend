@@ -45,7 +45,7 @@ export default {
         this.cloumnType === 'homeDataTestOverviewType' ?
             this.homeData = [{ 'platform': '测试平台' }, { 'test_time': '测试时间' }, { 'create_time': '报告生成' }]
             : this.cloumnType === 'homeDataTestPlanType'
-                ? this.homeData = [{ 'task_name': '任务名称' }, { 'num': '实例编号' }, { 'work_time': '工作时长设定' }]
+                ? this.homeData = [{ 'task_name': '任务名称' },{'simu_instance_id':'仿真节点'}, { 'num': '实例编号' }, { 'work_time': '工作时长设定' }]
                 : this.cloumnType === 'homeDataTestSummaryType'
                     ? this.homeData = [{ 'statement_coverage': '语句覆盖率' }, { 'branch_coverage': '分支覆盖率' }, { 'total': '用例总数' }, { 'error_count': '异常用例数' }, { 'defects_count': '缺陷数量' }]
                     : []
