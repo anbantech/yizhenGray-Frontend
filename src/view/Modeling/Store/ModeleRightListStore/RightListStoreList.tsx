@@ -225,12 +225,12 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
     kind: { value: '', validateStatus: '', errorMsg: '' },
     finish: { value: '', validateStatus: '', errorMsg: '' },
     variety: { value: '', validateStatus: '', errorMsg: '' },
-    set_cmd: { value: '', validateStatus: '', errorMsg: '' },
-    restore_cmd: { value: '', validateStatus: '', errorMsg: '' },
-    set_value: { value: '', validateStatus: '', errorMsg: '' },
-    restore_value: { value: '', validateStatus: '', errorMsg: '' },
-    sr_peri_id: { value: '', validateStatus: '', errorMsg: '' },
-    sr_id: { value: '', validateStatus: '', errorMsg: '' }
+    set_cmd: { value: null, validateStatus: '', errorMsg: '' },
+    restore_cmd: { value: null, validateStatus: '', errorMsg: '' },
+    set_value: { value: null, validateStatus: '', errorMsg: '' },
+    restore_value: { value: null, validateStatus: '', errorMsg: '' },
+    sr_peri_id: { value: null, validateStatus: '', errorMsg: '' },
+    sr_id: { value: null, validateStatus: '', errorMsg: '' }
   },
   //  更新目标机id
   setPlatFormId: val => {
@@ -622,12 +622,12 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
         kind: { value: '', validateStatus: '', errorMsg: '' },
         finish: { value: '', validateStatus: '', errorMsg: '' },
         variety: { value: '', validateStatus: '', errorMsg: '' },
-        set_cmd: { value: '', validateStatus: '', errorMsg: '' },
-        restore_cmd: { value: '', validateStatus: '', errorMsg: '' },
-        set_value: { value: '', validateStatus: '', errorMsg: '' },
-        restore_value: { value: '', validateStatus: '', errorMsg: '' },
-        sr_peri_id: { value: '', validateStatus: '', errorMsg: '' },
-        sr_id: { value: '', validateStatus: '', errorMsg: '' }
+        set_cmd: { value: null, validateStatus: '', errorMsg: '' },
+        restore_cmd: { value: null, validateStatus: '', errorMsg: '' },
+        set_value: { value: null, validateStatus: '', errorMsg: '' },
+        restore_value: { value: null, validateStatus: '', errorMsg: '' },
+        sr_peri_id: { value: null, validateStatus: '', errorMsg: '' },
+        sr_id: { value: null, validateStatus: '', errorMsg: '' }
       }
     })
   }

@@ -34,6 +34,7 @@ function ModelingInputMemo() {
     },
     [baseKeyWordAndTagsGetList, tabs, platformsIdmemo, setTags, setKeyWord, upDateLeftExpandArrayFn]
   )
+
   const { run } = useRequest(updateParams, {
     debounceInterval: 20,
     manual: true,
