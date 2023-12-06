@@ -204,7 +204,7 @@ const FirstConfig = React.forwardRef((props: propsFn, myRef) => {
 
   const onValuesChange = async (changedValues: any, allValues: any) => {
     const bol = allValues.description === undefined || allValues.description?.length <= 50
-    console.log(bol, allValues)
+
     const name = allValues.name?.length >= 2 && allValues.name.length <= 20 && /^[\w\u4E00-\u9FA5]+$/.test(allValues.name)
     const { sender_id, simu_instance_id } = allValues
     if (name && sender_id && simu_instance_id && bol) {
