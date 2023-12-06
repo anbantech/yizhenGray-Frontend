@@ -80,7 +80,7 @@ const TaskIndex: React.FC<RouteComponentProps<any, StaticContext, projectPropsTy
   React.useEffect(() => {
     getTasKList(projectInfo.projectId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectInfo.projectId, request])
+  }, [projectInfo.projectId, request, status])
 
   React.useEffect(() => {
     if (TaskId) {
@@ -103,6 +103,7 @@ const TaskIndex: React.FC<RouteComponentProps<any, StaticContext, projectPropsTy
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
   return (
     <div className={styles.TaskIndexBody} style={{ display: 'flex' }}>
       <TaskList status={status as number} />
