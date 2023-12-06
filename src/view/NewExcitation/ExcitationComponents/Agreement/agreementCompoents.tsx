@@ -491,7 +491,7 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
 
   React.useImperativeHandle(myRef, () => ({
     save: () => {
-      return { ...form.getFieldsValue(), type: 'byte', context: false }
+      return { ...form.getFieldsValue(), type: 'byte', context: false, value: `0x${form.getFieldsValue().value}` }
     },
     delete: () => {},
     validate: () => {
@@ -764,7 +764,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
 
   React.useImperativeHandle(myRef, () => ({
     save: () => {
-      return { ...form.getFieldsValue(), type: 'byte_array', context: false }
+      return { ...form.getFieldsValue(), type: 'byte_array', context: false, value: `0x${form.getFieldsValue().value}` }
     },
     delete: () => {},
     validate: () => {

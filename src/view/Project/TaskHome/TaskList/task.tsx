@@ -191,9 +191,7 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
                 >
                   <span>
                     <img
-                      className={
-                        [2, 3, 4, 7, 8].includes(status !== undefined ? status : item.status) && item.id === TaskId ? styles.iconShow : styles.icon
-                      }
+                      className={[2, 3, 4, 7, 8].includes(status !== undefined ? status : item.status) ? styles.iconShow : styles.icon}
                       src={testing}
                       alt=''
                     />
