@@ -462,6 +462,7 @@ const HeaderBarMemo = () => {
   const unSelect = formItemParamsCheckStore(state => state.unSetTabs)
   const { initFormValue } = formItemParamsCheckStore()
   const platform_id = MiddleStore(state => state.platform_id)
+  const getCustomMadePeripheralStore = useLeftModelDetailsStore(state => state.getCustomMadePeripheralStore)
   const showOrHide = React.useCallback(
     (val: string) => {
       if (tabsSelect === val) {
@@ -469,10 +470,13 @@ const HeaderBarMemo = () => {
         unSelect()
       } else {
         initFormValue()
+        if (val === 'processor' && platform_id) {
+          getCustomMadePeripheralStore(+platform_id)
+        }
         setTabs(val)
       }
     },
-    [initFormValue, setTabs, tabsSelect, unSelect]
+    [getCustomMadePeripheralStore, initFormValue, platform_id, setTabs, tabsSelect, unSelect]
   )
 
   // 下载与生成函数

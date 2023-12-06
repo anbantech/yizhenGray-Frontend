@@ -42,8 +42,8 @@ interface PriceInputProps {
 const RegCompare = (str: string) => {
   // const isOctal = /^0o[0-7]+$/.test(str) || /^0O[0-7]+$/.test(str)
   // const isDecimal = /^\d+$/.test(str)
-  const isHexadecimal = /^[\dA-Fa-f]+$/.test(str)
-  if (isHexadecimal) {
+  const reg = /^(0x)?([\da-f]{1,8})$/i
+  if (reg.test(str)) {
     return Promise.resolve()
   }
   // fn()

@@ -85,6 +85,7 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
     try {
       const res = await getRegisterDetails(id)
       if (res.data) {
+        set({ register: [{ id: res.data.sr_id, name: res.data.sr_name, kind: 0 }] })
         set({ rightArrributes: res.data })
         if (fn) {
           fn(String(res.data.peripheral_id))
@@ -141,8 +142,6 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
 const getPeripheralAttributesFn = RightDetailsAttributesStore.getState().getPeripheralAttributes
 
 const updateRegisterFn = RightDetailsAttributesStore.getState().updateRegister
-
-// const rightArrributesData = RightDetailsAttributesStore.getState().rightArrributes
 
 // 右侧表单校验
 const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({

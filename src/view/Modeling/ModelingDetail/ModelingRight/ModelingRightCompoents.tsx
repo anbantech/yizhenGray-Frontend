@@ -49,7 +49,7 @@ const isFinish = [
 
 export const {
   saveCanvasAndUpdateNodeName,
-  upDateLeftExpandArrayFn,
+
   baseOnUpdateNodeAndEdge,
   updateRegisterNodeDraw,
   updateNodeAttributeInfo
@@ -400,7 +400,7 @@ const ProcessorDetailsAttributes = () => {
           </Form.Item>
         </div>
         <div style={{ padding: '8px 16px' }} className={StyleSheet.dataFormatProcessing}>
-          <span className={StyleSheet.spanTitle}>数据加工与输出格式编排</span>
+          <span className={StyleSheet.spanTitle}>输出寄存器</span>
           <Form.Item label='外设'>
             <Select
               placeholder='请选择外设'
@@ -798,7 +798,6 @@ const RegisterDetailsAttributes = () => {
                 placeholder='请选择关联状态寄存器'
                 disabled={!sr_peri_id.value}
                 showSearch={Boolean(0)}
-                allowClear
                 value={sr_id.value}
                 onDropdownVisibleChange={visible => {
                   closeMenu(visible, 'sr_id')

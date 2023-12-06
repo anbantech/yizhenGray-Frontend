@@ -9,6 +9,7 @@ import {
 } from './ModelingRightCompoents'
 import StyleSheet from './ModelingRight.less'
 import { RightListStore, RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
+import { MiddleStore, getAll } from '../../Store/ModelMiddleStore/MiddleStore'
 
 const Header = () => {
   return (
@@ -42,9 +43,15 @@ function ModelingRight() {
   //  目标机详情
   const targetDetails = useLeftModelDetailsStore(state => state.targetDetails)
   const { clickLeftListAndFoucsIdAndRightAtturbuites } = RightListStore()
+  const platform_id = MiddleStore(state => state.platform_id)
   React.useEffect(() => {
     if (typeAttributes !== 'Target') {
       clickLeftListAndFoucsIdAndRightAtturbuites(FormType[typeAttributes as keyof typeof FormType], typeAttributes, rightArrributes)
+    }
+    return () => {
+      if (platform_id) {
+        getAll(+platform_id)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rightArrributes, typeAttributes])

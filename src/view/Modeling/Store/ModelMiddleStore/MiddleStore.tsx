@@ -42,7 +42,27 @@ const MiddleStore = create<RFState>((set, get) => ({
   upDateLeftExpandArrayFn: (val: string[]) => {
     set({ leftListExpandArray: val })
   },
+  collapseOtherNode: id => {
+    const hasThisNode = get().nodes.find((item: Node) => item.id === String(id))
 
+    const selectId: string[] = []
+
+    const getAllParentId = (id: string, item: Node[]) => {
+      item.map(element => {
+        if (element.id === id && id !== element.data.parentId) {
+          selectId.push(element.id)
+          if (element.data.parentId) {
+            getAllParentId(element.data.parentId, get().nodes)
+          }
+          return
+        }
+        return []
+      })
+    }
+    getAllParentId(hasThisNode.id, get().nodes)
+
+    set({ leftListExpandArray: selectId })
+  },
   setMenuStatus: (id: string) => {
     set({ menuStatusObj: { status: !get().menuStatusObj.status, id } })
   },
