@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { useLeftModelDetailsStore } from '../../Store/ModelStore'
 import StyleSheet from './modelLeft.less'
-import { MiddleStore, getAll } from '../../Store/ModelMiddleStore/MiddleStore'
 
 type Tabs = {
   keys: string
@@ -20,7 +19,7 @@ const TabsCompoents = (props: Tabs) => {
   const timerNums = useLeftModelDetailsStore(state => state.timerNums)
   const handlerDataNums = useLeftModelDetailsStore(state => state.handlerDataNums)
   const boardPeripheralNums = useLeftModelDetailsStore(state => state.boardPeripheralNums)
-  const platform_id = MiddleStore(state => state.platform_id)
+
   const veryTabsKindNums = React.useMemo(() => {
     const NumsObj = {
       customMadePeripheral: cusomMadePeripheralNums,
@@ -42,9 +41,8 @@ const TabsCompoents = (props: Tabs) => {
       fn()
       initStore()
       setTabs(keys)
-      if (platform_id) getAll(+platform_id)
     },
-    [fn, initStore, setTabs, tabs, platform_id]
+    [fn, initStore, setTabs, tabs]
   )
 
   return (

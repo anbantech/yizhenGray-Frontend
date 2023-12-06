@@ -338,6 +338,11 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   }
 
   useEffect(() => {
+    getTaskInstancesList(params)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params])
+
+  useEffect(() => {
     setParams({
       ...params,
       key_word: '',
@@ -352,10 +357,6 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
     inputRef.current?.save()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [InstancesDetail?.task_detail?.id, visibility, InstancesDetail?.task_detail?.status])
-  useEffect(() => {
-    getTaskInstancesList(params)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params])
 
   return (
     <div className={globalStyle.AnBan_main}>

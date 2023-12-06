@@ -22,7 +22,7 @@ const layout = {
 interface NEWTaskInstanceType {
   visibility: boolean
   task_id: number
-  choiceModal: () => void
+  choiceModal: (value?: string) => void
   width: string
   // eslint-disable-next-line react/require-default-props
   data?: any
@@ -91,7 +91,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         const res = await createInstaceItem(copyItem)
         if (res.code === 0) {
           setCrashObj({})
-          choiceModal()
+          choiceModal('ok')
           message.success('实例新建成功')
         }
       }

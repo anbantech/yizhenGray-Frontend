@@ -122,7 +122,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
     tag: '1',
     key_word: '',
     page: 1,
-    page_size: 3000,
+    page_size: 99999,
     sort_field: 'create_time',
     sort_order: 'descend'
   },

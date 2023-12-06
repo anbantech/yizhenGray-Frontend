@@ -9,14 +9,16 @@ import { LoactionState } from './ModelingLeftIndex'
 
 import StyleSheet from './modelLeft.less'
 import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
+import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
 
 function ModelingInputMemo() {
   const tabs = useLeftModelDetailsStore(state => state.tabs)
   const platformsId = (useLocation() as LoactionState).state?.id
   const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
-  const upDateLeftExpandArrayFn = MiddleStore(state => state.upDateLeftExpandArrayFn)
   const { setKeyWord, setTags, baseKeyWordAndTagsGetList, clearKeyWord } = useLeftModelDetailsStore()
   const cusomMadePeripheralListParams = useLeftModelDetailsStore(state => state.cusomMadePeripheralListParams)
+  const collapseOtherNode = MiddleStore(state => state.collapseOtherNode)
+  const focusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
   const ref = React.useRef<any>()
   const updateParams = React.useCallback(
     async (val: string, type: string) => {
@@ -24,15 +26,15 @@ function ModelingInputMemo() {
         setTags(val)
       }
       if (type === 'key_words') {
-        if (!val) {
-          upDateLeftExpandArrayFn([])
-        }
         setKeyWord(val, tabs)
+        if (!val && focusNodeId) {
+          collapseOtherNode(String(focusNodeId))
+        }
       }
       const res = await baseKeyWordAndTagsGetList(tabs, platformsIdmemo)
       return res
     },
-    [baseKeyWordAndTagsGetList, tabs, platformsIdmemo, setTags, setKeyWord, upDateLeftExpandArrayFn]
+    [baseKeyWordAndTagsGetList, tabs, platformsIdmemo, setTags, setKeyWord, collapseOtherNode, focusNodeId]
   )
 
   const { run } = useRequest(updateParams, {
@@ -48,6 +50,7 @@ function ModelingInputMemo() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
   const showTabs = React.useMemo(() => {
     const result = ['customMadePeripheral', 'boardLevelPeripherals'].includes(tabs) && cusomMadePeripheralListParams.key_word
     return result
@@ -60,7 +63,7 @@ function ModelingInputMemo() {
         ref={ref}
         placeholder='根据名称搜索'
         onChangeValue={value => {
-          run(value, 'key_words')
+          updateParams(value, 'key_words')
         }}
       />
       {showTabs && (
