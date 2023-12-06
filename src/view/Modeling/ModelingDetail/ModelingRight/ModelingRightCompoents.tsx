@@ -414,6 +414,7 @@ const ProcessorDetailsAttributes = () => {
                 updateOnceFormValue('', '数据处理器', 'peripheral_id')
                 clearValue('peripheral_id')
               }}
+              getPopupContainer={() => document.querySelector('#area') as HTMLElement}
               onDropdownVisibleChange={visible => {
                 closeMenuAndGetRegisterList(visible)
               }}
@@ -439,6 +440,7 @@ const ProcessorDetailsAttributes = () => {
               onChange={value => {
                 updateOnceFormValue(value as string, '数据处理器', 'register_id')
               }}
+              getPopupContainer={() => document.querySelector('#area') as HTMLElement}
               onDropdownVisibleChange={visible => {
                 closeMenu(visible, 'register_id')
               }}
@@ -481,7 +483,7 @@ const PeripheralDetailsAttributes = () => {
 
   return (
     <div className={StyleSheet.rightFromCommonStyle} style={{ padding: '8px 16px' }}>
-      <Form form={form} layout='vertical'>
+      <Form form={form} layout='vertical' id='area'>
         <Form.Item label='外设名称' help={name.errorMsg} hasFeedback validateStatus={name.validateStatus}>
           <Input
             style={{ borderRadius: '4px' }}
@@ -498,6 +500,7 @@ const PeripheralDetailsAttributes = () => {
         </Form.Item>
         <Form.Item label='类型'>
           <Select
+            getPopupContainer={() => document.querySelector('#area') as HTMLElement}
             placeholder='请选择类型'
             onChange={(value: string) => {
               updateOnceFormValue(value, '外设', 'kind')
@@ -639,6 +642,7 @@ const RegisterDetailsAttributes = () => {
 
     return (
       <Select
+        getPopupContainer={() => document.querySelector('#area') as HTMLElement}
         onClear={() => {
           clearValue(title, type)
         }}
@@ -667,12 +671,13 @@ const RegisterDetailsAttributes = () => {
 
   return (
     <div>
-      <Form form={form} layout='vertical' className={StyleSheet.rightFromCommonStyle}>
+      <Form form={form} layout='vertical' className={StyleSheet.rightFromCommonStyle} id='area'>
         <div className={StyleSheet.rightFromCommonHeaderStyle} style={{ padding: '8px 16px' }}>
           <Form.Item label='所属外设'>
             <Select
               placeholder='请选择所属外设'
               showSearch={Boolean(0)}
+              getPopupContainer={() => document.querySelector('#area') as HTMLElement}
               onDropdownVisibleChange={visible => {
                 closeMenu(visible, 'peripheral_id')
               }}
@@ -747,6 +752,7 @@ const RegisterDetailsAttributes = () => {
               onDropdownVisibleChange={visible => {
                 closeMenu(visible)
               }}
+              getPopupContainer={() => document.querySelector('#area') as HTMLElement}
               style={{ borderRadius: '4px' }}
               value={kind.value}
               onChange={value => {
@@ -769,6 +775,7 @@ const RegisterDetailsAttributes = () => {
             <span className={StyleSheet.spanTitle}>关联状态寄存器</span>
             <Form.Item label='外设'>
               <Select
+                getPopupContainer={() => document.querySelector('#area') as HTMLElement}
                 style={{ borderRadius: '4px' }}
                 showSearch={Boolean(0)}
                 allowClear
@@ -795,6 +802,7 @@ const RegisterDetailsAttributes = () => {
             </Form.Item>
             <Form.Item label='关联状态寄存器'>
               <Select
+                getPopupContainer={() => document.querySelector('#area') as HTMLElement}
                 placeholder='请选择关联状态寄存器'
                 disabled={!sr_peri_id.value}
                 showSearch={Boolean(0)}
