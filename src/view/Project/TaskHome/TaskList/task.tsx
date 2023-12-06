@@ -63,7 +63,6 @@ const Task: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<pr
     }
   }, [TaskId, TaskListData])
   const { projectInfo } = props.location?.state
-  const { status } = props
   const layoutRef = useRef<any>()
   const history = useHistory()
 
