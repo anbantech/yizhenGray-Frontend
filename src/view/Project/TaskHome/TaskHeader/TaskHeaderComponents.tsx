@@ -32,6 +32,7 @@ const ImageMap = {
 
 function HeaderComponetsMemo(props: Record<string, any>) {
   const { data, status } = props
+
   return (
     <>
       {data && (
@@ -47,7 +48,10 @@ function HeaderComponetsMemo(props: Record<string, any>) {
                 </Tooltip>
               </span>
               <div className={styles.cloumnLine} />
-              <span className={styles.descChart}>仿真节点 : {data.simu_instance_id} </span>
+              <span className={styles.descChart}>
+                {`仿真节点 : ${data.simu_instance_id}
+                (${data.processor})`}
+              </span>
               <div className={styles.cloumnLine} />
               <span className={styles.descChart}>激励序列 : {data.group_name} </span>
             </div>
