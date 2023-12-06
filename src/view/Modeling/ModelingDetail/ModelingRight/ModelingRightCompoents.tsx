@@ -130,7 +130,7 @@ const ProcessorDetailsAttributes = () => {
   const ALGORITHM = getSystemConstantsStore(state => state.ALGORITHM)
   const { checkoutProcessor, updateOnceFormValue, updateProcessor, frontendCheckoutName, onBlurAsyncCheckoutNameFormValues } = RightListStore()
   // const { getPeripheralAttributes } = RightDetailsAttributesStore()
-  const { checkInterrupt, checkHex, checkNameLength, checkNameFormat } = checkUtilFnStore()
+  const { checkInterrupt, checkNullAndHex, checkNameLength, checkNameFormat } = checkUtilFnStore()
   const DropdownRender = React.useCallback(
     (props: { title: string; type: string }) => {
       const { title, type } = props
@@ -248,7 +248,7 @@ const ProcessorDetailsAttributes = () => {
           <Form.Item label='端口'>
             <Select
               value={processor.port.value as string}
-              // getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
+              getPopupContainer={() => document.querySelector('#area') as HTMLElement}
               placeholder='请选择端口'
               onChange={(value: string) => {
                 updateOnceFormValue(value, '数据处理器', 'port')
@@ -294,7 +294,7 @@ const ProcessorDetailsAttributes = () => {
                 updateOnceFormValue(e.target.value, '数据处理器', 'sof')
               }}
               onBlur={e => {
-                checkoutProcessor(e.target.value, '数据处理器', 'sof', checkHex, updateProcessor)
+                checkoutProcessor(e.target.value, '数据处理器', 'sof', checkNullAndHex, updateProcessor)
               }}
             />
           </Form.Item>
@@ -306,7 +306,7 @@ const ProcessorDetailsAttributes = () => {
                 updateOnceFormValue(e.target.value, '数据处理器', 'eof')
               }}
               onBlur={e => {
-                checkoutProcessor(e.target.value, '数据处理器', 'eof', checkHex, updateProcessor)
+                checkoutProcessor(e.target.value, '数据处理器', 'eof', checkNullAndHex, updateProcessor)
               }}
             />
           </Form.Item>
@@ -612,7 +612,7 @@ const RegisterDetailsAttributes = () => {
   } = register
   const { REGISTER_CMD } = getSystemConstantsStore()
 
-  const { checkNameFormat, checkNameLength, checkHex } = checkUtilFnStore()
+  const { checkNameFormat, checkNameLength, checkNullAndHex, checkHex } = checkUtilFnStore()
 
   const isBoardLevePeripherals = useMemo(() => {
     const res = isCustomMadePeripheralOrboardPeripheralNums ? [peripheral.value] : customMadePeripheralList
@@ -624,7 +624,7 @@ const RegisterDetailsAttributes = () => {
   }, [kind])
 
   const clearValue = (title: string, type: string) => {
-    updateOnceFormValue('', title, type)
+    updateOnceFormValue(null, title, type)
     updateRegister()
   }
 
@@ -636,6 +636,7 @@ const RegisterDetailsAttributes = () => {
 
   const SelectBefore = (props: { type: string; title: string; values: string; fn: (value: string, title: string, type: string) => void }) => {
     const { type, title, values, fn } = props
+
     return (
       <Select
         onClear={() => {
@@ -831,7 +832,7 @@ const RegisterDetailsAttributes = () => {
                   addonBefore={<SelectBefore title='寄存器' type='set_cmd' values={set_cmd.value as string} fn={updateOnceFormValue} />}
                   value={set_value.value}
                   onChange={e => {
-                    checkoutBase_addreeAndLength(e.target.value, '寄存器', 'set_value', checkHex)
+                    checkoutBase_addreeAndLength(e.target.value, '寄存器', 'set_value', checkNullAndHex)
                   }}
                   onBlur={e => {
                     onBlurAsyncCheckoutNameFormValues(e.target.value, '寄存器', 'set_value', updateRegister, register)
@@ -853,7 +854,7 @@ const RegisterDetailsAttributes = () => {
                   addonBefore={<SelectBefore title='寄存器' type='restore_cmd' values={restore_cmd.value as string} fn={updateOnceFormValue} />}
                   value={restore_value.value}
                   onChange={e => {
-                    checkoutBase_addreeAndLength(e.target.value, '寄存器', 'restore_value', checkHex)
+                    checkoutBase_addreeAndLength(e.target.value, '寄存器', 'restore_value', checkNullAndHex)
                   }}
                   onBlur={e => {
                     onBlurAsyncCheckoutNameFormValues(e.target.value, '寄存器', 'restore_value', updateRegister, register)

@@ -180,12 +180,12 @@ const getAllIds = (value: any) => {
 }
 
 const clearInfoObj = {
-  set_cmd: { value: '', validateStatus: '', errorMsg: '' },
-  restore_cmd: { value: '', validateStatus: '', errorMsg: '' },
-  set_value: { value: '', validateStatus: '', errorMsg: '' },
-  restore_value: { value: '', validateStatus: '', errorMsg: '' },
-  sr_peri_id: { value: '', validateStatus: '', errorMsg: '' },
-  sr_id: { value: '', validateStatus: '', errorMsg: '' }
+  set_cmd: { value: null, validateStatus: '', errorMsg: '' },
+  restore_cmd: { value: null, validateStatus: '', errorMsg: '' },
+  set_value: { value: null, validateStatus: '', errorMsg: '' },
+  restore_value: { value: null, validateStatus: '', errorMsg: '' },
+  sr_peri_id: { value: null, validateStatus: '', errorMsg: '' },
+  sr_id: { value: null, validateStatus: '', errorMsg: '' }
 }
 
 export {

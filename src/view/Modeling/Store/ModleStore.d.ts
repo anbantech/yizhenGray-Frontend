@@ -129,7 +129,7 @@ export interface PublicAttributesStoreParams {
 }
 
 type valueParams = {
-  value: number | string
+  value: number | string | any
   validateStatus?: '' | 'success' | 'error' | 'warning' | 'validating' | undefined
   errorMsg?: string | null
 }
@@ -297,7 +297,7 @@ export interface RightFormCheckStoreParams {
   updateProcessor: (type?: string) => void
   updatePeripheral: () => void
   checkoutTimerPeriodAndInterrupt: (val: string, title: string, type: string, fn1: (val: string) => boolean) => void
-  updateOnceFormValue: (val: string | string[] | CheckboxValueType[], title: string, type: string) => void
+  updateOnceFormValue: (val: string | string[] | CheckboxValueType[] | any, title: string, type: string) => void
   checkoutProcessor: (val: string, title: string, type: string, fn1: (val: string) => boolean, fn2: () => void) => void
   checkEveryItemIsError: (val: string) => boolean
   filterObject: (obj: any) => any
@@ -311,5 +311,6 @@ export interface CheckUtilFnStoreParams {
   checkInterval: (val: string) => boolean
   checkInterrupt: (val: string) => boolean
   checkHex: (val: string) => boolean
+  checkNullAndHex: (val: string) => boolean
   // asyncCheckUtil: (val: string, title: string, type: string, id: string | number | null, params?: any) => any
 }

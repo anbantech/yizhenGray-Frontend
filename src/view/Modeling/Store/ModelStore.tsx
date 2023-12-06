@@ -188,8 +188,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
   },
 
   setTags: val => {
-    const { cusomMadePeripheralListParams } = get()
-    set({ cusomMadePeripheralListParams: { ...cusomMadePeripheralListParams, tag: val, page: 1, page_size: val === '1' ? 9999 : 30 } })
+    set({ cusomMadePeripheralListParams: { ...get().cusomMadePeripheralListParams, tag: val, page: 1, page_size: val === '1' ? 9999 : 30 } })
   },
 
   setHasMore: (val: boolean) => {
@@ -199,16 +198,16 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
   },
 
   setKeyWord: (val: string, tabs: string) => {
-    const { cusomMadePeripheralListParams, processorListParams, setTags, timerListParams } = get()
+    const { processorListParams, setTags, timerListParams } = get()
     if (!val) {
       setTags('0')
     }
     switch (tabs) {
       case 'customMadePeripheral':
-        set({ cusomMadePeripheralListParams: { ...cusomMadePeripheralListParams, key_word: val, tag: '0' } })
+        set({ cusomMadePeripheralListParams: { ...get().cusomMadePeripheralListParams, key_word: val } })
         break
       case 'boardLevelPeripherals':
-        set({ cusomMadePeripheralListParams: { ...cusomMadePeripheralListParams, key_word: val, tag: '0' } })
+        set({ cusomMadePeripheralListParams: { ...get().cusomMadePeripheralListParams, key_word: val } })
         break
       case 'dataHandlerNotReferenced':
         set({ processorListParams: { ...processorListParams, key_word: val } })
@@ -695,7 +694,11 @@ const checkUtilFnStore = create<CheckUtilFnStoreParams>(() => ({
     const reg = /^(0x)?([\da-f]{1,8})$/i
     return reg.test(`0x${val}`)
   },
-
+  //  校验是否为16进制字符串 并且空置可以通过校验
+  checkNullAndHex: (val: string) => {
+    const reg = /^(0x)?([\da-f]{1,8})$/i
+    return !val || reg.test(`0x${val}`)
+  },
   // 检查名字格式
   checkNameFormat: (val: string) => {
     if (!val) return false

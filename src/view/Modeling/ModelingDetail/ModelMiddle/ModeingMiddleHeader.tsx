@@ -189,7 +189,7 @@ const PeripheralsForm = () => {
           />
         </Form.Item>
 
-        <Form.Item label='类型' required>
+        <Form.Item label='类型'>
           <Select
             value={KindValue}
             placeholder='请选择类型'
