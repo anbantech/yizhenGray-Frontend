@@ -85,7 +85,7 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
     try {
       const res = await getRegisterDetails(id)
       if (res.data) {
-        set({ register: [{ id: res.data.sr_id, name: res.data.sr_name, kind: 0 }] })
+        set({ register: res.data.peripheral_id.registers })
         set({ rightArrributes: res.data })
         if (fn) {
           fn(String(res.data.peripheral_id))

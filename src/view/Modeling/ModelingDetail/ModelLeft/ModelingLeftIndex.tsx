@@ -30,6 +30,7 @@ function ModelingLeftIndex() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [platformsIdmemo])
+
   return (
     <div className={StyleSheet.ModelingLeftBody}>
       <ModelLeftHeaderLeftMemo />
