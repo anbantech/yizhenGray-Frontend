@@ -69,7 +69,7 @@ const ProcessorDetailsAttributes = () => {
 
   //  kind 0是状态  1非状态 非状态寄存器
   const notRegsiterList = useMemo(() => {
-    return register.filter((item: any) => item.kind === 1)
+    return register?.filter((item: any) => item.kind === 1)
   }, [register])
 
   //  寄存器的disablled
@@ -750,7 +750,7 @@ const RegisterDetailsAttributes = () => {
             <Select
               showSearch={Boolean(0)}
               onDropdownVisibleChange={visible => {
-                closeMenu(visible)
+                closeMenu(visible, 'kind')
               }}
               getPopupContainer={() => document.querySelector('#area') as HTMLElement}
               style={{ borderRadius: '4px' }}
