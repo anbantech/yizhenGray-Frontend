@@ -278,7 +278,6 @@ const RightListStore = create<RightFormCheckStoreParams>((set, get) => ({
   onBlurAsyncCheckoutNameFormValues: async (val, title, type, fn1) => {
     const { checkEveryItemIsError, messageInfoFn } = get()
     const item = titleMap[title as keyof typeof titleMap]
-    if (val.length === 0) return
     if (type === 'desc' && val.length > 50) {
       return messageInfoFn(item, type, title, 'error', '字数不能超过50个', val)
     }

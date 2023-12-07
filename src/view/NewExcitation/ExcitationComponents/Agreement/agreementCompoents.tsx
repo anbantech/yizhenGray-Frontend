@@ -255,9 +255,8 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
   React.useEffect(() => {
     if (Item.name) {
       const { name, skip, value, context } = Item
-      const valueSplit = value.split('0x')
-      setformData({ name, skip, value: valueSplit[1], context })
-      form.setFieldsValue({ name, skip, value: valueSplit[1], context })
+      setformData({ name, skip, value, context })
+      form.setFieldsValue({ name, skip, value, context })
     }
   }, [form, Item])
 
@@ -506,8 +505,9 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
   React.useEffect(() => {
     if (Item.name) {
       const { name, skip, value, length, context } = Item
-      setformData({ name, skip, value, length, context })
-      form.setFieldsValue({ name, skip, value, length, context })
+      const valueSplit = value.split('0x')
+      setformData({ name, skip, value: valueSplit[1], length, context })
+      form.setFieldsValue({ name, skip, value: valueSplit[1], length, context })
     }
   }, [form, Item])
 
@@ -738,6 +738,7 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
     if (Item.name) {
       const { name, skip, value, length, context, count } = Item
       const valueSplit = value.split('0x')
+
       setformData({ name, skip, value: valueSplit[1], length, context, count })
       form.setFieldsValue({ name, skip, value: valueSplit[1], length, context, count })
     }
