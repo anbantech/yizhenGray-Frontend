@@ -183,7 +183,7 @@ const MiddleStore = create<RFState>((set, get) => ({
         label: node.name,
         id: String(node.id),
         expanded: true,
-        error_code: node.error_code,
+        error_code: 0,
         position: { x: 0, y: 0 },
         draggable: false,
         builtIn: false,
@@ -207,6 +207,7 @@ const MiddleStore = create<RFState>((set, get) => ({
     }
     const nodesOBJ = [...get().nodes, newNode].map((Node1: Node) => {
       const matchingItem = ((node.error_code as unknown) as { error_code: number; id: string }[]).find((item2: any) => Node1.id === String(item2.id))
+
       if (matchingItem) {
         // eslint-disable-next-line no-param-reassign
         Node1.data.error_code = matchingItem.error_code

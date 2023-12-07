@@ -447,7 +447,7 @@ const ProcessorDetailsAttributes = () => {
             >
               {notRegsiterList?.map((rate: any) => {
                 return (
-                  <Option key={rate.id} value={rate.id}>
+                  <Option key={rate.id} value={rate.id} disabled={rate.processor_id}>
                     {rate.name}
                   </Option>
                 )
