@@ -50,7 +50,7 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
       if (res.data) {
         set({ rightArrributes: res.data })
         if (res.data.register !== 0) {
-          set({ register: res.data.register })
+          set({ register: res.data.register[0].peripheral.registers })
         }
       }
     } catch (error) {
@@ -84,8 +84,11 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
   getRegisterAttributes: async (id, fn) => {
     try {
       const res = await getRegisterDetails(id)
+
       if (res.data) {
-        set({ register: res.data.peripheral_id.registers })
+        if (res.data.sr_peri_id) {
+          await get().getPeripheralAttributes(res.data.sr_peri_id, 'rightList')
+        }
         set({ rightArrributes: res.data })
         if (fn) {
           fn(String(res.data.peripheral_id))
