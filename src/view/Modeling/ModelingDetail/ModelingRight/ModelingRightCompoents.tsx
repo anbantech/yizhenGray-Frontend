@@ -864,6 +864,7 @@ const RegisterDetailsAttributes = () => {
                     checkoutBase_addreeAndLength(e.target.value, '寄存器', 'restore_value', checkNullAndHex)
                   }}
                   onBlur={e => {
+                    console.log('22')
                     onBlurAsyncCheckoutNameFormValues(e.target.value, '寄存器', 'restore_value', updateRegister, register)
                   }}
                 />
