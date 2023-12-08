@@ -577,7 +577,6 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
         <div className={styles.initValue}>初始值</div>
         <Tooltip placement='topLeft' overlayClassName={styles.magicToolTipStyle} title={formData.value}>
           <Form.Item
-            className={styles.intFormItem}
             name='value'
             validateFirst
             validateTrigger={['onBlur', 'onSubmit']}
@@ -594,17 +593,17 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
             ]}
           >
             <Input
+              style={{ width: '203px' }}
               spellCheck='false'
-              prefix='0x'
-              bordered={false}
-              className={styles.IntInputValue}
+              placeholder='请输入字段名'
               onFocus={() => {
                 canDragBool(setCanDrag)
               }}
               autoComplete='off'
               onBlur={() => {
-                canIsDragBool(setCanDrag)
+                canDragBool(setCanDrag)
               }}
+              className={styles.StringInput}
             />
           </Form.Item>
         </Tooltip>
@@ -869,7 +868,6 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
         <div className={styles.initValue}>初始值</div>
         <Tooltip placement='topLeft' overlayClassName={styles.magicToolTipStyle} title={formData.value}>
           <Form.Item
-            className={styles.intArrayFormItem}
             name='value'
             validateFirst
             validateTrigger={['onBlur', 'onSubmit']}
@@ -886,17 +884,17 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
             ]}
           >
             <Input
-              prefix='0x'
+              style={{ width: '82px' }}
               spellCheck='false'
-              autoComplete='off'
-              bordered={false}
+              placeholder='请输入字段名'
               onFocus={() => {
                 canDragBool(setCanDrag)
               }}
+              autoComplete='off'
               onBlur={() => {
-                canIsDragBool(setCanDrag)
+                canDragBool(setCanDrag)
               }}
-              className={styles.IntArrayInputValue}
+              className={styles.StringInput}
             />
           </Form.Item>
         </Tooltip>

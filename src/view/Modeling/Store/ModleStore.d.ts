@@ -145,7 +145,7 @@ interface RFState {
   nodes: any
   edges: any
   collapseOtherNode: (id: string) => void
-  menuStatusObj: { status: boolean; id: null | string }
+  menuStatusObj: null | string
   changeView: boolean
   canvasData: any
   onNodesChange: OnNodesChange

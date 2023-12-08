@@ -19,8 +19,8 @@ function CustomTargetNode(Node: NodeProps) {
   }, [focusNodeId, Node])
 
   const isOpen = useMemo(() => {
-    const idBol = menuStatusObj.id === Node.data.id
-    return idBol && menuStatusObj.status
+    const idBol = menuStatusObj === Node.data.id
+    return idBol
   }, [menuStatusObj, Node])
 
   const showNode = React.useCallback(
