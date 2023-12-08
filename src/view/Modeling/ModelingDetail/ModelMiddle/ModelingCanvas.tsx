@@ -44,7 +44,7 @@ type ExpandCollapseExampleProps = {
 }
 // const panOnDrag = [1, 2]
 
-function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250, animationDuration = 100 }: ExpandCollapseExampleProps) {
+function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250, animationDuration = 200 }: ExpandCollapseExampleProps) {
   const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
   const platform_id = MiddleStore(state => state.platform_id)
   const setTabs = useLeftModelDetailsStore(state => state.setTabs)
@@ -234,8 +234,9 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
     <div className={styles.container}>
       {animatedNodes && (
         <ReactFlow
-          fitView={Boolean(1)}
+          fitView
           ref={ref}
+          fitViewOptions={{ minZoom: 1 }}
           deleteKeyCode={null}
           nodes={animatedNodes}
           edges={visibleEdges}
@@ -254,7 +255,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
           // panOnDrag={panOnDrag}
           // selectionMode={SelectionMode.Partial}
           onSelectionChange={onSelectionChange}
-          minZoom={0.1}
+          minZoom={-Infinity}
           maxZoom={Infinity}
         >
           <Background variant={BackgroundVariant.Dots} gap={24} size={1} />

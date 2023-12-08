@@ -122,7 +122,7 @@ const StringComponents = React.forwardRef(({ index, Item, moveCardHandler }: Dro
   const ref = React.useRef<HTMLDivElement>(null)
   const [isDragItem, setCanDrag] = React.useState(true)
   const onValuesChange = React.useCallback((changedValues: any, allValues: any) => {
-    setformData({ ...allValues, value: `0x${allValues.value}` })
+    setformData({ ...allValues })
   }, [])
 
   const onToggleForbidDrag = React.useCallback(() => {
