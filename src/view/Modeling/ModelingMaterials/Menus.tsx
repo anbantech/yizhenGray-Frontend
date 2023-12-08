@@ -79,15 +79,15 @@ const Flag1 = (Node: NodeProps) => {
 }
 
 const Flag2 = (Node: NodeProps) => {
-  const setTabs = formItemParamsCheckStore(state => state.setTabs)
-  const setOpenMenu = MiddleStore(state => state.setOpenMenu)
+  // const setTabs = formItemParamsCheckStore(state => state.setTabs)
+  // const setOpenMenu = MiddleStore(state => state.setOpenMenu)
   const deleteTreeNode = MiddleStore(state => state.deleteTreeNode)
-  const dataHandeler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.stopPropagation()
-    e.preventDefault()
-    setTabs('dataHandlerNotReferenced')
-    setOpenMenu()
-  }
+  // const dataHandeler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  //   e.stopPropagation()
+  //   e.preventDefault()
+  //   setTabs('dataHandlerNotReferenced')
+  //   setOpenMenu()
+  // }
 
   const createNodeInfoAndOpenModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation()
@@ -102,7 +102,7 @@ const Flag2 = (Node: NodeProps) => {
   }
   return (
     <div className={styles.Flag3}>
-      <div
+      {/* <div
         className={styles.Flag5}
         role='time'
         onClick={e => {
@@ -111,7 +111,7 @@ const Flag2 = (Node: NodeProps) => {
       >
         <IconCommon style={{ width: '16px', height: '16px', color: '#000', marginRight: '4px' }} />
         <span> 添加数据处理器 </span>
-      </div>
+      </div> */}
       <div className={styles.Flag_1} role='time' onClick={createNodeInfoAndOpenModal}>
         <IconDelete style={{ width: '16px', height: '16px', color: '#000', marginRight: '4px' }} />
         <span>删除</span>
@@ -150,7 +150,7 @@ const mapFlagCompoents = {
 const mapFlagCompoentsStyle = {
   5: styles.contextMenu5,
   1: styles.contextMenu1,
-  2: styles.contextMenu2,
+  2: styles.contextMenu3,
   3: styles.contextMenu5
 }
 export default function ContextMenu(props: { flag: number; Node: NodeProps }) {

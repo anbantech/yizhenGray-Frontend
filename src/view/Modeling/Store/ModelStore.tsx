@@ -714,14 +714,16 @@ const checkUtilFnStore = create<CheckUtilFnStoreParams>(() => ({
   // 检查间隔
   checkInterval: (val: string) => {
     if (!val) return false
-    const checkoutResult = Number(val) >= 0 && Number(val) <= 65535
+    const regex = /^\d+$/
+    const checkoutResult = Number(val) >= 0 && Number(val) <= 65535 && regex.test(val)
     return checkoutResult
   },
 
   // 检查中断号
   checkInterrupt: (val: string) => {
     if (!val) return false
-    const checkoutResult = Number(val) >= 0 && Number(val) <= 255
+    const regex = /^\d+$/
+    const checkoutResult = Number(val) >= 0 && Number(val) <= 255 && regex.test(val)
     return checkoutResult
   }
 }))

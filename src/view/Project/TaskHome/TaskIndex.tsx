@@ -103,7 +103,6 @@ const TaskIndex: React.FC<RouteComponentProps<any, StaticContext, projectPropsTy
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  console.log(status)
   return (
     <div className={styles.TaskIndexBody} style={{ display: 'flex' }}>
       <TaskList status={status as number} />

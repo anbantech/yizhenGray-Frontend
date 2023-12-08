@@ -34,7 +34,7 @@ const MiddleStore = create<RFState>((set, get) => ({
   edges: [],
   sumData: null,
   canvasData: [],
-  menuStatusObj: { status: false, id: null },
+  menuStatusObj: null,
   nodeId: null,
   changeView: false,
   leftListExpandArray: [],
@@ -64,11 +64,14 @@ const MiddleStore = create<RFState>((set, get) => ({
     set({ leftListExpandArray: selectId })
   },
   setMenuStatus: (id: string) => {
-    set({ menuStatusObj: { status: !get().menuStatusObj.status, id } })
+    if (id === get().menuStatusObj) {
+      return set({ menuStatusObj: null })
+    }
+    set({ menuStatusObj: id })
   },
 
   setOpenMenu: () => {
-    set({ menuStatusObj: { status: false, id: null } })
+    set({ menuStatusObj: null })
   },
 
   setChangeView: val => {
