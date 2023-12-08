@@ -26,7 +26,7 @@ export default function CustomControls() {
         +
       </ControlButton>
       <ControlButton style={{ border: 'none' }} onClick={onFitViewHandler} title='自适应'>
-        <ExpandOutlined />
+        <ExpandOutlined style={{ width: '10px', height: '10px' }} />
       </ControlButton>
     </Controls>
   )

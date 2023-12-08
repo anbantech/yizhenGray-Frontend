@@ -103,11 +103,11 @@ const TaskIndex: React.FC<RouteComponentProps<any, StaticContext, projectPropsTy
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
+  console.log(status)
   return (
     <div className={styles.TaskIndexBody} style={{ display: 'flex' }}>
       <TaskList status={status as number} />
-      {TaskDetail && status !== undefined ? <TaskInstances data={TaskDetail} status={status} /> : <NoTask />}
+      {TaskDetail ? <TaskInstances data={TaskDetail} status={status} /> : <NoTask />}
     </div>
   )
 }
