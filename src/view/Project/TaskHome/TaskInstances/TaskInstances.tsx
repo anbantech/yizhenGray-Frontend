@@ -5,6 +5,7 @@ import styles from '../TaskHeader/TaskInstance.less'
 
 function TaskInstances(props: Record<string, any>) {
   const { data, status } = props
+
   return (
     <div className={styles.rightBody}>
       <HeaderComponets data={data} status={status} />

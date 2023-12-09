@@ -61,4 +61,5 @@ const getSystemConstantsStore = create<SystemStore>(set => ({
   }
 }))
 
-export { getSystemConstantsStore, useWebSocketStore }
+const sendMessageFn = useWebSocketStore.getState().sendMessage
+export { getSystemConstantsStore, useWebSocketStore, sendMessageFn }
