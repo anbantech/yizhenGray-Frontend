@@ -593,9 +593,9 @@ const IntCompoents = React.forwardRef(({ index, Item, moveCardHandler }: DropCmp
             ]}
           >
             <Input
+              prefix='0x'
               style={{ width: '203px' }}
               spellCheck='false'
-              placeholder='请输入字段名'
               onFocus={() => {
                 canDragBool(setCanDrag)
               }}
@@ -884,9 +884,9 @@ const IntArrayCompoents = React.forwardRef(({ index, Item, moveCardHandler }: Dr
             ]}
           >
             <Input
+              prefix='0x'
               style={{ width: '82px' }}
               spellCheck='false'
-              placeholder='请输入字段名'
               onFocus={() => {
                 canDragBool(setCanDrag)
               }}

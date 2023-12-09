@@ -26,6 +26,7 @@ type TaskListState<T> = {
   getTaskDeatil: (id: number | null) => Promise
   setTaskID: (id: number | null) => void
   hasMoreData: boolean
+  updateListItemStatus: (id, status) => void
   setTaskListData: (value: []) => void
   getTasKList: (id: number) => void
   setHasMore: (val: boolean) => void
@@ -63,4 +64,5 @@ type TableAction = {
   setStatus: (value: string | null) => void
   getTaskInstancesList: () => void
   toggleLoading: () => void
+  getTaskInstancesListFn: (id) => void
 }

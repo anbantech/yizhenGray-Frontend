@@ -156,13 +156,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   const deleteTask = (value: boolean, id: any) => {
     setModalData({ ...modalData, isModalVisible: value, instances_id: id })
   }
-  const isQual = React.useMemo(() => {
-    if (taskLists.length >= 1) {
-      const statusArray = taskLists.map((item: Record<string, any>) => item.status)
-      return statusArray.includes(status)
-    }
-    return true
-  }, [taskLists, status])
+
   // 关闭modal
   const choiceModal = React.useCallback(
     (value?: string) => {
@@ -173,6 +167,7 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
     },
     [getTaskInstancesList, visibility]
   )
+  // 删除函数
   const deleteProjectRight = React.useCallback(async () => {
     try {
       const res = await deleteExampleTask(TaskId, modalData.instances_id)
@@ -192,12 +187,12 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   const CommonModleClose = (value: boolean) => {
     setModalData({ ...modalData, isModalVisible: value })
   }
+
   React.useEffect(() => {
-    if (!isQual) {
-      getTaskInstancesList()
-    }
+    getTaskInstancesList()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isQual, status])
+  }, [status])
+
   // 表格title
   const columns = [
     {
@@ -372,4 +367,6 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   )
 }
 
-export default withRouter(TaskInstanceTable)
+const TaskInstanceTableMemo = React.memo(TaskInstanceTable)
+
+export default withRouter(TaskInstanceTableMemo)
