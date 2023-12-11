@@ -3725,10 +3725,10 @@
     "lodash.memoize" "^4.1.2"
     "lodash.uniq" "^4.5.0"
 
-"caniuse-lite@^1.0.0", "caniuse-lite@^1.0.30000981", "caniuse-lite@^1.0.30001109", "caniuse-lite@^1.0.30001541":
-  "integrity" "sha512-ggIhCsTxmITBAMmK8yZjEhCO5/47jKXPu6Dha/wuCS4JePVL+3uiDEBuhu2aIoT+bqTOR8L76Ip1ARL9xYsEJA=="
-  "resolved" "http://192.168.5.253:4873/caniuse-lite/-/caniuse-lite-1.0.30001566.tgz"
-  "version" "1.0.30001566"
+"caniuse-lite@^1.0.0", "caniuse-lite@^1.0.30000981", "caniuse-lite@^1.0.30001109", "caniuse-lite@^1.0.30001541", "caniuse-lite@^1.0.30001568":
+  "integrity" "sha512-vSUkH84HontZJ88MiNrOau1EBrCqEQYgkC5gIySiDlpsm8sGVrhU7Kx4V6h0tnqaHzIHZv08HlJIwPbL4XL9+A=="
+  "resolved" "http://192.168.5.253:4873/caniuse-lite/-/caniuse-lite-1.0.30001568.tgz"
+  "version" "1.0.30001568"
 
 "ccount@^1.0.0":
   "integrity" "sha1-rIKpRJBaZc4gTrAwIxV+3ylCXBc="

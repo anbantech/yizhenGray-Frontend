@@ -7,23 +7,14 @@ import { message, Tooltip } from 'antd'
 import { RouteComponentProps, StaticContext, useHistory, withRouter } from 'react-router'
 import { useWebSocketStore } from 'Src/webSocket/webSocketStore'
 import testing from 'Src/assets/Contents/Group692.svg'
-import { deleteTasks, taskTest } from 'Src/services/api/taskApi'
+import { deleteTasks } from 'Src/services/api/taskApi'
 import { throwErrorMessage } from 'Src/util/message'
 import CommonModle from 'Src/components/Modal/projectMoadl/CommonModle'
 import globalStyle from 'Src/view/Project/project/project.less'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import styles from './task.less'
-import { TaskListDataStore, TaskTableStore } from '../TaskStore/TaskStore'
+import { TaskListDataStore } from '../TaskStore/TaskStore'
 
-const params = {
-  task_id: null,
-  key_word: '',
-  page: 1,
-  page_size: 10,
-  status: null,
-  sort_field: 'create_time',
-  sort_order: 'descend'
-}
 interface Resparams {
   project_id: number
   key_word?: string
@@ -58,31 +49,12 @@ export interface projectInfoType {
 }
 
 const TaskMemo: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<projectInfoType>>> = props => {
-  const { loadMoreData, getTaskDeatil, hasMoreData, updateListItemStatus, setKeyWord, setTaskListData, setPage, setTaskID } = TaskListDataStore()
+  const { loadMoreData, hasMoreData, updateListItemStatus, setKeyWord, setTaskListData, setPage, setTaskID } = TaskListDataStore()
   const TaskId = TaskListDataStore(state => state.TaskId)
 
-  const { setTaskList, setTotal, initParams } = TaskTableStore()
   const loading = TaskListDataStore(state => state.loading)
   const TaskListData = TaskListDataStore(state => state.TaskListData)
   const { sendMessage, messages } = useWebSocketStore()
-
-  const getTaskInstancesList = React.useCallback(
-    async value => {
-      if (!value.task_id) return
-      try {
-        const listResult = await taskTest(value)
-        if (listResult.data) {
-          initParams(value.task_id)
-          setTotal(listResult.data.total)
-          setTaskList(listResult.data.results)
-        }
-        return listResult
-      } catch (error) {
-        throwErrorMessage(error)
-      }
-    },
-    [initParams, setTaskList, setTotal]
-  )
 
   const ChoiceTaskId = React.useMemo(() => {
     if (TaskId) {
@@ -185,18 +157,10 @@ const TaskMemo: React.FC<RouteComponentProps<any, StaticContext, projectPropsTyp
   // 点击右侧属性 拉取ws 更新详情
   const onClickRightAtrrbuite = React.useCallback(
     id => {
+      setTaskID(id)
       sendMessage(id, 'task')
-      getTaskDeatil(id)
-        .then(async () => {
-          setTaskID(id)
-          const result = await getTaskInstancesList({ ...params, task_id: id })
-          return result
-        })
-        .catch((error: any) => {
-          throwErrorMessage(error)
-        })
     },
-    [getTaskDeatil, getTaskInstancesList, sendMessage, setTaskID]
+    [sendMessage, setTaskID]
   )
   return (
     <div className={styles.taskLeft_list} ref={layoutRef}>

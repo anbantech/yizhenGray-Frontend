@@ -62,6 +62,7 @@ export interface projectInfoType {
 const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projectPropsType<projectInfoType>> & results> = props => {
   const { projectInfo } = props.location?.state
   const { status } = props
+  const { getTaskDeatil } = TaskListDataStore()
   const TaskId = TaskListDataStore(state => state.TaskId)
   const total = TaskTableStore(state => state.total)
   const taskLists = TaskTableStore(state => state.TableListData)
@@ -189,9 +190,13 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
   }
 
   React.useEffect(() => {
-    getTaskInstancesList()
+    if (TaskId) {
+      getTaskDeatil(TaskId)
+    }
+
+    // getTaskInstancesList()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status])
+  }, [status, TaskId])
 
   // 表格title
   const columns = [

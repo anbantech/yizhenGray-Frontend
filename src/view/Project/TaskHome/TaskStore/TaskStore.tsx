@@ -103,6 +103,10 @@ const TaskTableStore = create<TableState & TableAction>((set, get) => ({
   }
 }))
 const getInstanceListFns = TaskTableStore.getState().getTaskInstancesListFn
+const initParamsFn = TaskTableStore.getState().initParams
+const setTotalFn = TaskTableStore.getState().setTotal
+const setTaskListFn = TaskTableStore.getState().setTaskList
+
 const TaskListDataStore = create<TaskListState<TaskRequestParams>>((set, get) => ({
   TaskId: null,
   hasMoreData: true,
@@ -166,6 +170,15 @@ const TaskListDataStore = create<TaskListState<TaskRequestParams>>((set, get) =>
     try {
       const res = await TaskDetail(`${id}`)
       set({ TaskDetail: res.data })
+      if (res.data) {
+        const result: any = await getInstanceListFns(id)
+        if (result.data) {
+          initParamsFn(id)
+          setTotalFn(result.data.total)
+          setTaskListFn(result.data.results)
+        }
+        return result
+      }
     } catch (error) {
       throwErrorMessage(error, { 1008: '服务异常' })
     }

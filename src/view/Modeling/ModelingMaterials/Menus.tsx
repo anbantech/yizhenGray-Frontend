@@ -32,6 +32,7 @@ const Flag5 = () => {
 
 const Flag1 = (Node: NodeProps) => {
   const setTabs = formItemParamsCheckStore(state => state.setTabs)
+  const unSetTabs = formItemParamsCheckStore(state => state.unSetTabs)
   const setOpenMenu = MiddleStore(state => state.setOpenMenu)
   const updateFormValue = formItemParamsCheckStore(state => state.updateFormValue)
   const processor = React.useCallback(
@@ -48,7 +49,7 @@ const Flag1 = (Node: NodeProps) => {
   const createNodeInfoAndOpenModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation()
     e.preventDefault()
-
+    unSetTabs()
     const nodeArray = [{ id: String(Node.data.id), data: { flag: Node.data.flag } }]
     const nodeInfo = {
       node: nodeArray,
@@ -88,10 +89,11 @@ const Flag2 = (Node: NodeProps) => {
   //   setTabs('dataHandlerNotReferenced')
   //   setOpenMenu()
   // }
-
+  const unSetTabs = formItemParamsCheckStore(state => state.unSetTabs)
   const createNodeInfoAndOpenModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation()
     e.preventDefault()
+    unSetTabs()
     const nodeArray = [{ id: String(Node.data.id), data: { flag: Node.data.flag } }]
     const nodeInfo = {
       node: nodeArray,
@@ -120,10 +122,12 @@ const Flag2 = (Node: NodeProps) => {
   )
 }
 const Flag3 = (Node: NodeProps) => {
+  const unSetTabs = formItemParamsCheckStore(state => state.unSetTabs)
   const deleteTreeNode = MiddleStore(state => state.deleteTreeNode)
   const createNodeInfoAndOpenModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation()
     e.preventDefault()
+    unSetTabs()
     const nodeArray = [{ id: String(Node.data.id), data: { flag: Node.data.flag } }]
     const nodeInfo = {
       node: nodeArray,
