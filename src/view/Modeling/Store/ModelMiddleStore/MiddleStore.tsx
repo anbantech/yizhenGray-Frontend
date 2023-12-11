@@ -415,7 +415,6 @@ const MiddleStore = create<RFState>((set, get) => ({
         draggable: false,
         zIndex: NodeZindex[flag as keyof typeof NodeZindex]
       }
-
       const newEdge = {
         flag,
         id: `${flag === 1 ? platform_id : peripheral_id}->${id}`,
@@ -438,10 +437,13 @@ const MiddleStore = create<RFState>((set, get) => ({
       saveCanvas([...get().nodes], [...get().edges], platform_id as string)
     } else {
       const hasNoStatusRegister = nodes.some((item: Node) => item.data.kind === kind)
-      const hasThisNode = nodes.some(
-        (item: Node) => item.data.parentId === String(peripheral_id) && name === item.data.label && error_code === item.data.error_code
-      )
+
+      const hasThisNode = nodes.some((item: Node) => {
+        return item.data.parentId === String(peripheral_id) && name === item.data.label
+      })
+
       if (hasThisNode && hasNoStatusRegister) return
+
       if (!hasThisNode) {
         const updatedNodes = get().nodes.filter((item: { id: string }) => item.id !== String(id))
         const updatedEdges = get().edges.filter((item: { target: string }) => item.target !== String(id))
