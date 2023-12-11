@@ -131,6 +131,7 @@
     "ahooks-v2": "^2.10.15",
     "antd": "^4.15.6",
     "axios": "^0.21.1",
+    "caniuse-lite": "^1.0.30001568",
     "classnames": "^2.3.2",
     "colorette": "^2.0.17",
     "compression-webpack-plugin": "^5.0.1",
