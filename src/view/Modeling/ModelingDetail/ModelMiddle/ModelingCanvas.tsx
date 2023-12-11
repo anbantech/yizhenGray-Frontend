@@ -184,6 +184,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
 
   const keyDownHandler = React.useCallback(
     (ev: KeyboardEvent) => {
+      ev.stopPropagation()
       if (ev.code !== 'Delete') return
       const { node } = deleteInfo
 
@@ -193,7 +194,15 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
     [deleteInfo, deleteTreeNode]
   )
 
-  useEventListener('keydown', keyDownHandler)
+  useEventListener('keydown', keyDownHandler, { target: ref })
+
+  const listenBeforeLoad = React.useCallback(() => {
+    if (platform_id) {
+      saveCanvas(animatedNodes, visibleEdges, platform_id)
+    }
+  }, [platform_id, saveCanvas, animatedNodes, visibleEdges])
+
+  useEventListener('beforeunload', listenBeforeLoad)
 
   const onSelectionChange = React.useCallback(
     (params: { nodes: Node[]; edges: Edge[] }) => {
@@ -210,11 +219,6 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
         return [1, 2, 3].includes(item.data.flag) && !item.data.builtIn
       })
 
-      // const edge = edges.filter((item: Edge) => {
-      //   return !notNodeArray.find(node => {
-      //     return node.id === item.target
-      //   })
-      // })
       if (node.length === 1) {
         const nodeArray = [{ id: String(node[0].data.id), data: { flag: node[0].data.flag } }]
         const nodeInfo = {

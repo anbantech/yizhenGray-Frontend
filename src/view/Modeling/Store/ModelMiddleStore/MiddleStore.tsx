@@ -45,6 +45,7 @@ const MiddleStore = create<RFState>((set, get) => ({
   collapseOtherNode: id => {
     const hasThisNode = get().nodes.find((item: Node) => item.id === String(id))
 
+    if (!hasThisNode) return
     const selectId: string[] = []
 
     const getAllParentId = (id: string, item: Node[]) => {
