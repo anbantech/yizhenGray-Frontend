@@ -152,7 +152,14 @@ interface RFState {
   onEdgesChange: OnEdgesChange
   onConnect: OnConnect
   leftListExpandArray: string[]
-  updateRegisterNodeDraw: (detailes: { error_code: number; name: string; id: string; peripheral_id: string; flag: number; kind: number }) => void
+  updateRegisterNodeDraw: (detailes: {
+    error_code: { error_code: number; id: number }
+    name: string
+    id: string
+    peripheral_id: string
+    flag: number
+    kind: number
+  }) => void
   upDateLeftExpandArrayFn: (val: string[]) => void
   setChangeView: (val: boolean) => void
   setMenuStatus: (id: string) => void
