@@ -82,6 +82,7 @@ const FormFooter = () => {
   const platformsId = (useLocation() as LoactionState).state?.id
   const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
   const createElement = MiddleStore(state => state.createElement)
+
   const checkEveryItem = formItemParamsCheckStore(state => state.checkEveryItem)
   const optionalParameters = formItemParamsCheckStore(state => state.optionalParameters)
   const getModelListDetails = useLeftModelDetailsStore(state => state.getModelListDetails)

@@ -200,9 +200,9 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
 
   const listenBeforeLoad = React.useCallback(() => {
     if (platform_id) {
-      saveCanvas(animatedNodes, visibleEdges, platform_id)
+      saveCanvas(nodeStore, edgeStore, platform_id)
     }
-  }, [platform_id, saveCanvas, animatedNodes, visibleEdges])
+  }, [platform_id, saveCanvas, nodeStore, edgeStore])
 
   useEventListener('beforeunload', listenBeforeLoad)
 

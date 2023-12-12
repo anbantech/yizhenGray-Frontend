@@ -21,11 +21,12 @@ function ModelingLeftIndex() {
   const { getAllPeripheral } = useLeftModelDetailsStore()
   const setPlatFormId = RightListStore(state => state.setPlatFormId)
   const unSelect = formItemParamsCheckStore(state => state.unSetTabs)
+
   const closeSelect = (e: any) => {
     e.stopPropagation()
-    e.preventDefault()
     unSelect()
   }
+
   React.useEffect(() => {
     if (platformsIdmemo) {
       setPlatFormId(platformsIdmemo)
