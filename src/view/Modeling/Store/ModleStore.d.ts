@@ -65,6 +65,7 @@ export interface ModelDetails {
   tabs: string
   loading: boolean
   keyWord: string
+  customAllPeripheralList: [] | CustomMadePeripheralListParams[]
   expandNodeArray: string[]
   cusomMadePeripheralListParams: CustomMadePeripheralListParams
   processorListParams: ProcessorListParams
@@ -98,6 +99,7 @@ export interface ModelDetails {
   setTags: (val: string) => void
   getBoardCustomMadePeripheralStore: (id: number) => void
   getCustomMadePeripheralStore: (id: number) => void
+  getCustomMadePeripheralStoreFn: (id: number) => void
   getProcessorListStore: (id: number) => void
   getTimeListStore: (id: number) => void
   getList: (val: string, id: number) => void

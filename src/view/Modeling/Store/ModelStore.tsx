@@ -155,6 +155,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
     sort_order: 'descend'
   },
   customMadePeripheralList: [],
+  customAllPeripheralList: [],
   timerList: [],
   processorList: [],
   boardLevelPeripheralsList: [],
@@ -239,6 +240,32 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
           set({ expandNodeArray: allIds })
         }
         set({ customMadePeripheralList: [...res.data.results] })
+      }
+      setLoading(false)
+      return res
+    } catch (error) {
+      setLoading(false)
+      throwErrorMessage(error, { 1006: '参数错误' })
+      return error
+    }
+  },
+
+  getCustomMadePeripheralStoreFn: async (id: number) => {
+    const { setLoading } = get()
+    try {
+      const params = {
+        variety: '0',
+        tag: '0',
+        key_word: '',
+        page: 1,
+        page_size: 99999,
+        sort_field: 'create_time',
+        sort_order: 'descend',
+        platform_id: id
+      }
+      const res = await getCustomMadePeripheralList(params)
+      if (res.data) {
+        set({ customAllPeripheralList: [...res.data.results] })
       }
       setLoading(false)
       return res
@@ -346,21 +373,30 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
 
   getList: (val: string, id: number) => {
     // 根据val获取对应的数据
-    const { getProcessorListStore, getCustomMadePeripheralStore, getTimeListStore, getBoardCustomMadePeripheralStore } = get()
+    const {
+      getProcessorListStore,
+      getCustomMadePeripheralStoreFn,
+      getCustomMadePeripheralStore,
+      getTimeListStore,
+      getBoardCustomMadePeripheralStore
+    } = get()
     set({ tabs: val })
     switch (val) {
       case 'customMadePeripheral':
         getCustomMadePeripheralStore(id)
-
+        getCustomMadePeripheralStoreFn(id)
         break
       case 'boardLevelPeripherals':
         getBoardCustomMadePeripheralStore(id)
+        getCustomMadePeripheralStoreFn(id)
         break
       case 'dataHandlerNotReferenced':
         getProcessorListStore(id)
+        getCustomMadePeripheralStoreFn(id)
         break
       case 'time':
         getTimeListStore(id)
+        getCustomMadePeripheralStoreFn(id)
         break
       default:
         break
@@ -369,22 +405,32 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
 
   baseKeyWordAndTagsGetList: (val: string, id: number) => {
     // 根据val获取对应的数据
-    const { setLoading, getProcessorListStore, getCustomMadePeripheralStore, getTimeListStore, getBoardCustomMadePeripheralStore } = get()
-
+    const {
+      setLoading,
+      getProcessorListStore,
+      getCustomMadePeripheralStoreFn,
+      getCustomMadePeripheralStore,
+      getTimeListStore,
+      getBoardCustomMadePeripheralStore
+    } = get()
     switch (val) {
       case 'customMadePeripheral':
         setLoading(true)
         getCustomMadePeripheralStore(id)
+        getCustomMadePeripheralStoreFn(id)
         break
       case 'boardLevelPeripherals':
         setLoading(true)
         getBoardCustomMadePeripheralStore(id)
+        getCustomMadePeripheralStoreFn(id)
         break
       case 'dataHandlerNotReferenced':
         getProcessorListStore(id)
+        getCustomMadePeripheralStoreFn(id)
         break
       case 'time':
         getTimeListStore(id)
+        getCustomMadePeripheralStoreFn(id)
         break
       default:
         break

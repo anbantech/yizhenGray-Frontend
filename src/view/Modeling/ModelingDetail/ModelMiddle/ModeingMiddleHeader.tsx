@@ -264,13 +264,13 @@ const PeripheralsFormMemo = React.memo(PeripheralsForm)
 
 // 添加寄存器
 const ProcessorForm = () => {
-  const customMadePeripheralList = useLeftModelDetailsStore(state => state.customMadePeripheralList)
+  const customAllPeripheralList = useLeftModelDetailsStore(state => state.customAllPeripheralList)
 
   const customMadePeripheralListMemo = useMemo(() => {
-    return customMadePeripheralList.map((item: any) => {
+    return customAllPeripheralList.map((item: any) => {
       return { id: item.id, name: item.name }
     })
-  }, [customMadePeripheralList])
+  }, [customAllPeripheralList])
   const { optionalParameters, onChange } = formItemParamsCheckStore()
   const { name, relative_address, peripheral_id } = optionalParameters
 
