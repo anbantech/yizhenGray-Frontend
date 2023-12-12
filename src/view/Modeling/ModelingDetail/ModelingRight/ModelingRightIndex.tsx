@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useLeftModelDetailsStore } from '../../Store/ModelStore'
+import { formItemParamsCheckStore, useLeftModelDetailsStore } from '../../Store/ModelStore'
 import {
   PeripheralDetailsAttributesMemo,
   ProcessorFormMemo,
@@ -44,6 +44,14 @@ function ModelingRight() {
   const targetDetails = useLeftModelDetailsStore(state => state.targetDetails)
   const { clickLeftListAndFoucsIdAndRightAtturbuites } = RightListStore()
   const platform_id = MiddleStore(state => state.platform_id)
+
+  const unSelect = formItemParamsCheckStore(state => state.unSetTabs)
+
+  const closeSelect = (e: any) => {
+    e.stopPropagation()
+    e.preventDefault()
+    unSelect()
+  }
   React.useEffect(() => {
     if (typeAttributes !== 'Target') {
       clickLeftListAndFoucsIdAndRightAtturbuites(FormType[typeAttributes as keyof typeof FormType], typeAttributes, rightArrributes)
@@ -65,7 +73,13 @@ function ModelingRight() {
   }, [typeAttributes, targetDetails])
 
   return (
-    <div className={StyleSheet.ModelingRightBody}>
+    <div
+      className={StyleSheet.ModelingRightBody}
+      role='time'
+      onClick={e => {
+        closeSelect(e)
+      }}
+    >
       <Header />
       <div>{CmpMemo}</div>
     </div>

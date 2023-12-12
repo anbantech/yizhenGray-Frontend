@@ -590,7 +590,6 @@ const RegisterDetailsAttributes = () => {
   } = RightListStore()
 
   const { AllPeripheralList, customMadePeripheralList } = useLeftModelDetailsStore()
-
   const registerListStatus = useMemo(() => {
     if (!registerListOkr?.length) return []
     const registerListArray = registerListOkr?.filter((item: any) => {

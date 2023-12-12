@@ -20,7 +20,7 @@ import CustomRegisterNode from '../../ModelingMaterials/CustomRegisterNode'
 import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
 
 import { AttributesType, titleFlagMap } from '../../Store/MapStore'
-import { publicAttributes, useLeftModelDetailsStore } from '../../Store/ModelStore'
+import { formItemParamsCheckStore, publicAttributes, useLeftModelDetailsStore } from '../../Store/ModelStore'
 
 import { getModelListDetails } from '../ModelingRight/ModelingRightCompoents'
 import CustomControls from '../../ModelingMaterials/CustomControls'
@@ -61,6 +61,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
   const tabs = useLeftModelDetailsStore(state => state.tabs)
   const deleteTreeNode = MiddleStore(state => state.deleteTreeNode)
   const ref = React.useRef(null)
+  const unSelect = formItemParamsCheckStore(state => state.unSetTabs)
 
   const { nodes: visibleNodes, edges: visibleEdges } = useExpandCollapse(nodeStore, edgeStore, {
     treeWidth,
@@ -161,6 +162,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
     (event, node) => {
       event.stopPropagation()
       event.preventDefault()
+      unSelect()
       const { flag, id, builtIn } = node.data
       if (platform_id) {
         if (flag === 1) {
@@ -179,7 +181,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
       const res = getParentNode(node)
       upDateLeftExpandArrayFn(res)
     },
-    [setOpenMenu, rightAttributeMap, getParentNode, upDateLeftExpandArrayFn, setTabs, platform_id]
+    [unSelect, platform_id, setOpenMenu, rightAttributeMap, getParentNode, upDateLeftExpandArrayFn, setTabs]
   )
 
   const keyDownHandler = React.useCallback(
@@ -280,6 +282,7 @@ function ReactFlowWrapper() {
   const nodeStore = MiddleStore(state => state.nodes)
   const edgeStore = MiddleStore(state => state.edges)
   const setPortList = publicAttributes(state => state.setPortList)
+
   useEffect(() => {
     if (platformsIdmemo) {
       setPortList()

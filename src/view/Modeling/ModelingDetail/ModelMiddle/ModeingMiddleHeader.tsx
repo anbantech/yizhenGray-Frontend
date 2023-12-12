@@ -445,6 +445,7 @@ const TabsBarForm = {
 
 function ModelingMiddleHeaderMemo() {
   const tabs = formItemParamsCheckStore(state => state.tabs)
+
   return (
     <div className={StyleSheet.moddleMiddleHeaderBody} key={tabs}>
       {TabsBarForm[tabs as keyof typeof TabsBarForm]}

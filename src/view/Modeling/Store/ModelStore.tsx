@@ -351,6 +351,7 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
     switch (val) {
       case 'customMadePeripheral':
         getCustomMadePeripheralStore(id)
+
         break
       case 'boardLevelPeripherals':
         getBoardCustomMadePeripheralStore(id)

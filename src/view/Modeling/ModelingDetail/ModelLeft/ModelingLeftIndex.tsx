@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useLocation } from 'react-router'
-import { useLeftModelDetailsStore } from '../../Store/ModelStore'
+import { formItemParamsCheckStore, useLeftModelDetailsStore } from '../../Store/ModelStore'
 import ModelingInput from './ModelingInput'
 import ModelingLeftTabList from './ModelingLeftTabList'
 import ModelLeftHeaderLeftMemo from './ModelItemTabsComponents'
@@ -20,7 +20,12 @@ function ModelingLeftIndex() {
   const tabs = useLeftModelDetailsStore(state => state.tabs)
   const { getAllPeripheral } = useLeftModelDetailsStore()
   const setPlatFormId = RightListStore(state => state.setPlatFormId)
-
+  const unSelect = formItemParamsCheckStore(state => state.unSetTabs)
+  const closeSelect = (e: any) => {
+    e.stopPropagation()
+    e.preventDefault()
+    unSelect()
+  }
   React.useEffect(() => {
     if (platformsIdmemo) {
       setPlatFormId(platformsIdmemo)
@@ -32,7 +37,13 @@ function ModelingLeftIndex() {
   }, [platformsIdmemo])
 
   return (
-    <div className={StyleSheet.ModelingLeftBody}>
+    <div
+      className={StyleSheet.ModelingLeftBody}
+      role='time'
+      onClick={e => {
+        closeSelect(e)
+      }}
+    >
       <ModelLeftHeaderLeftMemo />
       <ModelingInput />
       {['customMadePeripheral', 'boardLevelPeripherals'].includes(tabs) ? <ModelingLeftTabList /> : <TImerAndDataHand />}

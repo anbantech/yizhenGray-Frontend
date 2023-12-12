@@ -1,6 +1,8 @@
 import * as React from 'react'
+import { useLocation } from 'react-router'
 import { useLeftModelDetailsStore } from '../../Store/ModelStore'
 import StyleSheet from './modelLeft.less'
+import { LoactionState } from './ModelingLeftIndex'
 
 type Tabs = {
   keys: string
@@ -19,7 +21,8 @@ const TabsCompoents = (props: Tabs) => {
   const timerNums = useLeftModelDetailsStore(state => state.timerNums)
   const handlerDataNums = useLeftModelDetailsStore(state => state.handlerDataNums)
   const boardPeripheralNums = useLeftModelDetailsStore(state => state.boardPeripheralNums)
-
+  const getAllPeripheral = useLeftModelDetailsStore(state => state.getAllPeripheral)
+  const platformsId = (useLocation() as LoactionState).state?.id
   const veryTabsKindNums = React.useMemo(() => {
     const NumsObj = {
       customMadePeripheral: cusomMadePeripheralNums,
@@ -41,8 +44,11 @@ const TabsCompoents = (props: Tabs) => {
       fn()
       initStore()
       setTabs(keys)
+      if (platformsId) {
+        getAllPeripheral(platformsId)
+      }
     },
-    [fn, initStore, setTabs, tabs]
+    [tabs, fn, initStore, setTabs, platformsId, getAllPeripheral]
   )
 
   return (
