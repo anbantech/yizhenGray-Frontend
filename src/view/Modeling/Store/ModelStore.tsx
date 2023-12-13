@@ -189,7 +189,9 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
   },
 
   setTags: val => {
-    set({ cusomMadePeripheralListParams: { ...get().cusomMadePeripheralListParams, tag: val, page: 1, page_size: val === '1' ? 9999 : 30 } })
+    set({
+      cusomMadePeripheralListParams: { ...get().cusomMadePeripheralListParams, tag: val, page: 1, page_size: val === '1' ? 9999 : 30 }
+    })
   },
 
   setHasMore: (val: boolean) => {
@@ -230,18 +232,20 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
       if (res.data) {
         if (['2', '3'].includes(params.tag)) {
           const result = AssembleDataHandlerFn(res.data.results, params.tag)
-          setLoading(false)
+
           const allIds = getAllIds(result)
           set({ expandNodeArray: allIds })
-          return set({ customMadePeripheralList: [...result] })
+
+          set({ customMadePeripheralList: [...result] })
+          return setLoading(false)
         }
         if (params.tag === '0' && params.key_word !== '') {
           const allIds = getAllIds(res.data.results)
           set({ expandNodeArray: allIds })
         }
         set({ customMadePeripheralList: [...res.data.results] })
+        return setLoading(false)
       }
-      setLoading(false)
       return res
     } catch (error) {
       setLoading(false)
@@ -251,7 +255,6 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
   },
 
   getCustomMadePeripheralStoreFn: async (id: number) => {
-    const { setLoading } = get()
     try {
       const params = {
         variety: '0',
@@ -267,10 +270,8 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
       if (res.data) {
         set({ customAllPeripheralList: [...res.data.results] })
       }
-      setLoading(false)
       return res
     } catch (error) {
-      setLoading(false)
       throwErrorMessage(error, { 1006: '参数错误' })
       return error
     }
@@ -284,18 +285,18 @@ const useLeftModelDetailsStore = create<ModelDetails>((set, get) => ({
       if (res.data) {
         if (['2', '3'].includes(params.tag)) {
           const result = AssembleDataHandlerFn(res.data.results, params.tag)
-          setLoading(false)
           const allIds = getAllIds(result)
           set({ expandNodeArray: allIds })
-          return set({ boardLevelPeripheralsList: [...result] })
+          set({ boardLevelPeripheralsList: [...result] })
+          return setLoading(false)
         }
         if (params.tag === '0' && params.key_word !== '') {
           const allIds = getAllIds(res.data.results)
           set({ expandNodeArray: allIds })
         }
         set({ boardLevelPeripheralsList: res.data.results })
+        return setLoading(false)
       }
-      setLoading(false)
       return res
     } catch (error) {
       setLoading(false)

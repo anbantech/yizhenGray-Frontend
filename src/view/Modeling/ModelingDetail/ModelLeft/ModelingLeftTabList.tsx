@@ -205,7 +205,6 @@ function ModelingLeftTabList() {
 
   const listData = React.useMemo(() => {
     const data = map[tabs as keyof typeof map]
-
     return treeData(data)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, tabs, expandNodeArray])
