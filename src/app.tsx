@@ -4,17 +4,16 @@ import React, { useState, useEffect } from 'react'
 import NoMatch from 'Src/view/404/404'
 import Login from 'Src/view/Login/Login'
 import { Route, Switch, RouteComponentProps } from 'react-router-dom'
-import { Redirect, withRouter } from 'react-router'
-import { ifNeedShowLogo } from 'Src/index'
+import { Redirect, useHistory, withRouter } from 'react-router'
 import GlobalContextProvider from 'Src/globalContext/globalContext'
 import Report from 'Src/view/Project/taskDetail/Report/Report'
-import FirstFrameChart from 'Src/util/ifNeedConfig/FirstFrame'
 import styles from './app.less'
 import Head from './layout/Header/header'
 import LeftNav from './layout/LeftNav/leftNav'
 import Contents from './layout/content/content'
 
 import { useWebSocketStore, getSystemConstantsStore } from './webSocket/webSocketStore'
+
 // import { useGetVersionHook } from './webSocket/getVersion'
 // import VersionModal from './components/Modal/VersionModal'
 
@@ -39,21 +38,17 @@ function Main() {
 
   return (
     <GlobalContextProvider>
-      {flag && ifNeedShowLogo ? (
-        <FirstFrameChart />
-      ) : (
-        <Layout style={{ overflow: 'hidden', minHeight: '100vh' }}>
-          <Header className={styles.site_layout_sub_header_background}>
-            <Head />
-          </Header>
-          <Layout className={styles.layout_bottom}>
-            <LeftNav />
-            <Content>
-              <Contents />
-            </Content>
-          </Layout>
+      <Layout style={{ overflow: 'hidden', minHeight: '100vh' }}>
+        <Header className={styles.site_layout_sub_header_background}>
+          <Head />
+        </Header>
+        <Layout className={styles.layout_bottom}>
+          <LeftNav />
+          <Content>
+            <Contents />
+          </Content>
         </Layout>
-      )}
+      </Layout>
     </GlobalContextProvider>
   )
 }
@@ -62,12 +57,28 @@ const App: React.FC<RouteComponentProps<any, any, any>> = props => {
   const name = props.location.pathname
   // const [showModalMemo] = useGetVersionHook()
   const { connect } = useWebSocketStore()
-
+  const [loading, setLoading] = useState(false)
+  const history = useHistory()
   useEffect(() => {
     connect()
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  window.addEventListener('message', e => {
+    // eslint-disable-next-line unicorn/prefer-includes
+    if (e.origin.indexOf('9095') > -1) {
+      localStorage.setItem('access_token', e.data.data.access_token)
+      localStorage.setItem('userId', `${e.data.data.id}`)
+      setLoading(true)
+    }
+  })
+  useEffect(() => {
+    if (loading) {
+      history.push('/Projects')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading])
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
       // eslint-disable-next-line no-console

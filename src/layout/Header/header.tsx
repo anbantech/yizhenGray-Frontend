@@ -6,8 +6,8 @@ import { useHistory, withRouter } from 'react-router-dom'
 import { GlobalContext } from 'Src/globalContext/globalContext'
 // import { IconAdd } from '@anban/iconfonts'
 import { logout as logoutService, resetPassword } from 'Src/services/api/loginApi'
-import { ifNeedShowLogo } from 'Src/index'
-import sidebarLogo from 'Image/logo.svg'
+// import { ifNeedShowLogo } from 'Src/index'
+// import sidebarLogo from 'Image/logo.svg'
 import { throwErrorMessage } from 'Src/util/message'
 import taskStyle from 'Src/view/Project/task/TaskInstances/TaskInstance.less'
 import styles from './header.less'
@@ -18,9 +18,9 @@ interface ResetPasswordDialogProps {
   onCancel?: (...args: any[]) => void
 }
 
-const Logo: React.FC = () => {
-  return <div className={styles.headerLogo}>{ifNeedShowLogo && <img src={sidebarLogo} alt='logo' style={{ paddingLeft: '28px' }} />}</div>
-}
+// const Logo: React.FC = () => {
+//   return <div className={styles.headerLogo}>{ifNeedShowLogo && <img src={sidebarLogo} alt='logo' style={{ paddingLeft: '28px' }} />}</div>
+// }
 
 const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({ visible, onOk, onCancel }) => {
   const [form] = Form.useForm()
@@ -223,7 +223,7 @@ function Header(props: any) {
 
   return (
     <div className={styles.Header}>
-      <Logo />
+      {/* <Logo /> */}
       <div className={styles.HeaderRight_Layout}>
         <div className={styles.HeaderBread}>
           <div className={taskStyle.headerCloumnLine} />
