@@ -146,6 +146,7 @@ interface RFState {
   platform_id: null | string
   nodes: any
   edges: any
+  InitCanvas: (nodeArray, edgeArray) => void
   collapseOtherNode: (id: string) => void
   menuStatusObj: null | string
   changeView: boolean
@@ -302,7 +303,6 @@ export interface RightFormCheckStoreParams {
   frontendCheckoutName: (val: string, title: string, type: string, fn1: (val: string) => boolean, fn2: (val: string) => boolean) => void
   checkoutBase_addreeAndLength: (val: string, title: string, type: string, fn1: (val: string) => boolean) => void
   onBlurAsyncCheckoutNameFormValues: (val: string, title: name, type: string, fn1: (type?: string) => void, params?: any) => void
-
   updateTimer: () => void
   updateProcessor: (type?: string) => void
   updatePeripheral: () => void
@@ -323,4 +323,11 @@ export interface CheckUtilFnStoreParams {
   checkHex: (val: string) => boolean
   checkNullAndHex: (val: string) => boolean
   // asyncCheckUtil: (val: string, title: string, type: string, id: string | number | null, params?: any) => any
+}
+
+export interface ViewMarkDown {
+  markDown: string
+  open: boolean
+  setOpen: () => void
+  getMarkDown: (id: string | number) => void
 }

@@ -9,7 +9,7 @@ export type UseExpandCollapseOptions = {
   treeWidth?: number
   treeHeight?: number
 }
-const getPosition = (x: number, y: number, direction: any) => {
+const getPosition = (x: number, y: number, direction?: any) => {
   switch (direction) {
     case 'LR':
       return { x: y, y: x }
@@ -36,13 +36,14 @@ const positionMap: Record<string, Position> = {
   R: Position.Right,
   B: Position.Bottom
 }
-const direction = 'LR'
+const direction = 'TB'
 function useExpandCollapse(
   nodes: Node[],
   edges: Edge[],
   { layoutNodes = true, treeWidth = 300, treeHeight = 150 }: UseExpandCollapseOptions = {}
 ): { nodes: Node[]; edges: Edge[] } {
   return useMemo(() => {
+    if (!nodes?.length) return { nodes, edges }
     const hierarchy = stratify<ExpandCollapseNode>()
       .id(d => d.id)
       .parentId((d: Node) => edges.find((e: Edge) => e?.target === d.id)?.source)(nodes)
@@ -67,7 +68,7 @@ function useExpandCollapse(
         data: { ...d.data.data },
         sourcePosition: positionMap[direction[1]],
         targetPosition: positionMap[direction[0]],
-        position: isHierarchyPointNode(d) ? getPosition(d.x, d.y, 'LR') : getPosition(d.data.position.x, d.data.position.y, 'LR')
+        position: isHierarchyPointNode(d) ? getPosition(d.x, d.y) : getPosition(d.data.position.x, d.data.position.y)
       })),
       edges: edges.filter(edge => root.find(h => h.id === edge.source) && root.find(h => h.id === edge.target))
     }

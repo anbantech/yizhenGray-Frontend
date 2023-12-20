@@ -48,8 +48,8 @@ function CustomRegisterNode(Node: NodeProps) {
     <>
       <div className={style}>
         <div className={styles.registerNode}>
-          <Handle className={styles.handle} type='target' position={Node.targetPosition || Position.Top} />
-          <Handle className={styles.handle} type='source' position={Node.sourcePosition || Position.Bottom} />
+          <Handle type='target' position={Position.Top} />
+          <Handle type='source' position={Position.Bottom} />
           <div className={styles.label}>
             {' '}
             <IconYifuRegister style={{ width: '14px', height: '14px', color: '#333333' }} />

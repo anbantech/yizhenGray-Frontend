@@ -1,9 +1,10 @@
 import { getCanvas, newSetDataHander, newSetPeripheral, newSetRegister, newSetTimer, saveCanvasAsync } from 'Src/services/api/modelApi'
 import { throwErrorMessage } from 'Src/util/message'
 import crc32 from 'crc-32'
+
 // import pako from 'pako'
 
-import { Connection, Edge, EdgeChange, Node, NodeChange, addEdge, applyNodeChanges, applyEdgeChanges, updateEdge } from 'reactflow'
+import { Connection, Edge, EdgeChange, Node, NodeChange, addEdge, applyNodeChanges, applyEdgeChanges, updateEdge, MarkerType } from 'reactflow'
 
 import { create } from 'zustand'
 
@@ -70,7 +71,9 @@ const MiddleStore = create<RFState>((set, get) => ({
     }
     set({ menuStatusObj: id })
   },
-
+  InitCanvas: (nodeArray, edgeArray) => {
+    set({ nodes: [...nodeArray], edges: edgeArray })
+  },
   setOpenMenu: () => {
     set({ menuStatusObj: null })
   },
@@ -95,15 +98,14 @@ const MiddleStore = create<RFState>((set, get) => ({
         id: String(node.id),
         expanded: false,
         position: { x: 0, y: 0 },
-        draggable: false,
+
         flag: node.flag,
         zIndex: NodeZindex[node.flag as keyof typeof NodeZindex],
         parentId: String(parentId)
       },
       type: 'peripheralNode',
       id: String(node.id),
-      position: { x: 0, y: 0 },
-      draggable: false
+      position: { x: 0, y: 0 }
     }
     return newNode
   },
@@ -189,7 +191,6 @@ const MiddleStore = create<RFState>((set, get) => ({
         expanded: true,
         error_code: 0,
         position: { x: 0, y: 0 },
-        draggable: false,
         builtIn: false,
         flag: node.flag,
         zIndex: NodeZindex[node.flag as keyof typeof NodeZindex],
@@ -200,14 +201,17 @@ const MiddleStore = create<RFState>((set, get) => ({
       zIndex: NodeZindex[node.flag as keyof typeof NodeZindex],
       id: String(node.id),
       position: { x: 0, y: 0 },
-      draggable: false
+      draggable: true
     }
     const newEdge = {
       id: `${String(parentId)}->${String(node.id)}`,
       type: 'smoothstep',
       data: { label: '12' },
       source: String(parentId),
-      target: String(node.id)
+      target: String(node.id),
+      markerEnd: {
+        type: MarkerType.ArrowClosed
+      }
     }
     const nodesOBJ = [...get().nodes, newNode].map((Node1: Node) => {
       const matchingItem = ((node.error_code as unknown) as { error_code: number; id: string }[]).find((item2: any) => Node1.id === String(item2.id))
@@ -265,14 +269,12 @@ const MiddleStore = create<RFState>((set, get) => ({
           expanded: node.flag === 5,
           error_code: 0,
           position: { x: 0, y: 0 },
-          draggable: false,
           flag: node.flag,
           kind: 1
         },
         type: NodeType[node.flag as keyof typeof NodeType],
         id: node.id,
         position: { x: 0, y: 0 },
-        draggable: false,
         zIndex: NodeZindex[node.flag as keyof typeof NodeZindex]
       })
       if (node.children && node.children.length > 0) {
@@ -295,7 +297,10 @@ const MiddleStore = create<RFState>((set, get) => ({
             id: `${source}->${target}`,
             source,
             target,
-            type: node.children.length > 1 ? 'smoothstep' : 'straight'
+            type: node.children.length > 1 ? 'smoothstep' : 'straight',
+            markerEnd: {
+              type: MarkerType.ArrowClosed
+            }
           })
           links.push(...converTreeToEdges(item))
         })
@@ -407,13 +412,11 @@ const MiddleStore = create<RFState>((set, get) => ({
           expanded: false,
           error_code: 0,
           position: { x: 0, y: 0 },
-          draggable: false,
           flag
         },
         type: NodeType[flag as keyof typeof NodeType],
         id: String(id),
         position: { x: 0, y: 0 },
-        draggable: false,
         zIndex: NodeZindex[flag as keyof typeof NodeZindex]
       }
       const newEdge = {
@@ -421,7 +424,10 @@ const MiddleStore = create<RFState>((set, get) => ({
         id: `${flag === 1 ? platform_id : peripheral_id}->${id}`,
         source: String(flag === 1 ? platform_id : peripheral_id),
         target: String(id),
-        type: 'smoothstep'
+        type: 'smoothstep',
+        markerEnd: {
+          type: MarkerType.ArrowClosed
+        }
       }
       set({
         nodes: [...updatedNodes, newNode].map((Node1: Node) => {
@@ -457,13 +463,13 @@ const MiddleStore = create<RFState>((set, get) => ({
             expanded: false,
             error_code,
             position: { x: 0, y: 0 },
-            draggable: false,
+
             flag
           },
           type: NodeType[flag as keyof typeof NodeType],
           id: String(id),
           position: { x: 0, y: 0 },
-          draggable: false,
+
           zIndex: NodeZindex[flag as keyof typeof NodeZindex]
         }
 
@@ -472,7 +478,10 @@ const MiddleStore = create<RFState>((set, get) => ({
           id: `${flag === 1 ? platform_id : peripheral_id}->${id}`,
           source: String(flag === 1 ? platform_id : peripheral_id),
           target: String(id),
-          type: 'smoothstep'
+          type: 'smoothstep',
+          markerEnd: {
+            type: MarkerType.ArrowClosed
+          }
         }
         set({
           nodes: [...updatedNodes, newNode].map((Node1: Node) => {
@@ -544,13 +553,11 @@ const MiddleStore = create<RFState>((set, get) => ({
         expanded: false,
         error_code: 0,
         position: { x: 0, y: 0 },
-        draggable: false,
         flag: 3
       },
       type: NodeType[3 as keyof typeof NodeType],
       id: String(id),
       position: { x: 0, y: 0 },
-      draggable: false,
       zIndex: NodeZindex[3 as keyof typeof NodeZindex]
     }
 
@@ -559,7 +566,10 @@ const MiddleStore = create<RFState>((set, get) => ({
       id: `${parentId}->${id}`,
       source: String(parentId),
       target: String(id),
-      type: 'smoothstep'
+      type: 'smoothstep',
+      markerEnd: {
+        type: MarkerType.ArrowClosed
+      }
     }
 
     const updatedNodes = get().nodes.filter((item: { id: string }) => item.id !== String(id))

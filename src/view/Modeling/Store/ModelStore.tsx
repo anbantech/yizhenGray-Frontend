@@ -12,11 +12,19 @@ import {
   getProcessorList,
   getTargetDetails,
   getTimerList,
+  scriptGenerator,
   updateModelTarget
 } from 'Src/services/api/modelApi'
 import { getPortList } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
-import { ModelDetails, NewModelListStore, PublicAttributesStoreParams, FormItemCheckStoreParams, CheckUtilFnStoreParams } from './ModleStore'
+import {
+  ModelDetails,
+  NewModelListStore,
+  PublicAttributesStoreParams,
+  FormItemCheckStoreParams,
+  CheckUtilFnStoreParams,
+  ViewMarkDown
+} from './ModleStore'
 import { AssembleDataHandlerFn, getAllIds } from './MapStore'
 
 interface MyObject {
@@ -776,4 +784,18 @@ const checkUtilFnStore = create<CheckUtilFnStoreParams>(() => ({
   }
 }))
 
-export { checkUtilFnStore, formItemParamsCheckStore, useNewModelingStore, publicAttributes, useLeftModelDetailsStore }
+const vieMarkDown = create<ViewMarkDown>((set, get) => ({
+  open: false,
+  markDown: '',
+  setOpen: () => {
+    set({ open: !get().open })
+  },
+  getMarkDown: async id => {
+    const res = await scriptGenerator(id, { preview: true })
+    if (res.data) {
+      set({ markDown: res.data, open: true })
+    }
+  }
+}))
+
+export { checkUtilFnStore, formItemParamsCheckStore, useNewModelingStore, publicAttributes, useLeftModelDetailsStore, vieMarkDown }

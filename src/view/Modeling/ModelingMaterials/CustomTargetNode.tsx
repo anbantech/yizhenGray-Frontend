@@ -49,7 +49,7 @@ function CustomTargetNode(Node: NodeProps) {
     <>
       <div className={style}>
         <div className={styles.targetNode}>
-          <Handle className={styles.handle} type='source' position={Node.sourcePosition || Position.Bottom} />
+          <Handle type='source' position={Node.sourcePosition || Position.Bottom} />
           {Node.data.label}
         </div>
       </div>

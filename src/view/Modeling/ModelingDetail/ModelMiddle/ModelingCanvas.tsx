@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react'
 import { useEventListener } from 'ahooks-v2'
-import ReactFlow, { ReactFlowProvider, Background, Node, Edge, NodeTypes, BackgroundVariant, getOutgoers } from 'reactflow'
+import ReactFlow, { ReactFlowProvider, Background, Node, Edge, NodeTypes, BackgroundVariant, getOutgoers, useReactFlow } from 'reactflow'
 import { useLocation } from 'react-router'
 import DeleteNodeModal from 'Src/components/Modal/nodeDraw/deleteNodeMoal'
 import useAnimatedNodes from '../../ModelingMaterials/useAnimatedNodes'
@@ -44,14 +44,16 @@ type ExpandCollapseExampleProps = {
 }
 // const panOnDrag = [1, 2]
 
-function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250, animationDuration = 200 }: ExpandCollapseExampleProps) {
+function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 205, treeHeight = 125, animationDuration = 200 }: ExpandCollapseExampleProps) {
   const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
   const platform_id = MiddleStore(state => state.platform_id)
+  const { getNode, setCenter } = useReactFlow()
   const setTabs = useLeftModelDetailsStore(state => state.setTabs)
   const setTypeDetailsAttributes = RightDetailsAttributesStore(state => state.setTypeDetailsAttributes)
   const onEdgesChange = MiddleStore(state => state.onEdgesChange)
+  const onConnect = MiddleStore(state => state.onConnect)
   const onNodesChange = MiddleStore(state => state.onNodesChange)
-
+  const focusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
   const upDateNodesAndEdges = MiddleStore(state => state.upDateNodesAndEdges)
   const setMenuStatus = MiddleStore(state => state.setMenuStatus)
   const setOpenMenu = MiddleStore(state => state.setOpenMenu)
@@ -71,7 +73,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
   const { nodes: animatedNodes } = useAnimatedNodes(visibleNodes, {
     animationDuration
   })
-  // console.log(visibleEdges)
+
   // 获取筛选节点数据
 
   const onNodeContextMenu = useCallback(
@@ -235,7 +237,31 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
     },
     [deleteTreeNode]
   )
+  const centerNode = useCallback(
+    id => {
+      const node = getNode(id)
+      if (node) {
+        const { x, y } = node.position
+        const { width } = node
+        const { height } = node
+        if (width && height) {
+          const centerX = x + width / 2
+          const centerY = y + height / 2
 
+          setCenter(centerX, centerY, { duration: 0 })
+        }
+      }
+    },
+    [getNode, setCenter]
+  )
+
+  useEffect(() => {
+    if (focusNodeId) {
+      // console.log(focusNodeId)
+      centerNode(focusNodeId)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusNodeId])
   return (
     <div className={styles.container}>
       {animatedNodes && (
@@ -247,6 +273,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
           nodes={animatedNodes}
           edges={visibleEdges}
           onNodeClick={onNodeClick}
+          onConnect={onConnect}
           nodesFocusable={Boolean(1)}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
@@ -261,8 +288,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 105, treeHeight = 250,
           // panOnDrag={panOnDrag}
           // selectionMode={SelectionMode.Partial}
           onSelectionChange={onSelectionChange}
-          minZoom={-Infinity}
-          maxZoom={Infinity}
+          minZoom={0.0001}
         >
           <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
           <CustomControls />

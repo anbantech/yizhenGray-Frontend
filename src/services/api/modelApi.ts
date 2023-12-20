@@ -144,14 +144,15 @@ function deleteConrolsFn(id: any) {
 }
 
 // 生成脚本
-function scriptGenerator(id: number | string) {
-  return request.get(`/api/v1.0/models/script/generate/${id}`)
+function scriptGenerator(id: number | string, params?: { preview: boolean }) {
+  return request.get(`/api/v1.0/models/script/generate/${id}`, { params })
 }
 
 // 下载脚本
 function downLoadScript(id: number | string) {
   return request.get(`/api/v1.0/models/script/download/${id}`)
 }
+
 export {
   deleteConrolsFn,
   scriptGenerator,

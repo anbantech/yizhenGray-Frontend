@@ -9,7 +9,7 @@ import { downLoadScript, scriptGenerator } from 'Src/services/api/modelApi'
 import { throwErrorMessage } from 'Src/util/message'
 import { warn } from 'Src/util/common'
 import StyleSheet from './modelMiddle.less'
-import { checkUtilFnStore, formItemParamsCheckStore, publicAttributes, useLeftModelDetailsStore } from '../../Store/ModelStore'
+import { checkUtilFnStore, formItemParamsCheckStore, publicAttributes, useLeftModelDetailsStore, vieMarkDown } from '../../Store/ModelStore'
 import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
 import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
 import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
@@ -61,6 +61,12 @@ const HeadrBarArray = [
 ]
 
 const RightHeaderBarArray = [
+  {
+    name: 'ETL预览脚本',
+    type: 'view',
+    icon: <IconDownload style={{ width: '16px', height: '16px' }} />,
+    style: { Width: '96px', padding: '0 10px' }
+  },
   {
     name: '生成脚本',
     type: 'create',
@@ -463,6 +469,7 @@ const HeaderBarMemo = () => {
   const tabsSelect = React.useMemo(() => tabs, [tabs])
   const unSelect = formItemParamsCheckStore(state => state.unSetTabs)
   const { initFormValue } = formItemParamsCheckStore()
+  const { getMarkDown } = vieMarkDown()
   const platform_id = MiddleStore(state => state.platform_id)
   const getCustomMadePeripheralStore = useLeftModelDetailsStore(state => state.getCustomMadePeripheralStore)
   const showOrHide = React.useCallback(
@@ -486,6 +493,9 @@ const HeaderBarMemo = () => {
     async (type: string) => {
       try {
         if (!platform_id) return
+        if (type === 'view') {
+          return getMarkDown(platform_id)
+        }
         if (type === 'download') {
           const res: any = await downLoadScript(platform_id)
           if (res.data) {
@@ -505,7 +515,7 @@ const HeaderBarMemo = () => {
         message.error('网络连接失败,请检查网络')
       }
     },
-    [platform_id]
+    [getMarkDown, platform_id]
   )
 
   return (
