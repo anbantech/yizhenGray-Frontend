@@ -260,8 +260,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 205, treeHeight = 125,
         if (width && height) {
           const centerX = x + width / 2
           const centerY = y + height / 2
-
-          setCenter(centerX, centerY, { duration: 0 })
+          setCenter(centerX, centerY, { duration: 100, zoom: 0.6 })
         }
       }
     },
@@ -269,7 +268,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 205, treeHeight = 125,
   )
 
   useEffect(() => {
-    if (focusNodeId) {
+    if (focusNodeId && nodesInitialized) {
       centerNode(focusNodeId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
