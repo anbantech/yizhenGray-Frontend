@@ -689,7 +689,10 @@ const MiddleStore = create<RFState>((set, get) => ({
   selectIdExpandDrawTree: id => {
     const { platform_id, expandNode } = get()
     if (!platform_id) return
-    if (id) {
+    if (Array.isArray(id)) {
+      const NodeTreeArray = [String(platform_id), ...id]
+      expandNode([...NodeTreeArray])
+    } else if (id) {
       const NodeTreeArray = [String(platform_id), String(id)]
       expandNode([...NodeTreeArray])
     } else {

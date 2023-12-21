@@ -44,13 +44,17 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
   },
 
   // 获取数据处理器属性
-  getDataHandlerAttributes: async id => {
+  getDataHandlerAttributes: async (id, fn1) => {
     try {
       const res = await getDataHandlerDetails(id)
       if (res.data) {
         set({ rightArrributes: res.data })
         if (res.data.register !== 0) {
           set({ register: res.data.register[0].peripheral.registers })
+        }
+        if (fn1) {
+          const array = [String(res.data.id), String(res.data.register_id), String(res.data.peripheral_id)]
+          fn1(array)
         }
       }
     } catch (error) {
@@ -115,6 +119,7 @@ const RightDetailsAttributesStore = create<RightDetailsAttributesStoreParams>((s
   rightAttributeMap: (type, id, fn) => {
     const { getDataHandlerAttributes, getRegisterAttributes, getTimerAttributes, getPeripheralAttributes, getTargetAttributes } = get()
     set({ typeAttributes: type, focusNodeId: id })
+
     switch (type) {
       case 'Target':
         getTargetAttributes(id as number)

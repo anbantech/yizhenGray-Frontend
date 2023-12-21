@@ -62,7 +62,7 @@ const HeadrBarArray = [
 
 const RightHeaderBarArray = [
   {
-    name: 'ETL预览脚本',
+    name: 'ETL预览',
     type: 'view',
     icon: <IconEye style={{ width: '16px', height: '16px' }} />,
     style: { Width: '96px', padding: '0 10px' }
@@ -95,9 +95,11 @@ const FormFooter = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const btnStatus = useMemo(() => checkEveryItem(optionalParameters), [optionalParameters])
   const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
+
   const cancel = React.useCallback(() => {
     unSetTabs()
   }, [unSetTabs])
+
   const getCollect = React.useCallback(() => {
     const { name, base_address, desc, interrupt, address_length, period, peripheral_id, port, relative_address, kind } = optionalParameters
     const periperalParams = {
