@@ -2,7 +2,7 @@
 import React, { useMemo } from 'react'
 import { Button, Form, Input, Select, Tooltip, message } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
-import { IconPeripheral, IconYifuRegister, IconClock, IconCommon, IconDownload, IconFileText } from '@anban/iconfonts'
+import { IconPeripheral, IconYifuRegister, IconClock, IconCommon, IconDownload, IconFileText, IconEye } from '@anban/iconfonts'
 import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
 import { useLocation } from 'react-router'
 import { downLoadScript, scriptGenerator } from 'Src/services/api/modelApi'
@@ -64,7 +64,7 @@ const RightHeaderBarArray = [
   {
     name: 'ETL预览脚本',
     type: 'view',
-    icon: <IconDownload style={{ width: '16px', height: '16px' }} />,
+    icon: <IconEye style={{ width: '16px', height: '16px' }} />,
     style: { Width: '96px', padding: '0 10px' }
   },
   {

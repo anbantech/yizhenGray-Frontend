@@ -1,6 +1,16 @@
 import React, { useCallback, useEffect } from 'react'
 import { useEventListener } from 'ahooks-v2'
-import ReactFlow, { ReactFlowProvider, Background, Node, Edge, NodeTypes, BackgroundVariant, getOutgoers, useReactFlow } from 'reactflow'
+import ReactFlow, {
+  ReactFlowProvider,
+  Background,
+  Node,
+  Edge,
+  NodeTypes,
+  BackgroundVariant,
+  getOutgoers,
+  useReactFlow,
+  useNodesInitialized
+} from 'reactflow'
 import { useLocation } from 'react-router'
 import DeleteNodeModal from 'Src/components/Modal/nodeDraw/deleteNodeMoal'
 import useAnimatedNodes from '../../ModelingMaterials/useAnimatedNodes'
@@ -43,10 +53,13 @@ type ExpandCollapseExampleProps = {
   nodeStore: Node[]
 }
 // const panOnDrag = [1, 2]
-
+const options = {
+  includeHiddenNodes: false
+}
 function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 205, treeHeight = 125, animationDuration = 200 }: ExpandCollapseExampleProps) {
   const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
   const platform_id = MiddleStore(state => state.platform_id)
+  const nodesInitialized = useNodesInitialized(options)
   const { getNode, setCenter } = useReactFlow()
   const setTabs = useLeftModelDetailsStore(state => state.setTabs)
   const setTypeDetailsAttributes = RightDetailsAttributesStore(state => state.setTypeDetailsAttributes)
@@ -257,11 +270,10 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 205, treeHeight = 125,
 
   useEffect(() => {
     if (focusNodeId) {
-      // console.log(focusNodeId)
       centerNode(focusNodeId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [focusNodeId])
+  }, [focusNodeId, nodesInitialized])
   return (
     <div className={styles.container}>
       {animatedNodes && (

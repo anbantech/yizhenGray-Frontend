@@ -12,8 +12,8 @@ import {
   getProcessorList,
   getTargetDetails,
   getTimerList,
-  scriptGenerator,
-  updateModelTarget
+  updateModelTarget,
+  viewELT
 } from 'Src/services/api/modelApi'
 import { getPortList } from 'Src/services/api/excitationApi'
 import { throwErrorMessage } from 'Src/util/message'
@@ -791,7 +791,7 @@ const vieMarkDown = create<ViewMarkDown>((set, get) => ({
     set({ open: !get().open })
   },
   getMarkDown: async id => {
-    const res = await scriptGenerator(id, { preview: true })
+    const res = await viewELT(id)
     if (res.data) {
       set({ markDown: res.data, open: true })
     }

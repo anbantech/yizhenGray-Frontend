@@ -153,6 +153,11 @@ function downLoadScript(id: number | string) {
   return request.get(`/api/v1.0/models/script/download/${id}`)
 }
 
+// 预览ELT
+function viewELT(id: string | number) {
+  return request.get(`/api/v1.0/models/controls/preview/${id}`)
+}
+
 export {
   deleteConrolsFn,
   scriptGenerator,
@@ -179,5 +184,6 @@ export {
   getTimerDetails,
   updateTimer,
   updatePeripherals,
-  updateRegister
+  updateRegister,
+  viewELT
 }
