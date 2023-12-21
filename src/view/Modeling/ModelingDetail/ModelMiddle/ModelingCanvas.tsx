@@ -229,6 +229,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 205, treeHeight = 125,
       if (nodes.length === 0) return deleteTreeNode(false, { node: [], edge: [] })
       // 不符合要求的节点
       const notNodeArray: Node[] = []
+
       const node = nodes.filter((item: Node) => {
         if ([1, 2].includes(item.data.flag) && item.data.builtIn) {
           notNodeArray.push(item)
@@ -246,10 +247,12 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 205, treeHeight = 125,
 
         return deleteTreeNode(false, nodeInfo)
       }
+
       deleteTreeNode(false, { node })
     },
     [deleteTreeNode]
   )
+
   const centerNode = useCallback(
     id => {
       const node = getNode(id)
@@ -260,8 +263,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 205, treeHeight = 125,
         if (width && height) {
           const centerX = x + width / 2
           const centerY = y + height / 2
-
-          setCenter(centerX, centerY, { duration: 0 })
+          setCenter(centerX, centerY, { duration: 200, zoom: 0.6 })
         }
       }
     },
@@ -269,11 +271,12 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 205, treeHeight = 125,
   )
 
   useEffect(() => {
-    if (focusNodeId) {
+    if (focusNodeId && nodesInitialized) {
       centerNode(focusNodeId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focusNodeId, nodesInitialized])
+
   return (
     <div className={styles.container}>
       {animatedNodes && (
