@@ -47,13 +47,7 @@ const isFinish = [
   { label: 'True', value: true }
 ]
 
-export const {
-  saveCanvasAndUpdateNodeName,
-
-  baseOnUpdateNodeAndEdge,
-  updateRegisterNodeDraw,
-  updateNodeAttributeInfo
-} = MiddleStore.getState()
+export const { saveCanvasAndUpdateNodeName, baseOnUpdateNodeAndEdge, updateRegisterNodeDraw, updateNodeAttributeInfo } = MiddleStore.getState()
 
 // 更新名称 左侧列表更新
 export const { getModelListDetails } = useLeftModelDetailsStore.getState()

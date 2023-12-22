@@ -3,21 +3,10 @@ import React, { useCallback, useEffect, useRef } from 'react'
 import { IconDelete, IconCommon, IconClock, IconExclamationTriangleFill } from '@anban/iconfonts'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import styles from 'Src/view/Project/task/taskList/task.less'
-import { useLocation } from 'react-router'
 import StyleSheet from './modelLeft.less'
 import { useLeftModelDetailsStore } from '../../Store/ModelStore'
-import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
-import { errorCodeMapFn, titleFlagMap } from '../../Store/MapStore'
-import { LoactionState } from './ModelingLeftIndex'
-import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
-
-const AttributesType = {
-  1: 'Peripheral',
-  2: 'Register',
-  3: 'Processor',
-  4: 'Timer',
-  5: 'Target'
-}
+import { errorCodeMapFn } from '../../Store/MapStore'
+import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
 
 const Image = {
   3: <IconCommon style={{ width: '16px', height: '16px', color: '#CCCCCC' }} />,
@@ -26,52 +15,26 @@ const Image = {
 
 const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
   const { listData, height } = props
-  const focusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
-  const tabs = useLeftModelDetailsStore(state => state.tabs)
-  const hasMoreData = useLeftModelDetailsStore(state => state.hasMoreData)
-  const setParams = useLeftModelDetailsStore(state => state.setParams)
-  const processorListParams = useLeftModelDetailsStore(state => state.processorListParams)
-  const timerListParams = useLeftModelDetailsStore(state => state.timerListParams)
-  const baseKeyWordAndTagsGetList = useLeftModelDetailsStore(state => state.baseKeyWordAndTagsGetList)
-  const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
-  // 点击节点画布展开
-  const selectIdExpandDrawTree = MiddleStore(state => state.selectIdExpandDrawTree)
-  // 删除
-  const deleteTreeNode = MiddleStore(state => state.deleteTreeNode)
-  const platformsId = (useLocation() as LoactionState).state?.id
-  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
-  const map = {
-    dataHandlerNotReferenced: processorListParams,
-    time: timerListParams
-  }
-
+  const hasMoreData = LeftListStore(state => state.hasMoreData)
+  const timerAndHandData = LeftListStore(state => state.timerAndHandData)
+  const getList = LeftListStore(state => state.getList)
   const loadMoreData = React.useCallback(() => {
-    const data = map[tabs as keyof typeof map]
-    const newPage = data.page_size + 10
-    setParams(tabs, { page_size: newPage })
-    baseKeyWordAndTagsGetList(tabs, platformsIdmemo)
-  }, [map, tabs, setParams, baseKeyWordAndTagsGetList, platformsIdmemo])
+    const newPage = timerAndHandData.page_size + 10
+    getList({ ...timerAndHandData, page_size: newPage }, '')
+  }, [getList, timerAndHandData])
 
-  const updataMidleAndRightUI = useCallback(
-    item => {
-      const { flag } = item
-      rightAttributeMap(AttributesType[flag as keyof typeof AttributesType], String(item.id), selectIdExpandDrawTree)
-    },
-    [rightAttributeMap, selectIdExpandDrawTree]
-  )
-
+  const SelectionNode = useCallback(item => {
+    const { flag, id } = item
+    console.log(flag, id)
+  }, [])
+  // todo 画布不影响左侧列表,左侧列表影响画布
   const deleteTreeNodeHandle = React.useCallback(
     (e, node) => {
       e.stopPropagation()
-      const nodeArray = [{ id: String(node.id), data: { flag: node.flag } }]
-      const nodeInfo = {
-        node: nodeArray,
-        title: titleFlagMap[node.flag as keyof typeof titleFlagMap][0],
-        content: `${titleFlagMap[node.flag as keyof typeof titleFlagMap][1]}${node.name}`
-      }
-      deleteTreeNode(true, nodeInfo)
+      console.log(e, node)
     },
-    [deleteTreeNode]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
   )
 
   return (
@@ -99,14 +62,14 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
           return (
             <div
               key={item.id}
-              className={String(item.id) === String(focusNodeId) ? StyleSheet.activeTagItem : StyleSheet.tagItem}
+              className={String(item.id) === String(11) ? StyleSheet.activeTagItem : StyleSheet.tagItem}
               style={{ paddingRight: '4px' }}
             >
               <div
                 className={StyleSheet.leftTagItem}
                 role='time'
                 onClick={() => {
-                  updataMidleAndRightUI(item)
+                  SelectionNode(item)
                 }}
               >
                 {Image[item.flag as keyof typeof Image]}
@@ -159,10 +122,8 @@ function TImerAndDataHand() {
   const tabs = useLeftModelDetailsStore(state => state.tabs)
   const setParams = useLeftModelDetailsStore(state => state.setParams)
   const timerList = useLeftModelDetailsStore(state => state.timerList)
-  const processorList = useLeftModelDetailsStore(state => state.processorList)
 
   const map = {
-    dataHandlerNotReferenced: processorList,
     time: timerList
   }
 

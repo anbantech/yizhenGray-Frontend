@@ -1,32 +1,29 @@
 import * as React from 'react'
-import ModelingLeftIndex from './ModelLeft/ModelingLeftIndex'
+import { useLocation } from 'react-router'
+import ModelingLeftIndex, { LoactionState } from './ModelLeft/ModelingLeftIndex'
 import MiddleHeaderBar from './ModelMiddle/ModeingMiddleHeader'
 import StyleSheet from './ModelDetaiIsIndex.less'
 import ModelingRight from './ModelingRight/ModelingRightIndex'
-
 import FlowWrapper from './ModelMiddle/ModelingCanvas'
-import { formItemParamsCheckStore, useLeftModelDetailsStore, vieMarkDown } from '../Store/ModelStore'
-import { MiddleStore } from '../Store/ModelMiddleStore/MiddleStore'
-import { RightListStore } from '../Store/ModeleRightListStore/RightListStoreList'
+import { vieMarkDown } from '../Store/ModelStore'
 import ViewMarkdown from './ViewMkdown'
+import { LeftAndRightStore } from '../Store/ModelLeftAndRight/leftAndRightStore'
 
 function ModelDetailsIndex() {
-  const unSetTabs = formItemParamsCheckStore(state => state.unSetTabs)
-  const clearNodeAndEdge = MiddleStore(state => state.clearNodeAndEdge)
-  const initRightListStore = RightListStore(state => state.initRightListStore)
-  const initStore = useLeftModelDetailsStore(state => state.initStore)
   const open = vieMarkDown(state => state.open)
   const markDown = vieMarkDown(state => state.markDown)
+  const platformsId = (useLocation() as LoactionState).state?.id
+  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
+  const setPlatFormId = LeftAndRightStore(state => state.setPlatFormId)
 
   React.useEffect(() => {
-    return () => {
-      unSetTabs()
-      clearNodeAndEdge()
-      initRightListStore()
-      initStore()
+    if (platformsIdmemo) {
+      setPlatFormId(platformsIdmemo)
     }
+    return () => {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [platformsIdmemo])
+
   return (
     <div className={StyleSheet.ModelDetailsBody}>
       <ModelingLeftIndex />

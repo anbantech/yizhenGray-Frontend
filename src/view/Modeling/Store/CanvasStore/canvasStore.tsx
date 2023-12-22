@@ -30,7 +30,6 @@ type NodeProps = {
 const pako = require('pako')
 
 export type RFState = {
-  platform_id: string | null
   nodes: Node[]
   edges: Edge[]
   sumData: any
@@ -47,8 +46,7 @@ export type RFState = {
   onConnect: OnConnect
 }
 
-const useCanvasStore = create<RFState>((set, get) => ({
-  platform_id: null,
+export const useCanvasStore = create<RFState>((set, get) => ({
   sumData: null,
   nodes: [],
   edges: [],
@@ -108,19 +106,19 @@ const useCanvasStore = create<RFState>((set, get) => ({
   // 初始化获取画布数据
   getModelDetails: async id => {
     if (!id) return
-    const { initTreeToNodeAndToEdge } = get()
-    set({ platform_id: String(id) })
+    // const { initTreeToNodeAndToEdge } = get()
+
     try {
       const res = await getCanvas(+id)
       if (res.data.version === 0) {
-        return initTreeToNodeAndToEdge(res.data.canvas, true)
+        // todo
+        // return initTreeToNodeAndToEdge(res.data.canvas, true)
       }
       const deleteString = JSON.parse(res.data.canvas)
       const decompressed = pako.inflate(deleteString, { to: 'string' })
       const result = JSON.parse(decompressed)
       const nodesArray = result.nodes
       const edgesArray = result.edges
-
       if (nodesArray) {
         set({
           nodes: [...nodesArray],
@@ -154,37 +152,26 @@ const useCanvasStore = create<RFState>((set, get) => ({
         id: node.id,
         position: { x: 0, y: 0 }
       })
-      if (node.children && node.children.length > 0) {
-        node.children.forEach((item: any) => {
-          result.push(...converTreeToNode(item, node.id))
-        })
-      }
       return result
     }
     const nodeArray = converTreeToNode(initData, initData.id)
 
-    const converTreeToEdges = (node: any) => {
+    const converTreeToEdges = () => {
       const links: any[] = []
-      if (node.children && node.children.length > 0) {
-        node.children.forEach((item: any) => {
-          const source = node.id
-          const target = item.id
-          links.push({
-            flag: node.flag,
-            id: `${source}->${target}`,
-            source,
-            target,
-            type: 'smoothstep',
-            markerEnd: {
-              type: MarkerType.ArrowClosed
-            }
-          })
-          links.push(...converTreeToEdges(item))
-        })
+      const edgeInfo = {
+        // flag: node.flag,
+        // id: `${source}->${target}`,
+        // source,
+        // target,
+        type: 'smoothstep',
+        markerEnd: {
+          type: MarkerType.ArrowClosed
+        }
       }
+      links.push(edgeInfo)
       return links
     }
-    const edgeArray = converTreeToEdges(initData)
+    const edgeArray = converTreeToEdges()
     if (isVersion) {
       set({
         nodes: [...nodeArray],
@@ -229,7 +216,7 @@ const useCanvasStore = create<RFState>((set, get) => ({
 
   // 清除画布
   clearCanvas: () => {
-    set({ nodes: [], edges: [], platform_id: null })
+    set({ nodes: [], edges: [] })
   },
 
   // 返回画布信息
@@ -240,5 +227,3 @@ const useCanvasStore = create<RFState>((set, get) => ({
     return get().edges
   }
 }))
-
-export default useCanvasStore

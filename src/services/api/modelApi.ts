@@ -94,7 +94,12 @@ function getPeripheralsDetails(id: number) {
 
 function updateTimer(
   id: number | null | string,
-  params: { name: string; period: string | number; interrupt: string | number; platform_id: string | number | null }
+  params: {
+    name: string | undefined
+    period: string | number | undefined
+    interrupt: string | number | undefined
+    platform_id: string | number | null
+  }
 ) {
   return request.put(`/api/v1.0/models/timers/update/${id}`, params)
 }

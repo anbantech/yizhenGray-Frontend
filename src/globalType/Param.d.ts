@@ -612,7 +612,7 @@ export interface ProcessorListParams {
 }
 
 export interface TimerListParams {
-  platform_id: number
+  platform_id: number | null
   key_word?: string
   page: number
   page_size: number

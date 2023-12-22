@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { useLocation } from 'react-router'
 import { useLeftModelDetailsStore } from '../../Store/ModelStore'
 import StyleSheet from './modelLeft.less'
-import { LoactionState } from './ModelingLeftIndex'
+import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
 
 type Tabs = {
   keys: string
@@ -12,26 +11,18 @@ type Tabs = {
 
 const TabsCompoents = (props: Tabs) => {
   const { keys, title, tabs } = props
-  // 切换列表 更新列表数据 在左侧侧边栏文件中默认加载请求自定义外设tabs
-  const setTabs = useLeftModelDetailsStore(state => state.setTabs)
-  const initStore = useLeftModelDetailsStore(state => state.initStore)
-  const { fn } = useLeftModelDetailsStore()
+  // 在左侧侧边栏文件中默认加载请求自定义外设tabs
   // 侧边栏数量逻辑
-  const cusomMadePeripheralNums = useLeftModelDetailsStore(state => state.cusomMadePeripheralNums)
-  const timerNums = useLeftModelDetailsStore(state => state.timerNums)
-  const handlerDataNums = useLeftModelDetailsStore(state => state.handlerDataNums)
-  const boardPeripheralNums = useLeftModelDetailsStore(state => state.boardPeripheralNums)
-  const getAllPeripheral = useLeftModelDetailsStore(state => state.getAllPeripheral)
-  const platformsId = (useLocation() as LoactionState).state?.id
+  const { customPeripheralNums, boardPeripheralNums, timerNums, handlerDataNums, setTabs } = LeftListStore()
   const veryTabsKindNums = React.useMemo(() => {
     const NumsObj = {
-      customMadePeripheral: cusomMadePeripheralNums,
+      customPeripheral: customPeripheralNums,
       boardLevelPeripherals: boardPeripheralNums,
-      dataHandlerNotReferenced: handlerDataNums,
-      time: timerNums
+      handlerData: handlerDataNums,
+      timer: timerNums
     }
     return NumsObj[keys as keyof typeof NumsObj]
-  }, [cusomMadePeripheralNums, boardPeripheralNums, handlerDataNums, timerNums, keys])
+  }, [customPeripheralNums, boardPeripheralNums, handlerDataNums, timerNums, keys])
 
   //  选中侧边栏tabs class更新
   const selectStyleFn = React.useMemo(() => {
@@ -41,14 +32,9 @@ const TabsCompoents = (props: Tabs) => {
   const changeTabsList = React.useCallback(
     (keys: string) => {
       if (tabs === keys) return
-      fn()
-      initStore()
       setTabs(keys)
-      if (platformsId) {
-        getAllPeripheral(platformsId)
-      }
     },
-    [tabs, fn, initStore, setTabs, platformsId, getAllPeripheral]
+    [tabs, setTabs]
   )
 
   return (
@@ -68,12 +54,11 @@ const TabsCompoents = (props: Tabs) => {
 const TabsComponentsMemo = React.memo(TabsCompoents)
 function ModelLeftHeaderLeft() {
   const tabs = useLeftModelDetailsStore(state => state.tabs)
-
   const CompoentsTitle = {
-    customMadePeripheral: '自定义外设',
+    customPeripheral: '自定义外设',
     boardLevelPeripherals: '板级外设',
-    dataHandlerNotReferenced: '数据处理器',
-    time: '定时器'
+    handlerData: '数据处理器',
+    timer: '定时器'
   }
 
   return (
