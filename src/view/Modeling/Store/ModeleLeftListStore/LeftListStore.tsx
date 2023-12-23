@@ -1,8 +1,8 @@
 import { create } from 'zustand'
 import { getTargetDetails, getTimerList } from 'Src/services/api/modelApi'
 import { throwErrorMessage } from 'Src/util/message'
-import { LeftListStoreType } from './LeftListStoreType'
 import { leftAndRightMap } from '../ModelLeftAndRight/leftAndRightStore'
+import { LeftListStoreType } from './LeftListStoreType'
 
 export const LeftListStore = create<LeftListStoreType>((set, get) => ({
   // 选择tabs
@@ -15,6 +15,8 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
   tabsList: [],
   // 是否还有更多数据
   hasMoreData: true,
+  // 自定义外设,内置外设
+  customAndDefaultPeripheral: {},
   // 定时器 数据处理器 params
   timerAndHandData: {
     key_word: '',
@@ -23,13 +25,17 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
     sort_field: 'create_time',
     sort_order: 'descend'
   },
+
   // 自定义外设 内置外设接口
   // 自定义数量
   customPeripheralNums: 0,
+
   // 内置数量
   boardPeripheralNums: 0,
+
   // 定时器数量
   timerNums: 0,
+
   // 数据处理器数量
   handlerDataNums: 0,
 
@@ -39,6 +45,25 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
       hasMoreData: val
     }))
   },
+
+  // 更新tag 关键字搜索
+  updateTagOrKeyWord: (val, type, whichOneParams) => {
+    switch (type) {
+      case 'key_word':
+        if (whichOneParams) {
+          return set({ customAndDefaultPeripheral: { ...get().customAndDefaultPeripheral, key_word: val } })
+        }
+        return set({ timerAndHandData: { ...get().timerAndHandData, key_word: val } })
+      case 'tag':
+        return set({ customAndDefaultPeripheral: { ...get().customAndDefaultPeripheral, tag: val } })
+      default:
+        if (whichOneParams) {
+          return set({ customAndDefaultPeripheral: { ...get().customAndDefaultPeripheral, key_word: val } })
+        }
+        return set({ timerAndHandData: { key_word: '', page: 1, page_size: 10, sort_field: 'create_time', sort_order: 'descend' } })
+    }
+  },
+
   // 获取目标机详情
   getModelListDetails: async (id: number) => {
     try {
@@ -92,20 +117,30 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
   },
 
   //  获取各个列表函数接口
-  getList: async (params, tabs) => {
+  getList: async tabs => {
+    const timerAndHandDataParams = get().timerAndHandData
+    // const customAndDefaultPeripheralParams = get().customAndDefaultPeripheral
     switch (tabs) {
       case 'customMadePeripheral':
         break
       case 'boardPeripheral':
         break
       case 'handlerData':
-        get().getTimerListAndDataHandlerList(params, tabs)
+        get().getTimerListAndDataHandlerList(timerAndHandDataParams, tabs)
         break
       case 'timer':
-        get().getTimerListAndDataHandlerList(params, tabs)
+        get().getTimerListAndDataHandlerList(timerAndHandDataParams, tabs)
         break
       default:
         break
     }
+  },
+
+  // 初始化列表请求参数
+  initStore: () => {
+    set({
+      timerAndHandData: { key_word: '', page: 1, page_size: 10, sort_field: 'create_time', sort_order: 'descend' },
+      customAndDefaultPeripheral: {}
+    })
   }
 }))

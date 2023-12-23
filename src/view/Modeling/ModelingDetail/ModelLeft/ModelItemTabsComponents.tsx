@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { useLeftModelDetailsStore } from '../../Store/ModelStore'
 import StyleSheet from './modelLeft.less'
 import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
 
@@ -13,7 +12,7 @@ const TabsCompoents = (props: Tabs) => {
   const { keys, title, tabs } = props
   // 在左侧侧边栏文件中默认加载请求自定义外设tabs
   // 侧边栏数量逻辑
-  const { customPeripheralNums, boardPeripheralNums, timerNums, handlerDataNums, setTabs } = LeftListStore()
+  const { customPeripheralNums, boardPeripheralNums, timerNums, handlerDataNums, setTabs, getList, initStore } = LeftListStore()
   const veryTabsKindNums = React.useMemo(() => {
     const NumsObj = {
       customPeripheral: customPeripheralNums,
@@ -32,9 +31,11 @@ const TabsCompoents = (props: Tabs) => {
   const changeTabsList = React.useCallback(
     (keys: string) => {
       if (tabs === keys) return
+      initStore()
       setTabs(keys)
+      getList(keys)
     },
-    [tabs, setTabs]
+    [tabs, setTabs, getList]
   )
 
   return (
@@ -53,14 +54,13 @@ const TabsCompoents = (props: Tabs) => {
 
 const TabsComponentsMemo = React.memo(TabsCompoents)
 function ModelLeftHeaderLeft() {
-  const tabs = useLeftModelDetailsStore(state => state.tabs)
+  const tabs = LeftListStore(state => state.tabs)
   const CompoentsTitle = {
     customPeripheral: '自定义外设',
     boardLevelPeripherals: '板级外设',
     handlerData: '数据处理器',
     timer: '定时器'
   }
-
   return (
     <div className={StyleSheet.ModelLeftHeader}>
       {Object.keys(CompoentsTitle).map(item => {

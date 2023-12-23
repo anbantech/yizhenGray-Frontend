@@ -1,40 +1,33 @@
 import { useRequest } from 'ahooks-v2'
 import { message, Radio } from 'antd'
 import * as React from 'react'
-import { useLocation } from 'react-router'
-
-import SearchInput from 'Src/components/Input/searchInput/searchInput'
+import LowCodeInput from 'Src/components/Input/LowCodeInput/LowCodeInput'
 import { useLeftModelDetailsStore } from '../../Store/ModelStore'
-import { LoactionState } from './ModelingLeftIndex'
-
 import StyleSheet from './modelLeft.less'
-import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
-import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
+import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
 
 function ModelingInputMemo() {
-  const tabs = useLeftModelDetailsStore(state => state.tabs)
-  const platformsId = (useLocation() as LoactionState).state?.id
-  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
-  const { setKeyWord, setTags, baseKeyWordAndTagsGetList, clearKeyWord } = useLeftModelDetailsStore()
+  const { timerAndHandData, tabs, updateTagOrKeyWord, getList } = LeftListStore()
   const cusomMadePeripheralListParams = useLeftModelDetailsStore(state => state.cusomMadePeripheralListParams)
-  const collapseOtherNode = MiddleStore(state => state.collapseOtherNode)
-  const focusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
   const ref = React.useRef<any>()
-  const updateParams = React.useCallback(
-    async (val: string, type: string) => {
-      if (type === 'tags') {
-        setTags(val)
-      }
-      if (type === 'key_words') {
-        setKeyWord(val, tabs)
-        if (!val && focusNodeId) {
-          collapseOtherNode(String(focusNodeId))
-        }
-      }
-      const res = await baseKeyWordAndTagsGetList(tabs, platformsIdmemo)
-      return res
+  const whichOneParams = React.useMemo(() => {
+    return ['customMadePeripheral', 'boardPeripheral'].includes(tabs) ? {} : timerAndHandData
+  }, [tabs, timerAndHandData])
+
+  const setKeyWords = React.useCallback(
+    async (val: string) => {
+      updateTagOrKeyWord(val, 'key_word', ['customMadePeripheral', 'boardPeripheral'].includes(tabs))
+      await getList(tabs)
     },
-    [baseKeyWordAndTagsGetList, tabs, platformsIdmemo, setTags, setKeyWord, collapseOtherNode, focusNodeId]
+    [getList, tabs, updateTagOrKeyWord]
+  )
+
+  const updateParams = React.useCallback(
+    async (val: string) => {
+      updateTagOrKeyWord(val, 'tag', ['customMadePeripheral', 'boardPeripheral'].includes(tabs))
+      // todo
+    },
+    [tabs, updateTagOrKeyWord]
   )
 
   const { run } = useRequest(updateParams, {
@@ -44,12 +37,6 @@ function ModelingInputMemo() {
       message.error(error.message)
     }
   })
-  React.useEffect(() => {
-    if (ref.current && ref.current?.save) {
-      clearKeyWord(ref.current.save)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const showTabs = React.useMemo(() => {
     const result = ['customMadePeripheral', 'boardLevelPeripherals'].includes(tabs) && cusomMadePeripheralListParams.key_word
@@ -58,21 +45,14 @@ function ModelingInputMemo() {
 
   return (
     <div className={StyleSheet.ModelingBodyInput}>
-      <SearchInput
-        className={StyleSheet.ModelingInput}
-        ref={ref}
-        placeholder='根据名称搜索'
-        onChangeValue={value => {
-          updateParams(value, 'key_words')
-        }}
-      />
+      <LowCodeInput className={StyleSheet.ModelingInput} ref={ref} placeholder='根据名称搜索' setKeyWords={setKeyWords} params={whichOneParams} />
       {showTabs && (
         <>
           <Radio.Group
             defaultValue={cusomMadePeripheralListParams.tag}
             className={StyleSheet.radioGroup}
             onChange={e => {
-              run(e.target.value, 'tags')
+              run(e.target.value)
             }}
           >
             <Radio.Button className={StyleSheet.radio} style={{ width: '44px' }} value='0'>
@@ -83,9 +63,6 @@ function ModelingInputMemo() {
             </Radio.Button>
             <Radio.Button className={StyleSheet.radio} value='2'>
               寄存器
-            </Radio.Button>
-            <Radio.Button className={StyleSheet.radio} value='3'>
-              数据处理器
             </Radio.Button>
           </Radio.Group>
         </>

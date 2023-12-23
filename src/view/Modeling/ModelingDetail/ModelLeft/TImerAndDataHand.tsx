@@ -40,7 +40,7 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
   return (
     <>
       <InfiniteScroll
-        dataLength={listData.length}
+        dataLength={10}
         next={loadMoreData}
         hasMore={hasMoreData}
         height={height}
@@ -58,7 +58,7 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
           </p>
         }
       >
-        {listData.map((item: any) => {
+        {listData?.map((item: any) => {
           return (
             <div
               key={item.id}
