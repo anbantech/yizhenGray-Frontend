@@ -88,7 +88,7 @@ const FormFooter = () => {
   const platformsId = (useLocation() as LoactionState).state?.id
   const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
   const createElement = MiddleStore(state => state.createElement)
-
+  const { fn } = useLeftModelDetailsStore()
   const checkEveryItem = formItemParamsCheckStore(state => state.checkEveryItem)
   const optionalParameters = formItemParamsCheckStore(state => state.optionalParameters)
   const getModelListDetails = useLeftModelDetailsStore(state => state.getModelListDetails)
@@ -141,9 +141,9 @@ const FormFooter = () => {
 
     const info = mapParams[Tabs as keyof typeof mapParams]
     // openSiderMenu(Tabs)
-
+    fn()
     createElement(Tabs, info, getModelListDetails, platformsIdmemo, cancel, rightAttributeMap)
-  }, [optionalParameters, platformsIdmemo, Tabs, createElement, getModelListDetails, cancel, rightAttributeMap])
+  }, [optionalParameters, platformsIdmemo, Tabs, createElement, getModelListDetails, cancel, rightAttributeMap, fn])
 
   return (
     <div className={StyleSheet.formFooter}>
