@@ -184,6 +184,8 @@ const MiddleStore = create<RFState>((set, get) => ({
   // 非状态寄存器
   addChildNode: (node: NodeProps, parentId: string) => {
     const { saveCanvas, platform_id, expandNode } = get()
+    const hasEdges = get().edges.find((item: { source: string }) => item.source === String(parentId))
+
     const newNode = {
       data: {
         label: node.name,
@@ -205,7 +207,7 @@ const MiddleStore = create<RFState>((set, get) => ({
     }
     const newEdge = {
       id: `${String(parentId)}->${String(node.id)}`,
-      type: 'smoothstep',
+      type: hasEdges ? 'smoothstep' : 'straight',
       data: { label: '12' },
       source: String(parentId),
       target: String(node.id),
@@ -403,6 +405,7 @@ const MiddleStore = create<RFState>((set, get) => ({
       if (hasThisNode) return
       const updatedNodes = get().nodes.filter((item: { id: string }) => item.id !== String(id))
       const updatedEdges = get().edges.filter((item: { target: string }) => item.target !== String(id))
+      const hasEdges = get().edges.find((item: { source: string }) => item.source === String(flag === 1 ? platform_id : peripheral_id))
       const newNode = {
         data: {
           label: `${name}`,
@@ -424,7 +427,7 @@ const MiddleStore = create<RFState>((set, get) => ({
         id: `${flag === 1 ? platform_id : peripheral_id}->${id}`,
         source: String(flag === 1 ? platform_id : peripheral_id),
         target: String(id),
-        type: 'smoothstep',
+        type: hasEdges ? 'smoothstep' : 'straight',
         markerEnd: {
           type: MarkerType.ArrowClosed
         }
@@ -454,6 +457,7 @@ const MiddleStore = create<RFState>((set, get) => ({
       if (!hasThisNode) {
         const updatedNodes = get().nodes.filter((item: { id: string }) => item.id !== String(id))
         const updatedEdges = get().edges.filter((item: { target: string }) => item.target !== String(id))
+        const hasEdges = get().edges.find((item: { source: string }) => item.source === String(flag === 1 ? platform_id : peripheral_id))
         const newNode = {
           data: {
             label: `${name}`,
@@ -478,7 +482,7 @@ const MiddleStore = create<RFState>((set, get) => ({
           id: `${flag === 1 ? platform_id : peripheral_id}->${id}`,
           source: String(flag === 1 ? platform_id : peripheral_id),
           target: String(id),
-          type: 'smoothstep',
+          type: hasEdges ? 'smoothstep' : 'straight',
           markerEnd: {
             type: MarkerType.ArrowClosed
           }
@@ -542,7 +546,7 @@ const MiddleStore = create<RFState>((set, get) => ({
     const { nodes, expandNode, saveCanvas, platform_id } = get()
 
     const hasThisNode = nodes.some((item: Node) => item.id === String(id))
-
+    const hasEdges = get().edges.find((item: { source: string }) => item.source === String(parentId))
     if (!parentId && !hasThisNode) return
     const newNode = {
       data: {
@@ -566,7 +570,7 @@ const MiddleStore = create<RFState>((set, get) => ({
       id: `${parentId}->${id}`,
       source: String(parentId),
       target: String(id),
-      type: 'smoothstep',
+      type: hasEdges ? 'smoothstep' : 'straight',
       markerEnd: {
         type: MarkerType.ArrowClosed
       }
