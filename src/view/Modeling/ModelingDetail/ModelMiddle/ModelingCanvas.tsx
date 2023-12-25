@@ -263,7 +263,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 205, treeHeight = 125,
         if (width && height) {
           const centerX = x + width / 2
           const centerY = y + height / 2
-          setCenter(centerX, centerY, { duration: 200, zoom: 0.6 })
+          setCenter(centerX, centerY, { duration: 200, zoom: 1 })
         }
       }
     },
@@ -288,7 +288,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 205, treeHeight = 125,
           nodes={animatedNodes}
           edges={visibleEdges}
           onNodeClick={onNodeClick}
-          onConnect={onConnect}
+          // onConnect={onConnect}
           nodesFocusable={Boolean(1)}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
@@ -296,7 +296,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 205, treeHeight = 125,
           nodeTypes={nodeTypes}
           zoomOnDoubleClick={false}
           selectionOnDrag
-          panOnScroll
+          // panOnScroll
           // elevateNodesOnSelect
           onPaneClick={onPaneClick}
           onNodeContextMenu={onNodeContextMenu}
