@@ -64,7 +64,7 @@ function ReactFlowPro({ edgeStore, nodeStore, treeWidth = 205, treeHeight = 125,
   const setTabs = useLeftModelDetailsStore(state => state.setTabs)
   const setTypeDetailsAttributes = RightDetailsAttributesStore(state => state.setTypeDetailsAttributes)
   const onEdgesChange = MiddleStore(state => state.onEdgesChange)
-  const onConnect = MiddleStore(state => state.onConnect)
+  // const onConnect = MiddleStore(state => state.onConnect)
   const onNodesChange = MiddleStore(state => state.onNodesChange)
   const focusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
   const upDateNodesAndEdges = MiddleStore(state => state.upDateNodesAndEdges)
