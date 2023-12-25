@@ -30,10 +30,12 @@ function ModelDetailsIndex() {
 
   return (
     <div className={StyleSheet.ModelDetailsBody}>
-      <ModelingLeftIndex />
-      <div className={StyleSheet.ModelDetailsMiddle}>
+      <div className={StyleSheet.ModelDetailsBodyLeft}>
         <MiddleHeaderBar />
-        <FlowWrapper />
+        <div className={StyleSheet.ModelDetailsMiddle}>
+          <ModelingLeftIndex />
+          <FlowWrapper />
+        </div>
       </div>
       <ModelingRight />
       <ViewMarkdown open={open} markDown={markDown} />

@@ -20,7 +20,7 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
   const getList = LeftListStore(state => state.getList)
   const loadMoreData = React.useCallback(() => {
     const newPage = timerAndHandData.page_size + 10
-    getList({ ...timerAndHandData, page_size: newPage }, '')
+    // getList({ ...timerAndHandData, page_size: newPage }, '')
   }, [getList, timerAndHandData])
 
   const SelectionNode = useCallback(item => {

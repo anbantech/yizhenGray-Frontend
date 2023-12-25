@@ -68,9 +68,45 @@ const TargetComponents: React.FC = () => {
 }
 
 const PeripheralComponents: React.FC = () => {
+  const [form] = Form.useForm()
+  const { PERIPHERAL_TYPE } = getSystemConstantsStore()
+
   return (
-    <div>
-      <span>22</span>
+    <div className={StyleSheet.rightFromCommonStyle} style={{ padding: '8px 16px' }}>
+      <Form form={form} layout='vertical' id='area'>
+        <Form.Item label='外设名称'>
+          <Input style={{ borderRadius: '4px' }} placeholder='外设名称' />
+        </Form.Item>
+        <Form.Item label='类型'>
+          <Select getPopupContainer={() => document.querySelector('#area') as HTMLElement} placeholder='请选择类型'>
+            {PERIPHERAL_TYPE?.map((rate: any) => {
+              return (
+                <Option key={rate.value} value={rate.value}>
+                  {rate.label}
+                </Option>
+              )
+            })}
+          </Select>
+        </Form.Item>
+        <Form.Item label='基地址' help={base_address.errorMsg} hasFeedback validateStatus={base_address.validateStatus}>
+          <Input prefix='0x' />
+        </Form.Item>
+        <Form.Item label='地址大小' help={address_length.errorMsg} hasFeedback validateStatus={address_length.validateStatus}>
+          <Input placeholder='请输入基地址大小' prefix='0x' suffix='字节' />
+        </Form.Item>
+        <Form.Item label='描述'>
+          <TextArea
+            // placeholder={disabledStatus ? '-' : '请输入描述'}
+            // value={peripheral.desc.value}
+            // disabled={disabledStatus}
+            showCount={{
+              formatter({ count }) {
+                return `${count}/50`
+              }
+            }}
+          />
+        </Form.Item>
+      </Form>
     </div>
   )
 }
