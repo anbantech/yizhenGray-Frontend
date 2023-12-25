@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { getCanvas, newSetDataHander, newSetPeripheral, newSetRegister, newSetTimer, saveCanvasAsync } from 'Src/services/api/modelApi'
 import { throwErrorMessage } from 'Src/util/message'
 import crc32 from 'crc-32'
@@ -224,11 +225,21 @@ const MiddleStore = create<RFState>((set, get) => ({
       }
       return Node1
     })
-    const edgesOBJ = [...get().edges, newEdge]
+
+    const edgesOBJ = hasEdges
+      ? [...get().edges, newEdge].map((Edge1: Edge) => {
+          if (Edge1.source === String(parentId)) {
+            // eslint-disable-next-line no-param-reassign
+            Edge1.type = 'smoothstep'
+          }
+          return Edge1
+        })
+      : [...get().edges, newEdge]
     saveCanvas(nodesOBJ, edgesOBJ, platform_id as string)
+
     set({
       nodes: [...get().nodes, newNode],
-      edges: [...get().edges, newEdge]
+      edges: [...edgesOBJ]
     })
     expandNode([String(parentId)])
   },
@@ -441,7 +452,15 @@ const MiddleStore = create<RFState>((set, get) => ({
           }
           return Node1
         }),
-        edges: [...updatedEdges, newEdge]
+        edges: hasEdges
+          ? [...updatedEdges, newEdge].map((Edge1: Edge) => {
+              if (Edge1.source === String(flag === 1 ? platform_id : peripheral_id)) {
+                // eslint-disable-next-line no-param-reassign
+                Edge1.type = 'smoothstep'
+              }
+              return Edge1
+            })
+          : [...updatedEdges, newEdge]
       })
       expandNode([String(flag === 1 ? platform_id : peripheral_id), String(id)])
       saveCanvas([...get().nodes], [...get().edges], platform_id as string)
@@ -496,7 +515,15 @@ const MiddleStore = create<RFState>((set, get) => ({
             }
             return Node1
           }),
-          edges: [...updatedEdges, newEdge]
+          edges: hasEdges
+            ? [...updatedEdges, newEdge].map((Edge1: Edge) => {
+                if (Edge1.source === String(flag === 1 ? platform_id : peripheral_id)) {
+                  // eslint-disable-next-line no-param-reassign
+                  Edge1.type = 'smoothstep'
+                }
+                return Edge1
+              })
+            : [...updatedEdges, newEdge]
         })
         expandNode([String(flag === 1 ? platform_id : peripheral_id), String(id)])
         saveCanvas([...get().nodes], [...get().edges], platform_id as string)
@@ -582,7 +609,15 @@ const MiddleStore = create<RFState>((set, get) => ({
     if ((!parentId && hasThisNode) || (parentId && hasThisNode)) {
       set({
         nodes: parentId ? [...updatedNodes, newNode] : [...updatedNodes],
-        edges: parentId ? [...updatedEdges, newEdge] : [...updatedEdges]
+        edges: parentId
+          ? [...updatedEdges, newEdge].map((Edge1: Edge) => {
+              if (Edge1.source === String(parentId)) {
+                // eslint-disable-next-line no-param-reassign
+                Edge1.type = 'smoothstep'
+              }
+              return Edge1
+            })
+          : [...updatedEdges]
       })
     }
 
@@ -596,7 +631,15 @@ const MiddleStore = create<RFState>((set, get) => ({
           }
           return Node1
         }),
-        edges: [...get().edges, newEdge]
+        edges: hasEdges
+          ? [...get().edges, newEdge].map((Edge1: Edge) => {
+              if (Edge1.source === String(parentId)) {
+                // eslint-disable-next-line no-param-reassign
+                Edge1.type = 'smoothstep'
+              }
+              return Edge1
+            })
+          : [...get().edges, newEdge]
       })
     }
     expandNode([String(preParentId), String(parentId), String(id)])
