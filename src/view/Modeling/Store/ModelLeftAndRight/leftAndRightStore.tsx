@@ -59,6 +59,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
       errorMsg: null
     }
   },
+
   rightDataHandler: {
     id: null,
     name: { value: undefined, validateStatus: undefined, errorMsg: null },
@@ -71,18 +72,23 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     checksum_member: { value: [], validateStatus: undefined, errorMsg: null },
     framing_member: { value: [], validateStatus: undefined, errorMsg: null }
   },
+
   rightTimer: {
     id: null,
     name: { value: undefined, validateStatus: undefined, errorMsg: null },
     period: { value: undefined, validateStatus: undefined, errorMsg: null },
     interrupt: { value: undefined, validateStatus: undefined, errorMsg: null }
   },
+
   rightDataRegister: {
     id: null,
     name: { value: undefined, validateStatus: undefined, errorMsg: null },
+    peripheral: { value: undefined, validateStatus: undefined, errorMsg: null },
     peripheral_id: { value: undefined, validateStatus: undefined, errorMsg: null },
     relative_address: { value: undefined, validateStatus: undefined, errorMsg: null },
     kind: { value: undefined, validateStatus: undefined, errorMsg: null },
+    sr_peri_id: { value: undefined, validateStatus: undefined, errorMsg: null },
+    sr_id: { value: undefined, validateStatus: undefined, errorMsg: null },
     finish: { value: undefined, validateStatus: undefined, errorMsg: null },
     variety: { value: undefined, validateStatus: undefined, errorMsg: null },
     set_cmd: { value: undefined, validateStatus: undefined, errorMsg: null },

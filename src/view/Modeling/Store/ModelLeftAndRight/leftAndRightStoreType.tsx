@@ -1,5 +1,5 @@
-type BaseErrorType = {
-  value: undefined | string
+export type BaseErrorType = {
+  value: undefined | string | number
   validateStatus: undefined | 'success' | 'error' | 'warning' | 'validating' | ''
   errorMsg: null | string
 }
@@ -49,7 +49,10 @@ type RightRegisterType = {
   id: string | null
   name: BaseErrorType
   peripheral_id: BaseErrorType
+  peripheral: BaseErrorType
   relative_address: BaseErrorType
+  sr_peri_id: BaseErrorType
+  sr_id: BaseErrorType
   kind: BaseErrorType
   finish: BaseErrorType
   variety: BaseErrorType

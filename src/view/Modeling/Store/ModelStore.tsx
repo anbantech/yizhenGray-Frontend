@@ -614,6 +614,7 @@ const formItemParamsCheckStore = create<FormItemCheckStoreParams>((set, get) => 
       errorMsg: null
     }
   },
+
   checkEveryItem: optionalParameters => {
     const { tabs } = get()
     const { name, base_address, desc, interrupt, address_length, period, peripheral_id, port, relative_address, kind } = get().optionalParameters
@@ -786,10 +787,13 @@ const checkUtilFnStore = create<CheckUtilFnStoreParams>(() => ({
 
 const vieMarkDown = create<ViewMarkDown>((set, get) => ({
   open: false,
+
   markDown: '',
+
   setOpen: () => {
     set({ open: !get().open })
   },
+
   getMarkDown: async id => {
     const res = await viewELT(id)
     if (res.data) {

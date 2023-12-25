@@ -35,7 +35,7 @@ const TabsCompoents = (props: Tabs) => {
       setTabs(keys)
       getList(keys)
     },
-    [tabs, setTabs, getList]
+    [tabs, initStore, setTabs, getList]
   )
 
   return (

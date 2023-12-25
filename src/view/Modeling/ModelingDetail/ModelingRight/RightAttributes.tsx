@@ -112,9 +112,188 @@ const PeripheralComponents: React.FC = () => {
 }
 
 const RegisterComponents: React.FC = () => {
+  const [form] = Form.useForm()
+  const { rightDataRegister } = LeftAndRightStore()
+  const {
+    peripheral_id,
+    peripheral,
+    relative_address,
+    sr_peri_id,
+    name,
+    finish,
+    kind,
+    set_cmd,
+    set_value,
+    sr_id,
+    restore_cmd,
+    restore_value
+  } = rightDataRegister
+  const { REGISTER_CMD } = getSystemConstantsStore()
+
+  const isKind = useMemo(() => {
+    return kind.value === 0
+  }, [kind])
+
+  const SelectBefore = () => {
+    return (
+      <Select
+        getPopupContainer={() => document.querySelector('#area') as HTMLElement}
+        showArrow
+        showSearch={Boolean(0)}
+        allowClear
+        // value={values}
+        style={{ width: 70, height: 30 }}
+      >
+        {REGISTER_CMD?.map(rate => {
+          return (
+            <Option key={rate?.value} value={rate?.value}>
+              {rate?.label}
+            </Option>
+          )
+        })}
+      </Select>
+    )
+  }
+
   return (
     <div>
-      <span>22</span>
+      <Form form={form} layout='vertical' className={StyleSheet.rightFromCommonStyle} id='area'>
+        <div className={StyleSheet.rightFromCommonHeaderStyle} style={{ padding: '8px 16px' }}>
+          <Form.Item label='所属外设'>
+            <Select
+              placeholder='请选择所属外设'
+              showSearch={Boolean(0)}
+              getPopupContainer={() => document.querySelector('#area') as HTMLElement}
+              style={{ borderRadius: '4px' }}
+              value={peripheral_id.value}
+            >
+              {/* {isBoardLevePeripherals?.map((rate: any) => {
+                return (
+                  <Option key={rate?.id} value={rate?.id}>
+                    {rate?.name}
+                  </Option>
+                )
+              })} */}
+            </Select>
+          </Form.Item>
+          <Form.Item label='寄存器名称' help={name.errorMsg} hasFeedback validateStatus={name.validateStatus}>
+            <Input style={{ borderRadius: '4px' }} value={name.value} />
+          </Form.Item>
+          <Form.Item label='偏移地址' help={relative_address.errorMsg} hasFeedback validateStatus={relative_address.validateStatus}>
+            <Input prefix='0x' value={relative_address.value} />
+          </Form.Item>
+          <Form.Item label='初始化完成'>
+            <Select style={{ borderRadius: '4px' }} showSearch={Boolean(0)} value={finish.value}>
+              {isFinish?.map((rate: any) => {
+                return (
+                  <Option key={rate?.value} value={rate?.value}>
+                    {rate?.label}
+                  </Option>
+                )
+              })}
+            </Select>
+          </Form.Item>
+        </div>
+        <div className={StyleSheet.isStatusRegister}>
+          <Form.Item label='是否为状态寄存器'>
+            <Select
+              showSearch={Boolean(0)}
+              onDropdownVisibleChange={visible => {
+                console.log('1')
+              }}
+              getPopupContainer={() => document.querySelector('#area') as HTMLElement}
+              style={{ borderRadius: '4px' }}
+              value={kind.value}
+              onChange={value => {
+                console.log('1')
+              }}
+            >
+              {isStatusRegister?.map((rate: any) => {
+                return (
+                  <Option key={rate?.value} value={rate?.value}>
+                    {rate?.label}
+                  </Option>
+                )
+              })}
+            </Select>
+          </Form.Item>
+        </div>
+
+        {!isKind ? (
+          <div style={{ padding: '8px 16px' }}>
+            <span className={StyleSheet.spanTitle}>关联状态寄存器</span>
+            <Form.Item label='外设'>
+              <Select
+                getPopupContainer={() => document.querySelector('#area') as HTMLElement}
+                style={{ borderRadius: '4px' }}
+                showSearch={Boolean(0)}
+                allowClear
+                value={sr_peri_id.value}
+                placeholder='请选择关联状态寄存器所属外设'
+              >
+                {/* {AllPeripheralList?.map((rate: any) => {
+                  return (
+                    <Option key={rate?.id} value={rate?.id}>
+                      {rate?.name}
+                    </Option>
+                  )
+                })} */}
+              </Select>
+            </Form.Item>
+            <Form.Item label='关联状态寄存器'>
+              <Select
+                getPopupContainer={() => document.querySelector('#area') as HTMLElement}
+                placeholder='请选择关联状态寄存器'
+                disabled={!sr_peri_id.value}
+                showSearch={Boolean(0)}
+                value={sr_id.value}
+              >
+                {/* {registerListStatus?.map((rate: any) => {
+                  return (
+                    <Option key={rate?.id} value={rate?.id}>
+                      {rate?.name}
+                    </Option>
+                  )
+                })} */}
+              </Select>
+            </Form.Item>
+          </div>
+        ) : (
+          <>
+            <div className={StyleSheet.footerFormTop}>
+              <div className={StyleSheet.footerFormChart}>
+                <span className={StyleSheet.setStyle}>设置</span>
+                <span className={StyleSheet.setStyle} style={{ marginLeft: '50px' }}>
+                  操作数
+                </span>
+              </div>
+              <Form.Item help={set_value.errorMsg} hasFeedback validateStatus={set_value.validateStatus}>
+                <Input
+                  prefix='0x'
+                  addonBefore={<SelectBefore title='寄存器' type='set_cmd' values={set_cmd.value as string} fn={updateOnceFormValue} />}
+                  value={set_value.value}
+                />
+              </Form.Item>
+            </div>
+            <div className={StyleSheet.footerFormTop}>
+              <div className={StyleSheet.footerFormChart}>
+                <span className={StyleSheet.setStyle}>恢复</span>
+                <span className={StyleSheet.setStyle} style={{ marginLeft: '50px' }}>
+                  操作数
+                </span>
+              </div>
+              <Form.Item help={restore_value.errorMsg} hasFeedback validateStatus={restore_value.validateStatus}>
+                <Input
+                  prefix='0x'
+                  style={{ borderRadius: 4 }}
+                  addonBefore={<SelectBefore title='寄存器' type='restore_cmd' values={restore_cmd.value as string} fn={updateOnceFormValue} />}
+                  value={restore_value.value}
+                />
+              </Form.Item>
+            </div>
+          </>
+        )}
+      </Form>
     </div>
   )
 }

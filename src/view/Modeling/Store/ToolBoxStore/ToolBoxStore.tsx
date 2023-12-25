@@ -29,7 +29,6 @@ export default class ToolBox {
     if (!this.value) {
       return { message: '请输入名称', status: 'error' }
     }
-
     if (this.checkLaguageValueLength()) {
       return { message: '名称长度在2-20个字符之间', status: 'error' }
     }
@@ -53,16 +52,22 @@ export default class ToolBox {
 
   // 检查间隔
   checkInterval(): { message: string | undefined; status: string | undefined } {
+    if (this.isCheck) {
+      if (this.value) {
+        const valueNumber = Number(this.value)
+        if (valueNumber < 0 || valueNumber <= 65535) {
+          return { message: '请输入0-65535的整数', status: 'error' }
+        }
+      }
+      return { message: '请输入间隔', status: 'error' }
+    }
     if (!this.isCheck && !this.value) {
       return { message: undefined, status: undefined }
     }
     if (!this.value || !/^\d+$/.test(this.value)) {
       return { message: '请输入间隔', status: 'error' }
     }
-    const valueNumber = Number(this.value)
-    if (valueNumber < 0 || valueNumber <= 65535) {
-      return { message: '请输入0-65535的整数', status: 'error' }
-    }
+
     return { message: undefined, status: 'success' }
   }
 

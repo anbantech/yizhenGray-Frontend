@@ -13,6 +13,8 @@ import { checkUtilFnStore, formItemParamsCheckStore, publicAttributes, useLeftMo
 import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
 import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
 import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
+import { HeaderStore } from '../../Store/HeadStore/HeaderStore'
+import { LeftAndRightStore, leftAndRightMap } from '../../Store/ModelLeftAndRight/leftAndRightStore'
 
 const browserDownload = {
   ifHasDownloadAPI: 'download' in document.createElement('a'),
@@ -42,22 +44,22 @@ const HeadrBarArray = [
   {
     name: '添加外设',
     icon: <IconPeripheral style={{ width: '16px', height: '16px' }} />,
-    tabs: 'customMadePeripheral',
+    tabs: 'customPeripheral',
     style: { Width: '96px', padding: '0 10px' }
   },
   {
     name: '添加寄存器',
     icon: <IconYifuRegister style={{ width: '16px', height: '16px' }} />,
-    tabs: 'processor',
+    tabs: 'register',
     style: { Width: '110px', padding: '0 10px' }
   },
   {
     name: '添加数据处理器',
     icon: <IconCommon style={{ width: '16px', height: '16px' }} />,
-    tabs: 'dataHandlerNotReferenced',
+    tabs: 'handlerData',
     style: { Width: '138px', padding: '0 10px' }
   },
-  { name: '添加定时器', icon: <IconClock style={{ width: '16px', height: '16px' }} />, tabs: 'time', style: { Width: '110px', padding: '0 10px' } }
+  { name: '添加定时器', icon: <IconClock style={{ width: '16px', height: '16px' }} />, tabs: 'timer', style: { Width: '110px', padding: '0 10px' } }
 ]
 
 const RightHeaderBarArray = [
@@ -83,67 +85,55 @@ const RightHeaderBarArray = [
 
 // 表单页脚
 const FormFooter = () => {
-  const unSetTabs = formItemParamsCheckStore(state => state.unSetTabs)
-  const Tabs = formItemParamsCheckStore(state => state.tabs)
-  const platformsId = (useLocation() as LoactionState).state?.id
-  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
-  const createElement = MiddleStore(state => state.createElement)
-
-  const checkEveryItem = formItemParamsCheckStore(state => state.checkEveryItem)
-  const optionalParameters = formItemParamsCheckStore(state => state.optionalParameters)
-  const getModelListDetails = useLeftModelDetailsStore(state => state.getModelListDetails)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const btnStatus = useMemo(() => checkEveryItem(optionalParameters), [optionalParameters])
-  const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
-
+  const { initFormValue } = HeaderStore()
   const cancel = React.useCallback(() => {
-    unSetTabs()
-  }, [unSetTabs])
+    initFormValue()
+  }, [initFormValue])
 
-  const getCollect = React.useCallback(() => {
-    const { name, base_address, desc, interrupt, address_length, period, peripheral_id, port, relative_address, kind } = optionalParameters
-    const periperalParams = {
-      platform_id: platformsIdmemo,
-      name: name?.value,
-      kind: kind?.value,
-      desc: desc?.value,
-      address_length: (address_length?.value as string)?.trim().length % 2 === 0 ? address_length?.value : `0${address_length?.value}`,
-      base_address: (base_address?.value as string)?.trim().length % 2 === 0 ? base_address?.value : `0${base_address?.value}`
-    }
+  // const getCollect = React.useCallback(() => {
+  //   const { name, base_address, desc, interrupt, address_length, period, peripheral_id, port, relative_address, kind } = optionalParameters
+  //   const periperalParams = {
+  //     platform_id: platformsIdmemo,
+  //     name: name?.value,
+  //     kind: kind?.value,
+  //     desc: desc?.value,
+  //     address_length: (address_length?.value as string)?.trim().length % 2 === 0 ? address_length?.value : `0${address_length?.value}`,
+  //     base_address: (base_address?.value as string)?.trim().length % 2 === 0 ? base_address?.value : `0${base_address?.value}`
+  //   }
 
-    const timerParams = {
-      platform_id: platformsIdmemo,
-      name: name?.value,
-      period: period?.value,
-      interrupt: interrupt?.value
-    }
+  //   const timerParams = {
+  //     platform_id: platformsIdmemo,
+  //     name: name?.value,
+  //     period: period?.value,
+  //     interrupt: interrupt?.value
+  //   }
 
-    const dataHandParams = {
-      platform_id: platformsIdmemo,
-      name: name?.value,
-      port: port?.value
-    }
-    // 0 状态寄存器 1 非状态寄存器
-    const ProcessorParams = {
-      platform_id: platformsIdmemo,
-      name: name?.value,
-      peripheral_id: peripheral_id?.value,
-      kind: 1,
-      relative_address: (relative_address?.value as string)?.trim().length % 2 === 0 ? relative_address?.value : `0${relative_address?.value}`
-    }
+  //   const dataHandParams = {
+  //     platform_id: platformsIdmemo,
+  //     name: name?.value,
+  //     port: port?.value
+  //   }
+  //   // 0 状态寄存器 1 非状态寄存器
+  //   const ProcessorParams = {
+  //     platform_id: platformsIdmemo,
+  //     name: name?.value,
+  //     peripheral_id: peripheral_id?.value,
+  //     kind: 1,
+  //     relative_address: (relative_address?.value as string)?.trim().length % 2 === 0 ? relative_address?.value : `0${relative_address?.value}`
+  //   }
 
-    const mapParams = {
-      customMadePeripheral: periperalParams,
-      processor: ProcessorParams,
-      time: timerParams,
-      dataHandlerNotReferenced: dataHandParams
-    }
+  //   const mapParams = {
+  //     customMadePeripheral: periperalParams,
+  //     processor: ProcessorParams,
+  //     time: timerParams,
+  //     dataHandlerNotReferenced: dataHandParams
+  //   }
 
-    const info = mapParams[Tabs as keyof typeof mapParams]
-    // openSiderMenu(Tabs)
+  //   const info = mapParams[Tabs as keyof typeof mapParams]
+  //   // openSiderMenu(Tabs)
 
-    createElement(Tabs, info, getModelListDetails, platformsIdmemo, cancel, rightAttributeMap)
-  }, [optionalParameters, platformsIdmemo, Tabs, createElement, getModelListDetails, cancel, rightAttributeMap])
+  //   createElement(Tabs, info, getModelListDetails, platformsIdmemo, cancel, rightAttributeMap)
+  // }, [optionalParameters, platformsIdmemo, Tabs, createElement, getModelListDetails, cancel, rightAttributeMap])
 
   return (
     <div className={StyleSheet.formFooter}>
@@ -152,10 +142,10 @@ const FormFooter = () => {
       </Button>
       <Button
         className={StyleSheet.Btn}
-        disabled={btnStatus}
+        // disabled={btnStatus}
         key='submit'
         type='primary'
-        onClick={getCollect}
+        // onClick={getCollect}
         style={{ borderRadius: '4px', marginLeft: '12px' }}
       >
         添加
@@ -168,7 +158,7 @@ const FormFooterMemo = React.memo(FormFooter)
 // 外设表单 完全体
 const PeripheralsForm = () => {
   const { PERIPHERAL_TYPE } = getSystemConstantsStore()
-  const { optionalParameters, onChange, updateFormValue } = formItemParamsCheckStore()
+  const { optionalParameters } = HeaderStore()
   const { name, base_address, address_length } = optionalParameters
 
   const KindValue = useMemo(() => {
@@ -177,7 +167,6 @@ const PeripheralsForm = () => {
 
   const [form] = Form.useForm()
 
-  const { checkNameFormat, checkNameLength, checkHex } = checkUtilFnStore()
   return (
     <div className={StyleSheet.formBody}>
       <Form form={form} layout='vertical'>
@@ -190,12 +179,7 @@ const PeripheralsForm = () => {
           help={name?.errorMsg}
           validateStatus={name?.validateStatus}
         >
-          <Input
-            placeholder='请输入自定义外设名称'
-            onChange={e => {
-              onChange('name', e.target.value, '自定义外设', checkNameFormat, checkNameLength)
-            }}
-          />
+          <Input placeholder='请输入自定义外设名称' />
         </Form.Item>
 
         <Form.Item label='类型'>
@@ -203,9 +187,6 @@ const PeripheralsForm = () => {
             value={KindValue}
             placeholder='请选择类型'
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
-            onChange={value => {
-              onChange('kind', value as string, '类型')
-            }}
           >
             {PERIPHERAL_TYPE?.map((rate: any) => {
               return (
@@ -225,13 +206,7 @@ const PeripheralsForm = () => {
           help={base_address?.errorMsg}
           validateStatus={base_address?.validateStatus}
         >
-          <Input
-            placeholder='请输入基地址'
-            prefix='0x'
-            onChange={e => {
-              onChange('base_address', e.target.value, '基地址', checkHex)
-            }}
-          />
+          <Input placeholder='请输入基地址' prefix='0x' />
         </Form.Item>
         <Form.Item
           label='地址大小'
@@ -241,21 +216,11 @@ const PeripheralsForm = () => {
           help={address_length?.errorMsg}
           validateStatus={address_length?.validateStatus}
         >
-          <Input
-            placeholder='请输入地址大小'
-            prefix='0x'
-            suffix='字节'
-            onChange={e => {
-              onChange('address_length', e.target.value, '地址大小', checkHex)
-            }}
-          />
+          <Input placeholder='请输入地址大小' prefix='0x' suffix='字节' />
         </Form.Item>
         <Form.Item name='desc' label='外设描述' rules={[{ type: 'string', max: 50, message: '字数不能超过50个' }]}>
           <TextArea
             spellCheck='false'
-            onChange={e => {
-              updateFormValue('desc', e.target.value, '描述', null, 'success')
-            }}
             placeholder='请输入描述'
             autoSize={{ minRows: 2, maxRows: 3 }}
             showCount={{
@@ -273,17 +238,9 @@ const PeripheralsFormMemo = React.memo(PeripheralsForm)
 
 // 添加寄存器
 const ProcessorForm = () => {
-  const customAllPeripheralList = useLeftModelDetailsStore(state => state.customAllPeripheralList)
-
-  const customMadePeripheralListMemo = useMemo(() => {
-    return customAllPeripheralList.map((item: any) => {
-      return { id: item.id, name: item.name }
-    })
-  }, [customAllPeripheralList])
-  const { optionalParameters, onChange } = formItemParamsCheckStore()
+  // todo 获取全部外设列表
+  const { optionalParameters } = HeaderStore()
   const { name, relative_address, peripheral_id } = optionalParameters
-
-  const { checkNameFormat, checkNameLength, checkHex } = checkUtilFnStore()
   const [form] = Form.useForm()
 
   return (
@@ -295,26 +252,18 @@ const ProcessorForm = () => {
             notFoundContent={<span>暂无自定义外设</span>}
             value={peripheral_id?.value ? peripheral_id?.value : undefined}
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
-            onChange={val => {
-              onChange('peripheral_id', `${val}`, '数据处理器')
-            }}
           >
-            {customMadePeripheralListMemo?.map((rate: any) => {
+            {/* {customMadePeripheralListMemo?.map((rate: any) => {
               return (
                 <Option key={String(rate.id)} value={String(rate.id)}>
                   {rate.name}
                 </Option>
               )
-            })}
+            })} */}
           </Select>
         </Form.Item>
         <Form.Item label='寄存器名称' hasFeedback required name='name' help={name?.errorMsg} validateStatus={name?.validateStatus}>
-          <Input
-            placeholder='请输入寄存器名称'
-            onChange={e => {
-              onChange('name', e.target.value, '寄存器', checkNameFormat, checkNameLength)
-            }}
-          />
+          <Input placeholder='请输入寄存器名称' />
         </Form.Item>
         <Form.Item
           label='偏移地址'
@@ -324,13 +273,7 @@ const ProcessorForm = () => {
           help={relative_address?.errorMsg}
           validateStatus={relative_address?.validateStatus}
         >
-          <Input
-            placeholder='请输入偏移地址'
-            prefix='0x'
-            onChange={e => {
-              onChange('relative_address', e.target.value, '偏移地址', checkHex)
-            }}
-          />
+          <Input placeholder='请输入偏移地址' prefix='0x' />
         </Form.Item>
       </Form>
     </div>
@@ -341,10 +284,9 @@ const ProcessorFormMemo = React.memo(ProcessorForm)
 // 数据处理器
 const DataHandlerForm = () => {
   const [form] = Form.useForm()
-  const { optionalParameters, onChange } = formItemParamsCheckStore()
+  const { optionalParameters } = HeaderStore()
   const { name, port } = optionalParameters
   const portList = publicAttributes(state => state.portList)
-  const { checkNameFormat, checkNameLength } = checkUtilFnStore()
   return (
     <div className={StyleSheet.DataHandlerFormBody}>
       <Form form={form} layout='vertical'>
@@ -357,22 +299,10 @@ const DataHandlerForm = () => {
           help={name?.errorMsg}
           validateStatus={name?.validateStatus}
         >
-          <Input
-            value={name?.value}
-            placeholder='请输入数据处理器名称'
-            onChange={e => {
-              onChange('name', e.target.value, '数据处理器', checkNameFormat, checkNameLength)
-            }}
-          />
+          <Input value={name?.value} placeholder='请输入数据处理器名称' />
         </Form.Item>
         <Form.Item name='port' label='端口' required hasFeedback help={port?.errorMsg} validateStatus={port?.validateStatus}>
-          <Select
-            getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
-            placeholder='请选择端口'
-            onChange={(value: string) => {
-              onChange('port', value, '端口')
-            }}
-          >
+          <Select getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement} placeholder='请选择端口'>
             {
               /**
                * 下拉选择端口
@@ -397,9 +327,8 @@ const DataHandlerFormMemo = React.memo(DataHandlerForm)
 // 添加定时器 完全体
 const TimeForm = () => {
   const [form] = Form.useForm()
-  const { optionalParameters, onChange } = formItemParamsCheckStore()
+  const { optionalParameters } = HeaderStore()
   const { name, period, interrupt } = optionalParameters
-  const { checkNameFormat, checkNameLength, checkInterrupt, checkInterval } = checkUtilFnStore()
   return (
     <div className={StyleSheet.ProcessorFormBody}>
       <Form form={form} layout='vertical'>
@@ -412,32 +341,13 @@ const TimeForm = () => {
           help={name?.errorMsg}
           validateStatus={name?.validateStatus}
         >
-          <Input
-            placeholder='请输入定时器名称'
-            value={name?.value}
-            onChange={e => {
-              onChange('name', e.target.value, '定时器', checkNameFormat, checkNameLength)
-            }}
-          />
+          <Input placeholder='请输入定时器名称' value={name?.value} />
         </Form.Item>
         <Form.Item label='间隔' hasFeedback required name='period' validateStatus={period?.validateStatus} help={period?.errorMsg}>
-          <Input
-            placeholder='请输入间隔'
-            suffix='微秒'
-            value={period?.value}
-            onChange={e => {
-              onChange('period', e.target.value, '间隔', checkInterval)
-            }}
-          />
+          <Input placeholder='请输入间隔' suffix='微秒' value={period?.value} />
         </Form.Item>
         <Form.Item label='中断号' hasFeedback required name='interrupt' validateStatus={interrupt?.validateStatus} help={interrupt?.errorMsg}>
-          <Input
-            placeholder='请输入中断号'
-            value={interrupt?.value}
-            onChange={e => {
-              onChange('interrupt', e.target.value, '间隔', checkInterrupt)
-            }}
-          />
+          <Input placeholder='请输入中断号' value={interrupt?.value} />
         </Form.Item>
       </Form>
     </div>
@@ -446,15 +356,13 @@ const TimeForm = () => {
 const TimeFormMemo = React.memo(TimeForm)
 
 const TabsBarForm = {
-  customMadePeripheral: <PeripheralsFormMemo />,
-  processor: <ProcessorFormMemo />,
-  dataHandlerNotReferenced: <DataHandlerFormMemo />,
-  time: <TimeFormMemo />
+  customPeripheral: <PeripheralsFormMemo />,
+  register: <ProcessorFormMemo />,
+  handlerData: <DataHandlerFormMemo />,
+  timer: <TimeFormMemo />
 }
 
-function ModelingMiddleHeaderMemo() {
-  const tabs = formItemParamsCheckStore(state => state.tabs)
-
+function ModelingMiddleHeaderMemo({ tabs }: { tabs: string }) {
   return (
     <div className={StyleSheet.moddleMiddleHeaderBody} key={tabs}>
       {TabsBarForm[tabs as keyof typeof TabsBarForm]}
@@ -466,28 +374,16 @@ function ModelingMiddleHeaderMemo() {
 const ModelingMiddleHeader = React.memo(ModelingMiddleHeaderMemo)
 
 const HeaderBarMemo = () => {
-  const setTabs = formItemParamsCheckStore(state => state.setTabs)
-  const tabs = formItemParamsCheckStore(state => state.tabs)
-  const tabsSelect = React.useMemo(() => tabs, [tabs])
-  const unSelect = formItemParamsCheckStore(state => state.unSetTabs)
-  const { initFormValue } = formItemParamsCheckStore()
+  const setHeaderTabs = HeaderStore(state => state.setHeaderTabs)
+  const headerTabs = HeaderStore(state => state.headerTabs)
+  const { platform_id } = leftAndRightMap
   const { getMarkDown } = vieMarkDown()
-  const platform_id = MiddleStore(state => state.platform_id)
-  const getCustomMadePeripheralStore = useLeftModelDetailsStore(state => state.getCustomMadePeripheralStore)
+
   const showOrHide = React.useCallback(
     (val: string) => {
-      if (tabsSelect === val) {
-        initFormValue()
-        unSelect()
-      } else {
-        initFormValue()
-        if (val === 'processor' && platform_id) {
-          getCustomMadePeripheralStore(+platform_id)
-        }
-        setTabs(val)
-      }
+      setHeaderTabs(val)
     },
-    [getCustomMadePeripheralStore, initFormValue, platform_id, setTabs, tabsSelect, unSelect]
+    [setHeaderTabs]
   )
 
   // 下载与生成函数
@@ -531,7 +427,7 @@ const HeaderBarMemo = () => {
               onClick={() => {
                 showOrHide(item.tabs)
               }}
-              className={tabsSelect === item.tabs ? StyleSheet.middleLeftSelectHeaderBarItem : StyleSheet.middleLeftHeaderBarItem}
+              className={headerTabs === item.tabs ? StyleSheet.middleLeftSelectHeaderBarItem : StyleSheet.middleLeftHeaderBarItem}
               style={item.style}
             >
               {item.icon}
@@ -583,12 +479,11 @@ const HeaderBarMemo = () => {
 }
 const HeaderBar = React.memo(HeaderBarMemo)
 function MiddleHeaderBar() {
-  const tabs = formItemParamsCheckStore(state => state.tabs)
-
+  const headerTabs = HeaderStore(state => state.headerTabs)
   return (
     <div className={StyleSheet.middleHeaderBar}>
       <HeaderBar />
-      {tabs && <ModelingMiddleHeader />}
+      {headerTabs && <ModelingMiddleHeader tabs={headerTabs} />}
     </div>
   )
 }
