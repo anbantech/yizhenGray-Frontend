@@ -65,7 +65,6 @@ export const HeaderStore = create<HeaderStoreType>((set, get) => ({
   getTabsFromData: () => {
     const { name, base_address, desc, interrupt, address_length, period, peripheral_id, port, relative_address, kind } = get().optionalParameters
     const periperalParams = {
-      platform_id: null,
       name: name?.value,
       kind: kind?.value,
       desc: desc?.value,
@@ -74,20 +73,17 @@ export const HeaderStore = create<HeaderStoreType>((set, get) => ({
     }
 
     const timerParams = {
-      platform_id: null,
       name: name?.value,
       period: period?.value,
       interrupt: interrupt?.value
     }
 
     const dataHandParams = {
-      platform_id: null,
       name: name?.value,
       port: port?.value
     }
     // 0 状态寄存器 1 非状态寄存器
     const ProcessorParams = {
-      platform_id: null,
       name: name?.value,
       peripheral_id: peripheral_id?.value,
       kind: 1,
@@ -95,16 +91,22 @@ export const HeaderStore = create<HeaderStoreType>((set, get) => ({
     }
 
     const mapParams = {
-      customMadePeripheral: periperalParams,
-      processor: ProcessorParams,
-      time: timerParams,
-      dataHandlerNotReferenced: dataHandParams
+      customPeripheral: periperalParams,
+      register: ProcessorParams,
+      timer: timerParams,
+      handlerData: dataHandParams
     }
 
     if (get().headerTabs) {
+      const optionalParametersCopy = get().optionalParameters
+      const result = Object.keys(mapParams[get().headerTabs as keyof typeof mapParams]).every(item => {
+        return optionalParametersCopy[item as keyof typeof optionalParametersCopy]?.validateStatus === 'success'
+      })
+      console.log(result)
       return mapParams[get().headerTabs as keyof typeof mapParams]
     }
   },
+
   messageInfoFn: (keys, value) => {
     const validation = new ToolBox(value as string, true, keys).validate()
     const { message, status } = validation
@@ -123,6 +125,7 @@ export const HeaderStore = create<HeaderStoreType>((set, get) => ({
   initFormValue: () => {
     set({
       headerTabs: null,
+      btnStatus: true,
       optionalParameters: {
         name: {
           value: undefined,
