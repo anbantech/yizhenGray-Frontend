@@ -4,17 +4,13 @@ import { Button, Form, Input, Select, Tooltip, message } from 'antd'
 import TextArea from 'antd/lib/input/TextArea'
 import { IconPeripheral, IconYifuRegister, IconClock, IconCommon, IconDownload, IconFileText, IconEye } from '@anban/iconfonts'
 import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
-import { useLocation } from 'react-router'
 import { downLoadScript, scriptGenerator } from 'Src/services/api/modelApi'
 import { throwErrorMessage } from 'Src/util/message'
 import { warn } from 'Src/util/common'
 import StyleSheet from './modelMiddle.less'
-import { checkUtilFnStore, formItemParamsCheckStore, publicAttributes, useLeftModelDetailsStore, vieMarkDown } from '../../Store/ModelStore'
-import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
-import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
-import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
-import { HeaderStore } from '../../Store/HeadStore/HeaderStore'
+import { HeaderStore } from '../../Store/HeaderStore/HeaderStore'
 import { LeftAndRightStore, leftAndRightMap } from '../../Store/ModelLeftAndRight/leftAndRightStore'
+import { publicAttributes, vieMarkDown } from '../../Store/ModelStore'
 
 const browserDownload = {
   ifHasDownloadAPI: 'download' in document.createElement('a'),
@@ -85,7 +81,7 @@ const RightHeaderBarArray = [
 
 // 表单页脚
 const FormFooter = () => {
-  const { initFormValue } = HeaderStore()
+  const { initFormValue, btnStatus } = HeaderStore()
   const cancel = React.useCallback(() => {
     initFormValue()
   }, [initFormValue])
@@ -142,7 +138,7 @@ const FormFooter = () => {
       </Button>
       <Button
         className={StyleSheet.Btn}
-        // disabled={btnStatus}
+        disabled={btnStatus}
         key='submit'
         type='primary'
         // onClick={getCollect}
@@ -284,7 +280,7 @@ const ProcessorFormMemo = React.memo(ProcessorForm)
 // 数据处理器
 const DataHandlerForm = () => {
   const [form] = Form.useForm()
-  const { optionalParameters } = HeaderStore()
+  const { optionalParameters, messageInfoFn } = HeaderStore()
   const { name, port } = optionalParameters
   const portList = publicAttributes(state => state.portList)
   return (
@@ -299,10 +295,20 @@ const DataHandlerForm = () => {
           help={name?.errorMsg}
           validateStatus={name?.validateStatus}
         >
-          <Input value={name?.value} placeholder='请输入数据处理器名称' />
+          <Input
+            value={name?.value}
+            placeholder='请输入数据处理器名称'
+            onBlur={e => {
+              messageInfoFn('name', e.target.value)
+            }}
+          />
         </Form.Item>
         <Form.Item name='port' label='端口' required hasFeedback help={port?.errorMsg} validateStatus={port?.validateStatus}>
-          <Select getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement} placeholder='请选择端口'>
+          <Select
+            onChange={e => messageInfoFn('port', e)}
+            getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
+            placeholder='请选择端口'
+          >
             {
               /**
                * 下拉选择端口
@@ -327,7 +333,7 @@ const DataHandlerFormMemo = React.memo(DataHandlerForm)
 // 添加定时器 完全体
 const TimeForm = () => {
   const [form] = Form.useForm()
-  const { optionalParameters } = HeaderStore()
+  const { optionalParameters, messageInfoFn } = HeaderStore()
   const { name, period, interrupt } = optionalParameters
   return (
     <div className={StyleSheet.ProcessorFormBody}>
@@ -341,13 +347,32 @@ const TimeForm = () => {
           help={name?.errorMsg}
           validateStatus={name?.validateStatus}
         >
-          <Input placeholder='请输入定时器名称' value={name?.value} />
+          <Input
+            placeholder='请输入定时器名称'
+            value={name?.value}
+            onBlur={e => {
+              messageInfoFn('name', e.target.value)
+            }}
+          />
         </Form.Item>
         <Form.Item label='间隔' hasFeedback required name='period' validateStatus={period?.validateStatus} help={period?.errorMsg}>
-          <Input placeholder='请输入间隔' suffix='微秒' value={period?.value} />
+          <Input
+            placeholder='请输入间隔'
+            suffix='微秒'
+            value={period?.value}
+            onBlur={e => {
+              messageInfoFn('period', e.target.value)
+            }}
+          />
         </Form.Item>
         <Form.Item label='中断号' hasFeedback required name='interrupt' validateStatus={interrupt?.validateStatus} help={interrupt?.errorMsg}>
-          <Input placeholder='请输入中断号' value={interrupt?.value} />
+          <Input
+            placeholder='请输入中断号'
+            value={interrupt?.value}
+            onBlur={e => {
+              messageInfoFn('interrupt', e.target.value)
+            }}
+          />
         </Form.Item>
       </Form>
     </div>
@@ -361,10 +386,18 @@ const TabsBarForm = {
   handlerData: <DataHandlerFormMemo />,
   timer: <TimeFormMemo />
 }
-
+const positionMap = {
+  customPeripheral: '0px',
+  register: '95px',
+  handlerData: '205px',
+  timer: '340px'
+}
 function ModelingMiddleHeaderMemo({ tabs }: { tabs: string }) {
+  const leftposition = useMemo(() => {
+    return positionMap[tabs as keyof typeof positionMap]
+  }, [tabs])
   return (
-    <div className={StyleSheet.moddleMiddleHeaderBody} key={tabs}>
+    <div className={StyleSheet.moddleMiddleHeaderBody} style={{ left: leftposition }} key={tabs}>
       {TabsBarForm[tabs as keyof typeof TabsBarForm]}
       <FormFooterMemo />
     </div>
@@ -380,7 +413,10 @@ const HeaderBarMemo = () => {
   const { getMarkDown } = vieMarkDown()
 
   const showOrHide = React.useCallback(
-    (val: string) => {
+    (e, val: string) => {
+      const mouseX = e.clientX
+      const mouseY = e.clientY
+      console.log(mouseX, mouseY)
       setHeaderTabs(val)
     },
     [setHeaderTabs]
@@ -424,8 +460,8 @@ const HeaderBarMemo = () => {
             <div
               key={item.tabs}
               role='time'
-              onClick={() => {
-                showOrHide(item.tabs)
+              onClick={e => {
+                showOrHide(e, item.tabs)
               }}
               className={headerTabs === item.tabs ? StyleSheet.middleLeftSelectHeaderBarItem : StyleSheet.middleLeftHeaderBarItem}
               style={item.style}

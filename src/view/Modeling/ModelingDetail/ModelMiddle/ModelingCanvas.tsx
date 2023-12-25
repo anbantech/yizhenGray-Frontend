@@ -30,7 +30,7 @@ import CustomRegisterNode from '../../ModelingMaterials/CustomRegisterNode'
 import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
 
 import { AttributesType, titleFlagMap } from '../../Store/MapStore'
-import { formItemParamsCheckStore, publicAttributes, useLeftModelDetailsStore } from '../../Store/ModelStore'
+import { formItemParamsCheckStore, useLeftModelDetailsStore } from '../../Store/ModelStore'
 
 import { getModelListDetails } from '../ModelingRight/ModelingRightCompoents'
 import CustomControls from '../../ModelingMaterials/CustomControls'
@@ -322,11 +322,8 @@ function ReactFlowWrapper() {
   const getModelDetails = MiddleStore(state => state.getModelDetails)
   const nodeStore = MiddleStore(state => state.nodes)
   const edgeStore = MiddleStore(state => state.edges)
-  const setPortList = publicAttributes(state => state.setPortList)
-
   useEffect(() => {
     if (platformsIdmemo) {
-      setPortList()
       getModelDetails(platformsIdmemo)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
