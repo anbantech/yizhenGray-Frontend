@@ -1,12 +1,12 @@
 import { Checkbox, Form, Input, Select, Tag } from 'antd'
 import React, { useMemo } from 'react'
+import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
 import TextArea from 'antd/lib/input/TextArea'
+import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import StyleSheet from './ModelingRight.less'
 import { LeftAndRightStore } from '../../Store/ModelLeftAndRight/leftAndRightStore'
 import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
 import { publicAttributes } from '../../Store/ModelStore'
-import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
-import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import { valueParams } from '../../Store/ModleStore'
 
 const { Option } = Select
@@ -68,19 +68,30 @@ const TargetComponents: React.FC = () => {
   )
 }
 
+// todo 更新属性代做
 const PeripheralComponents: React.FC = () => {
   const [form] = Form.useForm()
   const { PERIPHERAL_TYPE } = getSystemConstantsStore()
   const rightPeripheral = LeftAndRightStore(state => state.rightPeripheral)
-  const { name, base_address, kind, address_length, desc } = rightPeripheral
+  const { name, base_address, kind, address_length, desc, variety } = rightPeripheral
+
+  const disabledVariety = React.useMemo(() => {
+    return Boolean(variety)
+  }, [variety])
+
   return (
     <div className={StyleSheet.rightFromCommonStyle} style={{ padding: '8px 16px' }}>
       <Form form={form} layout='vertical' id='area'>
         <Form.Item label='外设名称' help={name.errorMsg} hasFeedback validateStatus={name.validateStatus}>
-          <Input style={{ borderRadius: '4px' }} placeholder='外设名称' value={name?.value} />
+          <Input disabled={disabledVariety} style={{ borderRadius: '4px' }} placeholder='外设名称' value={name?.value} />
         </Form.Item>
         <Form.Item label='类型'>
-          <Select value={kind.value} getPopupContainer={() => document.querySelector('#area') as HTMLElement} placeholder='请选择类型'>
+          <Select
+            value={kind.value}
+            disabled={disabledVariety}
+            getPopupContainer={() => document.querySelector('#area') as HTMLElement}
+            placeholder='请选择类型'
+          >
             {PERIPHERAL_TYPE?.map((rate: any) => {
               return (
                 <Option key={rate.value} value={rate.value}>
@@ -91,16 +102,16 @@ const PeripheralComponents: React.FC = () => {
           </Select>
         </Form.Item>
         <Form.Item label='基地址' help={base_address.errorMsg} hasFeedback validateStatus={base_address.validateStatus}>
-          <Input prefix='0x' value={base_address?.value} />
+          <Input prefix='0x' disabled={disabledVariety} value={base_address?.value} />
         </Form.Item>
         <Form.Item label='地址大小' help={address_length.errorMsg} hasFeedback validateStatus={address_length.validateStatus}>
-          <Input placeholder='请输入基地址大小' prefix='0x' suffix='字节' value={address_length?.value} />
+          <Input placeholder='请输入基地址大小' disabled={disabledVariety} prefix='0x' suffix='字节' value={address_length?.value} />
         </Form.Item>
         <Form.Item label='描述'>
           <TextArea
-            // placeholder={disabledStatus ? '-' : '请输入描述'}
-            // value={desc.desc.value}
-            // disabled={desc}
+            placeholder={disabledVariety ? '-' : '请输入描述'}
+            value={desc.value}
+            disabled={disabledVariety}
             showCount={{
               formatter({ count }) {
                 return `${count}/50`
@@ -115,7 +126,7 @@ const PeripheralComponents: React.FC = () => {
 
 const RegisterComponents: React.FC = () => {
   const [form] = Form.useForm()
-  const { rightDataRegister } = LeftAndRightStore()
+  const { rightDataRegister, onChangeFn, updateFn } = LeftAndRightStore()
   const {
     peripheral_id,
     peripheral,
@@ -130,21 +141,35 @@ const RegisterComponents: React.FC = () => {
     restore_cmd,
     restore_value
   } = rightDataRegister
+  const { headerBarList } = LeftListStore()
   const { REGISTER_CMD } = getSystemConstantsStore()
+
+  const peripheralList = useMemo(() => {
+    return [peripheral.value]
+  }, [peripheral])
 
   const isKind = useMemo(() => {
     return kind.value === 0
   }, [kind])
 
-  const SelectBefore = () => {
+  const onBlurFn = (status: string | undefined, type: string) => {
+    if (status === 'error') return
+    updateFn(type)
+  }
+
+  const SelectBefore = (props: { type: string; values: string | undefined }) => {
+    const { type, values } = props
     return (
       <Select
         getPopupContainer={() => document.querySelector('#area') as HTMLElement}
         showArrow
         showSearch={Boolean(0)}
         allowClear
-        // value={values}
+        value={values}
         style={{ width: 70, height: 30 }}
+        onChange={(value: string) => {
+          onChangeFn('rightDataRegister', type, value)
+        }}
       >
         {REGISTER_CMD?.map(rate => {
           return (
@@ -165,24 +190,43 @@ const RegisterComponents: React.FC = () => {
             <Select
               placeholder='请选择所属外设'
               showSearch={Boolean(0)}
+              disabled
               getPopupContainer={() => document.querySelector('#area') as HTMLElement}
               style={{ borderRadius: '4px' }}
-              value={peripheral_id.value}
+              value={peripheral_id?.value}
             >
-              {/* {isBoardLevePeripherals?.map((rate: any) => {
+              {peripheralList?.map((rate: any) => {
                 return (
                   <Option key={rate?.id} value={rate?.id}>
                     {rate?.name}
                   </Option>
                 )
-              })} */}
+              })}
             </Select>
           </Form.Item>
           <Form.Item label='寄存器名称' help={name.errorMsg} hasFeedback validateStatus={name.validateStatus}>
-            <Input style={{ borderRadius: '4px' }} value={name.value} />
+            <Input
+              style={{ borderRadius: '4px' }}
+              value={name?.value}
+              onChange={e => {
+                onChangeFn('rightDataRegister', 'name', e.target.value)
+              }}
+              onBlur={() => {
+                onBlurFn(name.validateStatus, 'rightDataRegister')
+              }}
+            />
           </Form.Item>
           <Form.Item label='偏移地址' help={relative_address.errorMsg} hasFeedback validateStatus={relative_address.validateStatus}>
-            <Input prefix='0x' value={relative_address.value} />
+            <Input
+              prefix='0x'
+              value={relative_address?.value}
+              onChange={e => {
+                onChangeFn('rightDataRegister', 'relative_address', e.target.value)
+              }}
+              onBlur={() => {
+                onBlurFn(relative_address.validateStatus, 'rightDataRegister')
+              }}
+            />
           </Form.Item>
           <Form.Item label='初始化完成'>
             <Select style={{ borderRadius: '4px' }} showSearch={Boolean(0)} value={finish.value}>
@@ -206,8 +250,8 @@ const RegisterComponents: React.FC = () => {
               getPopupContainer={() => document.querySelector('#area') as HTMLElement}
               style={{ borderRadius: '4px' }}
               value={kind.value}
-              onChange={value => {
-                console.log('1')
+              onChange={e => {
+                onChangeFn('rightDataRegister', 'kind', e)
               }}
             >
               {isStatusRegister?.map((rate: any) => {
@@ -233,13 +277,13 @@ const RegisterComponents: React.FC = () => {
                 value={sr_peri_id.value}
                 placeholder='请选择关联状态寄存器所属外设'
               >
-                {/* {AllPeripheralList?.map((rate: any) => {
+                {headerBarList?.map((rate: any) => {
                   return (
                     <Option key={rate?.id} value={rate?.id}>
                       {rate?.name}
                     </Option>
                   )
-                })} */}
+                })}
               </Select>
             </Form.Item>
             <Form.Item label='关联状态寄存器'>
@@ -272,8 +316,8 @@ const RegisterComponents: React.FC = () => {
               <Form.Item help={set_value.errorMsg} hasFeedback validateStatus={set_value.validateStatus}>
                 <Input
                   prefix='0x'
-                  addonBefore={<SelectBefore title='寄存器' type='set_cmd' values={set_cmd.value as string} fn={updateOnceFormValue} />}
-                  value={set_value.value}
+                  style={{ borderRadius: 4 }}
+                  addonBefore={<SelectBefore type='restore_cmd' values={restore_cmd.value as string} />}
                 />
               </Form.Item>
             </div>
@@ -288,8 +332,8 @@ const RegisterComponents: React.FC = () => {
                 <Input
                   prefix='0x'
                   style={{ borderRadius: 4 }}
-                  addonBefore={<SelectBefore title='寄存器' type='restore_cmd' values={restore_cmd.value as string} fn={updateOnceFormValue} />}
-                  value={restore_value.value}
+                  addonBefore={<SelectBefore type='restore_value' values={restore_value.value as string} />}
+                  value={restore_value?.value}
                 />
               </Form.Item>
             </div>

@@ -23,9 +23,9 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
   const [autoExpandParent, setAutoExpandParent] = useState(true)
   const { updateTreeNodeData } = LeftListStore()
   // loading 骨架屏
-  const { loading, treeNodeData } = LeftListStore()
+  const { loading, treeNodeData, getAllList } = LeftListStore()
   // 设置选中节点,以及flag
-  const { setSelect } = LeftAndRightStore()
+  const { setSelect, selectLeftId } = LeftAndRightStore()
   // 树节点 筛选结果
   const onExpand = React.useCallback(
     (newExpandedKeys: React.Key[]) => {
@@ -36,10 +36,16 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
     [updateTreeNodeData]
   )
 
-  const updataMidleAndRightUI = useCallback((selectedKeys, e) => {
-    const { flag, id } = e.node
-    setSelect(id, flag)
-  }, [])
+  const updataMidleAndRightUI = useCallback(
+    (selectedKeys, e) => {
+      const { flag, id } = e.node
+      setSelect(id, flag)
+      if (flag === 2) {
+        getAllList()
+      }
+    },
+    [getAllList, setSelect]
+  )
 
   // const deleteTreeNodeHandle = React.useCallback(
   //   (e, node) => {
@@ -66,7 +72,7 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
             onExpand={onExpand}
             onSelect={updataMidleAndRightUI}
             autoExpandParent={autoExpandParent}
-            // selectedKeys={[`${foucusNodeId}`]}
+            selectedKeys={[`${selectLeftId}`]}
             expandedKeys={[...treeNodeData]}
             height={height}
             titleRender={(node: any) => {

@@ -17,12 +17,15 @@ function ModelDetailsIndex() {
   const setPlatFormId = LeftAndRightStore(state => state.setPlatFormId)
   // 首页获取目标机详情
   const getModelListDetails = LeftListStore(state => state.getModelListDetails)
+  // 首次加载自定义外设列表
+  const getList = LeftListStore(state => state.getList)
   const setPortList = publicAttributes(state => state.setPortList)
 
   React.useEffect(() => {
     if (platformsId) {
       setPortList()
       setPlatFormId(platformsId)
+      getList('customPeripheral')
       getModelListDetails(platformsId)
     }
     return () => {}

@@ -591,7 +591,7 @@ export interface ExcitationListParams {
 }
 
 export interface CustomMadePeripheralListParams {
-  variety: string
+  variety?: string
   platform_id: number
   tag: string
   key_word?: string

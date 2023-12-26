@@ -136,6 +136,7 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
       return error
     }
   },
+
   // 获取外设列表
   getPeripheralList: async variety => {
     const { platform_id } = LeftAndRightStore.getState()
@@ -162,6 +163,7 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
       return error
     }
   },
+
   //  获取定时器列表或者数据处理器列表 切换tabs 一定要重置请求参数
   getTimerListAndDataHandlerList: async tabs => {
     const { timerAndHandData, setHasMore } = get()
@@ -212,6 +214,32 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
         break
       default:
         break
+    }
+  },
+
+  // 获取全部外设列表
+  getAllList: async () => {
+    const { platform_id } = LeftAndRightStore.getState()
+    try {
+      let res: any
+      if (platform_id) {
+        res = await getCustomMadePeripheralList({
+          platform_id,
+          tag: '1', // 0 全部 1 外设 2 寄存器 3 已用数据处理器
+          key_word: '',
+          page: 1,
+          page_size: 99999,
+          sort_field: 'create_time',
+          sort_order: 'descend'
+        })
+      }
+      if (res.data) {
+        set({ headerBarList: [...res.data.results] })
+      }
+      return res
+    } catch (error) {
+      throwErrorMessage(error, { 1006: '参数错误' })
+      return error
     }
   },
   // 初始化列表请求参数

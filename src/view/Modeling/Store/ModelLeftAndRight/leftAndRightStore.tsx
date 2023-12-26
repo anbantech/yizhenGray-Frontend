@@ -209,15 +209,16 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
         break
     }
   },
-  // 收集信息 校验函数 根据keys 选择不同函数进行校验 返回 {errorMsg validateStatus value}
 
-  messageInfoFn: (type, keys, value) => {
-    let validation
-    if (keys === 'name') {
-      validation = new ToolBox(value as string, true, keys).validate()
-    } else {
-      validation = new ToolBox(value as string, false, keys).validate()
-    }
+  // 收集信息 校验函数 根据keys 选择不同函数进行校验 返回 {errorMsg validateStatus value}
+  updateFn: type => {
+    const { rightDataHandler, rightTargetDetail, rightTimer, rightDataRegister } = get()
+    const infoMap = { rightDataHandler, rightTargetDetail, rightTimer, rightDataRegister }
+    console.log(infoMap[type as keyof typeof infoMap])
+  },
+  // 输入过程中进行校验
+  onChangeFn: (type, keys, value) => {
+    const validation = new ToolBox(value as string, true, keys).validate()
     const { message, status } = validation
     set(state =>
       produce(state, draft => {
@@ -228,9 +229,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
       })
     )
   },
-
   // 更新外设信息
-
   // 更新数据处理器信息
 
   // 更新寄存器信息

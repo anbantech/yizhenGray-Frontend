@@ -7,6 +7,7 @@ import StyleSheet from './modelLeft.less'
 import { useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { errorCodeMapFn } from '../../Store/MapStore'
 import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
+import { LeftAndRightStore } from '../../Store/ModelLeftAndRight/leftAndRightStore'
 
 const Image = {
   3: <IconCommon style={{ width: '16px', height: '16px', color: '#CCCCCC' }} />,
@@ -18,15 +19,21 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
   const hasMoreData = LeftListStore(state => state.hasMoreData)
   const timerAndHandData = LeftListStore(state => state.timerAndHandData)
   const getList = LeftListStore(state => state.getList)
+  // 设置选中节点,以及flag
+  const { setSelect, selectLeftId } = LeftAndRightStore()
   const loadMoreData = React.useCallback(() => {
     const newPage = timerAndHandData.page_size + 10
     getList({ ...timerAndHandData, page_size: newPage }, '')
   }, [getList, timerAndHandData])
 
-  const SelectionNode = useCallback(item => {
-    const { flag, id } = item
-    console.log(flag, id)
-  }, [])
+  const updataMidleAndRightUI = useCallback(
+    (selectedKeys, e) => {
+      const { flag, id } = e.node
+      setSelect(id, flag)
+    },
+    [setSelect]
+  )
+
   // todo 画布不影响左侧列表,左侧列表影响画布
   const deleteTreeNodeHandle = React.useCallback(
     (e, node) => {
@@ -62,14 +69,14 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
           return (
             <div
               key={item.id}
-              className={String(item.id) === String(11) ? StyleSheet.activeTagItem : StyleSheet.tagItem}
+              className={String(item.id) === String(selectLeftId) ? StyleSheet.activeTagItem : StyleSheet.tagItem}
               style={{ paddingRight: '4px' }}
             >
               <div
                 className={StyleSheet.leftTagItem}
                 role='time'
-                onClick={() => {
-                  SelectionNode(item)
+                onClick={e => {
+                  updataMidleAndRightUI(e, item)
                 }}
               >
                 {Image[item.flag as keyof typeof Image]}

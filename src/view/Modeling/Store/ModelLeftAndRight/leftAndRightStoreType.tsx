@@ -80,7 +80,8 @@ export interface RightStoreTypes {
     baseData: RightDataHandlerType | RightRegisterType | RightPeripheralType | TimerType | RightTargetType,
     data: any
   ) => void
-  messageInfoFn: (type: string, keys: string, value: string | string[] | undefined | number[]) => void
+  updateFn: (type: string) => void
+  onChangeFn: (type: string, keys: string, value: string | string[] | undefined | number[] | number | undefined) => void
 }
 
 export interface LeftStoreTypes {

@@ -102,8 +102,8 @@ export default class ToolBox {
         return this.checkHex()
       case 'base_address':
         return this.checkHex()
-      // case 'address_length':
-      //   return this.checkHex()
+      case 'relative_address':
+        return this.checkHex()
       // case 'address_length':
       //   return this.checkHex()
       case 'period':

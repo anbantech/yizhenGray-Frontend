@@ -56,6 +56,8 @@ export interface LeftListStoreType {
   getList: (tabs: string) => void
   // 获取外设列表
   getPeripheralList: (variety: string) => void
+  // 获取全部外设列表
+  getAllList: () => void
   // 清除列表请求数据
   initStore: () => void
 }
