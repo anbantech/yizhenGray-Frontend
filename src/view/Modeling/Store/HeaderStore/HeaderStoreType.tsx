@@ -1,3 +1,4 @@
+import { newPeripheralsParams, newSetDataHanderParams, newSetRegisterParams, newSetTimerParams } from 'Src/globalType/Param'
 import { BaseErrorType } from '../ModelLeftAndRight/leftAndRightStoreType'
 
 export type optionalParametersType = {
@@ -17,9 +18,18 @@ export type optionalParametersType = {
 export interface HeaderStoreType {
   headerTabs: null | string
   btnStatus: boolean
+  params: any
+  loading: boolean
+  toggle: () => void
   optionalParameters: optionalParametersType
   setHeaderTabs: (val: string | null) => void
   initFormValue: () => void
-  messageInfoFn: (keys: string, value: string | string[] | undefined | number[]) => void
+  onChangeFn: (keys: string, value: string | string[] | undefined | number[] | number) => void
+  messageInfoFn: () => void
   getTabsFromData: () => void
+  createTimer: (params: newSetTimerParams, tabs: string) => void
+  createDataHander: (params: newSetDataHanderParams, tabs: string) => void
+  createRegister: (params: newSetRegisterParams) => void
+  createPeripheral: (params: newPeripheralsParams, tabs: string) => void
+  createCustomNode: (tabs: string, params: any) => void
 }

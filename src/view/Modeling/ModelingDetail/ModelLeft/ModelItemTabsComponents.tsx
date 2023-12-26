@@ -12,11 +12,11 @@ const TabsCompoents = (props: Tabs) => {
   const { keys, title, tabs } = props
   // 在左侧侧边栏文件中默认加载请求自定义外设tabs
   // 侧边栏数量逻辑
-  const { customPeripheralNums, boardPeripheralNums, timerNums, handlerDataNums, setTabs, getList, initStore } = LeftListStore()
+  const { customPeripheralNums, boardPeripheralNums, timerNums, handlerDataNums, getList, initStore } = LeftListStore()
   const veryTabsKindNums = React.useMemo(() => {
     const NumsObj = {
       customPeripheral: customPeripheralNums,
-      boardLevelPeripherals: boardPeripheralNums,
+      boardPeripheral: boardPeripheralNums,
       handlerData: handlerDataNums,
       timer: timerNums
     }
@@ -32,10 +32,9 @@ const TabsCompoents = (props: Tabs) => {
     (keys: string) => {
       if (tabs === keys) return
       initStore()
-      setTabs(keys)
       getList(keys)
     },
-    [tabs, initStore, setTabs, getList]
+    [tabs, initStore, getList]
   )
 
   return (
@@ -57,7 +56,7 @@ function ModelLeftHeaderLeft() {
   const tabs = LeftListStore(state => state.tabs)
   const CompoentsTitle = {
     customPeripheral: '自定义外设',
-    boardLevelPeripherals: '板级外设',
+    boardPeripheral: '板级外设',
     handlerData: '数据处理器',
     timer: '定时器'
   }

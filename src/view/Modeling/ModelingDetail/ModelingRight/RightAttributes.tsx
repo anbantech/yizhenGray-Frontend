@@ -49,7 +49,8 @@ const isFinish = [
 const TargetComponents: React.FC = () => {
   const [form] = Form.useForm()
   const TargetDetail = LeftAndRightStore(state => state.rightTargetDetail)
-  const { name, rightDataHandler, desc } = TargetDetail
+  const { name, processor, desc } = TargetDetail
+
   return (
     <div style={{ padding: '8px 16px' }} className={StyleSheet.rightFromCommonStyle}>
       <Form form={form} layout='vertical'>
@@ -57,7 +58,7 @@ const TargetComponents: React.FC = () => {
           <Input disabled value={name.value} />
         </Form.Item>
         <Form.Item label='处理器类型'>
-          <Input disabled value={rightDataHandler?.value} />
+          <Input disabled value={processor?.value} />
         </Form.Item>
         <Form.Item label='描述'>
           <TextArea disabled value={desc?.value} autoSize={{ minRows: 3, maxRows: 4 }} />
@@ -70,15 +71,16 @@ const TargetComponents: React.FC = () => {
 const PeripheralComponents: React.FC = () => {
   const [form] = Form.useForm()
   const { PERIPHERAL_TYPE } = getSystemConstantsStore()
-
+  const rightPeripheral = LeftAndRightStore(state => state.rightPeripheral)
+  const { name, base_address, kind, address_length, desc } = rightPeripheral
   return (
     <div className={StyleSheet.rightFromCommonStyle} style={{ padding: '8px 16px' }}>
       <Form form={form} layout='vertical' id='area'>
-        <Form.Item label='外设名称'>
-          <Input style={{ borderRadius: '4px' }} placeholder='外设名称' />
+        <Form.Item label='外设名称' help={name.errorMsg} hasFeedback validateStatus={name.validateStatus}>
+          <Input style={{ borderRadius: '4px' }} placeholder='外设名称' value={name?.value} />
         </Form.Item>
         <Form.Item label='类型'>
-          <Select getPopupContainer={() => document.querySelector('#area') as HTMLElement} placeholder='请选择类型'>
+          <Select value={kind.value} getPopupContainer={() => document.querySelector('#area') as HTMLElement} placeholder='请选择类型'>
             {PERIPHERAL_TYPE?.map((rate: any) => {
               return (
                 <Option key={rate.value} value={rate.value}>
@@ -89,16 +91,16 @@ const PeripheralComponents: React.FC = () => {
           </Select>
         </Form.Item>
         <Form.Item label='基地址' help={base_address.errorMsg} hasFeedback validateStatus={base_address.validateStatus}>
-          <Input prefix='0x' />
+          <Input prefix='0x' value={base_address?.value} />
         </Form.Item>
         <Form.Item label='地址大小' help={address_length.errorMsg} hasFeedback validateStatus={address_length.validateStatus}>
-          <Input placeholder='请输入基地址大小' prefix='0x' suffix='字节' />
+          <Input placeholder='请输入基地址大小' prefix='0x' suffix='字节' value={address_length?.value} />
         </Form.Item>
         <Form.Item label='描述'>
           <TextArea
             // placeholder={disabledStatus ? '-' : '请输入描述'}
-            // value={peripheral.desc.value}
-            // disabled={disabledStatus}
+            // value={desc.desc.value}
+            // disabled={desc}
             showCount={{
               formatter({ count }) {
                 return `${count}/50`

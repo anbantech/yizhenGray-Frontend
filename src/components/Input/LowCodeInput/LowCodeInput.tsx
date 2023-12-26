@@ -32,7 +32,6 @@ const ClearSuffix = React.memo(function ClearSuffix(isShowProp: {
   const clearInputValue = () => {
     onChangeValue('')
   }
-
   const changeImageShow = useMemo(() => {
     return length ? length > 0 : false
   }, [length])

@@ -87,6 +87,6 @@ export interface LeftStoreTypes {
   platform_id: null | number
   flag: number
   selectLeftId: null | number
-  setSelect: (id: number) => void
+  setSelect: (id: number, flag: number) => void
   setPlatFormId: (id: number) => void
 }

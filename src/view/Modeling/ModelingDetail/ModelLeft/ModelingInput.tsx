@@ -2,21 +2,20 @@ import { useRequest } from 'ahooks-v2'
 import { message, Radio } from 'antd'
 import * as React from 'react'
 import LowCodeInput from 'Src/components/Input/LowCodeInput/LowCodeInput'
-import { useLeftModelDetailsStore } from '../../Store/ModelStore'
 import StyleSheet from './modelLeft.less'
 import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
 
 function ModelingInputMemo() {
   const { timerAndHandData, tabs, updateTagOrKeyWord, getList } = LeftListStore()
-  const cusomMadePeripheralListParams = useLeftModelDetailsStore(state => state.cusomMadePeripheralListParams)
+  const customAndDefaultPeripheral = LeftListStore(state => state.customAndDefaultPeripheral)
   const ref = React.useRef<any>()
   const whichOneParams = React.useMemo(() => {
-    return ['customMadePeripheral', 'boardPeripheral'].includes(tabs) ? {} : timerAndHandData
-  }, [tabs, timerAndHandData])
+    return ['customPeripheral', 'boardPeripheral'].includes(tabs) ? customAndDefaultPeripheral : timerAndHandData
+  }, [customAndDefaultPeripheral, tabs, timerAndHandData])
 
   const setKeyWords = React.useCallback(
     async (val: string) => {
-      updateTagOrKeyWord(val, 'key_word', ['customMadePeripheral', 'boardPeripheral'].includes(tabs))
+      updateTagOrKeyWord(val, 'key_word', ['customPeripheral', 'boardPeripheral'].includes(tabs))
       await getList(tabs)
     },
     [getList, tabs, updateTagOrKeyWord]
@@ -24,10 +23,10 @@ function ModelingInputMemo() {
 
   const updateParams = React.useCallback(
     async (val: string) => {
-      updateTagOrKeyWord(val, 'tag', ['customMadePeripheral', 'boardPeripheral'].includes(tabs))
-      // todo
+      updateTagOrKeyWord(val, 'tag', ['customPeripheral', 'boardPeripheral'].includes(tabs))
+      await getList(tabs)
     },
-    [tabs, updateTagOrKeyWord]
+    [getList, tabs, updateTagOrKeyWord]
   )
 
   const { run } = useRequest(updateParams, {
@@ -39,9 +38,9 @@ function ModelingInputMemo() {
   })
 
   const showTabs = React.useMemo(() => {
-    const result = ['customMadePeripheral', 'boardLevelPeripherals'].includes(tabs) && cusomMadePeripheralListParams.key_word
+    const result = ['customPeripheral', 'boardPeripheral'].includes(tabs) && customAndDefaultPeripheral.key_word
     return result
-  }, [tabs, cusomMadePeripheralListParams])
+  }, [tabs, customAndDefaultPeripheral])
 
   return (
     <div className={StyleSheet.ModelingBodyInput}>
@@ -49,7 +48,7 @@ function ModelingInputMemo() {
       {showTabs && (
         <>
           <Radio.Group
-            defaultValue={cusomMadePeripheralListParams.tag}
+            defaultValue={customAndDefaultPeripheral.tag}
             className={StyleSheet.radioGroup}
             onChange={e => {
               run(e.target.value)

@@ -14,21 +14,20 @@ function ModelDetailsIndex() {
   const open = vieMarkDown(state => state.open)
   const markDown = vieMarkDown(state => state.markDown)
   const platformsId = (useLocation() as LoactionState).state?.id
-  const platformsIdmemo = React.useMemo(() => platformsId, [platformsId])
   const setPlatFormId = LeftAndRightStore(state => state.setPlatFormId)
   // 首页获取目标机详情
   const getModelListDetails = LeftListStore(state => state.getModelListDetails)
   const setPortList = publicAttributes(state => state.setPortList)
 
   React.useEffect(() => {
-    if (platformsIdmemo) {
-      setPlatFormId(platformsIdmemo)
+    if (platformsId) {
       setPortList()
-      getModelListDetails(platformsIdmemo)
+      setPlatFormId(platformsId)
+      getModelListDetails(platformsId)
     }
     return () => {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [platformsIdmemo])
+  }, [platformsId])
 
   return (
     <div className={StyleSheet.ModelDetailsBody}>

@@ -119,25 +119,16 @@ function TImerAndDataHand() {
   // 动态设置虚拟列表高度
   const [height, setHeight] = React.useState(0)
   const layoutRef = useRef<any>()
-  const tabs = useLeftModelDetailsStore(state => state.tabs)
-  const setParams = useLeftModelDetailsStore(state => state.setParams)
-  const timerList = useLeftModelDetailsStore(state => state.timerList)
-
-  const map = {
-    time: timerList
-  }
-
-  const updatePage = React.useCallback(() => {
-    setParams(tabs, { page_size: 50 })
-  }, [setParams, tabs])
-
+  const { tabsList, tabs } = LeftListStore()
+  const listData = React.useMemo(() => {
+    console.log(tabsList)
+    return tabsList
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tabsList, tabs])
   useEffect(() => {
     const resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
         const { height } = entry.contentRect
-        if (height >= 700) {
-          updatePage()
-        }
         setHeight(height)
       }
     })
@@ -154,7 +145,7 @@ function TImerAndDataHand() {
 
   return (
     <div style={{ padding: '0 12px' }} ref={layoutRef} className={StyleSheet.concentBody}>
-      <OthersCompoents listData={map[tabs as keyof typeof map]} height={height} />
+      <OthersCompoents listData={listData} height={height} />
     </div>
   )
 }

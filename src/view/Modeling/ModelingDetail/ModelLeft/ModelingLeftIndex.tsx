@@ -16,7 +16,7 @@ function ModelingLeftIndex() {
     <div className={StyleSheet.ModelingLeftBody} role='time'>
       <ModelLeftHeaderLeftMemo />
       <ModelingInput />
-      {['customMadePeripheral', 'boardPeripheral'].includes(tabs) ? <ModelingLeftTabList /> : <TImerAndDataHand />}
+      {['customPeripheral', 'boardPeripheral'].includes(tabs) ? <ModelingLeftTabList /> : <TImerAndDataHand />}
     </div>
   )
 }

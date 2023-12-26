@@ -1,6 +1,7 @@
 /* eslint-disable unicorn/prefer-query-selector */
 import React, { useMemo } from 'react'
 import { Button, Form, Input, Select, Tooltip, message } from 'antd'
+import { useRequest } from 'ahooks-v2'
 import TextArea from 'antd/lib/input/TextArea'
 import { IconPeripheral, IconYifuRegister, IconClock, IconCommon, IconDownload, IconFileText, IconEye } from '@anban/iconfonts'
 import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
@@ -9,8 +10,9 @@ import { throwErrorMessage } from 'Src/util/message'
 import { warn } from 'Src/util/common'
 import StyleSheet from './modelMiddle.less'
 import { HeaderStore } from '../../Store/HeaderStore/HeaderStore'
-import { LeftAndRightStore, leftAndRightMap } from '../../Store/ModelLeftAndRight/leftAndRightStore'
 import { publicAttributes, vieMarkDown } from '../../Store/ModelStore'
+import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
+import { LeftAndRightStore } from '../../Store/ModelLeftAndRight/leftAndRightStore'
 
 const browserDownload = {
   ifHasDownloadAPI: 'download' in document.createElement('a'),
@@ -81,55 +83,18 @@ const RightHeaderBarArray = [
 
 // 表单页脚
 const FormFooter = () => {
-  const { initFormValue, btnStatus } = HeaderStore()
+  const { initFormValue, btnStatus, params, headerTabs, createCustomNode, loading, toggle } = HeaderStore()
+  const { platform_id } = LeftAndRightStore.getState()
+
   const cancel = React.useCallback(() => {
     initFormValue()
   }, [initFormValue])
 
-  // const getCollect = React.useCallback(() => {
-  //   const { name, base_address, desc, interrupt, address_length, period, peripheral_id, port, relative_address, kind } = optionalParameters
-  //   const periperalParams = {
-  //     platform_id: platformsIdmemo,
-  //     name: name?.value,
-  //     kind: kind?.value,
-  //     desc: desc?.value,
-  //     address_length: (address_length?.value as string)?.trim().length % 2 === 0 ? address_length?.value : `0${address_length?.value}`,
-  //     base_address: (base_address?.value as string)?.trim().length % 2 === 0 ? base_address?.value : `0${base_address?.value}`
-  //   }
-
-  //   const timerParams = {
-  //     platform_id: platformsIdmemo,
-  //     name: name?.value,
-  //     period: period?.value,
-  //     interrupt: interrupt?.value
-  //   }
-
-  //   const dataHandParams = {
-  //     platform_id: platformsIdmemo,
-  //     name: name?.value,
-  //     port: port?.value
-  //   }
-  //   // 0 状态寄存器 1 非状态寄存器
-  //   const ProcessorParams = {
-  //     platform_id: platformsIdmemo,
-  //     name: name?.value,
-  //     peripheral_id: peripheral_id?.value,
-  //     kind: 1,
-  //     relative_address: (relative_address?.value as string)?.trim().length % 2 === 0 ? relative_address?.value : `0${relative_address?.value}`
-  //   }
-
-  //   const mapParams = {
-  //     customMadePeripheral: periperalParams,
-  //     processor: ProcessorParams,
-  //     time: timerParams,
-  //     dataHandlerNotReferenced: dataHandParams
-  //   }
-
-  //   const info = mapParams[Tabs as keyof typeof mapParams]
-  //   // openSiderMenu(Tabs)
-
-  //   createElement(Tabs, info, getModelListDetails, platformsIdmemo, cancel, rightAttributeMap)
-  // }, [optionalParameters, platformsIdmemo, Tabs, createElement, getModelListDetails, cancel, rightAttributeMap])
+  const getCollect = React.useCallback(() => {
+    toggle()
+    const paramsAndId = { ...params, platform_id }
+    createCustomNode(headerTabs as string, paramsAndId)
+  }, [createCustomNode, headerTabs, params, platform_id, toggle])
 
   return (
     <div className={StyleSheet.formFooter}>
@@ -141,7 +106,8 @@ const FormFooter = () => {
         disabled={btnStatus}
         key='submit'
         type='primary'
-        // onClick={getCollect}
+        loading={loading}
+        onClick={getCollect}
         style={{ borderRadius: '4px', marginLeft: '12px' }}
       >
         添加
@@ -154,12 +120,13 @@ const FormFooterMemo = React.memo(FormFooter)
 // 外设表单 完全体
 const PeripheralsForm = () => {
   const { PERIPHERAL_TYPE } = getSystemConstantsStore()
-  const { optionalParameters } = HeaderStore()
-  const { name, base_address, address_length } = optionalParameters
+  const { optionalParameters, messageInfoFn, onChangeFn } = HeaderStore()
+  const { name, base_address, address_length, kind, desc } = optionalParameters
 
-  const KindValue = useMemo(() => {
-    return optionalParameters.kind?.value
-  }, [optionalParameters])
+  const { run } = useRequest(onChangeFn, {
+    debounceInterval: 200,
+    manual: true
+  })
 
   const [form] = Form.useForm()
 
@@ -175,12 +142,24 @@ const PeripheralsForm = () => {
           help={name?.errorMsg}
           validateStatus={name?.validateStatus}
         >
-          <Input placeholder='请输入自定义外设名称' />
+          <Input
+            placeholder='请输入自定义外设名称'
+            onChange={e => {
+              run('name', e.target.value)
+            }}
+            onBlur={messageInfoFn}
+          />
         </Form.Item>
 
         <Form.Item label='类型'>
           <Select
-            value={KindValue}
+            value={kind?.value}
+            onChange={e => onChangeFn('kind', e)}
+            onDropdownVisibleChange={visible => {
+              if (!visible) {
+                messageInfoFn()
+              }
+            }}
             placeholder='请选择类型'
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
           >
@@ -202,7 +181,14 @@ const PeripheralsForm = () => {
           help={base_address?.errorMsg}
           validateStatus={base_address?.validateStatus}
         >
-          <Input placeholder='请输入基地址' prefix='0x' />
+          <Input
+            placeholder='请输入基地址'
+            prefix='0x'
+            onChange={e => {
+              run('base_address', e.target.value)
+            }}
+            onBlur={messageInfoFn}
+          />
         </Form.Item>
         <Form.Item
           label='地址大小'
@@ -212,10 +198,23 @@ const PeripheralsForm = () => {
           help={address_length?.errorMsg}
           validateStatus={address_length?.validateStatus}
         >
-          <Input placeholder='请输入地址大小' prefix='0x' suffix='字节' />
+          <Input
+            onChange={e => {
+              run('address_length', e.target.value)
+            }}
+            onBlur={messageInfoFn}
+            placeholder='请输入地址大小'
+            prefix='0x'
+            suffix='字节'
+          />
         </Form.Item>
         <Form.Item name='desc' label='外设描述' rules={[{ type: 'string', max: 50, message: '字数不能超过50个' }]}>
           <TextArea
+            onChange={e => {
+              run('desc', e.target.value)
+            }}
+            value={desc?.value}
+            onBlur={messageInfoFn}
             spellCheck='false'
             placeholder='请输入描述'
             autoSize={{ minRows: 2, maxRows: 3 }}
@@ -235,10 +234,15 @@ const PeripheralsFormMemo = React.memo(PeripheralsForm)
 // 添加寄存器
 const ProcessorForm = () => {
   // todo 获取全部外设列表
-  const { optionalParameters } = HeaderStore()
+  const { optionalParameters, messageInfoFn, onChangeFn } = HeaderStore()
+  const headerBarList = LeftListStore(state => state.headerBarList)
   const { name, relative_address, peripheral_id } = optionalParameters
   const [form] = Form.useForm()
 
+  const { run } = useRequest(onChangeFn, {
+    debounceInterval: 200,
+    manual: true
+  })
   return (
     <div className={StyleSheet.ProcessorFormBody}>
       <Form form={form} layout='vertical'>
@@ -248,18 +252,24 @@ const ProcessorForm = () => {
             notFoundContent={<span>暂无自定义外设</span>}
             value={peripheral_id?.value ? peripheral_id?.value : undefined}
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
+            onChange={e => onChangeFn('peripheral_id', e)}
+            onDropdownVisibleChange={visible => {
+              if (!visible) {
+                messageInfoFn()
+              }
+            }}
           >
-            {/* {customMadePeripheralListMemo?.map((rate: any) => {
+            {headerBarList?.map((rate: any) => {
               return (
                 <Option key={String(rate.id)} value={String(rate.id)}>
                   {rate.name}
                 </Option>
               )
-            })} */}
+            })}
           </Select>
         </Form.Item>
         <Form.Item label='寄存器名称' hasFeedback required name='name' help={name?.errorMsg} validateStatus={name?.validateStatus}>
-          <Input placeholder='请输入寄存器名称' />
+          <Input placeholder='请输入寄存器名称' onChange={e => run('name', e.target.value)} onBlur={messageInfoFn} />
         </Form.Item>
         <Form.Item
           label='偏移地址'
@@ -269,7 +279,7 @@ const ProcessorForm = () => {
           help={relative_address?.errorMsg}
           validateStatus={relative_address?.validateStatus}
         >
-          <Input placeholder='请输入偏移地址' prefix='0x' />
+          <Input placeholder='请输入偏移地址' prefix='0x' onChange={e => run('relative_address', e.target.value)} onBlur={messageInfoFn} />
         </Form.Item>
       </Form>
     </div>
@@ -280,9 +290,13 @@ const ProcessorFormMemo = React.memo(ProcessorForm)
 // 数据处理器
 const DataHandlerForm = () => {
   const [form] = Form.useForm()
-  const { optionalParameters, messageInfoFn } = HeaderStore()
+  const { optionalParameters, messageInfoFn, onChangeFn } = HeaderStore()
   const { name, port } = optionalParameters
   const portList = publicAttributes(state => state.portList)
+  const { run } = useRequest(onChangeFn, {
+    debounceInterval: 200,
+    manual: true
+  })
   return (
     <div className={StyleSheet.DataHandlerFormBody}>
       <Form form={form} layout='vertical'>
@@ -295,17 +309,16 @@ const DataHandlerForm = () => {
           help={name?.errorMsg}
           validateStatus={name?.validateStatus}
         >
-          <Input
-            value={name?.value}
-            placeholder='请输入数据处理器名称'
-            onBlur={e => {
-              messageInfoFn('name', e.target.value)
-            }}
-          />
+          <Input value={name?.value} placeholder='请输入数据处理器名称' onChange={e => run('name', e.target.value)} onBlur={messageInfoFn} />
         </Form.Item>
         <Form.Item name='port' label='端口' required hasFeedback help={port?.errorMsg} validateStatus={port?.validateStatus}>
           <Select
-            onChange={e => messageInfoFn('port', e)}
+            onChange={e => onChangeFn('port', e)}
+            onDropdownVisibleChange={visible => {
+              if (!visible) {
+                messageInfoFn()
+              }
+            }}
             getPopupContainer={() => document.getElementsByClassName(StyleSheet.firstFormItem)[0] as HTMLElement}
             placeholder='请选择端口'
           >
@@ -333,8 +346,13 @@ const DataHandlerFormMemo = React.memo(DataHandlerForm)
 // 添加定时器 完全体
 const TimeForm = () => {
   const [form] = Form.useForm()
-  const { optionalParameters, messageInfoFn } = HeaderStore()
+  const { optionalParameters, messageInfoFn, onChangeFn } = HeaderStore()
   const { name, period, interrupt } = optionalParameters
+  const { run } = useRequest(onChangeFn, {
+    debounceInterval: 200,
+    manual: true
+  })
+
   return (
     <div className={StyleSheet.ProcessorFormBody}>
       <Form form={form} layout='vertical'>
@@ -350,9 +368,10 @@ const TimeForm = () => {
           <Input
             placeholder='请输入定时器名称'
             value={name?.value}
-            onBlur={e => {
-              messageInfoFn('name', e.target.value)
+            onChange={e => {
+              run('name', e.target.value)
             }}
+            onBlur={messageInfoFn}
           />
         </Form.Item>
         <Form.Item label='间隔' hasFeedback required name='period' validateStatus={period?.validateStatus} help={period?.errorMsg}>
@@ -360,18 +379,20 @@ const TimeForm = () => {
             placeholder='请输入间隔'
             suffix='微秒'
             value={period?.value}
-            onBlur={e => {
-              messageInfoFn('period', e.target.value)
+            onChange={e => {
+              run('period', e.target.value)
             }}
+            onBlur={messageInfoFn}
           />
         </Form.Item>
         <Form.Item label='中断号' hasFeedback required name='interrupt' validateStatus={interrupt?.validateStatus} help={interrupt?.errorMsg}>
           <Input
             placeholder='请输入中断号'
             value={interrupt?.value}
-            onBlur={e => {
-              messageInfoFn('interrupt', e.target.value)
+            onChange={e => {
+              run('interrupt', e.target.value)
             }}
+            onBlur={messageInfoFn}
           />
         </Form.Item>
       </Form>
@@ -386,12 +407,14 @@ const TabsBarForm = {
   handlerData: <DataHandlerFormMemo />,
   timer: <TimeFormMemo />
 }
+
 const positionMap = {
   customPeripheral: '0px',
   register: '95px',
   handlerData: '205px',
   timer: '340px'
 }
+
 function ModelingMiddleHeaderMemo({ tabs }: { tabs: string }) {
   const leftposition = useMemo(() => {
     return positionMap[tabs as keyof typeof positionMap]
@@ -407,19 +430,22 @@ function ModelingMiddleHeaderMemo({ tabs }: { tabs: string }) {
 const ModelingMiddleHeader = React.memo(ModelingMiddleHeaderMemo)
 
 const HeaderBarMemo = () => {
-  const setHeaderTabs = HeaderStore(state => state.setHeaderTabs)
+  const { setHeaderTabs, initFormValue } = HeaderStore()
+  const { getPeripheralList } = LeftListStore()
+  const { platform_id } = LeftAndRightStore()
   const headerTabs = HeaderStore(state => state.headerTabs)
-  const { platform_id } = leftAndRightMap
   const { getMarkDown } = vieMarkDown()
 
   const showOrHide = React.useCallback(
     (e, val: string) => {
-      const mouseX = e.clientX
-      const mouseY = e.clientY
-      console.log(mouseX, mouseY)
+      if (headerTabs === val) return
+      if (val === 'register') {
+        getPeripheralList('0')
+      }
+      initFormValue()
       setHeaderTabs(val)
     },
-    [setHeaderTabs]
+    [getPeripheralList, headerTabs, initFormValue, setHeaderTabs]
   )
 
   // 下载与生成函数

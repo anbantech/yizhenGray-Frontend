@@ -41,13 +41,18 @@ export default class ToolBox {
 
   // 检查16进制
   checkHex(): { message: string | undefined; status: string | undefined } {
-    if (!this.isCheck && !this.value) {
-      return { message: undefined, status: undefined }
-    }
-    if (!this.value || /^(0x)?([\da-f]{1,8})$/i.test(this.value)) {
+    if (this.isCheck && !this.value) {
       return { message: '请输入由0-9,A-F(或a-f)组成的16进制数', status: 'error' }
     }
-    return { message: undefined, status: 'success' }
+    const regex = /^(0x)?([\da-f]{1,8})$/i
+    if (this.value) {
+      if (!regex.test(this.value)) {
+        return { message: '请输入由0-9,A-F(或a-f)组成的16进制数', status: 'error' }
+      }
+      return { message: undefined, status: 'success' }
+    }
+
+    return { message: undefined, status: undefined }
   }
 
   // 检查间隔
@@ -93,14 +98,20 @@ export default class ToolBox {
     switch (this.key) {
       case 'name':
         return this.validateLanguage()
-      case 'hex':
+      case 'address_length':
         return this.checkHex()
+      case 'base_address':
+        return this.checkHex()
+      // case 'address_length':
+      //   return this.checkHex()
+      // case 'address_length':
+      //   return this.checkHex()
       case 'period':
         return this.checkInterval()
       case 'interrupt':
         return this.checkInterrupt()
       default:
-        return { message: 'Invalid key', status: 'error' }
+        return { message: '', status: 'success' }
     }
   }
 }

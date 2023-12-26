@@ -1,23 +1,14 @@
 import { Skeleton, Tooltip, Tree } from 'antd'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { IconPeripheral, IconYifuRegister, IconDelete, IconCommon, IconClock, IconExclamationTriangleFill } from '@anban/iconfonts'
 import styles from 'Src/view/Project/task/taskList/task.less'
 import StyleSheet from './modelLeft.less'
-import { useLeftModelDetailsStore } from '../../Store/ModelStore'
-import { RightDetailsAttributesStore } from '../../Store/ModeleRightListStore/RightListStoreList'
-import { MiddleStore } from '../../Store/ModelMiddleStore/MiddleStore'
-import { errorCodeMapFn, titleFlagMap } from '../../Store/MapStore'
+import { errorCodeMapFn } from '../../Store/MapStore'
+import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
+import { LeftAndRightStore } from '../../Store/ModelLeftAndRight/leftAndRightStore'
 
 interface LoactionState {
   state: Record<any, any>
-}
-
-const AttributesType = {
-  1: 'Peripheral',
-  2: 'Register',
-  3: 'Processor',
-  4: 'Timer',
-  5: 'Target'
 }
 
 const Image = {
@@ -30,66 +21,39 @@ const Image = {
 const TreeDataMemo = (props: { listData: any; height: number }) => {
   const { listData, height } = props
   const [autoExpandParent, setAutoExpandParent] = useState(true)
-  const rightAttributeMap = RightDetailsAttributesStore(state => state.rightAttributeMap)
-  const foucusNodeId = RightDetailsAttributesStore(state => state.focusNodeId)
-
-  // 点击节点画布展开
-  const selectIdExpandDrawTree = MiddleStore(state => state.selectIdExpandDrawTree)
-
-  // 受控:树
-  const leftListExpandArray = MiddleStore(state => state.leftListExpandArray)
-
-  // 控制树展开节点函数
-  const upDateLeftExpandArrayFn = MiddleStore(state => state.upDateLeftExpandArrayFn)
-
+  const { updateTreeNodeData } = LeftListStore()
+  // loading 骨架屏
+  const { loading, treeNodeData } = LeftListStore()
+  // 设置选中节点,以及flag
+  const { setSelect } = LeftAndRightStore()
   // 树节点 筛选结果
-  const expandNodeArray = useLeftModelDetailsStore(state => state.expandNodeArray)
-
-  const loading = useLeftModelDetailsStore(state => state.loading)
-
-  // 删除
-  const deleteTreeNode = MiddleStore(state => state.deleteTreeNode)
-
-  const leftListExpandArrayMemo = useMemo(() => {
-    return [...leftListExpandArray]
-  }, [leftListExpandArray])
-
   const onExpand = React.useCallback(
     (newExpandedKeys: React.Key[]) => {
       const res = [...newExpandedKeys]
       setAutoExpandParent(false)
-      upDateLeftExpandArrayFn(res as string[])
+      updateTreeNodeData(res as string[])
     },
-    [upDateLeftExpandArrayFn]
+    [updateTreeNodeData]
   )
 
-  const updataMidleAndRightUI = useCallback(
-    (selectedKeys, e) => {
-      const { flag, id } = e.node
-      rightAttributeMap(AttributesType[flag as keyof typeof AttributesType], String(id), selectIdExpandDrawTree)
-    },
-    [rightAttributeMap, selectIdExpandDrawTree]
-  )
+  const updataMidleAndRightUI = useCallback((selectedKeys, e) => {
+    const { flag, id } = e.node
+    setSelect(id, flag)
+  }, [])
 
-  const deleteTreeNodeHandle = React.useCallback(
-    (e, node) => {
-      e.stopPropagation()
-      const nodeArray = [{ id: String(node.id), data: { flag: node.flag } }]
-      const nodeInfo = {
-        node: nodeArray,
-        title: titleFlagMap[node.flag as keyof typeof titleFlagMap][0],
-        content: `${titleFlagMap[node.flag as keyof typeof titleFlagMap][1]}${node.name}`
-      }
-      deleteTreeNode(true, nodeInfo)
-    },
-    [deleteTreeNode]
-  )
-
-  useEffect(() => {
-    if (expandNodeArray?.length > 0) {
-      upDateLeftExpandArrayFn([...expandNodeArray])
-    }
-  }, [expandNodeArray, upDateLeftExpandArrayFn])
+  // const deleteTreeNodeHandle = React.useCallback(
+  //   (e, node) => {
+  //     e.stopPropagation()
+  //     const nodeArray = [{ id: String(node.id), data: { flag: node.flag } }]
+  //     const nodeInfo = {
+  //       node: nodeArray,
+  //       title: titleFlagMap[node.flag as keyof typeof titleFlagMap][0],
+  //       content: `${titleFlagMap[node.flag as keyof typeof titleFlagMap][1]}${node.name}`
+  //     }
+  //     deleteTreeNode(true, nodeInfo)
+  //   },
+  //   [deleteTreeNode]
+  // )
 
   return (
     <>
@@ -102,8 +66,8 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
             onExpand={onExpand}
             onSelect={updataMidleAndRightUI}
             autoExpandParent={autoExpandParent}
-            selectedKeys={[`${foucusNodeId}`]}
-            expandedKeys={[...leftListExpandArrayMemo]}
+            // selectedKeys={[`${foucusNodeId}`]}
+            expandedKeys={[...treeNodeData]}
             height={height}
             titleRender={(node: any) => {
               return (
@@ -114,7 +78,15 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
                       <div>
                         <Tooltip title={errorCodeMapFn(node.error_code, node)} placement='right' color='red'>
                           {' '}
-                          <IconExclamationTriangleFill style={{ width: '16px', height: '16px', color: 'red', paddingLeft: '2px', paddingTop: 3 }} />
+                          <IconExclamationTriangleFill
+                            style={{
+                              width: '16px',
+                              height: '16px',
+                              color: 'red',
+                              paddingLeft: '2px',
+                              paddingTop: 3
+                            }}
+                          />
                         </Tooltip>
                       </div>
                     ) : null}
@@ -123,9 +95,9 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
                     <IconDelete
                       style={{ color: '#cccccc' }}
                       className={StyleSheet.icon}
-                      onClick={e => {
-                        deleteTreeNodeHandle(e, node)
-                      }}
+                      // onClick={e => {
+                      //   deleteTreeNodeHandle(e, node)
+                      // }}
                     />
                   ) : null}
                 </div>
@@ -149,21 +121,7 @@ function ModelingLeftTabList() {
   // 动态设置虚拟列表高度
   const [height, setHeight] = React.useState(0)
   const layoutRef = useRef<any>()
-  const tabs = useLeftModelDetailsStore(state => state.tabs)
-  const setParams = useLeftModelDetailsStore(state => state.setParams)
-  const customMadePeripheralList = useLeftModelDetailsStore(state => state.customMadePeripheralList)
-  const timerList = useLeftModelDetailsStore(state => state.timerList)
-  const processorList = useLeftModelDetailsStore(state => state.processorList)
-  const boardLevelPeripheralsList = useLeftModelDetailsStore(state => state.boardLevelPeripheralsList)
-  const expandNodeArray = useLeftModelDetailsStore(state => state.expandNodeArray)
-
-  const map = {
-    customMadePeripheral: customMadePeripheralList,
-    boardLevelPeripherals: boardLevelPeripheralsList,
-    dataHandlerNotReferenced: processorList,
-    time: timerList
-  }
-
+  const { tabsList, tabs } = LeftListStore()
   const treeData = (defaultData: any[]) => {
     const loop = (data: any) => {
       return data?.map((item: { name?: any; id: any; flag?: any; error_code: number; children?: any }) => {
@@ -204,22 +162,14 @@ function ModelingLeftTabList() {
   }
 
   const listData = React.useMemo(() => {
-    const data = map[tabs as keyof typeof map]
-    return treeData(data)
+    return treeData(tabsList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, tabs, expandNodeArray])
-
-  const updatePage = React.useCallback(() => {
-    setParams(tabs, { page_size: 50 })
-  }, [setParams, tabs])
+  }, [tabsList, tabs])
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
         const { height } = entry.contentRect
-        if (height >= 700) {
-          updatePage()
-        }
         setHeight(height)
       }
     })

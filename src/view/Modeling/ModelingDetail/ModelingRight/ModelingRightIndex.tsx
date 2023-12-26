@@ -14,6 +14,9 @@ const Header = () => {
 
 function ModelingRight() {
   const flag = LeftAndRightStore(state => state.flag)
+  const getRightAttributes = LeftAndRightStore(state => state.getRightAttributes)
+  const platform_id = LeftAndRightStore(state => state.platform_id)
+  const selectLeftId = LeftAndRightStore(state => state.selectLeftId)
   const Cms = React.useMemo(() => {
     switch (flag) {
       case 1:
@@ -28,6 +31,13 @@ function ModelingRight() {
         return <TargetComponents />
     }
   }, [flag])
+
+  React.useEffect(() => {
+    if (platform_id || selectLeftId) {
+      getRightAttributes(flag === 5 ? (platform_id as number) : (selectLeftId as number), flag)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flag, platform_id, selectLeftId])
   return (
     <div className={StyleSheet.ModelingRightBody} role='time'>
       <Header />

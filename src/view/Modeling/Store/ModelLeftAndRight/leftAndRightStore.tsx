@@ -20,8 +20,8 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
   // 注册工具函数
   selectLeftId: null,
   // 选择左侧数据的id 默认为目标机id
-  setSelect: id => {
-    set({ selectLeftId: id })
+  setSelect: (id, flag) => {
+    set({ selectLeftId: id, flag })
   },
 
   // 左侧数据
@@ -96,11 +96,13 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     set_value: { value: undefined, validateStatus: undefined, errorMsg: null },
     restore_value: { value: undefined, validateStatus: undefined, errorMsg: null }
   },
+
   rightTargetDetail: {
     name: { value: undefined, validateStatus: undefined, errorMsg: null },
     desc: { value: undefined, validateStatus: undefined, errorMsg: null },
     processor: { value: undefined, validateStatus: undefined, errorMsg: null }
   },
+
   // 更新右侧属性数据信息
   updateRightAttributes: (type, baseData, data) => {
     Object.keys(baseData).forEach(Element => {
@@ -120,6 +122,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
       )
     })
   },
+
   // 获取数据处理器详情
   getDataHandlerDetail: async id => {
     try {
@@ -132,6 +135,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
       throwErrorMessage(error)
     }
   },
+
   // 获取寄存器详情
   getRegisterDetail: async id => {
     try {
@@ -144,6 +148,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
       throwErrorMessage(error)
     }
   },
+
   // 获取外设详情
   getPeripheralDetail: async id => {
     try {
@@ -156,6 +161,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
       throwErrorMessage(error)
     }
   },
+
   // 获取定时器详情
   getTimerDetail: async id => {
     try {
@@ -168,6 +174,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
       throwErrorMessage(error)
     }
   },
+
   // 获取目标机详情
   getTargetDetail: async (id: number) => {
     try {
@@ -182,6 +189,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
       throwErrorMessage(error)
     }
   },
+
   getRightAttributes: (id, flag) => {
     switch (flag) {
       case 1:
@@ -242,7 +250,3 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     }
   }
 }))
-
-export const leftAndRightMap = {
-  platform_id: LeftAndRightStore.getState().platform_id
-}
