@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { Tooltip } from 'antd'
 import React, { useCallback, useEffect, useRef } from 'react'
 import { IconDelete, IconCommon, IconClock, IconExclamationTriangleFill } from '@anban/iconfonts'
@@ -48,6 +49,11 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
     []
   )
 
+  const onDragStart = (event: any, nodeType: any) => {
+    event.dataTransfer.setData('application/reactflow', nodeType)
+    event.dataTransfer.effectAllowed = 'move'
+  }
+
   return (
     <>
       <InfiniteScroll
@@ -75,11 +81,14 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
               key={item.id}
               className={String(item.id) === String(selectLeftId) ? StyleSheet.activeTagItem : StyleSheet.tagItem}
               style={{ paddingRight: '4px' }}
+              draggable='true'
+              onDragStart={event => onDragStart(event, item)}
             >
               <div
                 className={StyleSheet.leftTagItem}
                 role='time'
                 onClick={e => {
+                  e.stopPropagation()
                   updataMidleAndRightUI(e, item)
                 }}
               >

@@ -150,6 +150,7 @@ export const HeaderStore = create<HeaderStoreType>((set, get) => ({
       if (res.data) {
         // 拉取列表 关闭弹框 切换tabs
         LeftListStoreMap.getList(tabs)
+        LeftAndRightStore.getState().setSelect(res.data.id, res.data.flag)
         get().setHeaderTabs(null)
       }
       return res
@@ -163,8 +164,11 @@ export const HeaderStore = create<HeaderStoreType>((set, get) => ({
       const res = await newSetRegister(params)
       if (res.data) {
         // 拉取列表 关闭弹框 切换tabs
-        LeftListStoreMap.getList('customPeripheral')
-        get().setHeaderTabs(null)
+        await LeftListStoreMap.getList('customPeripheral')
+        await LeftAndRightStore.getState().setSelect(res.data.id, res.data.flag)
+        // 打开树节点
+        await LeftListStoreMap.updateTreeNodeData([String(res.data.peripheral_id), String(res.data.id)])
+        await get().setHeaderTabs(null)
       }
       return res
     } catch (error) {
@@ -178,6 +182,7 @@ export const HeaderStore = create<HeaderStoreType>((set, get) => ({
       if (res.data) {
         // 拉取列表 关闭弹框 切换tabs
         LeftListStoreMap.getList(tabs)
+        LeftAndRightStore.getState().setSelect(res.data.id, res.data.flag)
         get().setHeaderTabs(null)
       }
       return res
@@ -185,12 +190,14 @@ export const HeaderStore = create<HeaderStoreType>((set, get) => ({
       throwErrorMessage(error)
     }
   },
+
   // 创建定时器
   createTimer: async (params, tabs) => {
     try {
       const res = await newSetTimer(params)
       if (res.data) {
         LeftListStoreMap.getList(tabs)
+        LeftAndRightStore.getState().setSelect(res.data.id, res.data.flag)
         get().setHeaderTabs(null)
         // 拉取列表 关闭弹框 切换tabs
       }

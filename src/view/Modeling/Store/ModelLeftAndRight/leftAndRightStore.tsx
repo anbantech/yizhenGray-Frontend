@@ -128,6 +128,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
 
   // 更新右侧属性数据信息
   updateRightAttributes: (type, baseData, data) => {
+    const rightAttributesInfo: any = {}
     Object.keys(baseData).forEach(Element => {
       set(state =>
         produce(state, draft => {
@@ -143,7 +144,9 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
           }
         })
       )
+      rightAttributesInfo[Element] = data[Element]
     })
+    set({ rightAttributes: rightAttributesInfo })
   },
 
   // 获取数据处理器详情
@@ -281,6 +284,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     const res = await updatePeripherals(rightPeripheral.id as string, params)
     if (platform_id && res.data) {
       LeftListStoreMap.getList('customPeripheral')
+      set({ rightAttributes: params })
     }
   },
   // 更新数据处理器信息
@@ -313,6 +317,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     const res = await updateDataHandler(rightDataHandler.id, params)
     if (platform_id && res.data) {
       LeftListStoreMap.getList('handlerData')
+      set({ rightAttributes: params })
     }
   },
   // 更新寄存器信息
@@ -355,6 +360,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     const res = await updateRegister(rightDataRegister.id, params)
     if (platform_id && res.data) {
       LeftListStoreMap.getList('customPeripheral')
+      set({ rightAttributes: params })
     }
   },
   // 更新定时器信息
@@ -369,6 +375,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     const res = await updateTimer(rightTimer.id, params)
     if (platform_id && res.data) {
       LeftListStoreMap.getList('timer')
+      set({ rightAttributes: params })
     }
   },
   // 根据type,keys 清除值

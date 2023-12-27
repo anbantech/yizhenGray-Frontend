@@ -261,5 +261,6 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
 
 export const LeftListStoreMap = {
   getList: LeftListStore.getState().getList,
-  getModelListDetails: LeftListStore.getState().getModelListDetails
+  getModelListDetails: LeftListStore.getState().getModelListDetails,
+  updateTreeNodeData: LeftListStore.getState().updateTreeNodeData
 }

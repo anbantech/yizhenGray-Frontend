@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import ReactFlow, { Background, BackgroundVariant, Edge, Node, NodeOrigin, NodeTypes, ReactFlowProvider } from 'reactflow'
 import { LowCodeStoreType } from '../../Store/CanvasStore/canvasStoreType'
 import 'reactflow/dist/style.css'
@@ -26,9 +26,55 @@ const nodeTypes: NodeTypes = {
 
 function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
   const { onNodesChange, onEdgesChange } = LowCodeStore(selector)
+  const [reactFlowInstance, setReactFlowInstance] = useState<any>(null)
+  const onDragOver = useCallback(event => {
+    event.preventDefault()
+    // eslint-disable-next-line no-param-reassign
+    event.dataTransfer.dropEffect = 'move'
+  }, [])
 
+  const onDrop = useCallback(
+    event => {
+      event.preventDefault()
+
+      const type = event.dataTransfer.getData('application/reactflow')
+
+      // check if the dropped element is valid
+      if (typeof type === 'undefined' || !type) {
+        return
+      }
+
+      // reactFlowInstance.project was renamed to reactFlowInstance.screenToFlowPosition
+      // and you don't need to subtract the reactFlowBounds.left/top anymore
+      // details: https://reactflow.dev/whats-new/2023-11-10
+      const position = reactFlowInstance.screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY
+      })
+
+      // const newNode = {
+      //   id: getId(),
+      //   type,
+      //   position,
+      //   data: { label: `${type} node` }
+      // }
+
+      // setNodes(nds => nds.concat(newNode))
+    },
+    [reactFlowInstance]
+  )
   return (
-    <ReactFlow nodes={nodes} edges={edges} proOptions={proOptions} nodeTypes={nodeTypes} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange}>
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onInit={setReactFlowInstance}
+      onDrop={onDrop}
+      onDragOver={onDragOver}
+      proOptions={proOptions}
+      // nodeTypes={nodeTypes}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+    >
       <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
       <CustomControls />
     </ReactFlow>

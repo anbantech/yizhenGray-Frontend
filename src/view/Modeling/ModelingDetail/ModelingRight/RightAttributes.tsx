@@ -75,7 +75,7 @@ const PeripheralComponents: React.FC = () => {
   const { PERIPHERAL_TYPE } = getSystemConstantsStore()
   const rightPeripheral = LeftAndRightStore(state => state.rightPeripheral)
   const { name, base_address, kind, address_length, desc, variety } = rightPeripheral
-  const { onChangeFn, onBlurFn, closeMenu } = LeftAndRightStore()
+  const { onChangeFn, onBlurFn, closeMenu, rightAttributes } = LeftAndRightStore()
 
   const disabledVariety = React.useMemo(() => {
     return Boolean(variety)
@@ -94,6 +94,7 @@ const PeripheralComponents: React.FC = () => {
               onChangeFn('rightPeripheral', 'name', e.target.value)
             }}
             onBlur={() => {
+              if (rightAttributes.name === name.value) return
               onBlurFn(name.validateStatus, 'rightPeripheral')
             }}
           />
@@ -104,10 +105,9 @@ const PeripheralComponents: React.FC = () => {
             disabled={disabledVariety}
             getPopupContainer={() => document.querySelector('#area') as HTMLElement}
             onChange={e => {
+              if (e === kind.value) return
               onChangeFn('rightPeripheral', 'kind', e)
-            }}
-            onDropdownVisibleChange={visible => {
-              closeMenu(visible, kind.validateStatus, 'rightPeripheral')
+              closeMenu(false, kind.validateStatus, 'rightPeripheral')
             }}
             placeholder='请选择类型'
           >
@@ -129,6 +129,7 @@ const PeripheralComponents: React.FC = () => {
               onChangeFn('rightPeripheral', 'base_address', e.target.value)
             }}
             onBlur={() => {
+              if (rightAttributes.base_address === base_address.value) return
               onBlurFn(base_address?.validateStatus, 'rightPeripheral')
             }}
           />
@@ -141,6 +142,7 @@ const PeripheralComponents: React.FC = () => {
               onChangeFn('rightPeripheral', 'address_length', e.target.value)
             }}
             onBlur={() => {
+              if (rightAttributes.address_length === address_length.value) return
               onBlurFn(address_length.validateStatus, 'rightPeripheral')
             }}
             prefix='0x'
@@ -148,8 +150,9 @@ const PeripheralComponents: React.FC = () => {
             value={address_length?.value}
           />
         </Form.Item>
-        <Form.Item label='描述'>
+        <Form.Item label='描述' name='desc' rules={[{ type: 'string', max: 50, message: '字数不能超过50个' }]}>
           <TextArea
+            name='desc'
             placeholder={disabledVariety ? '-' : '请输入描述'}
             value={desc.value}
             disabled={disabledVariety}
@@ -157,6 +160,8 @@ const PeripheralComponents: React.FC = () => {
               onChangeFn('rightPeripheral', 'desc', e.target.value)
             }}
             onBlur={() => {
+              const bol = desc?.value === undefined || (desc?.value as string)?.length <= 50
+              if (!bol) return
               onBlurFn(desc.validateStatus, 'rightPeripheral')
             }}
             showCount={{
@@ -173,7 +178,7 @@ const PeripheralComponents: React.FC = () => {
 
 const RegisterComponents: React.FC = () => {
   const [form] = Form.useForm()
-  const { rightDataRegister, onChangeFn, onBlurFn, closeMenu, getPeripheralDetail, registerList } = LeftAndRightStore()
+  const { rightDataRegister, onChangeFn, onBlurFn, closeMenu, getPeripheralDetail, registerList, rightAttributes } = LeftAndRightStore()
   const {
     variety,
     peripheral_id,
@@ -220,10 +225,9 @@ const RegisterComponents: React.FC = () => {
         style={{ width: 70, height: 30 }}
         onClear={() => {}}
         onChange={(value: string) => {
+          if (value === values) return
           onChangeFn('rightDataRegister', type, value)
-        }}
-        onDropdownVisibleChange={visible => {
-          closeMenu(visible, status, 'rightDataRegister')
+          closeMenu(false, status, 'rightDataRegister')
         }}
       >
         {REGISTER_CMD?.map(rate => {
@@ -268,6 +272,7 @@ const RegisterComponents: React.FC = () => {
                 onChangeFn('rightDataRegister', 'name', e.target.value)
               }}
               onBlur={() => {
+                if (rightAttributes.name === name.value) return
                 onBlurFn(name.validateStatus, 'rightDataRegister')
               }}
             />
@@ -281,6 +286,7 @@ const RegisterComponents: React.FC = () => {
                 onChangeFn('rightDataRegister', 'relative_address', e.target.value)
               }}
               onBlur={() => {
+                if (rightAttributes.relative_address === relative_address.value) return
                 onBlurFn(relative_address.validateStatus, 'rightDataRegister')
               }}
             />
@@ -290,10 +296,9 @@ const RegisterComponents: React.FC = () => {
               style={{ borderRadius: '4px' }}
               showSearch={Boolean(0)}
               onChange={e => {
+                if (e === finish.value) return
                 onChangeFn('rightDataRegister', 'finish', e)
-              }}
-              onDropdownVisibleChange={visible => {
-                closeMenu(visible, finish.validateStatus, 'rightDataRegister')
+                closeMenu(false, finish.validateStatus, 'rightDataRegister')
               }}
               value={finish?.value}
             >
@@ -311,14 +316,13 @@ const RegisterComponents: React.FC = () => {
           <Form.Item label='是否为状态寄存器'>
             <Select
               showSearch={Boolean(0)}
-              onDropdownVisibleChange={visible => {
-                closeMenu(visible, kind.validateStatus, 'rightDataRegister')
-              }}
               getPopupContainer={() => document.querySelector('#area') as HTMLElement}
               style={{ borderRadius: '4px' }}
               value={kind.value}
               onChange={e => {
+                if (e === kind.value) return
                 onChangeFn('rightDataRegister', 'kind', e)
+                closeMenu(false, kind.validateStatus, 'rightDataRegister')
               }}
             >
               {isStatusRegister?.map((rate: any) => {
@@ -344,11 +348,9 @@ const RegisterComponents: React.FC = () => {
                 value={sr_peri_id.value}
                 onChange={e => {
                   getPeripheralDetail(+e)
+                  if (e === sr_peri_id.value) return
                   onChangeFn('rightDataRegister', 'sr_peri_id', e)
-                }}
-                onDropdownVisibleChange={visible => {
-                  if (!visible && !sr_peri_id.value) return
-                  closeMenu(visible, sr_peri_id.validateStatus, 'rightDataRegister')
+                  closeMenu(false, sr_peri_id.validateStatus, 'rightDataRegister')
                 }}
                 placeholder='请选择关联状态寄存器所属外设'
               >
@@ -370,11 +372,9 @@ const RegisterComponents: React.FC = () => {
                 value={sr_id.value}
                 onChange={e => {
                   getPeripheralDetail(+e)
+                  if (e === sr_id.value) return
                   onChangeFn('rightDataRegister', 'sr_id', e)
-                }}
-                onDropdownVisibleChange={visible => {
-                  if (!visible && !sr_id.value) return
-                  closeMenu(visible, sr_id.validateStatus, 'rightDataRegister')
+                  closeMenu(false, sr_id.validateStatus, 'rightDataRegister')
                 }}
               >
                 {registerListStatus?.map((rate: any) => {
@@ -406,6 +406,7 @@ const RegisterComponents: React.FC = () => {
                     onChangeFn('rightDataRegister', 'set_value', e.target.value)
                   }}
                   onBlur={() => {
+                    if (rightAttributes.set_value === set_value.value) return
                     onBlurFn(set_value.validateStatus, 'rightDataRegister')
                   }}
                 />
@@ -428,6 +429,7 @@ const RegisterComponents: React.FC = () => {
                     onChangeFn('rightDataRegister', 'restore_value', e.target.value)
                   }}
                   onBlur={() => {
+                    if (rightAttributes.restore_value === restore_value.value) return
                     onBlurFn(restore_value.validateStatus, 'rightDataRegister')
                   }}
                 />
@@ -441,7 +443,7 @@ const RegisterComponents: React.FC = () => {
 }
 
 const DataHanderComponents: React.FC = () => {
-  const { rightDataHandler, onChangeFn, clearFn, onBlurFn, closeMenu, getPeripheralDetail, registerList } = LeftAndRightStore()
+  const { rightDataHandler, onChangeFn, clearFn, onBlurFn, closeMenu, getPeripheralDetail, registerList, rightAttributes } = LeftAndRightStore()
   const { headerBarList } = LeftListStore()
   const { name, port, interrupt, sof, eof, checksum_member, peripheral_id, framing_member, length_member, algorithm, register_id } = rightDataHandler
   const [form] = Form.useForm()
@@ -587,6 +589,7 @@ const DataHanderComponents: React.FC = () => {
                 onChangeFn('rightDataHandler', 'name', e.target.value)
               }}
               onBlur={() => {
+                if (rightAttributes.name === name.value) return
                 onBlurFn(name.validateStatus, 'rightDataHandler')
               }}
               value={name.value}
@@ -628,6 +631,7 @@ const DataHanderComponents: React.FC = () => {
                 onChangeFn('rightDataHandler', 'interrupt', e.target.value)
               }}
               onBlur={() => {
+                if (rightAttributes.interrupt === interrupt.value) return
                 onBlurFn(interrupt.validateStatus, 'rightDataHandler')
               }}
             />
@@ -643,6 +647,7 @@ const DataHanderComponents: React.FC = () => {
                 onChangeFn('rightDataHandler', 'sof', e.target.value)
               }}
               onBlur={() => {
+                if (rightAttributes.sof === sof.value) return
                 onBlurFn(sof.validateStatus, 'rightDataHandler')
               }}
             />
@@ -655,6 +660,7 @@ const DataHanderComponents: React.FC = () => {
                 onChangeFn('rightDataHandler', 'eof', e.target.value)
               }}
               onBlur={() => {
+                if (rightAttributes.eof === eof.value) return
                 onBlurFn(eof.validateStatus, 'rightDataHandler')
               }}
             />
@@ -759,11 +765,9 @@ const DataHanderComponents: React.FC = () => {
               getPopupContainer={() => document.querySelector('#area') as HTMLElement}
               onChange={e => {
                 getPeripheralDetail(e as number)
+                if (e === peripheral_id.value) return
                 onChangeFn('rightDataHandler', 'peripheral_id', e)
-              }}
-              onDropdownVisibleChange={visible => {
-                if (!visible && !peripheral_id.value) return
-                closeMenu(visible, peripheral_id.validateStatus, 'rightDataHandler')
+                closeMenu(false, peripheral_id.validateStatus, 'rightDataRegister')
               }}
             >
               {headerBarList?.map((rate: any) => {
@@ -782,11 +786,9 @@ const DataHanderComponents: React.FC = () => {
               disabled={!resgiedDisabled}
               getPopupContainer={() => document.querySelector('#area') as HTMLElement}
               onChange={e => {
+                if (e === register_id.value) return
                 onChangeFn('rightDataHandler', 'register_id', e)
-              }}
-              onDropdownVisibleChange={visible => {
-                if (!visible && !register_id.value) return
-                closeMenu(visible, register_id.validateStatus, 'rightDataHandler')
+                closeMenu(false, register_id.validateStatus, 'rightDataRegister')
               }}
             >
               {notRegsiterList?.map((rate: any) => {
@@ -809,7 +811,7 @@ const TimerCompoents: React.FC = () => {
   const [form] = Form.useForm()
   const rightTimer = LeftAndRightStore(state => state.rightTimer)
   const { name, period, interrupt } = rightTimer
-  const { onChangeFn, onBlurFn } = LeftAndRightStore()
+  const { onChangeFn, onBlurFn, rightAttributes } = LeftAndRightStore()
   return (
     <div className={StyleSheet.rightFromCommonStyle} style={{ padding: '8px 16px' }}>
       <Form form={form} layout='vertical'>
@@ -819,6 +821,7 @@ const TimerCompoents: React.FC = () => {
               onChangeFn('rightTimer', 'name', e.target.value)
             }}
             onBlur={() => {
+              if (rightAttributes.name === name.value) return
               onBlurFn(name.validateStatus, 'rightTimer')
             }}
             value={name.value}
@@ -832,6 +835,7 @@ const TimerCompoents: React.FC = () => {
               onChangeFn('rightTimer', 'period', e.target.value)
             }}
             onBlur={() => {
+              if (rightAttributes.period === period.value) return
               onBlurFn(period.validateStatus, 'rightTimer')
             }}
             suffix='微秒'
@@ -848,6 +852,7 @@ const TimerCompoents: React.FC = () => {
               onChangeFn('rightTimer', 'interrupt', e.target.value)
             }}
             onBlur={() => {
+              if (rightAttributes.interrupt === interrupt.value) return
               onBlurFn(interrupt.validateStatus, 'rightTimer')
             }}
           />

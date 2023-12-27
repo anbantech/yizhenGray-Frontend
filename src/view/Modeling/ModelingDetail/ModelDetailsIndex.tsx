@@ -1,11 +1,14 @@
 import * as React from 'react'
+import { ReactFlowProvider } from 'reactflow'
 import { useLocation } from 'react-router'
 import ModelingLeftIndex, { LoactionState } from './ModelLeft/ModelingLeftIndex'
+
 import MiddleHeaderBar from './ModelMiddle/ModeingMiddleHeader'
 import StyleSheet from './ModelDetaiIsIndex.less'
 import ModelingRight from './ModelingRight/ModelingRightIndex'
 import LowCodeWrapper from './ModelMiddle/LowCode'
 import { publicAttributes, vieMarkDown } from '../Store/ModelStore'
+
 import ViewMarkdown from './ViewMkdown'
 import { LeftAndRightStore } from '../Store/ModelLeftAndRight/leftAndRightStore'
 import { LeftListStore } from '../Store/ModeleLeftListStore/LeftListStore'
@@ -38,10 +41,12 @@ function ModelDetailsIndex() {
     <div className={StyleSheet.ModelDetailsBody}>
       <div className={StyleSheet.ModelDetailsBodyLeft}>
         <MiddleHeaderBar />
-        <div className={StyleSheet.ModelDetailsMiddle}>
-          <ModelingLeftIndex />
-          <LowCodeWrapper />
-        </div>
+        <ReactFlowProvider>
+          <div className={StyleSheet.ModelDetailsMiddle}>
+            <ModelingLeftIndex />
+            <LowCodeWrapper />
+          </div>
+        </ReactFlowProvider>
       </div>
       <ModelingRight />
       <ViewMarkdown open={open} markDown={markDown} />
