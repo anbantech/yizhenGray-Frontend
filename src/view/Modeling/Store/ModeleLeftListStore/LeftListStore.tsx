@@ -127,7 +127,6 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
           set({ treeNodeData: allIds })
         }
       }
-
       get().toggle()
       return res
     } catch (error) {

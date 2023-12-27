@@ -4,7 +4,7 @@ import { Modal, Input, Form, Button, Select, message } from 'antd'
 import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
 import { throwErrorMessage } from 'Src/util/message'
 import { useNewModelingStore } from 'Src/view/Modeling/Store/ModelStore'
-import { MiddleStore } from 'Src/view/Modeling/Store/ModelMiddleStore/MiddleStore'
+import { LowCodeStore } from 'Src/view/Modeling/Store/CanvasStore/canvasStore'
 import styles from './modelingModal.less'
 
 interface FormInstance {
@@ -33,7 +33,7 @@ function ModelModal(props: ModelProps) {
   const [form] = Form.useForm<FormInstance>()
   const { createTarget, updateModelTargetList, initParams } = useNewModelingStore()
 
-  const { initTreeToNodeAndToEedg } = MiddleStore()
+  const { createTargetNode } = LowCodeStore()
   const { PROCESSOR } = getSystemConstantsStore()
   const onValuesChange = (changedValues: any, allValues: any) => {
     const bol = allValues.desc === undefined || allValues.desc?.length <= 50
@@ -54,20 +54,20 @@ function ModelModal(props: ModelProps) {
       try {
         const res: any = await createTarget(params)
         if (res.code === 0) {
-          const initTreeResult: any = await initTreeToNodeAndToEedg(res.data.canvas)
+          const initTreeResult: any = await createTargetNode(res.data)
           if (initTreeResult.code === 0) {
             message.success('创建成功')
             initParams()
             creatModalOrFixModal(false)
           }
-          return initTreeResult
+          return
         }
       } catch (error) {
         setDisabledStatus(true)
         throwErrorMessage(error, { 1004: '该建模任务不存在', 1005: '建模任务名称重复，请修改', 1007: '操作频繁' })
       }
     },
-    [creatModalOrFixModal, createTarget, initParams, initTreeToNodeAndToEedg]
+    [creatModalOrFixModal, createTarget, createTargetNode, initParams]
   )
 
   const fix = React.useCallback(
@@ -86,6 +86,7 @@ function ModelModal(props: ModelProps) {
     },
     [creatModalOrFixModal, initParams, updateModelTargetList]
   )
+
   const createOrfix = React.useCallback(async () => {
     const value = await form.validateFields()
     const { name, desc, processor } = value
@@ -95,6 +96,7 @@ function ModelModal(props: ModelProps) {
       create({ name, desc, processor })
     }
   }, [create, fix, form, isFix])
+
   useEffect(() => {
     if (detailInfo && detailInfo.name) {
       const { name, desc, processor } = detailInfo

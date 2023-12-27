@@ -1,96 +1,47 @@
-import { getCanvas, saveCanvasAsync } from 'Src/services/api/modelApi'
-import {
-  Edge,
-  EdgeChange,
-  Node,
-  addEdge,
-  NodeChange,
-  OnConnect,
-  OnNodesChange,
-  Connection,
-  OnEdgesChange,
-  applyNodeChanges,
-  applyEdgeChanges,
-  MarkerType
-} from 'reactflow'
 import { create } from 'zustand'
+import { applyEdgeChanges, applyNodeChanges } from 'reactflow'
 import crc32 from 'crc-32'
 import { throwErrorMessage } from 'Src/util/message'
-import { NodeType } from '../MapStore'
-
-type NodeProps = {
-  name: string
-  id: string
-  flag: 0 | 1 | 2 | 3 | 4 | 5
-  error_code: number
-  processor: string
-  children?: NodeProps[]
-}
+import { getCanvas, saveCanvasAsync } from 'Src/services/api/modelApi'
+import { LowCodeStoreType } from './canvasStoreType'
 
 const pako = require('pako')
 
-export type RFState = {
-  nodes: Node[]
-  edges: Edge[]
-  sumData: any
-  updateLayout: boolean
-  expandAndCollapse: (nodeId: string, oneOrMore: boolean) => void
-  getSumNodeId: (nodeArray: Node[]) => string
-  getModelDetails: (id: string) => void
-  InitCanvas: (nodeArray: Node[], edgeArray: Edge[]) => void
-  initTreeToNodeAndToEdge: (initData: any, isVersion?: boolean) => void
-  saveCanvas: (nodes: any[], edges: Edge[], id: string) => void
-  clearCanvas: () => void
-  onNodesChange: OnNodesChange
-  onEdgesChange: OnEdgesChange
-  onConnect: OnConnect
-}
-
-export const useCanvasStore = create<RFState>((set, get) => ({
-  sumData: null,
+export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
   nodes: [],
   edges: [],
-  updateLayout: false,
-
-  // 更新画布节点和边
-  InitCanvas: (nodeArray, edgeArray) => {
-    set({ nodes: [...nodeArray], edges: edgeArray })
-  },
-
-  // 打开或者折叠
-  expandAndCollapse: (nodeId, oneOrMore) => {
-    if (oneOrMore) {
-      set({
-        nodes: [
-          ...get().nodes.map((node: Node) => {
-            if (nodeId === node.id) {
-              // it's important to create a new object here, to inform React Flow about the changes
-              return { ...node, data: { ...node.data, expanded: !node.data.expanded } }
-            }
-            return node
-          })
-        ]
-      })
-    }
-    set({ updateLayout: !get().updateLayout })
-  },
-
-  onNodesChange: (changes: NodeChange[]) => {
+  onNodesChange(changes) {
     set({
       nodes: applyNodeChanges(changes, get().nodes)
     })
   },
-
-  onEdgesChange: (changes: EdgeChange[]) => {
+  onEdgesChange(changes) {
     set({
       edges: applyEdgeChanges(changes, get().edges)
     })
   },
 
-  onConnect: (connection: Connection) => {
-    set({
-      edges: addEdge(connection, get().edges)
-    })
+  addEdge(data) {},
+  // 创建节点
+  createNode(data) {},
+
+  // 创建目标机时,生成原点,和 修改节点
+  createTargetNode(data) {
+    const { processor, id, flag } = data
+    const node = [
+      {
+        data: {
+          label: processor,
+          id: String(id),
+          error_code: 0,
+          flag
+        },
+        type: 'TargetNode',
+        id: String(id),
+        position: { x: 0, y: 0 }
+      }
+    ]
+    return get().saveCanvas(String(id), [...node])
   },
 
   // 获取节点ID生成checkSum
@@ -103,108 +54,23 @@ export const useCanvasStore = create<RFState>((set, get) => ({
     return hex
   },
 
-  // 初始化获取画布数据
-  getModelDetails: async id => {
-    if (!id) return
-    // const { initTreeToNodeAndToEdge } = get()
-
-    try {
-      const res = await getCanvas(+id)
-      if (res.data.version === 0) {
-        // todo
-        // return initTreeToNodeAndToEdge(res.data.canvas, true)
-      }
-      const deleteString = JSON.parse(res.data.canvas)
-      const decompressed = pako.inflate(deleteString, { to: 'string' })
-      const result = JSON.parse(decompressed)
-      const nodesArray = result.nodes
-      const edgesArray = result.edges
-      if (nodesArray) {
-        set({
-          nodes: [...nodesArray],
-          edges: edgesArray
-        })
-      }
-    } catch (error) {
-      throwErrorMessage(error)
-    }
-  },
-
-  // 初始化画布数据更新node edges
-  initTreeToNodeAndToEdge: (initData, isVersion) => {
-    const { saveCanvas } = get()
-    const converTreeToNode = (node: NodeProps, parentId: string) => {
-      const result = []
-      result.push({
-        data: {
-          label: node.flag === 5 ? node.processor : `${node.name}`,
-          id: node.id,
-          parentId,
-          builtIn: node.flag !== 5,
-          expanded: true,
-          error_code: 0,
-          position: { x: 0, y: 0 },
-          flag: node.flag,
-          kind: 1,
-          type: NodeType[node.flag as keyof typeof NodeType]
-        },
-        type: NodeType[node.flag as keyof typeof NodeType],
-        id: node.id,
-        position: { x: 0, y: 0 }
-      })
-      return result
-    }
-    const nodeArray = converTreeToNode(initData, initData.id)
-
-    const converTreeToEdges = () => {
-      const links: any[] = []
-      const edgeInfo = {
-        // flag: node.flag,
-        // id: `${source}->${target}`,
-        // source,
-        // target,
-        type: 'smoothstep',
-        markerEnd: {
-          type: MarkerType.ArrowClosed
-        }
-      }
-      links.push(edgeInfo)
-      return links
-    }
-    const edgeArray = converTreeToEdges()
-    if (isVersion) {
-      set({
-        nodes: [...nodeArray],
-        edges: edgeArray
-      })
-    }
-    return saveCanvas(nodeArray, edgeArray, initData.id)
-  },
-
   // 保存画布
-  saveCanvas: async (nodes, edges, id) => {
+  saveCanvas: async (id, node, edge) => {
     const { getSumNodeId } = get()
     // 计算校验和
-    const sumId = getSumNodeId(nodes)
-
+    const sumId = getSumNodeId(node ?? [])
     // 使用pako进行压缩
     const jsonString = JSON.stringify({
-      nodes: [...nodes],
-      edges: [...edges]
+      nodes: node,
+      edges: edge
     })
-
     const compressed = pako.deflate(jsonString, { to: 'string' })
-
     const compressedStringfy = JSON.stringify(compressed)
-
     const params = {
       id,
       checksum: sumId,
       canvas: compressedStringfy
     }
-
-    set({ sumData: params.canvas })
-
     try {
       const res = await saveCanvasAsync(params)
       if (res.code === 0) return res
@@ -214,16 +80,22 @@ export const useCanvasStore = create<RFState>((set, get) => ({
     }
   },
 
-  // 清除画布
-  clearCanvas: () => {
-    set({ nodes: [], edges: [] })
-  },
-
-  // 返回画布信息
-  getNode: () => {
-    return get().nodes
-  },
-  getEdge: () => {
-    return get().edges
+  // 进入页面 初始化 画布数据
+  getModelDetails: async id => {
+    if (!id) return
+    try {
+      const res = await getCanvas(id)
+      if (res) {
+        const deleteString = JSON.parse(res.data.canvas)
+        const decompressed = pako.inflate(deleteString, { to: 'string' })
+        const result = JSON.parse(decompressed)
+        set({
+          nodes: result.nodes ? result.nodes : [],
+          edges: result.edges ? result.edges : []
+        })
+      }
+    } catch (error) {
+      throwErrorMessage(error)
+    }
   }
 }))

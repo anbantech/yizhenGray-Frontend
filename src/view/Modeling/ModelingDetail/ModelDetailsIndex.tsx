@@ -4,11 +4,12 @@ import ModelingLeftIndex, { LoactionState } from './ModelLeft/ModelingLeftIndex'
 import MiddleHeaderBar from './ModelMiddle/ModeingMiddleHeader'
 import StyleSheet from './ModelDetaiIsIndex.less'
 import ModelingRight from './ModelingRight/ModelingRightIndex'
-import FlowWrapper from './ModelMiddle/ModelingCanvas'
+import LowCodeWrapper from './ModelMiddle/LowCode'
 import { publicAttributes, vieMarkDown } from '../Store/ModelStore'
 import ViewMarkdown from './ViewMkdown'
 import { LeftAndRightStore } from '../Store/ModelLeftAndRight/leftAndRightStore'
 import { LeftListStore } from '../Store/ModeleLeftListStore/LeftListStore'
+import { LowCodeStore } from '../Store/CanvasStore/canvasStore'
 
 function ModelDetailsIndex() {
   const open = vieMarkDown(state => state.open)
@@ -20,17 +21,18 @@ function ModelDetailsIndex() {
   // 首次加载自定义外设列表
   const getList = LeftListStore(state => state.getList)
   const setPortList = publicAttributes(state => state.setPortList)
+  // 初始化画布数据
+  const getModelDetails = LowCodeStore(state => state.getModelDetails)
 
   React.useEffect(() => {
     if (platformsId) {
+      getModelDetails(platformsId)
       setPortList()
       setPlatFormId(platformsId)
       getList('customPeripheral')
       getModelListDetails(platformsId)
     }
-    return () => {}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [platformsId])
+  }, [getList, getModelDetails, getModelListDetails, platformsId, setPlatFormId, setPortList])
 
   return (
     <div className={StyleSheet.ModelDetailsBody}>
@@ -38,7 +40,7 @@ function ModelDetailsIndex() {
         <MiddleHeaderBar />
         <div className={StyleSheet.ModelDetailsMiddle}>
           <ModelingLeftIndex />
-          <FlowWrapper />
+          <LowCodeWrapper />
         </div>
       </div>
       <ModelingRight />

@@ -120,12 +120,12 @@ function updateRegister(id: number | null | string, params: any) {
 function updatePeripherals(
   id: string,
   params: {
-    platform_id: string | number | null
-    name: string | number
-    kind: string | number
-    base_address: string | number
-    address_length: string | number
-    desc: string | number
+    platform_id: string | number | null | undefined
+    name: string | number | undefined
+    kind: string | number | undefined
+    base_address: string | number | undefined
+    address_length: string | number | undefined
+    desc: string | number | undefined
   }
 ) {
   return request.put(`/api/v1.0/models/peripherals/update/${id}`, params)

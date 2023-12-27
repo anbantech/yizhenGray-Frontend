@@ -4,7 +4,7 @@ export type BaseErrorType = {
   errorMsg: null | string
 }
 
-type BaseDataHandler = {
+export type BaseDataHandler = {
   value: [] | string[] | number[]
   validateStatus: undefined | 'success' | 'error' | 'warning' | 'validating' | ''
   errorMsg: null | string
@@ -32,8 +32,11 @@ type RightDataHandlerType = {
   name: BaseErrorType
   interrupt: BaseErrorType
   sof: BaseErrorType
+  port: BaseErrorType
   eof: BaseErrorType
-  algorithm: BaseDataHandler
+  peripheral_id: BaseErrorType
+  register_id: BaseErrorType
+  algorithm: BaseErrorType
   length_member: BaseDataHandler
   checksum_member: BaseDataHandler
   framing_member: BaseDataHandler
@@ -80,14 +83,25 @@ export interface RightStoreTypes {
     baseData: RightDataHandlerType | RightRegisterType | RightPeripheralType | TimerType | RightTargetType,
     data: any
   ) => void
+  // 失焦校验 是否有error 信息
+  onBlurFn: (status: string | undefined, type: string) => void
+  closeMenu: (visibility: boolean, status: string | undefined, type: string) => void
+  updateRegister: () => void
+  // 更新外设信息
+  updatePeripheral: () => void
+  // 更新数据处理器信息
+  updateHandlerData: () => void
+  updateTimer: () => void
   updateFn: (type: string) => void
   onChangeFn: (type: string, keys: string, value: string | string[] | undefined | number[] | number | undefined) => void
 }
 
 export interface LeftStoreTypes {
   platform_id: null | number
+  registerList: any
   flag: number
   selectLeftId: null | number
   setSelect: (id: number, flag: number) => void
   setPlatFormId: (id: number) => void
+  clearFn: (type: string, keys: string, value: string | null | undefined | []) => void
 }

@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { create } from 'zustand'
 import { throwErrorMessage } from 'Src/util/message'
 import {
@@ -6,11 +7,15 @@ import {
   getRegisterDetails,
   getTargetDetails,
   getTimerDetails,
+  updateDataHandler,
+  updatePeripherals,
+  updateRegister,
   updateTimer
 } from 'Src/services/api/modelApi'
 import { produce } from 'immer'
 import { RightStoreTypes, LeftStoreTypes } from './leftAndRightStoreType'
 import ToolBox from '../ToolBoxStore/ToolBoxStore'
+import { LeftListStoreMap } from '../ModeleLeftListStore/LeftListStore'
 
 export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, get) => ({
   // 目标机ID
@@ -28,6 +33,8 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
   setPlatFormId: id => {
     set({ platform_id: id })
   },
+  // 寄存器列表
+  registerList: [],
   // 右侧属性
   rightAttributes: {},
   rightPeripheral: {
@@ -67,7 +74,9 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     interrupt: { value: undefined, validateStatus: undefined, errorMsg: null },
     sof: { value: undefined, validateStatus: undefined, errorMsg: null },
     eof: { value: undefined, validateStatus: undefined, errorMsg: null },
-    algorithm: { value: [], validateStatus: undefined, errorMsg: null },
+    algorithm: { value: undefined, validateStatus: undefined, errorMsg: null },
+    register_id: { value: undefined, validateStatus: undefined, errorMsg: null },
+    peripheral_id: { value: undefined, validateStatus: undefined, errorMsg: null },
     length_member: { value: [], validateStatus: undefined, errorMsg: null },
     checksum_member: { value: [], validateStatus: undefined, errorMsg: null },
     framing_member: { value: [], validateStatus: undefined, errorMsg: null }
@@ -101,6 +110,20 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     name: { value: undefined, validateStatus: undefined, errorMsg: null },
     desc: { value: undefined, validateStatus: undefined, errorMsg: null },
     processor: { value: undefined, validateStatus: undefined, errorMsg: null }
+  },
+
+  // 失焦检查每一项是否有error信息
+  onBlurFn: (status, type) => {
+    if (status === 'error') return
+    get().updateFn(type)
+  },
+
+  // 关闭菜单 更新数据
+  closeMenu: (visibility: boolean, status: string | undefined, type: string) => {
+    if (!visibility) {
+      if (status === 'error') return
+      get().updateFn(type)
+    }
   },
 
   // 更新右侧属性数据信息
@@ -156,6 +179,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
       if (res.data) {
         // 填充外设的值
         get().updateRightAttributes('rightPeripheral', get().rightPeripheral, res.data)
+        set({ registerList: res.data.registers })
       }
     } catch (error) {
       throwErrorMessage(error)
@@ -212,13 +236,20 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
 
   // 收集信息 校验函数 根据keys 选择不同函数进行校验 返回 {errorMsg validateStatus value}
   updateFn: type => {
-    const { rightDataHandler, rightTargetDetail, rightTimer, rightDataRegister } = get()
-    const infoMap = { rightDataHandler, rightTargetDetail, rightTimer, rightDataRegister }
-    console.log(infoMap[type as keyof typeof infoMap])
+    const { updateRegister, updateHandlerData, updatePeripheral, updateTimer } = get()
+    const fnMap = {
+      rightDataRegister: updateRegister,
+      rightTimer: updateTimer,
+      rightDataHandler: updateHandlerData,
+      rightPeripheral: updatePeripheral
+    }
+    fnMap[type as keyof typeof fnMap]()
   },
   // 输入过程中进行校验
   onChangeFn: (type, keys, value) => {
-    const validation = new ToolBox(value as string, true, keys).validate()
+    const validation = ['name', 'base_address', 'address_length', 'relative_address', 'interrupt', 'period'].includes(keys)
+      ? new ToolBox(value as string, true, keys).validate()
+      : new ToolBox(value as string, false, keys).validate()
     const { message, status } = validation
     set(state =>
       produce(state, draft => {
@@ -230,10 +261,102 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     )
   },
   // 更新外设信息
+  updatePeripheral: async () => {
+    const { rightPeripheral, platform_id } = get()
+    const params = {
+      platform_id,
+      name: rightPeripheral.name.value,
+      kind: rightPeripheral.kind.value,
+      base_address:
+        (rightPeripheral.base_address.value as string)?.trim().length % 2 === 0
+          ? rightPeripheral.base_address.value
+          : `0${rightPeripheral.base_address.value}`,
+      id: rightPeripheral.id,
+      address_length:
+        (rightPeripheral.address_length.value as string).trim().length % 2 === 0
+          ? rightPeripheral.address_length.value
+          : `0${rightPeripheral.address_length.value}`,
+      desc: rightPeripheral.desc.value
+    }
+    const res = await updatePeripherals(rightPeripheral.id as string, params)
+    if (platform_id && res.data) {
+      LeftListStoreMap.getList('customPeripheral')
+    }
+  },
   // 更新数据处理器信息
-
+  updateHandlerData: async () => {
+    const { rightDataHandler, platform_id } = get()
+    const params = {
+      name: rightDataHandler.name.value as string,
+      port: rightDataHandler.port.value as string,
+      platform_id,
+      interrupt: rightDataHandler.interrupt?.value ? rightDataHandler.interrupt?.value : null,
+      sof:
+        (rightDataHandler.sof.value as string)?.trim().length % 2 === 0
+          ? rightDataHandler.sof.value
+          : rightDataHandler.sof.value
+          ? `0${rightDataHandler.sof.value}`
+          : undefined,
+      eof:
+        (rightDataHandler.eof.value as string)?.trim().length % 2 === 0
+          ? rightDataHandler.eof.value
+          : rightDataHandler.eof.value
+          ? `0${rightDataHandler.eof.value}`
+          : undefined,
+      algorithm: rightDataHandler.algorithm.value,
+      length_member: rightDataHandler.length_member.value,
+      checksum_member: rightDataHandler.checksum_member.value,
+      framing_member: rightDataHandler.framing_member.value,
+      peripheral_id: rightDataHandler.peripheral_id.value ? rightDataHandler.peripheral_id.value : null,
+      register_id: rightDataHandler.register_id.value ? rightDataHandler.register_id.value : null
+    }
+    const res = await updateDataHandler(rightDataHandler.id, params)
+    if (platform_id && res.data) {
+      LeftListStoreMap.getList('handlerData')
+    }
+  },
   // 更新寄存器信息
+  updateRegister: async () => {
+    const { rightDataRegister, platform_id } = get()
+    const baseParams = {
+      platform_id,
+      name: rightDataRegister.name.value as string,
+      peripheral_id: rightDataRegister.peripheral_id.value,
+      relative_address:
+        (rightDataRegister.relative_address.value as string)?.trim().length % 2 === 0
+          ? rightDataRegister.relative_address.value
+          : rightDataRegister.relative_address.value
+          ? `0${rightDataRegister.relative_address.value}`
+          : undefined,
+      finish: rightDataRegister.finish.value,
+      kind: rightDataRegister.kind.value
+    }
 
+    const isKindParams = !rightDataRegister.kind.value
+      ? {
+          restore_cmd: rightDataRegister.restore_cmd.value,
+          set_cmd: rightDataRegister.set_cmd.value,
+          set_value:
+            (rightDataRegister.set_value.value as string)?.trim().length % 2 === 0
+              ? rightDataRegister.set_value.value
+              : rightDataRegister.set_value.value
+              ? `0${rightDataRegister.set_value.value}`
+              : undefined,
+          restore_value:
+            (rightDataRegister.restore_value.value as string)?.trim().length % 2 === 0
+              ? rightDataRegister.restore_value.value
+              : rightDataRegister.restore_value.value
+              ? `0${rightDataRegister.restore_value.value}`
+              : undefined
+        }
+      : { sr_id: rightDataRegister.sr_id.value, sr_peri_id: rightDataRegister.sr_peri_id.value }
+
+    const params = { ...baseParams, ...isKindParams }
+    const res = await updateRegister(rightDataRegister.id, params)
+    if (platform_id && res.data) {
+      LeftListStoreMap.getList('customPeripheral')
+    }
+  },
   // 更新定时器信息
   updateTimer: async () => {
     const { rightTimer, platform_id } = get()
@@ -245,7 +368,22 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     }
     const res = await updateTimer(rightTimer.id, params)
     if (platform_id && res.data) {
-      //   getListFn('time', +platform_id)
+      LeftListStoreMap.getList('timer')
+    }
+  },
+  // 根据type,keys 清除值
+
+  clearFn: (type, keys, value) => {
+    set(state =>
+      produce(state, draft => {
+        const updatedDraft = draft
+        updatedDraft[type as keyof typeof updatedDraft][keys].validateStatus = undefined
+        updatedDraft[type as keyof typeof updatedDraft][keys].errorMsg = undefined
+        updatedDraft[type as keyof typeof updatedDraft][keys].value = value
+      })
+    )
+    if (type === 'rightDataHandler') {
+      get().updateHandlerData()
     }
   }
 }))

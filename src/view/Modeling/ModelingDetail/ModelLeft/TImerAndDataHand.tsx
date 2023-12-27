@@ -4,7 +4,6 @@ import { IconDelete, IconCommon, IconClock, IconExclamationTriangleFill } from '
 import InfiniteScroll from 'react-infinite-scroll-component'
 import styles from 'Src/view/Project/task/taskList/task.less'
 import StyleSheet from './modelLeft.less'
-import { useLeftModelDetailsStore } from '../../Store/ModelStore'
 import { errorCodeMapFn } from '../../Store/MapStore'
 import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
 import { LeftAndRightStore } from '../../Store/ModelLeftAndRight/leftAndRightStore'
@@ -19,19 +18,24 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
   const hasMoreData = LeftListStore(state => state.hasMoreData)
   const timerAndHandData = LeftListStore(state => state.timerAndHandData)
   const getList = LeftListStore(state => state.getList)
+  const getAllList = LeftListStore(state => state.getAllList)
   // 设置选中节点,以及flag
   const { setSelect, selectLeftId } = LeftAndRightStore()
   const loadMoreData = React.useCallback(() => {
     const newPage = timerAndHandData.page_size + 10
-    getList({ ...timerAndHandData, page_size: newPage }, '')
+    getList('timer')
+    console.log(newPage)
   }, [getList, timerAndHandData])
 
   const updataMidleAndRightUI = useCallback(
-    (selectedKeys, e) => {
-      const { flag, id } = e.node
+    (e, item) => {
+      const { flag, id } = item
       setSelect(id, flag)
+      if (flag === 3) {
+        getAllList()
+      }
     },
-    [setSelect]
+    [getAllList, setSelect]
   )
 
   // todo 画布不影响左侧列表,左侧列表影响画布
@@ -128,7 +132,6 @@ function TImerAndDataHand() {
   const layoutRef = useRef<any>()
   const { tabsList, tabs } = LeftListStore()
   const listData = React.useMemo(() => {
-    console.log(tabsList)
     return tabsList
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabsList, tabs])

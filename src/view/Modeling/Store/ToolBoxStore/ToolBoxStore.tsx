@@ -104,8 +104,14 @@ export default class ToolBox {
         return this.checkHex()
       case 'relative_address':
         return this.checkHex()
-      // case 'address_length':
-      //   return this.checkHex()
+      case 'restore_value':
+        return this.checkHex()
+      case 'set_value':
+        return this.checkHex()
+      case 'eof':
+        return this.checkHex()
+      case 'sof':
+        return this.checkHex()
       case 'period':
         return this.checkInterval()
       case 'interrupt':
