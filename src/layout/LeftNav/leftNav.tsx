@@ -237,12 +237,10 @@ const LeftNav: React.FC = () => {
       <SideBar routerList={routerList} isClose={isClose} />
       {isClose && (
         <>
-          (
           <div style={{ position: 'absolute', bottom: '0', margin: '0px 24px', fontSize: '12px', color: '#99999' }}>
             <p>版本号：v1.3.001.20231227</p>
             {license && <p>有效期 ：{license}</p>}
           </div>
-          )
         </>
       )}
 
