@@ -18,7 +18,7 @@ export default function CustomControls() {
   }
 
   return (
-    <Controls className={StyleSheet.controlsButton} showZoom={false} showFitView={false} showInteractive={false}>
+    <Controls className={StyleSheet.controlsButton} showZoom={false} position='bottom-right' showFitView={false} showInteractive={false}>
       <ControlButton style={{ border: 'none' }} className={StyleSheet.zoomOut} onClick={onZoomOutHandler} title='缩小'>
         -
       </ControlButton>

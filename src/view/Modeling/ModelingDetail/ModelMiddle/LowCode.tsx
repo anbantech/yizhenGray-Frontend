@@ -4,11 +4,13 @@ import { LowCodeStoreType } from '../../Store/CanvasStore/canvasStoreType'
 import 'reactflow/dist/style.css'
 import { LowCodeStore } from '../../Store/CanvasStore/canvasStore'
 import CustomTargetNode from '../../ModelingMaterials/CustomTargetNode'
+import CustomControls from '../../ModelingMaterials/CustomControls'
 
 type ExpandCollapseExampleProps = {
   edges: Edge[]
   nodes: Node[]
 }
+const proOptions = { account: 'paid-pro', hideAttribution: true }
 
 const selector = (state: LowCodeStoreType) => ({
   onNodesChange: state.onNodesChange,
@@ -26,8 +28,9 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
   const { onNodesChange, onEdgesChange } = LowCodeStore(selector)
 
   return (
-    <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} fitView>
+    <ReactFlow nodes={nodes} edges={edges} proOptions={proOptions} nodeTypes={nodeTypes} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange}>
       <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
+      <CustomControls />
     </ReactFlow>
   )
 }
