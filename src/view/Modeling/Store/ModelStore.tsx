@@ -115,8 +115,8 @@ const vieMarkDown = create<ViewMarkDown>((set, get) => ({
     set({ open: !get().open })
   },
 
-  getMarkDown: async id => {
-    const res = await viewELT(id)
+  getMarkDown: async (id, allId) => {
+    const res = await viewELT(id, allId)
     if (res.data) {
       set({ markDown: res.data, open: true })
     }

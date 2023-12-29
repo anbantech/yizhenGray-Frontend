@@ -329,5 +329,5 @@ export interface ViewMarkDown {
   markDown: string
   open: boolean
   setOpen: () => void
-  getMarkDown: (id: string | number) => void
+  getMarkDown: (id: string | number, allId: any) => void
 }

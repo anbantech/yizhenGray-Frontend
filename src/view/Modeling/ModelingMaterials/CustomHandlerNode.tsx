@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import React, { useMemo } from 'react'
 import { IconCommon } from '@anban/iconfonts'
 import { Handle, NodeProps, Position } from 'reactflow'
+import Close from 'Src/assets/drag/icon_close.svg'
 import StyleSheet from '../model.less'
 import { LeftAndRightStore } from '../Store/ModelLeftAndRight/leftAndRightStore'
 
@@ -29,6 +30,9 @@ function CustomHandlerNode(Node: NodeProps) {
         <div className={StyleSheet.label}>
           <IconCommon style={{ marginRight: '5px' }} />
           <span className={StyleSheet.labelName}>{Node.data.label}</span>
+        </div>
+        <div className={StyleSheet.deleteIcon}>
+          <img src={Close} alt='' />
         </div>
       </div>
     </div>

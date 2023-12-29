@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import React, { useMemo } from 'react'
 import { Handle, NodeProps, Position } from 'reactflow'
 import { IconClock } from '@anban/iconfonts'
+import Close from 'Src/assets/drag/icon_close.svg'
 import StyleSheet from '../model.less'
 import { LeftAndRightStore } from '../Store/ModelLeftAndRight/leftAndRightStore'
 
@@ -32,6 +33,9 @@ function CustomTimerNode(Node: NodeProps) {
         <div className={StyleSheet.label}>
           <IconClock style={{ marginRight: '5px' }} />
           <span className={StyleSheet.labelName}>{name}</span>
+        </div>
+        <div className={StyleSheet.deleteIcon}>
+          <img src={Close} alt='' />
         </div>
       </div>
     </div>

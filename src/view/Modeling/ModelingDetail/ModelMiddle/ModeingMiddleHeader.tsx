@@ -14,6 +14,7 @@ import { publicAttributes, vieMarkDown } from '../../Store/ModelStore'
 import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
 import { LeftAndRightStore } from '../../Store/ModelLeftAndRight/leftAndRightStore'
 import { LowCodeStore } from '../../Store/CanvasStore/canvasStore'
+import { deleteMap } from '../../Store/MapStore'
 
 const browserDownload = {
   ifHasDownloadAPI: 'download' in document.createElement('a'),
@@ -430,13 +431,41 @@ function ModelingMiddleHeaderMemo({ tabs }: { tabs: string }) {
 
 const ModelingMiddleHeader = React.memo(ModelingMiddleHeaderMemo)
 
+const filterNode = (data: any) => {
+  const flagIdObject: { [key: string]: string[] } = {}
+
+  // Filter and group elements in a single iteration
+  data.forEach((item: any) => {
+    const {
+      data: { flag },
+      id
+    } = item
+    if ([1, 3, 4].includes(flag)) {
+      const flagKey = deleteMap[flag as keyof typeof deleteMap] as keyof typeof flagIdObject
+      if (!flagIdObject[flagKey]) {
+        flagIdObject[flagKey] = []
+      }
+      flagIdObject[flagKey].push(id)
+    }
+  })
+
+  // Convert arrays to comma-separated strings
+  const result: { [key: string]: string } = {}
+  for (const key in flagIdObject) {
+    if (Object.prototype.hasOwnProperty.call(flagIdObject, key)) {
+      result[key] = flagIdObject[key].join(',')
+    }
+  }
+  return result
+}
+
 const HeaderBarMemo = () => {
   const { setHeaderTabs, initFormValue } = HeaderStore()
   const { getPeripheralList } = LeftListStore()
   const { platform_id } = LeftAndRightStore()
   const headerTabs = HeaderStore(state => state.headerTabs)
   const { getMarkDown } = vieMarkDown()
-  const { nodes, edges } = LowCodeStore()
+  const { nodes } = LowCodeStore()
 
   const showOrHide = React.useCallback(
     (e, val: string) => {
@@ -453,10 +482,11 @@ const HeaderBarMemo = () => {
   // 下载与生成函数
   const downloadAndCreate = React.useCallback(
     async (type: string) => {
+      const allId = filterNode(nodes)
       try {
         if (!platform_id) return
         if (type === 'view') {
-          return getMarkDown(platform_id)
+          return getMarkDown(platform_id, allId)
         }
         if (type === 'download') {
           const res: any = await downLoadScript(platform_id)
@@ -465,7 +495,7 @@ const HeaderBarMemo = () => {
             browserDownload.createFrontendDownloadAction(decodeURIComponent(res.fileName), new Blob([res.data]))
           }
         } else {
-          const res: any = await scriptGenerator(platform_id)
+          const res: any = await scriptGenerator(platform_id, allId)
           if (res.code === 0) {
             message.success('生成脚本成功')
           }
@@ -477,7 +507,7 @@ const HeaderBarMemo = () => {
         message.error('网络连接失败,请检查网络')
       }
     },
-    [getMarkDown, platform_id]
+    [getMarkDown, platform_id, nodes]
   )
 
   return (

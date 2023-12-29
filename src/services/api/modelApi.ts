@@ -149,7 +149,7 @@ function deleteConrolsFn(id: any) {
 }
 
 // 生成脚本
-function scriptGenerator(id: number | string, params?: { preview: boolean }) {
+function scriptGenerator(id: number | string, params: any) {
   return request.get(`/api/v1.0/models/script/generate/${id}`, { params })
 }
 
@@ -159,8 +159,8 @@ function downLoadScript(id: number | string) {
 }
 
 // 预览ELT
-function viewELT(id: string | number) {
-  return request.get(`/api/v1.0/models/controls/preview/${id}`)
+function viewELT(id: string | number, allID: any) {
+  return request.get(`/api/v1.0/models/controls/preview/${id}`, { params: allID })
 }
 
 export {
