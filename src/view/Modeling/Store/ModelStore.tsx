@@ -1,6 +1,3 @@
-// import { create } from 'zustand'
-// import ModelDrawStoreType from './ModleStore'
-
 import { create } from 'zustand'
 
 import { createModelTarget, deleteModelTarget, getModelTargetList, updateModelTarget, viewELT } from 'Src/services/api/modelApi'
