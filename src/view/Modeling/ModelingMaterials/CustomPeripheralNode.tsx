@@ -1,11 +1,11 @@
 import classNames from 'classnames'
 import React, { useMemo } from 'react'
-import { IconYifuRegister } from '@anban/iconfonts'
+import { IconPeripheral } from '@anban/iconfonts'
 import { Handle, NodeProps, Position } from 'reactflow'
 import StyleSheet from '../model.less'
 import { LeftAndRightStore } from '../Store/ModelLeftAndRight/leftAndRightStore'
 
-function CustomRegisterNode(Node: NodeProps) {
+function CustomPeripheralNode(Node: NodeProps) {
   const selectLeftId = LeftAndRightStore(state => state.selectLeftId)
   const foucsNodeStatus = useMemo(() => {
     if (selectLeftId && Node.id) {
@@ -23,10 +23,11 @@ function CustomRegisterNode(Node: NodeProps) {
   )
   return (
     <div className={style}>
-      <div className={StyleSheet.regiseterNode}>
+      <div className={StyleSheet.peripheralNode}>
+        <Handle type='source' position={Node.sourcePosition || Position.Bottom} />
         <Handle type='target' position={Node.targetPosition || Position.Top} />
         <div className={StyleSheet.label}>
-          <IconYifuRegister style={{ marginRight: '5px' }} />
+          <IconPeripheral style={{ marginRight: '5px' }} />
           <span className={StyleSheet.labelName}>{Node.data.label}</span>
         </div>
       </div>
@@ -34,4 +35,4 @@ function CustomRegisterNode(Node: NodeProps) {
   )
 }
 
-export default CustomRegisterNode
+export default CustomPeripheralNode

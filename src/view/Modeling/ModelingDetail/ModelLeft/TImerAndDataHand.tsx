@@ -5,9 +5,10 @@ import { IconDelete, IconCommon, IconClock, IconExclamationTriangleFill } from '
 import InfiniteScroll from 'react-infinite-scroll-component'
 import styles from 'Src/view/Project/task/taskList/task.less'
 import StyleSheet from './modelLeft.less'
-import { errorCodeMapFn } from '../../Store/MapStore'
+import { errorCodeMapFn, titleFlagMap } from '../../Store/MapStore'
 import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
 import { LeftAndRightStore } from '../../Store/ModelLeftAndRight/leftAndRightStore'
+import { LowCodeStore } from '../../Store/CanvasStore/canvasStore'
 
 const Image = {
   3: <IconCommon style={{ width: '16px', height: '16px', color: '#CCCCCC' }} />,
@@ -16,6 +17,7 @@ const Image = {
 
 const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
   const { listData, height } = props
+  const tabs = LeftListStore(state => state.tabs)
   const hasMoreData = LeftListStore(state => state.hasMoreData)
   const timerAndHandData = LeftListStore(state => state.timerAndHandData)
   const getList = LeftListStore(state => state.getList)
@@ -24,8 +26,8 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
   const { setSelect, selectLeftId } = LeftAndRightStore()
   const loadMoreData = React.useCallback(() => {
     const newPage = timerAndHandData.page_size + 10
+    LeftListStore.getState().updateTimerAndHandleParams(newPage)
     getList('timer')
-    console.log(newPage)
   }, [getList, timerAndHandData])
 
   const updataMidleAndRightUI = useCallback(
@@ -43,14 +45,21 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
   const deleteTreeNodeHandle = React.useCallback(
     (e, node) => {
       e.stopPropagation()
-      console.log(e, node)
+      const nodeArray = [{ id: String(node.id), data: { flag: node.flag } }]
+      const nodeInfo = {
+        node: nodeArray,
+        title: titleFlagMap[node.flag as keyof typeof titleFlagMap][0],
+        content: `${titleFlagMap[node.flag as keyof typeof titleFlagMap][1]}${node.name}`
+      }
+      LowCodeStore.getState().setDeleNodeInfo(nodeInfo, true)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
   const onDragStart = (event: any, nodeType: any) => {
-    event.dataTransfer.setData('application/reactflow', nodeType)
+    const data = JSON.stringify({ ...nodeType, tabs })
+    event.dataTransfer.setData('application/reactflow', data)
     event.dataTransfer.effectAllowed = 'move'
   }
 

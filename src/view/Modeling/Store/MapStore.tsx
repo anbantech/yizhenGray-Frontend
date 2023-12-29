@@ -5,66 +5,11 @@ const titleMap = {
   外设: 'peripheral'
 }
 
-const checkAsyncMap = {
-  peripheral: ['name', 'base_address'],
-  timer: ['name'],
-  processor: ['name', 'port'],
-  register: ['name', 'relative_address']
-}
-
-// 右侧数据校验字典
-const rightFormCheckMap = {
-  Timer: ['name', 'period', 'interrupt'],
-  Processor: [
-    'name',
-    'port',
-    'interrupt',
-    'sof',
-    'eof',
-    'algorithm',
-    'length_member',
-    'checksum_member',
-    'framing_member',
-    'peripheral_id',
-    'register_id'
-  ],
-  Peripheral: ['name', 'kind', 'base_address', 'address_length', 'desc'],
-  Register: [
-    'peripheral_id',
-    'peripheral',
-    'name',
-    'relative_address',
-    'kind',
-    'finish',
-    'variety',
-    'set_cmd',
-    'restore_cmd',
-    'set_value',
-    'restore_value',
-    'sr_id',
-    'sr_peri_id'
-  ]
-}
-const NodeType = {
-  1: 'peripheralNode',
-  2: 'registerNode',
-  3: 'custom',
-  4: 'time',
-  5: 'targetNode'
-}
-
 const deleteMap = {
   1: 'peripherals',
   2: 'registers',
   3: 'processors',
   4: 'timers'
-}
-const NodeZindex = {
-  1: 1004,
-  2: 1003,
-  3: 1002,
-  4: 1001,
-  5: 1005
 }
 
 const AttributesType = {
@@ -189,13 +134,9 @@ const clearInfoObj = {
 }
 
 export {
-  rightFormCheckMap,
   extractIdsFromTree,
   titleMap,
-  checkAsyncMap,
-  NodeType,
   getAllIds,
-  NodeZindex,
   AttributesType,
   errorCodeMapFn,
   AssembleDataHandlerFn,

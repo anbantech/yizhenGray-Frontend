@@ -1,11 +1,13 @@
+/* eslint-disable no-param-reassign */
 import { Skeleton, Tooltip, Tree } from 'antd'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { IconPeripheral, IconYifuRegister, IconDelete, IconCommon, IconClock, IconExclamationTriangleFill } from '@anban/iconfonts'
 import styles from 'Src/view/Project/task/taskList/task.less'
 import StyleSheet from './modelLeft.less'
-import { errorCodeMapFn } from '../../Store/MapStore'
+import { errorCodeMapFn, titleFlagMap } from '../../Store/MapStore'
 import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
 import { LeftAndRightStore } from '../../Store/ModelLeftAndRight/leftAndRightStore'
+import { LowCodeStore } from '../../Store/CanvasStore/canvasStore'
 
 interface LoactionState {
   state: Record<any, any>
@@ -47,19 +49,23 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
     [getAllList, setSelect]
   )
 
-  // const deleteTreeNodeHandle = React.useCallback(
-  //   (e, node) => {
-  //     e.stopPropagation()
-  //     const nodeArray = [{ id: String(node.id), data: { flag: node.flag } }]
-  //     const nodeInfo = {
-  //       node: nodeArray,
-  //       title: titleFlagMap[node.flag as keyof typeof titleFlagMap][0],
-  //       content: `${titleFlagMap[node.flag as keyof typeof titleFlagMap][1]}${node.name}`
-  //     }
-  //     deleteTreeNode(true, nodeInfo)
-  //   },
-  //   [deleteTreeNode]
-  // )
+  const deleteTreeNodeHandle = React.useCallback((e, node) => {
+    e.stopPropagation()
+    const nodeArray = [{ id: String(node.id), data: { flag: node.flag } }]
+    const nodeInfo = {
+      node: nodeArray,
+      title: titleFlagMap[node.flag as keyof typeof titleFlagMap][0],
+      content: `${titleFlagMap[node.flag as keyof typeof titleFlagMap][1]}${node.name}`
+    }
+    LowCodeStore.getState().setDeleNodeInfo(nodeInfo, true)
+  }, [])
+
+  const onDragStart = (event: any, nodeType: any) => {
+    const { name, id, error_code, flag, tabs } = nodeType
+    const data = JSON.stringify({ name, id, error_code, flag, tabs })
+    event.dataTransfer.setData('application/reactflow', data)
+    event.dataTransfer.effectAllowed = 'move'
+  }
 
   return (
     <>
@@ -77,7 +83,12 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
             height={height}
             titleRender={(node: any) => {
               return (
-                <div className={StyleSheet.node} style={{ paddingRight: '4px' }}>
+                <div
+                  className={StyleSheet.node}
+                  style={{ paddingRight: '4px' }}
+                  draggable={node.flag === 1}
+                  onDragStart={event => onDragStart(event, node)}
+                >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <span style={{ paddingLeft: '6px' }}>{node.title}</span>
                     {node?.error_code ? (
@@ -101,9 +112,9 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
                     <IconDelete
                       style={{ color: '#cccccc' }}
                       className={StyleSheet.icon}
-                      // onClick={e => {
-                      //   deleteTreeNodeHandle(e, node)
-                      // }}
+                      onClick={e => {
+                        deleteTreeNodeHandle(e, node)
+                      }}
                     />
                   ) : null}
                 </div>

@@ -41,6 +41,10 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
     sort_field: 'create_time',
     sort_order: 'descend'
   },
+  // 更新数据处理器,定时器接口请求参数
+  updateTimerAndHandleParams: value => {
+    set({ timerAndHandData: { ...get().timerAndHandData, page_size: value } })
+  },
   // 自定义外设 内置外设接口
   // 自定义数量
   customPeripheralNums: 0,
@@ -262,5 +266,6 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
 export const LeftListStoreMap = {
   getList: LeftListStore.getState().getList,
   getModelListDetails: LeftListStore.getState().getModelListDetails,
-  updateTreeNodeData: LeftListStore.getState().updateTreeNodeData
+  updateTreeNodeData: LeftListStore.getState().updateTreeNodeData,
+  setTabs: LeftListStore.getState().setTabs
 }

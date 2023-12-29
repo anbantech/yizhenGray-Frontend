@@ -13,6 +13,7 @@ import { HeaderStore } from '../../Store/HeaderStore/HeaderStore'
 import { publicAttributes, vieMarkDown } from '../../Store/ModelStore'
 import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
 import { LeftAndRightStore } from '../../Store/ModelLeftAndRight/leftAndRightStore'
+import { LowCodeStore } from '../../Store/CanvasStore/canvasStore'
 
 const browserDownload = {
   ifHasDownloadAPI: 'download' in document.createElement('a'),
@@ -435,6 +436,7 @@ const HeaderBarMemo = () => {
   const { platform_id } = LeftAndRightStore()
   const headerTabs = HeaderStore(state => state.headerTabs)
   const { getMarkDown } = vieMarkDown()
+  const { nodes, edges } = LowCodeStore()
 
   const showOrHide = React.useCallback(
     (e, val: string) => {

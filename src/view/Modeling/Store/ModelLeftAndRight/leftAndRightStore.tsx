@@ -16,6 +16,7 @@ import { produce } from 'immer'
 import { RightStoreTypes, LeftStoreTypes } from './leftAndRightStoreType'
 import ToolBox from '../ToolBoxStore/ToolBoxStore'
 import { LeftListStoreMap } from '../ModeleLeftListStore/LeftListStore'
+import { LowCodeStore } from '../CanvasStore/canvasStore'
 
 export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, get) => ({
   // 目标机ID
@@ -115,6 +116,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
   // 失焦检查每一项是否有error信息
   onBlurFn: (status, type) => {
     if (status === 'error') return
+
     get().updateFn(type)
   },
 
@@ -283,6 +285,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     }
     const res = await updatePeripherals(rightPeripheral.id as string, params)
     if (platform_id && res.data) {
+      LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
       LeftListStoreMap.getList('customPeripheral')
       set({ rightAttributes: params })
     }
@@ -316,6 +319,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     }
     const res = await updateDataHandler(rightDataHandler.id, params)
     if (platform_id && res.data) {
+      LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
       LeftListStoreMap.getList('handlerData')
       set({ rightAttributes: params })
     }
@@ -359,6 +363,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     const params = { ...baseParams, ...isKindParams }
     const res = await updateRegister(rightDataRegister.id, params)
     if (platform_id && res.data) {
+      LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
       LeftListStoreMap.getList('customPeripheral')
       set({ rightAttributes: params })
     }
@@ -374,6 +379,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     }
     const res = await updateTimer(rightTimer.id, params)
     if (platform_id && res.data) {
+      LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
       LeftListStoreMap.getList('timer')
       set({ rightAttributes: params })
     }

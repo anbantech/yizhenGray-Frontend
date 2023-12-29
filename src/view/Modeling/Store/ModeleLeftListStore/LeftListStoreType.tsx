@@ -46,7 +46,8 @@ export interface LeftListStoreType {
   updateTagOrKeyWord: (val: string, type: string, whichOneParams: boolean) => void
   // 获取目标机详情
   getModelListDetails: (id: number) => void
-
+  // 更新列表
+  updateTimerAndHandleParams: (value: number) => void
   getCustomAndDefaultPeripheral: (tabs: string) => void
   // 获取定时器列表或者数据处理器列表 切换tabs时 一定要重置请求参数
   getTimerListAndDataHandlerList: (tabs: string) => void

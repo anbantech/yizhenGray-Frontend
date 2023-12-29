@@ -12,6 +12,7 @@ import { publicAttributes, vieMarkDown } from '../Store/ModelStore'
 import ViewMarkdown from './ViewMkdown'
 import { LeftAndRightStore } from '../Store/ModelLeftAndRight/leftAndRightStore'
 import { LeftListStore } from '../Store/ModeleLeftListStore/LeftListStore'
+
 import { LowCodeStore } from '../Store/CanvasStore/canvasStore'
 
 function ModelDetailsIndex() {
@@ -19,8 +20,7 @@ function ModelDetailsIndex() {
   const markDown = vieMarkDown(state => state.markDown)
   const platformsId = (useLocation() as LoactionState).state?.id
   const setPlatFormId = LeftAndRightStore(state => state.setPlatFormId)
-  // 首页获取目标机详情
-  const getModelListDetails = LeftListStore(state => state.getModelListDetails)
+
   // 首次加载自定义外设列表
   const getList = LeftListStore(state => state.getList)
   const setPortList = publicAttributes(state => state.setPortList)
@@ -33,9 +33,8 @@ function ModelDetailsIndex() {
       setPortList()
       setPlatFormId(platformsId)
       getList('customPeripheral')
-      getModelListDetails(platformsId)
     }
-  }, [getList, getModelDetails, getModelListDetails, platformsId, setPlatFormId, setPortList])
+  }, [getList, getModelDetails, platformsId, setPlatFormId, setPortList])
 
   return (
     <div className={StyleSheet.ModelDetailsBody}>

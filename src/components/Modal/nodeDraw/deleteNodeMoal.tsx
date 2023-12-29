@@ -6,20 +6,20 @@ import styles from 'Src/components/Modal/newModalOrFixModal/modelingModal.less'
 import { deleteConrolsFn } from 'Src/services/api/modelApi'
 
 import { deleteMap } from 'Src/view/Modeling/Store/MapStore'
-import { MiddleStore } from 'Src/view/Modeling/Store/ModelMiddleStore/MiddleStore'
+import { LeftAndRightStore } from 'Src/view/Modeling/Store/ModelLeftAndRight/leftAndRightStore'
 
 interface ModelProps {
   visibility: boolean
   onNodesDelete: (node: Node[], error_codeArray?: { error_code: number; id: string }[]) => void
-  deleteTreeNode: any
-  deleteInfo: any
+  setDeleNodeInfo: any
+  deleteNodeInfo: any
 }
 
 function DeleteNodeModal(props: ModelProps) {
-  const { visibility, deleteInfo, onNodesDelete, deleteTreeNode } = props
-  const { node } = deleteInfo
+  const { visibility, deleteNodeInfo, onNodesDelete, setDeleNodeInfo } = props
+  const { node } = deleteNodeInfo
   const [loading, setLoading] = React.useState(false)
-  const platform_id = MiddleStore(state => state.platform_id)
+  const platform_id = LeftAndRightStore(state => state.platform_id)
   const filterNode = (data: any) => {
     const allIds = new Set(data.map((item: { id: string }) => item.id))
     const flagIdObject: { [key: string]: string[] } = {}
@@ -31,14 +31,11 @@ function DeleteNodeModal(props: ModelProps) {
         data: { flag },
         id
       } = item
-
       if ((!parentId || !allIds.has(parentId)) && flag !== undefined && id !== undefined) {
         const flagKey = deleteMap[flag as keyof typeof deleteMap] as keyof typeof flagIdObject
-
         if (!flagIdObject[flagKey]) {
           flagIdObject[flagKey] = []
         }
-
         flagIdObject[flagKey].push(id)
       }
     })
@@ -58,19 +55,18 @@ function DeleteNodeModal(props: ModelProps) {
     try {
       const response = await deleteConrolsFn({ ...params, platform_id })
       setLoading(true)
-      if (response.code === 0) {
+      if (response.code === 0 && platform_id) {
         setLoading(false)
         message.success('删除成功')
-        if (node.node.flag !== 4) {
-          deleteTreeNode(false)
-        }
+        setDeleNodeInfo({}, false)
+        LeftAndRightStore.getState().getTargetDetail(platform_id)
         onNodesDelete(node.node, response.data.error_code)
       }
     } catch {
       message.error('删除失败')
       setLoading(false)
     }
-  }, [deleteTreeNode, node.node, onNodesDelete, platform_id])
+  }, [node.node, onNodesDelete, platform_id, setDeleNodeInfo])
 
   return (
     <Modal
@@ -80,14 +76,14 @@ function DeleteNodeModal(props: ModelProps) {
       title={node?.title ? node?.title : '删除节点'}
       className={styles.deleteNodebody}
       onCancel={() => {
-        deleteTreeNode(false)
+        setDeleNodeInfo({}, false)
       }}
       footer={[
         <Button
           className={styles.btn_cancel}
           key='back'
           onClick={() => {
-            deleteTreeNode(false)
+            setDeleNodeInfo({}, false)
           }}
         >
           取消
