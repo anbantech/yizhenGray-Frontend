@@ -35,6 +35,11 @@
   font-style: normal;
   font-weight: 400;
   line-height: 38px;
+   &:hover{
+    .deleteIcon{
+     visibility: visible;
+    }
+  }
 }
 
 .TimerNodeHandle{
@@ -60,6 +65,12 @@
   font-style: normal;
   font-weight: 400;
   line-height: 38px;
+   &:hover{
+    .deleteIcon{
+     visibility: visible;
+     cursor: pointer;
+    }
+  }
 }
 
 .DataHandlerNode{
@@ -78,6 +89,12 @@
   font-style: normal;
   font-weight: 400;
   line-height: 38px;
+   &:hover{
+    .deleteIcon{
+     visibility: visible;
+     cursor: pointer;
+    }
+  }
 }
 
 .peripheralNode{
@@ -96,6 +113,12 @@
   font-style: normal;
   font-weight: 400;
   line-height: 38px;
+  &:hover{
+    .deleteIcon{
+     visibility: visible;
+     cursor: pointer;
+    }
+  }
 }
 
 
@@ -137,20 +160,27 @@
 }
 
 .deleteIcon{
-  width: 15px;
-  height: 15px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   position: absolute;
-  right: -8px;
-  top:-8px;
+  right: -9px;
+  top:-9px;
   background-color: #FFF;
   display: flex;
   justify-content: center;
   align-items: center;
+  visibility: hidden;
   cursor: pointer;
 }
 
 .deleteIcon:hover{
   background-color: #e3e3e3;
   cursor: pointer;
+}
+
+.handle{
+   width: 10px;
+   height: 6px;
+   border-radius:4px;
 }

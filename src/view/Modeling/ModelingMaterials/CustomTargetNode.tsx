@@ -16,7 +16,7 @@ function CustomTargetNode(Node: NodeProps) {
   return (
     <div className={style}>
       <div className={StyleSheet.targetNode}>
-        <Handle type='source' position={Node.sourcePosition || Position.Bottom} />
+        <Handle type='source' className={StyleSheet.handle} style={{ bottom: 0 }} position={Node.sourcePosition || Position.Bottom} />
         {Node.data.label}
       </div>
     </div>

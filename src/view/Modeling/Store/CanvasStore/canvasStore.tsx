@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable indent */
 /* eslint-disable no-param-reassign */
 import { create } from 'zustand'
@@ -7,6 +8,8 @@ import { throwErrorMessage } from 'Src/util/message'
 import { getCanvas, saveCanvasAsync } from 'Src/services/api/modelApi'
 import { LowCodeStoreType } from './canvasStoreType'
 import Layout from '../../ModelingMaterials/useAutoLayout'
+import { LeftAndRightStore } from '../ModelLeftAndRight/leftAndRightStore'
+import { LeftListStore } from '../ModeleLeftListStore/LeftListStore'
 
 const pako = require('pako')
 
@@ -28,6 +31,7 @@ export function switchNodeType(flag: number) {
 export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
   nodes: [],
   edges: [],
+  deleteNode: [],
   deleteNodeInfo: { node: {}, visibility: false },
 
   setDeleNodeInfo: (node, visibility) => {
@@ -213,5 +217,31 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
   setEdgesAndNodes: (node, edge, id) => {
     set({ nodes: [...node], edges: [...edge] })
     get().saveCanvas(id)
+  },
+
+  onNodesDelete: (nodeData, edgesData, deleteAarrayInfo, deletedArray, error_code) => {
+    const deleteNodeArray = deleteAarrayInfo.concat(deletedArray).flat(Infinity)
+    const node = nodeData
+      .map((Node1: any) => {
+        const matchingItem = error_code.find((item2: any) => Node1.id === String(item2.id))
+        if (matchingItem) {
+          // eslint-disable-next-line no-param-reassign
+          Node1.data.error_code = matchingItem.error_code
+        }
+        return Node1
+      })
+      .filter((item: { id: any }) => {
+        return !deleteNodeArray.some((data: { id: any }) => data.id === item.id)
+      })
+
+    const edge = edgesData.filter((item: { target: any }) => {
+      return !deleteNodeArray.some((data: { id: any }) => data.id === item.target)
+    })
+    const platform_idS = LeftAndRightStore.getState().platform_id
+    if (platform_idS) {
+      get().setEdgesAndNodes(node, edge, String(platform_idS))
+      LeftAndRightStore.getState().setSelect(platform_idS, 5)
+    }
+    LeftListStore.getState().getList('customPeripheral')
   }
 }))

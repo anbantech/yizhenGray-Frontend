@@ -18,4 +18,5 @@ export interface LowCodeStoreType {
   deleteNodeInfo: { node: any; visibility: boolean }
   setDeleNodeInfo: (node: any, visibility: boolean) => void
   setEdgesAndNodes: (node: any, edge: any, id: string) => void
+  onNodesDelete: (nodeData: any, edgesData: any, deleteAarrayInfo: any, deletedArray: any, error_code: any) => void
 }
