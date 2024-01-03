@@ -164,7 +164,8 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
         id: String(register_id.value),
         error_code: 0,
         flag: 2,
-        tabs: ''
+        tabs: '',
+        parentId: String(id)
       },
       parentId: String(id),
       type: switchNodeType(2),
@@ -301,8 +302,12 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
   },
 
   // 画布的删除
-  onNodesDelete: (nodeData, edgesData, deletedArray, error_code) => {
+  onNodesDelete: async (nodeData, edgesData, deletedArray, error_code) => {
     const deleteNodeInfo = get().deleteNode.concat(deletedArray).flat(Infinity) as any
+    if (deletedArray.length === 1 && deletedArray[0].data.flag === 2) {
+      await LeftAndRightStore.getState().getDataHandlerDetail(deletedArray[0].data.parentId)
+      LeftAndRightStore.getState().updateHandlerData(true, { register_id: null })
+    }
     const node = nodeData
       .map((Node1: any) => {
         const matchingItem = error_code.find((item2: any) => Node1.id === String(item2.id))

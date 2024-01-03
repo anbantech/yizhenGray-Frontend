@@ -190,7 +190,12 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
   )
 
   const onNodesDelete = React.useCallback(
-    (deleted, error_code?: any) => {
+    async (deleted, error_code?: any) => {
+      if (deleted.length === 1 && deleted[0].data.flag === 2) {
+        const parent_id = nodeData.filter(item => item.id === deleted[0].id)
+        await LeftAndRightStore.getState().getDataHandlerDetail(parent_id[0].data.parentId)
+        LeftAndRightStore.getState().updateHandlerData(true, { register_id: null })
+      }
       getDeleteNodeAndAdge(deleted)
       const deleteNodeArray = deleteNodeRef.current.concat(deleted).flat(Infinity)
       const node = nodeData
@@ -225,31 +230,39 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     [getDeleteNodeAndAdge, nodeData, edgesData, platform_id, getList, setEdgesAndNodes]
   )
 
-  // 线条删除
+  // 线条删除 100%
   const onCanvasEdgesDelete = useCallback(
     async Edge => {
-      const targetId = Edge[0].target
-      const sourceId = Edge[0].source
+      const targetId = Edge[0].target // end
+      const sourceId = Edge[0].source // begin
       const targetNode = nodeData.find(item => item.id === targetId)
       const newEdges = edgesData.filter(e => e.target !== targetId)
+      setEdges(newEdges)
 
+      // 删除外设--->数据处理器  需要更新数据处理器的外设 寄存器信息
       if (targetNode?.data.flag === 3) {
+        // 删除寄存器节点
+        const newNodeData = nodeData.filter((item: any) => item.data?.parentId !== targetId)
+        setNodes(newNodeData)
         // 1.由于后端接口适配问题,现在删除数据处理器和外设的线 必须要 获取数据处理器详情
         await LeftAndRightStore.getState().getDataHandlerDetail(targetId)
         // 2.调用数据处理器更新接口,清空寄存器信息
-        LeftAndRightStore.getState().updateHandlerOut(targetId, { register_id: null, peripheral_id: null })
-      } else if (targetNode?.data.flag === 2) {
+        LeftAndRightStore.getState().updateHandlerData(true, { register_id: null, peripheral_id: null })
+        return saveCanvas(String(platform_id))
+      }
+
+      // 删除数据处理器--->寄存器  需要更新数据处理器的寄存器信息 并且删除寄存器节点
+      if (targetNode?.data.flag === 2) {
         // 0.删除此节点,更新画布
         const newNodeData = nodeData.filter(item => item.id !== targetId)
         setNodes(newNodeData)
+
         // 1.由于后端接口适配问题,现在删除数据处理器和外设的线 必须要 获取数据处理器详情
-        LeftAndRightStore.getState().getDataHandlerDetail(sourceId)
+        await LeftAndRightStore.getState().getDataHandlerDetail(sourceId)
         // 2.调用数据处理器更新接口,清空寄存器信息
-        LeftAndRightStore.getState().updateHandlerOut(sourceId, { register_id: null })
-      } else {
-        setEdges(newEdges)
+        LeftAndRightStore.getState().updateHandlerData(true, { register_id: null })
+        return saveCanvas(String(platform_id))
       }
-      saveCanvas(String(platform_id))
     },
     [edgesData, nodeData, platform_id, saveCanvas, setEdges, setNodes]
   )
@@ -257,6 +270,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
   return (
     <ReactFlow
       ref={ref}
+      fitView
       onDrop={onDrop}
       nodes={nodeData}
       edges={edgesData}
@@ -278,7 +292,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
       <CustomControls />
       <Panel position='top-right'>
-        <Button onClick={layout}>switch mode</Button>
+        <Button onClick={layout}>一键对齐</Button>
       </Panel>
       {deleteNodeInfo.visibility && (
         <DeleteNodeModal

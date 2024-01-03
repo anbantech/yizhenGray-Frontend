@@ -37,7 +37,7 @@ function CustomHandlerNode(Node: NodeProps) {
   const deleteNode = React.useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.stopPropagation()
-      LeftAndRightStore.getState().updateHandlerData(true, { peripheral_id: null })
+      LeftAndRightStore.getState().updateHandlerData(true, { peripheral_id: null, register_id: null })
       getDeleteNodeInfo([Node], nodes, edges)
       onNodesDelete(nodes, edges, [Node], [{ error_code: 0, id: Node.id }])
     },

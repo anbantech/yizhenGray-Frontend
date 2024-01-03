@@ -269,6 +269,18 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     if (keys === 'register_id') {
       LowCodeStore.getState().createRegisterNode(get().rightDataHandler)
     }
+    // 更新是否为状态寄存器时,更新画布
+    if (type === 'rightDataRegister' && keys === 'kind' && value === 0) {
+      const id = get().platform_id
+      const targetId = get().rightDataRegister.id
+      const idExists = LowCodeStore.getState().nodes.some(item => item.id === String(targetId))
+
+      if (idExists && id) {
+        const node = LowCodeStore.getState().nodes.filter(item => String(targetId) !== item.id)
+        const edge = LowCodeStore.getState().edges.filter(item => String(targetId) !== item.target)
+        LowCodeStore.getState().setEdgesAndNodes(node, edge, String(id))
+      }
+    }
   },
 
   // 更新外设信息
