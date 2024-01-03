@@ -159,6 +159,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
         // 填充数据处理器的值
         get().updateRightAttributes('rightDataHandler', get().rightDataHandler, res.data)
       }
+      return res
     } catch (error) {
       throwErrorMessage(error)
     }
@@ -250,6 +251,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     }
     fnMap[type as keyof typeof fnMap]()
   },
+
   // 输入过程中进行校验
   onChangeFn: (type, keys, value) => {
     const validation = ['name', 'base_address', 'address_length', 'relative_address', 'interrupt', 'period'].includes(keys)
@@ -264,7 +266,11 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
         updatedDraft[type as keyof typeof updatedDraft][keys].value = value
       })
     )
+    if (keys === 'register_id') {
+      LowCodeStore.getState().createRegisterNode(get().rightDataHandler)
+    }
   },
+
   // 更新外设信息
   updatePeripheral: async () => {
     const { rightPeripheral, platform_id } = get()
@@ -290,8 +296,9 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
       set({ rightAttributes: params })
     }
   },
+
   // 更新数据处理器信息
-  updateHandlerData: async () => {
+  updateHandlerData: async (isBaseOnCanvas, inputParams) => {
     const { rightDataHandler, platform_id } = get()
     const params = {
       name: rightDataHandler.name.value as string,
@@ -317,13 +324,48 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
       peripheral_id: rightDataHandler.peripheral_id.value ? rightDataHandler.peripheral_id.value : null,
       register_id: rightDataHandler.register_id.value ? rightDataHandler.register_id.value : null
     }
-    const res = await updateDataHandler(rightDataHandler.id, params)
-    if (platform_id && res.data) {
+    const res = isBaseOnCanvas
+      ? await updateDataHandler(rightDataHandler.id, { ...params, ...inputParams })
+      : await updateDataHandler(rightDataHandler.id, params)
+    if (platform_id && res.data && !isBaseOnCanvas) {
       LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
       LeftListStoreMap.getList('handlerData')
       set({ rightAttributes: params })
     }
   },
+
+  updateHandlerOut: async (id, output) => {
+    const { rightDataHandler, platform_id } = get()
+    const params = {
+      name: rightDataHandler.name.value as string,
+      port: rightDataHandler.port.value as string,
+      platform_id,
+      interrupt: rightDataHandler.interrupt?.value ? rightDataHandler.interrupt?.value : null,
+      sof:
+        (rightDataHandler.sof.value as string)?.trim().length % 2 === 0
+          ? rightDataHandler.sof.value
+          : rightDataHandler.sof.value
+          ? `0${rightDataHandler.sof.value}`
+          : undefined,
+      eof:
+        (rightDataHandler.eof.value as string)?.trim().length % 2 === 0
+          ? rightDataHandler.eof.value
+          : rightDataHandler.eof.value
+          ? `0${rightDataHandler.eof.value}`
+          : undefined,
+      algorithm: rightDataHandler.algorithm.value,
+      length_member: rightDataHandler.length_member.value,
+      checksum_member: rightDataHandler.checksum_member.value,
+      framing_member: rightDataHandler.framing_member.value,
+      peripheral_id: rightDataHandler.peripheral_id.value ? rightDataHandler.peripheral_id.value : null,
+      register_id: rightDataHandler.register_id.value ? rightDataHandler.register_id.value : null
+    }
+    const res = await updateDataHandler(id, { ...params, ...output })
+    if (platform_id && res.data) {
+      set({ rightAttributes: params })
+    }
+  },
+
   // 更新寄存器信息
   updateRegister: async () => {
     const { rightDataRegister, platform_id } = get()
@@ -368,6 +410,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
       set({ rightAttributes: params })
     }
   },
+
   // 更新定时器信息
   updateTimer: async () => {
     const { rightTimer, platform_id } = get()
@@ -384,8 +427,8 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
       set({ rightAttributes: params })
     }
   },
-  // 根据type,keys 清除值
 
+  // 根据type,keys 清除值
   clearFn: (type, keys, value) => {
     set(state =>
       produce(state, draft => {

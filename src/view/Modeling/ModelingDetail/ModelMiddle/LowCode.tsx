@@ -16,6 +16,7 @@ import { LoactionState } from '../ModelLeft/ModelingLeftIndex'
 import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
 
 import { LeftAndRightStore } from '../../Store/ModelLeftAndRight/leftAndRightStore'
+import CustomRegisterNode from '../../ModelingMaterials/CustomRegisterNode'
 
 type ExpandCollapseExampleProps = {
   edges: Edge[]
@@ -33,14 +34,17 @@ const selector = (state: LowCodeStoreType) => ({
   layout: state.layout,
   deleteNodeInfo: state.deleteNodeInfo,
   setDeleNodeInfo: state.setDeleNodeInfo,
-  setEdgesAndNodes: state.setEdgesAndNodes
+  setEdgesAndNodes: state.setEdgesAndNodes,
+  setEdges: state.setEdges,
+  setNodes: state.setNodes,
+  saveCanvas: state.saveCanvas
 })
 
 const nodeTypes: NodeTypes = {
   TargetNode: CustomTargetNode,
   TimerNode: CustomTimerNode,
   HandlerNode: CustomHandlerNode,
-  registerNode: CustomTargetNode,
+  registerNode: CustomRegisterNode,
   peripheralNode: CustomPeripheralNode
 }
 
@@ -50,14 +54,18 @@ const nodeTypes: NodeTypes = {
 function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
   const platform_id = LeftAndRightStore(state => state.platform_id)
   const dragRef = React.useRef<any>(null)
+
   const {
+    setEdges,
+    setNodes,
     setDeleNodeInfo,
     onNodesChange,
     onEdgesChange,
     createNode,
-    updatePositionNode,
+    saveCanvas,
+    // updatePositionNode,
     addEdge,
-    onEdgeUpdate,
+    // onEdgeUpdate,
     layout,
     setEdgesAndNodes,
     deleteNodeInfo
@@ -119,37 +127,37 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     [createNode, nodes, reactFlowInstance]
   )
 
-  // 当节点停止拖拽时
-  const onNodeDragStop = () => {
-    if (dragRef.current) {
-      updatePositionNode(dragRef.current.id, {
-        x: dragRef.current.position.x,
-        y: dragRef.current.position.y + 100
-      })
-    }
-    dragRef.current = null
-  }
+  // // 当节点停止拖拽时
+  // const onNodeDragStop = () => {
+  //   if (dragRef.current) {
+  //     updatePositionNode(dragRef.current.id, {
+  //       x: dragRef.current.position.x,
+  //       y: dragRef.current.position.y + 100
+  //     })
+  //   }
+  //   dragRef.current = null
+  // }
 
-  const onNodeDrag = (evt: any, node: any) => {
-    const centerX = node.position.x + node.width / 2
-    const centerY = node.position.y + node.height / 2
-    // find a node where the center point is inside
-    const targetNode = nodes.find((n: any) => {
-      if (n.width && n.height) {
-        return (
-          centerX > n.position.x &&
-          centerX < n.position.x + n.width &&
-          centerY > n.position.y &&
-          centerY < n.position.y + n.height &&
-          n.id !== node.id
-        )
-      }
-      return node
-    })
-    if (targetNode) {
-      dragRef.current = targetNode
-    }
-  }
+  // const onNodeDrag = (evt: any, node: any) => {
+  //   const centerX = node.position.x + node.width / 2
+  //   const centerY = node.position.y + node.height / 2
+  //   // find a node where the center point is inside
+  //   const targetNode = nodes.find((n: any) => {
+  //     if (n.width && n.height) {
+  //       return (
+  //         centerX > n.position.x &&
+  //         centerX < n.position.x + n.width &&
+  //         centerY > n.position.y &&
+  //         centerY < n.position.y + n.height &&
+  //         n.id !== node.id
+  //       )
+  //     }
+  //     return node
+  //   })
+  //   if (targetNode) {
+  //     dragRef.current = targetNode
+  //   }
+  // }
 
   const onNodeClick = useCallback(
     (event, node) => {
@@ -163,7 +171,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     [getList]
   )
 
-  //  框选删除更新界面
+  //  弹出框删除
   const deleteNodeRef = React.useRef<any[]>([])
 
   const getDeleteNodeAndAdge = React.useCallback(
@@ -182,12 +190,12 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
   )
 
   const onNodesDelete = React.useCallback(
-    (deleted, error_code) => {
+    (deleted, error_code?: any) => {
       getDeleteNodeAndAdge(deleted)
       const deleteNodeArray = deleteNodeRef.current.concat(deleted).flat(Infinity)
       const node = nodeData
         .map((Node1: Node) => {
-          const matchingItem = error_code.find((item2: any) => Node1.id === String(item2.id))
+          const matchingItem = error_code?.find((item2: any) => Node1.id === String(item2.id))
           if (matchingItem) {
             // eslint-disable-next-line no-param-reassign
             Node1.data.error_code = matchingItem.error_code
@@ -195,7 +203,14 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
           return Node1
         })
         .filter(item => {
-          return !deleteNodeArray.some(data => data.id === item.id)
+          return !deleteNodeArray.some(data => {
+            if (data.data.flag === 3 && item.id === data.id) {
+              // 1.由于后端接口适配问题,现在删除数据处理器和外设的线 必须要 获取数据处理器详情
+              LeftAndRightStore.getState().getDataHandlerDetail(data.id)
+              LeftAndRightStore.getState().updateHandlerData(true, { register_id: null, peripheral_id: null })
+            }
+            return data.id === item.id
+          })
         })
 
       const edge = edgesData.filter(item => {
@@ -210,6 +225,35 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     [getDeleteNodeAndAdge, nodeData, edgesData, platform_id, getList, setEdgesAndNodes]
   )
 
+  // 线条删除
+  const onCanvasEdgesDelete = useCallback(
+    async Edge => {
+      const targetId = Edge[0].target
+      const sourceId = Edge[0].source
+      const targetNode = nodeData.find(item => item.id === targetId)
+      const newEdges = edgesData.filter(e => e.target !== targetId)
+
+      if (targetNode?.data.flag === 3) {
+        // 1.由于后端接口适配问题,现在删除数据处理器和外设的线 必须要 获取数据处理器详情
+        await LeftAndRightStore.getState().getDataHandlerDetail(targetId)
+        // 2.调用数据处理器更新接口,清空寄存器信息
+        LeftAndRightStore.getState().updateHandlerOut(targetId, { register_id: null, peripheral_id: null })
+      } else if (targetNode?.data.flag === 2) {
+        // 0.删除此节点,更新画布
+        const newNodeData = nodeData.filter(item => item.id !== targetId)
+        setNodes(newNodeData)
+        // 1.由于后端接口适配问题,现在删除数据处理器和外设的线 必须要 获取数据处理器详情
+        LeftAndRightStore.getState().getDataHandlerDetail(sourceId)
+        // 2.调用数据处理器更新接口,清空寄存器信息
+        LeftAndRightStore.getState().updateHandlerOut(sourceId, { register_id: null })
+      } else {
+        setEdges(newEdges)
+      }
+      saveCanvas(String(platform_id))
+    },
+    [edgesData, nodeData, platform_id, saveCanvas, setEdges, setNodes]
+  )
+
   return (
     <ReactFlow
       ref={ref}
@@ -218,15 +262,17 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       edges={edgesData}
       onConnect={addEdge}
       nodeTypes={nodeTypes}
-      onNodeDrag={onNodeDrag}
+      // onNodeDrag={onNodeDrag}
       onDragOver={onDragOver}
       proOptions={proOptions}
       onNodeClick={onNodeClick}
-      onEdgeUpdate={onEdgeUpdate}
+      // onEdgeUpdate={onEdgeUpdate}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onInit={setReactFlowInstance}
-      onNodeDragStop={onNodeDragStop}
+      onNodesDelete={onNodesDelete}
+      onEdgesDelete={onCanvasEdgesDelete}
+      // onNodeDragStop={onNodeDragStop}
       connectionLineType={ConnectionLineType.SmoothStep}
     >
       <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
@@ -258,14 +304,16 @@ function LowCodeWrapper() {
       saveCanvas(platformsId)
     }
   }, [platformsId, saveCanvas])
+
   useEventListener('beforeunload', listenBeforeLoad)
+
   useEffect(() => {
     getModelListDetails(platformsId)
     return () => {
       listenBeforeLoad()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [platformsId])
   return <ReactFlowProvider>{nodes.length && <ReactFlowPro nodes={nodes} edges={edges} />}</ReactFlowProvider>
 }
 

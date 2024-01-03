@@ -31,6 +31,7 @@ function ModelModal(props: ModelProps) {
   const [isDisableStatus, setDisabledStatus] = useState(true)
   const { Option } = Select
   const [form] = Form.useForm<FormInstance>()
+  const [loading, setLoading] = useState(false)
   const { createTarget, updateModelTargetList, initParams } = useNewModelingStore()
 
   const { createTargetNode } = LowCodeStore()
@@ -51,6 +52,7 @@ function ModelModal(props: ModelProps) {
 
   const create = React.useCallback(
     async (params: { name: string; processor: string; desc?: string }) => {
+      setLoading(true)
       try {
         const res: any = await createTarget(params)
         if (res.code === 0) {
@@ -60,11 +62,12 @@ function ModelModal(props: ModelProps) {
             initParams()
             creatModalOrFixModal(false)
           }
-          return
+          return setLoading(false)
         }
       } catch (error) {
         setDisabledStatus(true)
         throwErrorMessage(error, { 1004: '该建模任务不存在', 1005: '建模任务名称重复，请修改', 1007: '操作频繁' })
+        return setLoading(false)
       }
     },
     [creatModalOrFixModal, createTarget, createTargetNode, initParams]
@@ -122,7 +125,7 @@ function ModelModal(props: ModelProps) {
         <Button className={styles.btn_cancel} key='back' onClick={closeModal}>
           取消
         </Button>,
-        <Button className={styles.btn_create} key='submit' onClick={createOrfix} disabled={isDisableStatus} type='primary'>
+        <Button className={styles.btn_create} key='submit' loading={loading} onClick={createOrfix} disabled={isDisableStatus} type='primary'>
           {isFix ? '修改' : '新建'}
         </Button>
       ]}

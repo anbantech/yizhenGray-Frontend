@@ -36,6 +36,10 @@ function ModelDetailsIndex() {
     }
   }, [getList, getModelDetails, platformsId, setPlatFormId, setPortList])
 
+  React.useEffect(() => {
+    LeftListStore.getState().getAllList()
+  }, [])
+
   return (
     <div className={StyleSheet.ModelDetailsBody}>
       <div className={StyleSheet.ModelDetailsBodyLeft}>

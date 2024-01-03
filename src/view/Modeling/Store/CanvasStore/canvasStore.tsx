@@ -2,7 +2,7 @@
 /* eslint-disable indent */
 /* eslint-disable no-param-reassign */
 import { create } from 'zustand'
-import { MarkerType, applyEdgeChanges, applyNodeChanges, updateEdge } from 'reactflow'
+import { Edge, MarkerType, applyEdgeChanges, applyNodeChanges, getOutgoers, updateEdge, Node, XYPosition } from 'reactflow'
 import crc32 from 'crc-32'
 import { throwErrorMessage } from 'Src/util/message'
 import { getCanvas, saveCanvasAsync } from 'Src/services/api/modelApi'
@@ -33,7 +33,12 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
   edges: [],
   deleteNode: [],
   deleteNodeInfo: { node: {}, visibility: false },
-
+  setNodes: (nodes: Node[]) => {
+    set({ nodes })
+  },
+  setEdges: (edges: Edge[]) => {
+    set({ edges })
+  },
   setDeleNodeInfo: (node, visibility) => {
     set({ deleteNodeInfo: { node, visibility } })
   },
@@ -73,7 +78,6 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
     // 获取链接的节点信息
     const sourceNode = get().nodes.find(item => item.id === source)
     const targetNode = get().nodes.find(item => item.id === target)
-
     const item = {
       id: `${source}-${target}`,
       source,
@@ -92,7 +96,15 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
     }
 
     if (sourceNode?.data.flag === 1 && targetNode?.data.flag === 3) {
+      // 如果外设和数据处理器连接,更新数据处理器外设的状态  1.调用更新数据处理器接口 2.修改右侧属性接口数据
+      LeftAndRightStore.getState().onChangeFn('rightDataHandler', 'peripheral_id', +source)
+      LeftAndRightStore.getState().updateHandlerData(true, { peripheral_id: +source })
       set({ edges: [...get().edges, item] })
+    }
+
+    if (LeftAndRightStore.getState().platform_id) {
+      const id = LeftAndRightStore.getState().platform_id
+      get().saveCanvas(String(id))
     }
   },
 
@@ -112,7 +124,8 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
     })
     get().saveCanvas(platform_id)
   },
-  // 点击按钮 自动布局
+
+  // 点击按钮 自动布局 todo
   layout: () => {
     const { nodes, edges } = get()
     const { nodeArray, edgesArray } = Layout(nodes, edges)
@@ -122,6 +135,55 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
   // 创建节点
   createNode: data => {
     return set({ nodes: [...get().nodes, { ...data }] })
+  },
+
+  // 创建寄存器节点
+  createRegisterNode: data => {
+    const { id, register_id } = data
+
+    // 1.直接过滤节点
+    const parentNode = get().nodes.filter((item: any) => item?.parentId !== String(id))
+    const parentEdge = get().edges.filter((item: any) => String(id) !== item.source)
+
+    // 2.获取父节点位置信息
+    const parentNodeInfo = get().nodes.find(item => {
+      return item.id === String(id)
+    })
+
+    //  获取寄存器信息
+    const registerInfo = LeftAndRightStore.getState().registerList.filter((item: any) => {
+      return item.id === register_id.value
+    })
+
+    const position = parentNodeInfo?.position as XYPosition
+
+    const newNode = {
+      id: String(register_id.value),
+      data: {
+        label: registerInfo[0].name,
+        id: String(register_id.value),
+        error_code: 0,
+        flag: 2,
+        tabs: ''
+      },
+      parentId: String(id),
+      type: switchNodeType(2),
+      position: { ...position, y: position?.y + 60 }
+    }
+
+    const newEdge = {
+      id: `${id}-${register_id.value}`,
+      source: String(id),
+      target: String(register_id.value),
+      type: 'smoothstep',
+      markerEnd: {
+        type: MarkerType.ArrowClosed
+      }
+    }
+
+    set({ nodes: [...parentNode, newNode], edges: [...parentEdge, newEdge] })
+    const platform_idS = LeftAndRightStore.getState().platform_id
+    return get().saveCanvas(String(platform_idS))
   },
 
   // 如果目标被折叠,调用此函数更新被遮挡目标Y轴
@@ -219,8 +281,28 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
     get().saveCanvas(id)
   },
 
-  onNodesDelete: (nodeData, edgesData, deleteAarrayInfo, deletedArray, error_code) => {
-    const deleteNodeArray = deleteAarrayInfo.concat(deletedArray).flat(Infinity)
+  // 获取相关节点信息
+  getDeleteNodeInfo: (deleted, nodes, edges) => {
+    const info: Node[][] = []
+    const getDeleteNodeAndAdge = (deleted: any, nodes: Node[], edges: Edge[]) => {
+      // eslint-disable-next-line array-callback-return
+      deleted.reduce((acc: any, node: any) => {
+        const outgoers = getOutgoers(node, nodes, edges)
+        if (outgoers.length > 0) {
+          info.push(outgoers)
+          getDeleteNodeAndAdge(outgoers, nodes, edges)
+        }
+      }, edges)
+      return false
+    }
+
+    getDeleteNodeAndAdge(deleted, nodes, edges)
+    set({ deleteNode: info })
+  },
+
+  // 画布的删除
+  onNodesDelete: (nodeData, edgesData, deletedArray, error_code) => {
+    const deleteNodeInfo = get().deleteNode.concat(deletedArray).flat(Infinity) as any
     const node = nodeData
       .map((Node1: any) => {
         const matchingItem = error_code.find((item2: any) => Node1.id === String(item2.id))
@@ -231,14 +313,23 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
         return Node1
       })
       .filter((item: { id: any }) => {
-        return !deleteNodeArray.some((data: { id: any }) => data.id === item.id)
+        return !deleteNodeInfo.some((data: { id: any; data: { flag: number } }) => {
+          if (data.data.flag === 3 && item.id === data.id) {
+            LeftAndRightStore.getState().getDataHandlerDetail(data.id)
+            LeftAndRightStore.getState().updateHandlerData(true, { register_id: null, peripheral_id: null })
+          }
+
+          return data.id === item.id
+        })
       })
 
     const edge = edgesData.filter((item: { target: any }) => {
-      return !deleteNodeArray.some((data: { id: any }) => data.id === item.target)
+      return !deleteNodeInfo.some((data: { id: any }) => data.id === item.target)
     })
     const platform_idS = LeftAndRightStore.getState().platform_id
+
     if (platform_idS) {
+      // 保存画布
       get().setEdgesAndNodes(node, edge, String(platform_idS))
       LeftAndRightStore.getState().setSelect(platform_idS, 5)
     }

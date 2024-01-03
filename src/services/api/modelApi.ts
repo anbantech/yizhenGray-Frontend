@@ -105,7 +105,7 @@ function updateTimer(
 }
 
 // 更新数据处理器
-function updateDataHandler(id: number | null | string, params: updateDataHandelParams) {
+function updateDataHandler(id: number | null | string | undefined, params: updateDataHandelParams) {
   return request.put(`/api/v1.0/models/data_processor/update/${id}`, params)
 }
 

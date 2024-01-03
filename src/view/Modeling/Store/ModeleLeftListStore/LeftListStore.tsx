@@ -71,6 +71,7 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
   updateTreeNodeData: value => {
     set({ treeNodeData: value })
   },
+
   // 更新tag 关键字搜索
   updateTagOrKeyWord: (val, type, whichOneParams) => {
     switch (type) {
@@ -245,6 +246,7 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
       return error
     }
   },
+
   // 初始化列表请求参数
   initStore: () => {
     set({

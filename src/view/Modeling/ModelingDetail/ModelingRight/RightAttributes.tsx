@@ -1,5 +1,5 @@
 import { Checkbox, Form, Input, Select, Tag } from 'antd'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { getSystemConstantsStore } from 'Src/webSocket/webSocketStore'
 import TextArea from 'antd/lib/input/TextArea'
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect'
@@ -179,10 +179,10 @@ const PeripheralComponents: React.FC = () => {
 const RegisterComponents: React.FC = () => {
   const [form] = Form.useForm()
   const { rightDataRegister, onChangeFn, onBlurFn, closeMenu, getPeripheralDetail, registerList, rightAttributes } = LeftAndRightStore()
+
   const {
     variety,
     peripheral_id,
-    peripheral,
     relative_address,
     sr_peri_id,
     name,
@@ -196,10 +196,6 @@ const RegisterComponents: React.FC = () => {
   } = rightDataRegister
   const { headerBarList } = LeftListStore()
   const { REGISTER_CMD } = getSystemConstantsStore()
-
-  const peripheralList = useMemo(() => {
-    return [peripheral.value]
-  }, [peripheral])
 
   const isKind = useMemo(() => {
     return kind.value === 0
@@ -254,7 +250,7 @@ const RegisterComponents: React.FC = () => {
               style={{ borderRadius: '4px' }}
               value={peripheral_id?.value}
             >
-              {peripheralList?.map((rate: any) => {
+              {headerBarList?.map((rate: any) => {
                 return (
                   <Option key={rate?.id} value={rate?.id}>
                     {rate?.name}
@@ -507,6 +503,7 @@ const DataHanderComponents: React.FC = () => {
 
   const { portList } = publicAttributes()
   const ALGORITHM = getSystemConstantsStore(state => state.ALGORITHM)
+
   const DropdownRender = React.useCallback(
     (props: { type: string }) => {
       const { type } = props
@@ -578,6 +575,10 @@ const DataHanderComponents: React.FC = () => {
     },
     [onChangeFn, rightDataHandler]
   )
+  useEffect(() => {
+    if (rightDataHandler.peripheral_id.value) return getPeripheralDetail(+rightDataHandler.peripheral_id.value)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rightDataHandler.peripheral_id.value])
 
   return (
     <div className={StyleSheet.rightConcentBody} id='area'>
@@ -757,19 +758,7 @@ const DataHanderComponents: React.FC = () => {
         <div style={{ padding: '8px 16px' }} className={StyleSheet.dataFormatProcessing}>
           <span className={StyleSheet.spanTitle}>输出寄存器</span>
           <Form.Item label='外设'>
-            <Select
-              placeholder='请选择外设'
-              value={peripheral_id.value}
-              showSearch={Boolean(0)}
-              allowClear
-              getPopupContainer={() => document.querySelector('#area') as HTMLElement}
-              onChange={e => {
-                getPeripheralDetail(e as number)
-                if (e === peripheral_id.value) return
-                onChangeFn('rightDataHandler', 'peripheral_id', e)
-                closeMenu(false, peripheral_id.validateStatus, 'rightDataRegister')
-              }}
-            >
+            <Select placeholder='请选择外设' value={peripheral_id.value} disabled={Boolean(1)}>
               {headerBarList?.map((rate: any) => {
                 return (
                   <Option key={rate.id} value={rate.id}>
@@ -788,7 +777,7 @@ const DataHanderComponents: React.FC = () => {
               onChange={e => {
                 if (e === register_id.value) return
                 onChangeFn('rightDataHandler', 'register_id', e)
-                closeMenu(false, register_id.validateStatus, 'rightDataRegister')
+                closeMenu(false, register_id.validateStatus, 'rightDataHandler')
               }}
             >
               {notRegsiterList?.map((rate: any) => {

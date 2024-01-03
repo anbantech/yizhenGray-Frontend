@@ -90,10 +90,12 @@ export interface RightStoreTypes {
   // 更新外设信息
   updatePeripheral: () => void
   // 更新数据处理器信息
-  updateHandlerData: () => void
+  updateHandlerData: (isBaseOnCanvas?: boolean, inputParams?: any) => void
   updateTimer: () => void
   updateFn: (type: string) => void
   onChangeFn: (type: string, keys: string, value: string | string[] | undefined | number[] | number | undefined) => void
+  // 外部直接调用更新数据处理器接口
+  updateHandlerOut: (id: number, output: any) => void
 }
 
 export interface LeftStoreTypes {

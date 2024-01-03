@@ -3,6 +3,9 @@ import { Edge, EdgeChange, Node, NodeChange } from 'reactflow'
 export interface LowCodeStoreType {
   nodes: Node[]
   edges: Edge[]
+  deleteNode: Node[][]
+  setEdges: (edges: Edge[]) => void
+  setNodes: (nodes: Node[]) => void
   onNodesChange: (changes: NodeChange[]) => void
   onEdgesChange: (changes: EdgeChange[]) => void
   addEdge: (edges: any) => void
@@ -18,5 +21,7 @@ export interface LowCodeStoreType {
   deleteNodeInfo: { node: any; visibility: boolean }
   setDeleNodeInfo: (node: any, visibility: boolean) => void
   setEdgesAndNodes: (node: any, edge: any, id: string) => void
-  onNodesDelete: (nodeData: any, edgesData: any, deleteAarrayInfo: any, deletedArray: any, error_code: any) => void
+  getDeleteNodeInfo: (deleted: any, nodes: Node[], edges: Edge[]) => void
+  createRegisterNode: (data: any) => void
+  onNodesDelete: (nodeData: any, edgesData: any, deletedArray: any, error_code: [{ error_code: number; id: string }]) => void
 }
