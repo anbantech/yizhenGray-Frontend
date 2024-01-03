@@ -1,6 +1,6 @@
 import * as React from 'react'
 import CheckCrashLevel from 'Src/components/check/CrashLevel'
-import { CrashLevelTip } from 'Src/view/excitation/excitationComponent/Tip'
+import { CrashLevelTip } from 'Src/components/Tips/Tip'
 import detailStyle from '../taskDetailUtil/Detail.less'
 
 interface propsType {
