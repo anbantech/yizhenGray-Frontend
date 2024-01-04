@@ -6,6 +6,7 @@ import { HeaderStoreType } from './HeaderStoreType'
 import ToolBox from '../ToolBoxStore/ToolBoxStore'
 import { LeftListStoreMap } from '../ModeleLeftListStore/LeftListStore'
 import { LeftAndRightStore } from '../ModelLeftAndRight/leftAndRightStore'
+import { LowCodeStore } from '../CanvasStore/canvasStore'
 
 export const HeaderStore = create<HeaderStoreType>((set, get) => ({
   headerTabs: null,
@@ -144,13 +145,15 @@ export const HeaderStore = create<HeaderStoreType>((set, get) => ({
   },
   // 创建外设,
   createPeripheral: async (params, tabs) => {
+    const id = LeftAndRightStore.getState().platform_id
     try {
       const res = await newSetPeripheral(params)
       if (res.code !== 0) return
-      if (res.data) {
+      if (res.data && id) {
         // 拉取列表 关闭弹框 切换tabs
         LeftListStoreMap.getList(tabs)
         LeftAndRightStore.getState().setSelect(res.data.id, res.data.flag)
+        LowCodeStore.getState().updatateNodeInfo(res.data, String(id))
         get().setHeaderTabs(null)
       }
       return res
@@ -160,14 +163,16 @@ export const HeaderStore = create<HeaderStoreType>((set, get) => ({
   },
   // 创建寄存器
   createRegister: async params => {
+    const id = LeftAndRightStore.getState().platform_id
     try {
       const res = await newSetRegister(params)
-      if (res.data) {
+      if (res.data && id) {
         // 拉取列表 关闭弹框 切换tabs
         await LeftListStoreMap.getList('customPeripheral')
         await LeftAndRightStore.getState().setSelect(res.data.id, res.data.flag)
         // 打开树节点
         await LeftListStoreMap.updateTreeNodeData([String(res.data.peripheral_id), String(res.data.id)])
+        LowCodeStore.getState().updatateNodeInfo(res.data, String(id))
         await get().setHeaderTabs(null)
       }
       return res
@@ -177,12 +182,14 @@ export const HeaderStore = create<HeaderStoreType>((set, get) => ({
   },
   // 创建数据处理器
   createDataHander: async (params, tabs) => {
+    const id = LeftAndRightStore.getState().platform_id
     try {
       const res = await newSetDataHander(params)
-      if (res.data) {
+      if (res.data && id) {
         // 拉取列表 关闭弹框 切换tabs
         LeftListStoreMap.getList(tabs)
         LeftAndRightStore.getState().setSelect(res.data.id, res.data.flag)
+        LowCodeStore.getState().updatateNodeInfo(res.data, String(id))
         get().setHeaderTabs(null)
       }
       return res
@@ -193,11 +200,14 @@ export const HeaderStore = create<HeaderStoreType>((set, get) => ({
 
   // 创建定时器
   createTimer: async (params, tabs) => {
+    const id = LeftAndRightStore.getState().platform_id
     try {
       const res = await newSetTimer(params)
-      if (res.data) {
+
+      if (res.data && id) {
         LeftListStoreMap.getList(tabs)
         LeftAndRightStore.getState().setSelect(res.data.id, res.data.flag)
+        LowCodeStore.getState().updatateNodeInfo(res.data, String(id))
         get().setHeaderTabs(null)
         // 拉取列表 关闭弹框 切换tabs
       }

@@ -1,9 +1,22 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Button } from 'antd'
-import ReactFlow, { Background, BackgroundVariant, ConnectionLineType, Edge, Node, NodeTypes, Panel, ReactFlowProvider, getOutgoers } from 'reactflow'
+import { Button, message } from 'antd'
+import ReactFlow, {
+  Background,
+  BackgroundVariant,
+  ConnectionLineType,
+  useReactFlow,
+  Edge,
+  Node,
+  NodeTypes,
+  Panel,
+  ReactFlowProvider,
+  getOutgoers,
+  useNodesInitialized
+} from 'reactflow'
 import { useLocation } from 'react-router'
 import { useEventListener } from 'ahooks-v2'
 import DeleteNodeModal from 'Src/components/Modal/nodeDraw/deleteNodeMoal'
+import { AlignLeftOutlined } from '@ant-design/icons'
 import { LowCodeStoreType } from '../../Store/CanvasStore/canvasStoreType'
 import 'reactflow/dist/style.css'
 import { LowCodeStore, switchNodeType } from '../../Store/CanvasStore/canvasStore'
@@ -52,11 +65,15 @@ const nodeTypes: NodeTypes = {
 // 保持原点在屏幕中心
 // const nodeOrigin: NodeOrigin = [0.5, 0.5]
 
+const options = {
+  includeHiddenNodes: false
+}
+
 function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
   const platform_id = LeftAndRightStore(state => state.platform_id)
-  const dragRef = React.useRef<any>(null)
-
+  const nodesInitialized = useNodesInitialized(options)
   const {
+    addEdge,
     setEdges,
     setNodes,
     setDeleNodeInfo,
@@ -64,13 +81,19 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     onEdgesChange,
     createNode,
     saveCanvas,
-    // updatePositionNode,
-    addEdge,
     // onEdgeUpdate,
     // layout,
     setEdgesAndNodes,
+    updatePositionNode,
     deleteNodeInfo
   } = LowCodeStore(selector)
+
+  // target is the node that the node is dragged over
+  const [target, setTarget] = useState<any>(null)
+  const selectId = LeftAndRightStore(state => state.selectLeftId)
+
+  const dragRef = React.useRef<any>(null)
+  const { getNode, setCenter } = useReactFlow()
   const [reactFlowInstance, setReactFlowInstance] = useState<any>(null)
   const { getList } = LeftListStore()
 
@@ -84,6 +107,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
   }, [edges])
 
   const { getLayoutedElements } = useLayoutedElements(setNodes)
+
   const onDragOver = useCallback(event => {
     event.preventDefault()
     // eslint-disable-next-line no-param-reassign
@@ -102,16 +126,25 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       const ifId = nodes.some(item => String(item.id) === String(id))
       // check if the dropped element is valid
       if (ifId) {
-        return
+        return message.warn('该节点已经存在画布中,无法重复添加')
       }
 
       // reactFlowInstance.project was renamed to reactFlowInstance.screenToFlowPosition
       // and you don't need to subtract the reactFlowBounds.left/top anymore
       // details: https://reactflow.dev/whats-new/2023-11-10  but now we use project Api
       const position = reactFlowInstance.screenToFlowPosition({
-        x: event.clientX - 150,
-        y: event.clientY
+        x: event.clientX + 50,
+        y: event.clientY + 50
       })
+
+      const matchingNode = nodes.find(node => {
+        return node.position.x === position.x && node.position.y === position.y
+      })
+
+      if (matchingNode) {
+        return message.warn('此节点放置位置,与其他节点重叠')
+      }
+
       const newNode = {
         data: {
           label: name,
@@ -130,22 +163,25 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     [createNode, nodes, reactFlowInstance]
   )
 
-  // 当节点停止拖拽时
-  const onNodeDragStop = () => {
-    // if (dragRef.current) {
-    //   updatePositionNode(dragRef.current.id, {
-    //     x: dragRef.current.position.x,
-    //     y: dragRef.current.position.y + 100
-    //   })
-    // }
-    // dragRef.current = null
+  const onNodeDragStart = (evt: any, node: any) => {
+    dragRef.current = node
   }
+
+  // 当节点停止拖拽时
+  const onNodeDragStop = React.useCallback(() => {
+    if (target) {
+      updatePositionNode(target, dragRef.current)
+    }
+    setTarget(null)
+    dragRef.current = null
+  }, [target, updatePositionNode])
 
   const onNodeDrag = React.useCallback(
     (evt: any, node: any) => {
       const centerX = node.position.x + node.width / 2
       const centerY = node.position.y + node.height / 2
       // find a node where the center point is inside
+      // eslint-disable-next-line array-callback-return
       const targetNode = nodes.find((n: any) => {
         if (n.width && n.height) {
           return (
@@ -156,11 +192,8 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
             n.id !== node.id
           )
         }
-        return node
       })
-      if (targetNode) {
-        dragRef.current = targetNode
-      }
+      setTarget(targetNode)
     },
     [nodes]
   )
@@ -272,7 +305,30 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     },
     [edgesData, nodeData, platform_id, saveCanvas, setEdges, setNodes]
   )
-  console.log(nodeData, edgesData)
+
+  const centerNode = useCallback(
+    id => {
+      const node = getNode(id)
+      if (node) {
+        const { x, y } = node.position
+        const { width } = node
+        const { height } = node
+        if (width && height) {
+          const centerX = x + width / 2
+          const centerY = y + height / 2
+          setCenter(centerX, centerY, { duration: 300, zoom: 1 })
+        }
+      }
+    },
+    [getNode, setCenter]
+  )
+  useEffect(() => {
+    if (selectId && nodesInitialized) {
+      centerNode(String(selectId))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectId, nodesInitialized])
+
   return (
     <ReactFlow
       ref={ref}
@@ -291,14 +347,26 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       onEdgesChange={onEdgesChange}
       onInit={setReactFlowInstance}
       onNodesDelete={onNodesDelete}
+      fitViewOptions={{ minZoom: 1 }}
+      onNodeDragStop={onNodeDragStop}
+      onNodeDragStart={onNodeDragStart}
       onEdgesDelete={onCanvasEdgesDelete}
-      // onNodeDragStop={onNodeDragStop}
       connectionLineType={ConnectionLineType.SmoothStep}
     >
       <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
       <CustomControls />
       <Panel position='top-right'>
-        <Button onClick={() => getLayoutedElements({ 'elk.algorithm': 'layered', 'elk.direction': 'DOWN' })}>一键对齐</Button>
+        <Button
+          style={{ borderRadius: '4px' }}
+          onClick={() => {
+            getLayoutedElements({ 'elk.algorithm': 'layered', 'elk.direction': 'DOWN' })
+          }}
+        >
+          <span>
+            <AlignLeftOutlined style={{ marginRight: '15px' }} />
+            一键对齐
+          </span>
+        </Button>
       </Panel>
       {deleteNodeInfo.visibility && (
         <DeleteNodeModal

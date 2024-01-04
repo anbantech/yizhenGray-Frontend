@@ -303,7 +303,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     }
     const res = await updatePeripherals(rightPeripheral.id as string, params)
     if (platform_id && res.data) {
-      LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
+      await LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
       LeftListStoreMap.getList('customPeripheral')
       set({ rightAttributes: params })
     }
@@ -340,7 +340,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
       ? await updateDataHandler(rightDataHandler.id, { ...params, ...inputParams })
       : await updateDataHandler(rightDataHandler.id, params)
     if (platform_id && res.data && !isBaseOnCanvas) {
-      LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
+      await LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
       LeftListStoreMap.getList('handlerData')
       set({ rightAttributes: params })
     }
@@ -417,7 +417,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     const params = { ...baseParams, ...isKindParams }
     const res = await updateRegister(rightDataRegister.id, params)
     if (platform_id && res.data) {
-      LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
+      await LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
       LeftListStoreMap.getList('customPeripheral')
       set({ rightAttributes: params })
     }
@@ -434,7 +434,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     }
     const res = await updateTimer(rightTimer.id, params)
     if (platform_id && res.data) {
-      LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
+      await LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
       LeftListStoreMap.getList('timer')
       set({ rightAttributes: params })
     }

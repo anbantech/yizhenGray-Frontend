@@ -401,6 +401,7 @@ const TimeForm = () => {
     </div>
   )
 }
+
 const TimeFormMemo = React.memo(TimeForm)
 
 const TabsBarForm = {
@@ -571,6 +572,7 @@ const HeaderBarMemo = () => {
     </div>
   )
 }
+
 const HeaderBar = React.memo(HeaderBarMemo)
 function MiddleHeaderBar() {
   const headerTabs = HeaderStore(state => state.headerTabs)

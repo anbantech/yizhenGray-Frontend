@@ -10,7 +10,8 @@ export const useLayoutedElements = (setNodes: any) => {
   const defaultOptions = {
     'elk.algorithm': 'layered',
     'elk.layered.spacing.nodeNodeBetweenLayers': 100,
-    'elk.spacing.nodeNode': 80
+    'elk.spacing.nodeNode': 80,
+    'nodePlacement.strategy': 'LINEAR_SEGMENTS'
   }
 
   const getLayoutedElements = useCallback(

@@ -10,13 +10,13 @@ export interface LowCodeStoreType {
   onEdgesChange: (changes: EdgeChange[]) => void
   addEdge: (edges: any) => void
   createNode: (data: any) => void
-  updatePositionNode: (id: string, position: { x: number; y: number }) => void
+  updatePositionNode: (target: Node, source: Node) => void
   createTargetNode: (data: { flag: number; id: number; processor: string }) => void
   getSumNodeId: (nodeArray: Node[]) => string
   onEdgeUpdate: (oldEdge: any, newConnection: any) => void
   saveCanvas: (id: string, node?: Node[], edge?: Edge[]) => void
   getModelDetails: (id: number) => void
-  layout: () => void
+  layout: (nodes: any) => void
   updatateNodeInfo: (data: Record<string, any>, platform_id: string) => void
   deleteNodeInfo: { node: any; visibility: boolean }
   setDeleNodeInfo: (node: any, visibility: boolean) => void

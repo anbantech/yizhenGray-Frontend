@@ -36,9 +36,11 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
   setNodes: (nodes: Node[]) => {
     set({ nodes })
   },
+
   setEdges: (edges: Edge[]) => {
     set({ edges })
   },
+
   setDeleNodeInfo: (node, visibility) => {
     set({ deleteNodeInfo: { node, visibility } })
   },
@@ -73,7 +75,7 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
     }
   },
 
-  addEdge: connection => {
+  addEdge: async connection => {
     const { source, target } = connection
     // 获取链接的节点信息
     const sourceNode = get().nodes.find(item => item.id === source)
@@ -84,7 +86,9 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
       target,
       type: 'smoothstep',
       markerEnd: {
-        type: MarkerType.ArrowClosed
+        type: MarkerType.ArrowClosed,
+        width: 20,
+        height: 20
       }
     }
     const isEdge = get().edges.find(edge => edge.id === item.id)
@@ -97,7 +101,7 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
 
     if (sourceNode?.data.flag === 1 && targetNode?.data.flag === 3) {
       // 如果外设和数据处理器连接,更新数据处理器外设的状态  1.调用更新数据处理器接口 2.修改右侧属性接口数据
-      LeftAndRightStore.getState().onChangeFn('rightDataHandler', 'peripheral_id', +source)
+      await LeftAndRightStore.getState().onChangeFn('rightDataHandler', 'peripheral_id', +source)
       LeftAndRightStore.getState().updateHandlerData(true, { peripheral_id: +source })
       set({ edges: [...get().edges, item] })
     }
@@ -126,8 +130,8 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
   },
 
   // 点击按钮 自动布局 todo
-  layout: () => {
-    const { nodes, edges } = get()
+  layout: nodes => {
+    const { edges } = get()
     const targetNode = nodes.filter((item: any) => item.data.flag === 5)
     const info: any = []
     const getDeleteNodeAndAdge = (deleted: any, nodes: Node[], edges: Edge[]) => {
@@ -141,16 +145,12 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
       }, edges)
       return false
     }
-
     getDeleteNodeAndAdge(targetNode, nodes, edges)
     const layoutNode = info.concat(targetNode).flat(Infinity)
     const connectedEdges = getConnectedEdges(layoutNode, edges)
-
-    const differentNode = nodes.filter(objA => !layoutNode.some((objB: { id: string }) => objB.id === objA.id))
+    const differentNode = nodes.filter((objA: { id: string }) => !layoutNode.some((objB: { id: string }) => objB.id === objA.id))
     const differentEdge = edges.filter(objA => !connectedEdges.some((objB: { id: string }) => objB.id === objA.id))
-
     const { nodeArray, edgesArray } = Layout(layoutNode, connectedEdges)
-    // const bounds = getNodesBounds(nodeArray)
     const node = nodeArray.concat(differentNode)
     const edge = edgesArray.concat(differentEdge)
     // console.log(differentEdge, differentNode, nodeArray, edgesArray, bounds)
@@ -213,11 +213,15 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
   },
 
   // 如果目标被折叠,调用此函数更新被遮挡目标Y轴
-  updatePositionNode: (id, position) => {
+  updatePositionNode: (target, source) => {
     set({
       nodes: get().nodes.map(item => {
-        if (item.id === id) {
-          return { ...item, position }
+        if (item.id === source.id) {
+          // 如果 item.id 与 source.id 相同，则使用 target 的位置
+          return {
+            ...item,
+            position: { x: source.position.x, y: source.position.y }
+          }
         }
         return item
       })
