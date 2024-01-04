@@ -1,6 +1,6 @@
 import { Button, Input, message, Tag, Tooltip } from 'antd'
 import * as React from 'react'
-import { DropTip } from 'Src/view/excitation/excitationComponent/Tip'
+import { DropTip } from 'Src/components/Tips/Tip'
 import InputNumberSuffixMemo from 'Src/components/inputNumbersuffix/inputNumberSuffix'
 import { checkListStore, GlobalStatusStore, LeftDropListStore, useExicitationSenderId } from 'Src/view/NewExcitation/ExcitaionStore/ExcitaionStore'
 import { updateExcitationList } from 'Src/services/api/excitationApi'

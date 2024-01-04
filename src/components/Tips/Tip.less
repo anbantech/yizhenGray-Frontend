@@ -1,0 +1,59 @@
+.footerConcent {
+  width: 380px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.footerConcentRight {
+  width: 250px;
+  display: flex;
+  justify-content: space-between;
+}
+.stepHeader_concent {
+  width: 50%;
+}
+
+.Tip {
+  position: absolute;
+  right: -30px;
+  top: 7px;
+}
+
+.stepTip {
+  margin-left: 10px;
+  // margin-top: 8px;
+}
+
+.DrawBody {
+  width: 100%;
+  height: calc(100vh - 58px);
+  display: flex;
+  flex-direction: column;
+}
+
+.stepInfoTip {
+  position: absolute;
+  right: 12px;
+}
+
+.crashInfoTip {
+  position: absolute;
+  right: 15px;
+  top: 20px;
+}
+
+
+.levelTooltip{
+  display: flex;
+  flex-direction: column;
+}
+
+.overlay {
+  max-width: 500px;
+  overflow-x: scroll;
+  flex-direction: column;
+  :global(.ant-tooltip-inner) {
+    padding-bottom: 0px !important;
+    white-space: pre-line;
+  }
+}
