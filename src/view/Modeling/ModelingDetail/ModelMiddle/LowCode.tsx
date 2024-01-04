@@ -17,6 +17,7 @@ import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
 
 import { LeftAndRightStore } from '../../Store/ModelLeftAndRight/leftAndRightStore'
 import CustomRegisterNode from '../../ModelingMaterials/CustomRegisterNode'
+import { useLayoutedElements } from '../../ModelingMaterials/useElkLayout'
 
 type ExpandCollapseExampleProps = {
   edges: Edge[]
@@ -66,12 +67,13 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     // updatePositionNode,
     addEdge,
     // onEdgeUpdate,
-    layout,
+    // layout,
     setEdgesAndNodes,
     deleteNodeInfo
   } = LowCodeStore(selector)
   const [reactFlowInstance, setReactFlowInstance] = useState<any>(null)
   const { getList } = LeftListStore()
+
   const ref = React.useRef(null)
   const nodeData = useMemo(() => {
     return nodes
@@ -81,6 +83,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     return edges
   }, [edges])
 
+  const { getLayoutedElements } = useLayoutedElements(setNodes)
   const onDragOver = useCallback(event => {
     event.preventDefault()
     // eslint-disable-next-line no-param-reassign
@@ -127,37 +130,40 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     [createNode, nodes, reactFlowInstance]
   )
 
-  // // 当节点停止拖拽时
-  // const onNodeDragStop = () => {
-  //   if (dragRef.current) {
-  //     updatePositionNode(dragRef.current.id, {
-  //       x: dragRef.current.position.x,
-  //       y: dragRef.current.position.y + 100
-  //     })
-  //   }
-  //   dragRef.current = null
-  // }
+  // 当节点停止拖拽时
+  const onNodeDragStop = () => {
+    // if (dragRef.current) {
+    //   updatePositionNode(dragRef.current.id, {
+    //     x: dragRef.current.position.x,
+    //     y: dragRef.current.position.y + 100
+    //   })
+    // }
+    // dragRef.current = null
+  }
 
-  // const onNodeDrag = (evt: any, node: any) => {
-  //   const centerX = node.position.x + node.width / 2
-  //   const centerY = node.position.y + node.height / 2
-  //   // find a node where the center point is inside
-  //   const targetNode = nodes.find((n: any) => {
-  //     if (n.width && n.height) {
-  //       return (
-  //         centerX > n.position.x &&
-  //         centerX < n.position.x + n.width &&
-  //         centerY > n.position.y &&
-  //         centerY < n.position.y + n.height &&
-  //         n.id !== node.id
-  //       )
-  //     }
-  //     return node
-  //   })
-  //   if (targetNode) {
-  //     dragRef.current = targetNode
-  //   }
-  // }
+  const onNodeDrag = React.useCallback(
+    (evt: any, node: any) => {
+      const centerX = node.position.x + node.width / 2
+      const centerY = node.position.y + node.height / 2
+      // find a node where the center point is inside
+      const targetNode = nodes.find((n: any) => {
+        if (n.width && n.height) {
+          return (
+            centerX > n.position.x &&
+            centerX < n.position.x + n.width &&
+            centerY > n.position.y &&
+            centerY < n.position.y + n.height &&
+            n.id !== node.id
+          )
+        }
+        return node
+      })
+      if (targetNode) {
+        dragRef.current = targetNode
+      }
+    },
+    [nodes]
+  )
 
   const onNodeClick = useCallback(
     (event, node) => {
@@ -266,7 +272,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     },
     [edgesData, nodeData, platform_id, saveCanvas, setEdges, setNodes]
   )
-
+  console.log(nodeData, edgesData)
   return (
     <ReactFlow
       ref={ref}
@@ -276,7 +282,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       edges={edgesData}
       onConnect={addEdge}
       nodeTypes={nodeTypes}
-      // onNodeDrag={onNodeDrag}
+      onNodeDrag={onNodeDrag}
       onDragOver={onDragOver}
       proOptions={proOptions}
       onNodeClick={onNodeClick}
@@ -292,7 +298,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
       <CustomControls />
       <Panel position='top-right'>
-        <Button onClick={layout}>一键对齐</Button>
+        <Button onClick={() => getLayoutedElements({ 'elk.algorithm': 'layered', 'elk.direction': 'DOWN' })}>一键对齐</Button>
       </Panel>
       {deleteNodeInfo.visibility && (
         <DeleteNodeModal
@@ -320,7 +326,6 @@ function LowCodeWrapper() {
   }, [platformsId, saveCanvas])
 
   useEventListener('beforeunload', listenBeforeLoad)
-
   useEffect(() => {
     getModelListDetails(platformsId)
     return () => {

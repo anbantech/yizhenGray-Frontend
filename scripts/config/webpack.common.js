@@ -76,6 +76,10 @@ module.exports = {
         exclude: /node_modules/
       },
       {
+        test: /\.worker\.js$/,
+        use: { loader: 'worker-loader' },
+      },
+      {
         test: /\.css$/,
         exclude: /node_modules|antd\.css/,
         use: getCssLoaders(1, true)

@@ -2,7 +2,7 @@
 /* eslint-disable indent */
 /* eslint-disable no-param-reassign */
 import { create } from 'zustand'
-import { Edge, MarkerType, applyEdgeChanges, applyNodeChanges, getOutgoers, updateEdge, Node, XYPosition } from 'reactflow'
+import { Edge, MarkerType, applyEdgeChanges, applyNodeChanges, getOutgoers, updateEdge, Node, XYPosition, getConnectedEdges } from 'reactflow'
 import crc32 from 'crc-32'
 import { throwErrorMessage } from 'Src/util/message'
 import { getCanvas, saveCanvasAsync } from 'Src/services/api/modelApi'
@@ -128,8 +128,33 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
   // 点击按钮 自动布局 todo
   layout: () => {
     const { nodes, edges } = get()
-    const { nodeArray, edgesArray } = Layout(nodes, edges)
-    set({ nodes: nodeArray, edges: edgesArray })
+    const targetNode = nodes.filter((item: any) => item.data.flag === 5)
+    const info: any = []
+    const getDeleteNodeAndAdge = (deleted: any, nodes: Node[], edges: Edge[]) => {
+      // eslint-disable-next-line array-callback-return
+      deleted.reduce((acc: any, node: any) => {
+        const outgoers = getOutgoers(node, nodes, edges)
+        if (outgoers.length > 0) {
+          info.push(outgoers)
+          getDeleteNodeAndAdge(outgoers, nodes, edges)
+        }
+      }, edges)
+      return false
+    }
+
+    getDeleteNodeAndAdge(targetNode, nodes, edges)
+    const layoutNode = info.concat(targetNode).flat(Infinity)
+    const connectedEdges = getConnectedEdges(layoutNode, edges)
+
+    const differentNode = nodes.filter(objA => !layoutNode.some((objB: { id: string }) => objB.id === objA.id))
+    const differentEdge = edges.filter(objA => !connectedEdges.some((objB: { id: string }) => objB.id === objA.id))
+
+    const { nodeArray, edgesArray } = Layout(layoutNode, connectedEdges)
+    // const bounds = getNodesBounds(nodeArray)
+    const node = nodeArray.concat(differentNode)
+    const edge = edgesArray.concat(differentEdge)
+    // console.log(differentEdge, differentNode, nodeArray, edgesArray, bounds)
+    set({ nodes: node, edges: edge })
   },
 
   // 创建节点
