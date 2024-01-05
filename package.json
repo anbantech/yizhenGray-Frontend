@@ -14,7 +14,7 @@
     "lint-eslint": "eslint -c .eslintrc.js --ext .ts,.tsx,.js src --fix",
     "lint-stylelint": "stylelint --config .stylelintrc.js src/**/*.{less,css,scss} --fix",
     "commit:changelog": "git add . && git commit -m \"docs: update changelog and version\"",
-    "clear": "rimraf node_modules/.cache/hard-source/",
+    "clear": "rimraf node_modules/.cache",
     "generate-version": "node scripts/generateVersion.js",
     "detect:repetition": "npx jscpd --config .cpd.json ./src"
   },
