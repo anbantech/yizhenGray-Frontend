@@ -240,6 +240,7 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
           error_code: 0,
           flag
         },
+        deletable: false,
         type: switchNodeType(flag),
         id: String(id),
         position: { x: 0, y: 0 }

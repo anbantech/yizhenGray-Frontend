@@ -230,6 +230,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
 
   const onNodesDelete = React.useCallback(
     async (deleted, error_code?: any) => {
+      if (deleted[0].data.flag === 5) return
       if (deleted.length === 1 && deleted[0].data.flag === 2) {
         const parent_id = nodeData.filter(item => item.id === deleted[0].id)
         await LeftAndRightStore.getState().getDataHandlerDetail(parent_id[0].data.parentId)
@@ -343,6 +344,8 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       proOptions={proOptions}
       onNodeClick={onNodeClick}
       // onEdgeUpdate={onEdgeUpdate}
+
+      deleteKeyCode={['Delete', 'Backspace']}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onInit={setReactFlowInstance}

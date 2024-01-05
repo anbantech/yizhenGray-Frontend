@@ -66,7 +66,6 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
     event.dataTransfer.setData('application/reactflow', data)
     event.dataTransfer.effectAllowed = 'move'
   }
-
   return (
     <>
       <Skeleton loading={loading}>
@@ -82,6 +81,7 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
             expandedKeys={[...treeNodeData]}
             height={height}
             titleRender={(node: any) => {
+              console.log(node)
               return (
                 <div
                   className={StyleSheet.node}
@@ -108,7 +108,7 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
                       </div>
                     ) : null}
                   </div>
-                  {node.tabs !== 'boardLevelPeripherals' || [3].includes(node.flag) ? (
+                  {node.tabs !== 'boardPeripheral' || ([3].includes(node.flag) && node.tabs === 'boardPeripheral') ? (
                     <IconDelete
                       style={{ color: '#cccccc' }}
                       className={StyleSheet.icon}
