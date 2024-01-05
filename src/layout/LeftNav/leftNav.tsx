@@ -238,7 +238,7 @@ const LeftNav: React.FC = () => {
       {isClose && (
         <>
           <div style={{ position: 'absolute', bottom: '0', margin: '0px 24px', fontSize: '12px', color: '#99999' }}>
-            <p>版本号：1.3.002.20240115</p>
+            <p>版本号：v1.3.002.20240115</p>
             {license && <p>有效期 ：{license}</p>}
           </div>
         </>
