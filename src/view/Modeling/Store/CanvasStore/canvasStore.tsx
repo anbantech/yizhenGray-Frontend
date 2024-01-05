@@ -116,9 +116,10 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
     const { error_code, name, id } = data
     set({
       nodes: get().nodes.map((Node: any) => {
-        if (String(id) === Node.id) {
+        if (String(id) === Node.id && Node.data.label !== name) {
           return { ...Node, data: { ...Node.data, label: name } }
         }
+
         const matchingItem = error_code.find((item2: any) => Node.id === String(item2.id))
         if (matchingItem) {
           return { ...Node, data: { ...Node.data, error_code: matchingItem.error_code } }
