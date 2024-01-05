@@ -237,20 +237,10 @@ const LeftNav: React.FC = () => {
       <SideBar routerList={routerList} isClose={isClose} />
       {isClose && (
         <>
-          {' '}
-          {process.env.NODE_ENV === 'development' ? (
-            <div style={{ position: 'absolute', bottom: '0', margin: '0px 24px', fontSize: '12px', color: '#99999' }}>
-              <p>版本号：{process.env.VERSION?.slice(0, 17)}</p>
-              {license && <p>有效期：{license}</p>}
-              <p>HASH：{process.env.COMMITHASH?.slice(0, 8)}</p>
-              <p>分支：{process.env.BRANCH}</p>
-            </div>
-          ) : (
-            <div style={{ position: 'absolute', bottom: '0', margin: '0px 24px', fontSize: '12px', color: '#99999' }}>
-              <p>版本号：{process.env.VERSION?.slice(0, 17)}</p>
-              {license && <p>有效期 ：{license}</p>}
-            </div>
-          )}
+          <div style={{ position: 'absolute', bottom: '0', margin: '0px 24px', fontSize: '12px', color: '#99999' }}>
+            <p>版本号：1.3.002.20240115</p>
+            {license && <p>有效期 ：{license}</p>}
+          </div>
         </>
       )}
 
