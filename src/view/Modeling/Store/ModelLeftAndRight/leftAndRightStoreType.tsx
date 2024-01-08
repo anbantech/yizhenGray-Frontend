@@ -103,7 +103,8 @@ export interface LeftStoreTypes {
   registerList: any
   flag: number
   selectLeftId: null | number
-  setSelect: (id: number, flag: number) => void
+  setSelect: (id: number, flag?: number) => void
   setPlatFormId: (id: number) => void
   clearFn: (type: string, keys: string, value: string | null | undefined | []) => void
+  initLeftAndRight: () => void
 }

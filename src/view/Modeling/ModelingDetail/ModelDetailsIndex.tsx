@@ -32,12 +32,14 @@ function ModelDetailsIndex() {
       getModelDetails(platformsId)
       setPortList()
       setPlatFormId(platformsId)
-      // getList('customPeripheral')
     }
   }, [getList, getModelDetails, platformsId, setPlatFormId, setPortList])
 
   React.useEffect(() => {
     LeftListStore.getState().getAllList()
+    return () => {
+      LeftAndRightStore.getState().initLeftAndRight()
+    }
   }, [])
 
   return (

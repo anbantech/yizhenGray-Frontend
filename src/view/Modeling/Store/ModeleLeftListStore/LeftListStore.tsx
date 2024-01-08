@@ -14,6 +14,7 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
   setTabs: val => {
     set({ tabs: val })
   },
+
   // 列表数据
   tabsList: [],
   // 操作栏数据
@@ -106,6 +107,7 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
           handlerDataNums: processor_cnt,
           boardPeripheralNums: default_peripheral_cnt
         })
+        await get().getList(get().tabs)
       }
     } catch (error) {
       throwErrorMessage(error)
@@ -253,6 +255,8 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
   // 初始化列表请求参数
   initStore: () => {
     set({
+      tabs: '',
+      loading: false,
       timerAndHandData: { key_word: '', page: 1, page_size: 10, sort_field: 'create_time', sort_order: 'descend' },
       customAndDefaultPeripheral: {
         variety: '0', // 0自定义 1内置

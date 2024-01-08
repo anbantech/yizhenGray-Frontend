@@ -344,8 +344,10 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
     const deleteNodeInfo = get().deleteNode.concat(deletedArray).flat(Infinity) as any
     if (deletedArray.length === 1 && deletedArray[0].data.flag === 2) {
       await LeftAndRightStore.getState().getDataHandlerDetail(deletedArray[0].data.parentId)
-      LeftAndRightStore.getState().updateHandlerData(true, { register_id: null })
+      await LeftAndRightStore.getState().updateHandlerData(true, { register_id: null })
+      await LeftAndRightStore.getState().getDataHandlerDetail(deletedArray[0].data.parentId)
     }
+    const collectNode: any[] = []
     const node = nodeData
       .map((Node1: any) => {
         const matchingItem = error_code.find((item2: any) => Node1.id === String(item2.id))
@@ -358,24 +360,34 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
       .filter((item: { id: any }) => {
         return !deleteNodeInfo.some((data: { id: any; data: { flag: number } }) => {
           if (data.data.flag === 3 && item.id === data.id) {
-            LeftAndRightStore.getState().getDataHandlerDetail(data.id)
-            LeftAndRightStore.getState().updateHandlerData(true, { register_id: null, peripheral_id: null })
+            collectNode.push(data.id)
           }
 
           return data.id === item.id
         })
       })
 
+    if (collectNode.length >= 1) {
+      await LeftAndRightStore.getState().getDataHandlerDetail(collectNode[0])
+      await LeftAndRightStore.getState().updateHandlerData(true, {
+        register_id: null,
+        peripheral_id: null
+      })
+      await LeftAndRightStore.getState().getDataHandlerDetail(collectNode[0])
+    }
+
     const edge = edgesData.filter((item: { target: any }) => {
       return !deleteNodeInfo.some((data: { id: any }) => data.id === item.target)
     })
+
     const platform_idS = LeftAndRightStore.getState().platform_id
 
     if (platform_idS) {
       // 保存画布
       get().setEdgesAndNodes(node, edge, String(platform_idS))
-      LeftAndRightStore.getState().setSelect(platform_idS, 5)
+      await LeftAndRightStore.getState().setSelect(platform_idS, 5)
     }
-    LeftListStore.getState().getList('customPeripheral')
+    const tab = LeftListStore.getState().tabs
+    await LeftListStore.getState().getList(tab)
   }
 }))

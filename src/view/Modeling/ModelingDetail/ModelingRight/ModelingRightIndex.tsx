@@ -2,6 +2,7 @@ import * as React from 'react'
 import StyleSheet from './ModelingRight.less'
 import { DataHanderComponents, PeripheralComponents, RegisterComponents, TargetComponents, TimerCompoents } from './RightAttributes'
 import { LeftAndRightStore } from '../../Store/ModelLeftAndRight/leftAndRightStore'
+import { HeaderStore } from '../../Store/HeaderStore/HeaderStore'
 
 const Header = () => {
   return (
@@ -39,7 +40,14 @@ function ModelingRight() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [flag, platform_id, selectLeftId])
   return (
-    <div className={StyleSheet.ModelingRightBody} role='time'>
+    <div
+      className={StyleSheet.ModelingRightBody}
+      role='time'
+      onClick={e => {
+        e.stopPropagation()
+        HeaderStore.getState().setHeaderTabs(null)
+      }}
+    >
       <Header />
       <>{Cms}</>
     </div>

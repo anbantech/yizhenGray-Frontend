@@ -81,7 +81,6 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
             expandedKeys={[...treeNodeData]}
             height={height}
             titleRender={(node: any) => {
-              console.log(node)
               return (
                 <div
                   className={StyleSheet.node}

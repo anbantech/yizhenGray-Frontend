@@ -25,15 +25,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
   flag: 5,
   // 注册工具函数
   selectLeftId: null,
-  // 选择左侧数据的id 默认为目标机id
-  setSelect: (id, flag) => {
-    set({ selectLeftId: id, flag })
-  },
 
-  // 左侧数据
-  setPlatFormId: id => {
-    set({ platform_id: id })
-  },
   // 寄存器列表
   registerList: [],
   // 右侧属性
@@ -112,7 +104,15 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     desc: { value: undefined, validateStatus: undefined, errorMsg: null },
     processor: { value: undefined, validateStatus: undefined, errorMsg: null }
   },
+  // 选择左侧数据的id 默认为目标机id
+  setSelect: (id, flag) => {
+    set({ selectLeftId: id, flag: flag || get().flag })
+  },
 
+  // 左侧数据
+  setPlatFormId: id => {
+    set({ platform_id: id })
+  },
   // 失焦检查每一项是否有error信息
   onBlurFn: (status, type) => {
     if (status === 'error') return
@@ -453,5 +453,95 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     if (type === 'rightDataHandler') {
       get().updateHandlerData()
     }
+  },
+
+  initLeftAndRight: () => {
+    set({
+      // 目标机ID
+      platform_id: null,
+      // 默认是目标机属性
+      flag: 5,
+      // 注册工具函数
+      selectLeftId: null,
+
+      // 寄存器列表
+      registerList: [],
+      // 右侧属性
+      rightAttributes: {},
+      rightPeripheral: {
+        id: null,
+        variety: null,
+        name: {
+          value: undefined,
+          validateStatus: undefined,
+          errorMsg: null
+        },
+        kind: {
+          value: undefined,
+          validateStatus: undefined,
+          errorMsg: null
+        },
+        address_length: {
+          value: undefined,
+          validateStatus: undefined,
+          errorMsg: null
+        },
+        base_address: {
+          value: undefined,
+          validateStatus: undefined,
+          errorMsg: null
+        },
+        desc: {
+          value: undefined,
+          validateStatus: undefined,
+          errorMsg: null
+        }
+      },
+
+      rightDataHandler: {
+        id: null,
+        name: { value: undefined, validateStatus: undefined, errorMsg: null },
+        port: { value: undefined, validateStatus: undefined, errorMsg: null },
+        interrupt: { value: undefined, validateStatus: undefined, errorMsg: null },
+        sof: { value: undefined, validateStatus: undefined, errorMsg: null },
+        eof: { value: undefined, validateStatus: undefined, errorMsg: null },
+        algorithm: { value: undefined, validateStatus: undefined, errorMsg: null },
+        register_id: { value: undefined, validateStatus: undefined, errorMsg: null },
+        peripheral_id: { value: undefined, validateStatus: undefined, errorMsg: null },
+        length_member: { value: [], validateStatus: undefined, errorMsg: null },
+        checksum_member: { value: [], validateStatus: undefined, errorMsg: null },
+        framing_member: { value: [], validateStatus: undefined, errorMsg: null }
+      },
+
+      rightTimer: {
+        id: null,
+        name: { value: undefined, validateStatus: undefined, errorMsg: null },
+        period: { value: undefined, validateStatus: undefined, errorMsg: null },
+        interrupt: { value: undefined, validateStatus: undefined, errorMsg: null }
+      },
+
+      rightDataRegister: {
+        id: null,
+        name: { value: undefined, validateStatus: undefined, errorMsg: null },
+        peripheral: { value: undefined, validateStatus: undefined, errorMsg: null },
+        peripheral_id: { value: undefined, validateStatus: undefined, errorMsg: null },
+        relative_address: { value: undefined, validateStatus: undefined, errorMsg: null },
+        kind: { value: undefined, validateStatus: undefined, errorMsg: null },
+        sr_peri_id: { value: undefined, validateStatus: undefined, errorMsg: null },
+        sr_id: { value: undefined, validateStatus: undefined, errorMsg: null },
+        finish: { value: undefined, validateStatus: undefined, errorMsg: null },
+        variety: { value: undefined, validateStatus: undefined, errorMsg: null },
+        set_cmd: { value: undefined, validateStatus: undefined, errorMsg: null },
+        restore_cmd: { value: undefined, validateStatus: undefined, errorMsg: null },
+        set_value: { value: undefined, validateStatus: undefined, errorMsg: null },
+        restore_value: { value: undefined, validateStatus: undefined, errorMsg: null }
+      },
+
+      rightTargetDetail: {
+        name: { value: undefined, validateStatus: undefined, errorMsg: null },
+        desc: { value: undefined, validateStatus: undefined, errorMsg: null },
+        processor: { value: undefined, validateStatus: undefined, errorMsg: null }
+      }
+    })
   }
 }))

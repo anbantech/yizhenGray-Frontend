@@ -72,6 +72,7 @@ const options = {
 function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
   const platform_id = LeftAndRightStore(state => state.platform_id)
   const nodesInitialized = useNodesInitialized(options)
+  const tabs = LeftListStore(state => state.tabs)
   const {
     addEdge,
     setEdges,
@@ -263,11 +264,11 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       })
       if (platform_id) {
         setEdgesAndNodes(node, edge, String(platform_id))
-        LeftAndRightStore.getState().setSelect(platform_id, 5)
+        await LeftAndRightStore.getState().setSelect(platform_id, 5)
       }
-      getList('customPeripheral')
+      await getList(tabs)
     },
-    [getDeleteNodeAndAdge, nodeData, edgesData, platform_id, getList, setEdgesAndNodes]
+    [getDeleteNodeAndAdge, nodeData, edgesData, platform_id, getList, setEdgesAndNodes, tabs]
   )
 
   // 线条删除 100%
@@ -287,7 +288,9 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
         // 1.由于后端接口适配问题,现在删除数据处理器和外设的线 必须要 获取数据处理器详情
         await LeftAndRightStore.getState().getDataHandlerDetail(targetId)
         // 2.调用数据处理器更新接口,清空寄存器信息
-        LeftAndRightStore.getState().updateHandlerData(true, { register_id: null, peripheral_id: null })
+        await LeftAndRightStore.getState().updateHandlerData(true, { register_id: null, peripheral_id: null })
+
+        await LeftAndRightStore.getState().getDataHandlerDetail(targetId)
         return saveCanvas(String(platform_id))
       }
 
@@ -300,7 +303,9 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
         // 1.由于后端接口适配问题,现在删除数据处理器和外设的线 必须要 获取数据处理器详情
         await LeftAndRightStore.getState().getDataHandlerDetail(sourceId)
         // 2.调用数据处理器更新接口,清空寄存器信息
-        LeftAndRightStore.getState().updateHandlerData(true, { register_id: null })
+        await LeftAndRightStore.getState().updateHandlerData(true, { register_id: null })
+
+        await LeftAndRightStore.getState().getDataHandlerDetail(sourceId)
         return saveCanvas(String(platform_id))
       }
     },
@@ -351,7 +356,6 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       proOptions={proOptions}
       onNodeClick={onNodeClick}
       // onEdgeUpdate={onEdgeUpdate}
-
       deleteKeyCode={['Delete', 'Backspace']}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
