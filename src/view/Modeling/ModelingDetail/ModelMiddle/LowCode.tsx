@@ -235,10 +235,12 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       if (deleted.length === 1 && deleted[0].data.flag === 2) {
         const parent_id = nodeData.filter(item => item.id === deleted[0].id)
         await LeftAndRightStore.getState().getDataHandlerDetail(parent_id[0].data.parentId)
-        LeftAndRightStore.getState().updateHandlerData(true, { register_id: null })
+        await LeftAndRightStore.getState().updateHandlerData(true, { register_id: null })
       }
       getDeleteNodeAndAdge(deleted)
       const deleteNodeArray = deleteNodeRef.current.concat(deleted).flat(Infinity)
+      const collectNode: any[] = []
+
       const node = nodeData
         .map((Node1: Node) => {
           const matchingItem = error_code?.find((item2: any) => Node1.id === String(item2.id))
@@ -251,13 +253,20 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
         .filter(item => {
           return !deleteNodeArray.some(data => {
             if (data.data.flag === 3 && item.id === data.id) {
-              // 1.由于后端接口适配问题,现在删除数据处理器和外设的线 必须要 获取数据处理器详情
-              LeftAndRightStore.getState().getDataHandlerDetail(data.id)
-              LeftAndRightStore.getState().updateHandlerData(true, { register_id: null, peripheral_id: null })
+              collectNode.push(data.id)
             }
             return data.id === item.id
           })
         })
+
+      if (collectNode.length >= 1) {
+        await LeftAndRightStore.getState().getDataHandlerDetail(collectNode[0])
+        await LeftAndRightStore.getState().updateHandlerData(true, {
+          register_id: null,
+          peripheral_id: null
+        })
+        await LeftAndRightStore.getState().getDataHandlerDetail(collectNode[0])
+      }
 
       const edge = edgesData.filter(item => {
         return !deleteNodeArray.some(data => data.id === item.target)

@@ -39,6 +39,7 @@ function ModelDetailsIndex() {
     LeftListStore.getState().getAllList()
     return () => {
       LeftAndRightStore.getState().initLeftAndRight()
+      LeftListStore.getState().initStore()
     }
   }, [])
 
