@@ -82,7 +82,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     createNode,
     saveCanvas,
     // onEdgeUpdate,
-    // layout,
+    layout,
     setEdgesAndNodes,
     updatePositionNode,
     deleteNodeInfo
@@ -323,12 +323,19 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     },
     [getNode, setCenter]
   )
+
   useEffect(() => {
     if (selectId && nodesInitialized) {
       centerNode(String(selectId))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectId, nodesInitialized])
+
+  const layoutChange = React.useCallback(() => {
+    if (layout(nodeData)) {
+      getLayoutedElements({ 'elk.algorithm': 'layered', 'elk.direction': 'DOWN' })
+    }
+  }, [getLayoutedElements, layout, nodeData])
 
   return (
     <ReactFlow
@@ -359,12 +366,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
       <CustomControls />
       <Panel position='top-right'>
-        <Button
-          style={{ borderRadius: '4px' }}
-          onClick={() => {
-            getLayoutedElements({ 'elk.algorithm': 'layered', 'elk.direction': 'DOWN' })
-          }}
-        >
+        <Button style={{ borderRadius: '4px' }} onClick={layoutChange}>
           <span>
             <AlignLeftOutlined style={{ marginRight: '15px' }} />
             一键对齐

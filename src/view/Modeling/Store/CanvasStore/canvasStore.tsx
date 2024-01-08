@@ -150,12 +150,19 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
     const layoutNode = info.concat(targetNode).flat(Infinity)
     const connectedEdges = getConnectedEdges(layoutNode, edges)
     const differentNode = nodes.filter((objA: { id: string }) => !layoutNode.some((objB: { id: string }) => objB.id === objA.id))
-    const differentEdge = edges.filter(objA => !connectedEdges.some((objB: { id: string }) => objB.id === objA.id))
+    // const differentEdge = edges.filter(objA => !connectedEdges.some((objB: { id: string }) => objB.id === objA.id))
+    if (differentNode?.length >= 1) {
+      return true
+    }
     const { nodeArray, edgesArray } = Layout(layoutNode, connectedEdges)
-    const node = nodeArray.concat(differentNode)
-    const edge = edgesArray.concat(differentEdge)
+    set({ nodes: nodeArray, edges: edgesArray })
+    return false
+
+    // const node = nodeArray.concat(differentNode)
+    // const edge = edgesArray.concat(differentEdge)
     // console.log(differentEdge, differentNode, nodeArray, edgesArray, bounds)
-    set({ nodes: node, edges: edge })
+    // set({ nodes: nodeArray, edges: edgesArray })
+    // const { nodeArray, edgesArray } = Layout(layoutNode, connectedEdges)
   },
 
   // 创建节点

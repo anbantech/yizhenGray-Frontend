@@ -423,7 +423,14 @@ function ModelingMiddleHeaderMemo({ tabs }: { tabs: string }) {
     return positionMap[tabs as keyof typeof positionMap]
   }, [tabs])
   return (
-    <div className={StyleSheet.moddleMiddleHeaderBody} style={{ left: leftposition }} key={tabs}>
+    <div
+      className={StyleSheet.moddleMiddleHeaderBody}
+      style={{ left: leftposition }}
+      key={tabs}
+      onMouseLeave={() => {
+        HeaderStore.getState().setHeaderTabs(null)
+      }}
+    >
       {TabsBarForm[tabs as keyof typeof TabsBarForm]}
       <FormFooterMemo />
     </div>

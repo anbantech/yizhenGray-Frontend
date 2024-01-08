@@ -9,9 +9,9 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
   // 骨架屏加载
   loading: false,
   // 选择tabs
-  tabs: 'customPeripheral',
+  tabs: '',
   // 更新tabs函数
-  setTabs: (val: string) => {
+  setTabs: val => {
     set({ tabs: val })
   },
   // 列表数据
@@ -97,6 +97,9 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
       const res = await getTargetDetails(id)
       if (res.data) {
         const { processor_cnt, timer_cnt, default_peripheral_cnt, peripheral_cnt } = res.data
+        if (get().tabs === '') {
+          get().setTabs(peripheral_cnt === 0 ? 'boardPeripheral' : 'customPeripheral')
+        }
         set({
           customPeripheralNums: peripheral_cnt,
           timerNums: timer_cnt,

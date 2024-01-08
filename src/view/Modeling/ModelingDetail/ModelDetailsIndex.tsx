@@ -32,7 +32,7 @@ function ModelDetailsIndex() {
       getModelDetails(platformsId)
       setPortList()
       setPlatFormId(platformsId)
-      getList('customPeripheral')
+      // getList('customPeripheral')
     }
   }, [getList, getModelDetails, platformsId, setPlatFormId, setPortList])
 

@@ -16,7 +16,7 @@ export interface LowCodeStoreType {
   onEdgeUpdate: (oldEdge: any, newConnection: any) => void
   saveCanvas: (id: string, node?: Node[], edge?: Edge[]) => void
   getModelDetails: (id: number) => void
-  layout: (nodes: any) => void
+  layout: (nodes: any) => boolean
   updatateNodeInfo: (data: Record<string, any>, platform_id: string) => void
   deleteNodeInfo: { node: any; visibility: boolean }
   setDeleNodeInfo: (node: any, visibility: boolean) => void

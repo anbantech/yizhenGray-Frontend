@@ -7,6 +7,7 @@ import { deleteConrolsFn } from 'Src/services/api/modelApi'
 
 import { deleteMap } from 'Src/view/Modeling/Store/MapStore'
 import { LeftAndRightStore } from 'Src/view/Modeling/Store/ModelLeftAndRight/leftAndRightStore'
+import { LeftListStore } from 'Src/view/Modeling/Store/ModeleLeftListStore/LeftListStore'
 
 interface ModelProps {
   visibility: boolean
@@ -59,8 +60,9 @@ function DeleteNodeModal(props: ModelProps) {
         setLoading(false)
         message.success('删除成功')
         setDeleNodeInfo({}, false)
-        LeftAndRightStore.getState().getTargetDetail(platform_id)
         onNodesDelete(node.node, response.data.error_code)
+        await LeftAndRightStore.getState().getTargetDetail(platform_id)
+        LeftListStore.getState().getModelListDetails(platform_id)
       }
     } catch {
       message.error('删除失败')
