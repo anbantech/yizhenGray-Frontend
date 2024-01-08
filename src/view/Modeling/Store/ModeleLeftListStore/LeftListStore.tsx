@@ -14,7 +14,6 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
   setTabs: val => {
     set({ tabs: val })
   },
-
   // 列表数据
   tabsList: [],
   // 操作栏数据
@@ -257,6 +256,7 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
     set({
       tabs: '',
       loading: false,
+      treeNodeData: [],
       timerAndHandData: { key_word: '', page: 1, page_size: 10, sort_field: 'create_time', sort_order: 'descend' },
       customAndDefaultPeripheral: {
         variety: '0', // 0自定义 1内置

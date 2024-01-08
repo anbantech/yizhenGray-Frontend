@@ -14,6 +14,7 @@ import { LeftAndRightStore } from '../Store/ModelLeftAndRight/leftAndRightStore'
 import { LeftListStore } from '../Store/ModeleLeftListStore/LeftListStore'
 
 import { LowCodeStore } from '../Store/CanvasStore/canvasStore'
+import { HeaderStore } from '../Store/HeaderStore/HeaderStore'
 
 function ModelDetailsIndex() {
   const open = vieMarkDown(state => state.open)
@@ -40,6 +41,7 @@ function ModelDetailsIndex() {
     return () => {
       LeftAndRightStore.getState().initLeftAndRight()
       LeftListStore.getState().initStore()
+      HeaderStore.getState().initFormValue()
     }
   }, [])
 

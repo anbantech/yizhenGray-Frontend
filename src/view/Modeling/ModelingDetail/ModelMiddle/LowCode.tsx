@@ -265,7 +265,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
           register_id: null,
           peripheral_id: null
         })
-        await LeftAndRightStore.getState().getDataHandlerDetail(collectNode[0])
+        // await LeftAndRightStore.getState().getDataHandlerDetail(collectNode[0])
       }
 
       const edge = edgesData.filter(item => {
@@ -299,7 +299,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
         // 2.调用数据处理器更新接口,清空寄存器信息
         await LeftAndRightStore.getState().updateHandlerData(true, { register_id: null, peripheral_id: null })
 
-        await LeftAndRightStore.getState().getDataHandlerDetail(targetId)
+        // await LeftAndRightStore.getState().getDataHandlerDetail(targetId)
         return saveCanvas(String(platform_id))
       }
 
@@ -314,7 +314,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
         // 2.调用数据处理器更新接口,清空寄存器信息
         await LeftAndRightStore.getState().updateHandlerData(true, { register_id: null })
 
-        await LeftAndRightStore.getState().getDataHandlerDetail(sourceId)
+        // await LeftAndRightStore.getState().getDataHandlerDetail(sourceId)
         return saveCanvas(String(platform_id))
       }
     },

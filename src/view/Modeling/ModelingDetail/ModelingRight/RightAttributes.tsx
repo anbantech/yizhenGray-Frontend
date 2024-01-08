@@ -443,6 +443,7 @@ const DataHanderComponents: React.FC = () => {
   const { headerBarList } = LeftListStore()
   const { name, port, interrupt, sof, eof, checksum_member, peripheral_id, framing_member, length_member, algorithm, register_id } = rightDataHandler
   const [form] = Form.useForm()
+  console.log(register_id.value)
   //  kind 0是状态  1非状态 非状态寄存器
   const notRegsiterList = useMemo(() => {
     return registerList?.filter((item: any) => item.kind === 1)

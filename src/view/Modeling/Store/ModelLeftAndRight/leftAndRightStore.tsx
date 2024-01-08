@@ -339,8 +339,9 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     const res = isBaseOnCanvas
       ? await updateDataHandler(rightDataHandler.id, { ...params, ...inputParams })
       : await updateDataHandler(rightDataHandler.id, params)
-    if (platform_id && res.data && !isBaseOnCanvas) {
+    if (platform_id && res.data) {
       await LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
+      get().updateRightAttributes('rightDataHandler', get().rightDataHandler, res.data)
       LeftListStoreMap.getList('handlerData')
       set({ rightAttributes: params })
     }
