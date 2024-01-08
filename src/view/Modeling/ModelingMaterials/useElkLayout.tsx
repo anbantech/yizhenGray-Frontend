@@ -11,8 +11,7 @@ export const useLayoutedElements = (setNodes: any) => {
     'elk.algorithm': 'layered',
     'elk.layered.spacing.nodeNodeBetweenLayers': 100,
     'elk.spacing.nodeNode': 80,
-    'org.eclipse.elk.edgeRouting': 'ORTHOGONAL',
-    'org.eclipse.elk.layered.nodePlacement.bk.fixedAlignment': 'BALANCED'
+    'elk.layered.nodePlacement.bk.fixedAlignment': 'BALANCED'
     // 'nodePlacement.strategy': 'BRANDES_KOEPF'
   }
 

@@ -134,15 +134,27 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       // and you don't need to subtract the reactFlowBounds.left/top anymore
       // details: https://reactflow.dev/whats-new/2023-11-10  but now we use project Api
       const position = reactFlowInstance.screenToFlowPosition({
-        x: event.clientX + 50,
-        y: event.clientY + 50
+        x: event.clientX,
+        y: event.clientY
+      })
+      const centerX = position.x + 68
+      const centerY = position.y + 18
+      // find a node where the center point is inside
+      // eslint-disable-next-line array-callback-return
+      const targetNode = nodes.find((n: any) => {
+        if (n.width && n.height) {
+          return (
+            centerX > n.position.x &&
+            centerX < n.position.x + n.width &&
+            centerY > n.position.y &&
+            centerY < n.position.y + n.height &&
+            n.id !== String(id)
+          )
+        }
       })
 
-      const matchingNode = nodes.find(node => {
-        return node.position.x === position.x && node.position.y === position.y
-      })
-
-      if (matchingNode) {
+      if (targetNode) {
+        console.log(targetNode)
         return message.warn('此节点放置位置,与其他节点重叠')
       }
 
