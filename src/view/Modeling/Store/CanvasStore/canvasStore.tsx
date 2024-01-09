@@ -177,7 +177,6 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
   // 创建寄存器节点
   createRegisterNode: data => {
     const { id, register_id } = data
-
     // 1.直接过滤节点
     const parentNode = get().nodes.filter((item: any) => item?.parentId !== String(id))
     const parentEdge = get().edges.filter((item: any) => String(id) !== item.source)
@@ -201,8 +200,9 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
         id: String(register_id.value),
         error_code: 0,
         flag: 2,
-        tabs: '',
-        parentId: String(id)
+        tabs: registerInfo[0].variety ? 'boardPeripheral' : 'customPeripheral',
+        parentId: String(id),
+        grandParentId: String(registerInfo[0].peripheral_id)
       },
       parentId: String(id),
       type: switchNodeType(2),

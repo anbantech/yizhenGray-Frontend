@@ -215,6 +215,10 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       event.stopPropagation()
       event.preventDefault()
       LeftAndRightStore.getState().setSelect(node.id, node.data.flag)
+      if (node.data.flag === 2) {
+        LeftListStore.getState().updateTreeNodeData([node.id, node.data.grandParentId])
+      }
+
       if (node.data.tabs) {
         getList(node.data.tabs)
       }
