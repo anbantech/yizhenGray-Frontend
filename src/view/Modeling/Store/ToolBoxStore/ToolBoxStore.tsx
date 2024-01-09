@@ -78,7 +78,7 @@ export default class ToolBox {
   // 检查中断
   checkInterrupt(): { message: string | undefined; status: string | undefined } {
     if (this.isCheck && !this.value) {
-      return { message: '请输入中断', status: 'error' }
+      return { message: '请输入中断号', status: 'error' }
     }
     const regex = /^\d+$/
     if (this.value) {

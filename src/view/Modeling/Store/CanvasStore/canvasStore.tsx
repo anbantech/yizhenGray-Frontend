@@ -418,6 +418,11 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
     const tab = LeftListStore.getState().tabs
     await LeftListStore.getState().getList(tab)
   },
+
+  // 右侧属性删除画布
+  onNodeRightCanvasDelete: id => {
+    set({ nodes: get().nodes.filter((item: any) => item?.id !== String(id)) })
+  },
   initLowCodeStore: () => {
     set({ nodes: [], edges: [] })
   }

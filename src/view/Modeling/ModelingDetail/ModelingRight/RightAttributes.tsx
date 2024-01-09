@@ -9,6 +9,7 @@ import { LeftAndRightStore } from '../../Store/ModelLeftAndRight/leftAndRightSto
 import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
 import { publicAttributes } from '../../Store/ModelStore'
 import { BaseDataHandler, BaseErrorType } from '../../Store/ModelLeftAndRight/leftAndRightStoreType'
+import { LowCodeStore } from '../../Store/CanvasStore/canvasStore'
 
 const { Option } = Select
 
@@ -792,11 +793,23 @@ const DataHanderComponents: React.FC = () => {
               placeholder='请选择寄存器'
               value={register_id.value}
               disabled={!resgiedDisabled}
+              allowClear
+              showArrow
+              showSearch={Boolean(0)}
               getPopupContainer={() => document.querySelector('#area') as HTMLElement}
-              onChange={e => {
-                if (e === register_id.value) return
-                onChangeFn('rightDataHandler', 'register_id', e)
+              onClear={() => {
+                if (register_id.value) {
+                  LowCodeStore.getState().onNodeRightCanvasDelete(register_id.value)
+                }
+                onChangeFn('rightDataHandler', 'register_id', null, true)
                 closeMenu(false, register_id.validateStatus, 'rightDataHandler')
+              }}
+              onChange={e => {
+                if (e) {
+                  if (e === register_id.value) return
+                  onChangeFn('rightDataHandler', 'register_id', e)
+                  closeMenu(false, register_id.validateStatus, 'rightDataHandler')
+                }
               }}
             >
               {notRegsiterList?.map((rate: any) => {

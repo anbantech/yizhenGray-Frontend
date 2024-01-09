@@ -24,6 +24,7 @@ export interface LowCodeStoreType {
   getDeleteNodeInfo: (deleted: any, nodes: Node[], edges: Edge[]) => void
   createRegisterNode: (data: any) => void
   initLowCodeStore: () => void
+  onNodeRightCanvasDelete: (id: string | number) => void
   onNodesDelete: (nodeData: any, edgesData: any, deletedArray: any, error_code: [{ error_code: number; id: string }]) => void
   getTreeNode: () => void
 }

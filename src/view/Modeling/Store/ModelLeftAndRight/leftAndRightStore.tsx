@@ -253,7 +253,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
   },
 
   // 输入过程中进行校验
-  onChangeFn: (type, keys, value, isValue) => {
+  onChangeFn: (type, keys, value, isValue = false) => {
     const validation = isValue
       ? new ToolBox(value as string, false, keys).validate()
       : ['name', 'base_address', 'address_length', 'relative_address', 'interrupt', 'period', 'desc'].includes(keys)
@@ -268,7 +268,8 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
         updatedDraft[type as keyof typeof updatedDraft][keys].value = value
       })
     )
-    if (keys === 'register_id') {
+
+    if (keys === 'register_id' && !isValue) {
       LowCodeStore.getState().createRegisterNode(get().rightDataHandler)
     }
     // 更新是否为状态寄存器时,更新画布
