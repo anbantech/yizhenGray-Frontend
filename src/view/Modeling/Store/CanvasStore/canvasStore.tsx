@@ -119,17 +119,21 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
   updatateNodeInfo: (data: Record<string, any>, platform_id: string) => {
     const { error_code, name, id } = data
     set({
-      nodes: get().nodes.map((Node: any) => {
-        if (String(id) === Node.id && Node.data.label !== name) {
-          return { ...Node, data: { ...Node.data, label: name } }
-        }
+      nodes: get()
+        .nodes.map((Node: any) => {
+          const matchingItem = error_code.find((item2: any) => Node.id === String(item2.id))
+          if (matchingItem) {
+            return { ...Node, data: { ...Node.data, error_code: matchingItem.error_code } }
+          }
 
-        const matchingItem = error_code.find((item2: any) => Node.id === String(item2.id))
-        if (matchingItem) {
-          return { ...Node, data: { ...Node.data, error_code: matchingItem.error_code } }
-        }
-        return Node
-      })
+          return Node
+        })
+        .map((Node1: any) => {
+          if (String(id) === Node1.id && Node1.data.label !== name) {
+            return { ...Node1, data: { ...Node1.data, label: name } }
+          }
+          return Node1
+        })
     })
     get().saveCanvas(platform_id)
   },
@@ -192,13 +196,12 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
     })
 
     const position = parentNodeInfo?.position as XYPosition
-
     const newNode = {
       id: String(register_id.value),
       data: {
         label: registerInfo[0].name,
         id: String(register_id.value),
-        error_code: 0,
+        error_code: registerInfo[0].code,
         flag: 2,
         tabs: registerInfo[0].variety ? 'boardPeripheral' : 'customPeripheral',
         parentId: String(id),

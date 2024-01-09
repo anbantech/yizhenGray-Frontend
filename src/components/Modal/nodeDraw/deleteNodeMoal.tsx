@@ -8,6 +8,7 @@ import { deleteConrolsFn } from 'Src/services/api/modelApi'
 import { deleteMap } from 'Src/view/Modeling/Store/MapStore'
 import { LeftAndRightStore } from 'Src/view/Modeling/Store/ModelLeftAndRight/leftAndRightStore'
 import { LeftListStore } from 'Src/view/Modeling/Store/ModeleLeftListStore/LeftListStore'
+import { LowCodeStore } from 'Src/view/Modeling/Store/CanvasStore/canvasStore'
 
 interface ModelProps {
   visibility: boolean
@@ -61,6 +62,7 @@ function DeleteNodeModal(props: ModelProps) {
         setLoading(false)
         message.success('删除成功')
         setDeleNodeInfo({}, false)
+        LowCodeStore.getState().updatateNodeInfo(response.data, String(platform_id))
         await LeftAndRightStore.getState().getTargetDetail(platform_id)
         LeftListStore.getState().getModelListDetails(platform_id)
       }

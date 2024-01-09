@@ -317,7 +317,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
     }
     const res = await updatePeripherals(rightPeripheral.id as string, params)
     if (platform_id && res.data) {
-      await LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
+      LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
       LeftListStoreMap.getList('customPeripheral')
       set({ rightAttributes: params })
     }
