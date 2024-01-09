@@ -94,8 +94,18 @@ export default class ToolBox {
     return { message: undefined, status: undefined }
   }
 
+  //  检查描述
+  checkDesc(): { message: string | undefined; status: string | undefined } {
+    if (this.value && this.value?.length > 50) {
+      return { message: '字数不能超过50个', status: 'error' }
+    }
+    return { message: undefined, status: 'success' }
+  }
+
   validate(): { message: string | undefined; status: string | undefined } {
     switch (this.key) {
+      case 'desc':
+        return this.checkDesc()
       case 'name':
         return this.validateLanguage()
       case 'address_length':

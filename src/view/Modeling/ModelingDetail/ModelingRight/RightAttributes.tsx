@@ -150,11 +150,10 @@ const PeripheralComponents: React.FC = () => {
             value={address_length?.value}
           />
         </Form.Item>
-        <Form.Item label='描述' name='desc' rules={[{ type: 'string', max: 50, message: '字数不能超过50个' }]}>
+        <Form.Item label='描述' help={desc.errorMsg} hasFeedback validateStatus={desc.validateStatus}>
           <TextArea
-            name='desc'
+            value={desc?.value}
             placeholder={disabledVariety ? '-' : '请输入描述'}
-            value={desc.value}
             disabled={disabledVariety}
             onChange={e => {
               onChangeFn('rightPeripheral', 'desc', e.target.value)
@@ -649,7 +648,7 @@ const DataHanderComponents: React.FC = () => {
               value={rightDataHandler.interrupt.value}
               placeholder='请输入中断号'
               onChange={(e: { target: { value: string | number | string[] | number[] | undefined } }) => {
-                onChangeFn('rightDataHandler', 'interrupt', e.target.value)
+                onChangeFn('rightDataHandler', 'interrupt', e.target.value, true)
               }}
               onBlur={() => {
                 if (rightAttributes.interrupt === interrupt.value) return

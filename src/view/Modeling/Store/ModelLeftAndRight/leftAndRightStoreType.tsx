@@ -93,7 +93,7 @@ export interface RightStoreTypes {
   updateHandlerData: (isBaseOnCanvas?: boolean, inputParams?: any) => void
   updateTimer: () => void
   updateFn: (type: string) => void
-  onChangeFn: (type: string, keys: string, value: string | string[] | undefined | number[] | number | undefined | null) => void
+  onChangeFn: (type: string, keys: string, value: string | string[] | undefined | number[] | number | undefined | null, isValue?: boolean) => void
   // 外部直接调用更新数据处理器接口
   updateHandlerOut: (id: number, output: any) => void
 }

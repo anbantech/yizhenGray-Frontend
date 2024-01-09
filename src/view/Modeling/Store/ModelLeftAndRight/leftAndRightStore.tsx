@@ -253,8 +253,10 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
   },
 
   // 输入过程中进行校验
-  onChangeFn: (type, keys, value) => {
-    const validation = ['name', 'base_address', 'address_length', 'relative_address', 'interrupt', 'period'].includes(keys)
+  onChangeFn: (type, keys, value, isValue) => {
+    const validation = isValue
+      ? new ToolBox(value as string, false, keys).validate()
+      : ['name', 'base_address', 'address_length', 'relative_address', 'interrupt', 'period', 'desc'].includes(keys)
       ? new ToolBox(value as string, true, keys).validate()
       : new ToolBox(value as string, false, keys).validate()
     const { message, status } = validation
@@ -313,7 +315,7 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
         (rightPeripheral.address_length.value as string).trim().length % 2 === 0
           ? rightPeripheral.address_length.value
           : `0${rightPeripheral.address_length.value}`,
-      desc: rightPeripheral.desc.value
+      desc: rightPeripheral.desc.value ? rightPeripheral.desc.value : undefined
     }
     const res = await updatePeripherals(rightPeripheral.id as string, params)
     if (platform_id && res.data) {
