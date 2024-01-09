@@ -134,7 +134,7 @@ const PeripheralsForm = () => {
 
   return (
     <div className={StyleSheet.formBody}>
-      <Form form={form} layout='vertical'>
+      <Form form={form} layout='vertical' autoComplete='off'>
         <Form.Item
           label='外设名称'
           required
@@ -247,7 +247,7 @@ const ProcessorForm = () => {
   })
   return (
     <div className={StyleSheet.ProcessorFormBody}>
-      <Form form={form} layout='vertical'>
+      <Form form={form} layout='vertical' autoComplete='off'>
         <Form.Item label='所属外设' required className={StyleSheet.firstFormItem}>
           <Select
             placeholder='请选择所属外设'
@@ -301,7 +301,7 @@ const DataHandlerForm = () => {
   })
   return (
     <div className={StyleSheet.DataHandlerFormBody}>
-      <Form form={form} layout='vertical'>
+      <Form form={form} layout='vertical' autoComplete='off'>
         <Form.Item
           label='数据处理器名称'
           required
@@ -357,7 +357,7 @@ const TimeForm = () => {
 
   return (
     <div className={StyleSheet.ProcessorFormBody}>
-      <Form form={form} layout='vertical'>
+      <Form form={form} layout='vertical' autoComplete='off'>
         <Form.Item
           label='定时器名称'
           name='name'
