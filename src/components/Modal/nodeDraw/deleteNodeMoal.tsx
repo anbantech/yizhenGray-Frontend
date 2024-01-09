@@ -54,13 +54,13 @@ function DeleteNodeModal(props: ModelProps) {
   const asyncDeleteControlsFn = React.useCallback(async () => {
     const params = filterNode(node.node)
     try {
+      await onNodesDelete(node.node)
       const response = await deleteConrolsFn({ ...params, platform_id })
       setLoading(true)
       if (response.code === 0 && platform_id) {
         setLoading(false)
         message.success('删除成功')
         setDeleNodeInfo({}, false)
-        onNodesDelete(node.node, response.data.error_code)
         await LeftAndRightStore.getState().getTargetDetail(platform_id)
         LeftListStore.getState().getModelListDetails(platform_id)
       }
