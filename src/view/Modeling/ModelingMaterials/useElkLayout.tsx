@@ -14,7 +14,12 @@ export const useLayoutedElements = (setNodes: any) => {
     'elk.layered.nodePlacement.bk.fixedAlignment': 'BALANCED'
     // 'nodePlacement.strategy': 'BRANDES_KOEPF'
   }
+  // Extract unique node IDs from edges
+  // const edgeNodeIds = new Set(edges.flatMap(edge => [edge.source, edge.target]))
 
+  // // Filter nodes that have corresponding edges
+  // const nodesWithEdges = nodes.filter(node => edgeNodeIds.has(node.id))
+  console.log(getEdges())
   const getLayoutedElements = useCallback(
     options => {
       const layoutOptions = { ...defaultOptions, ...options }

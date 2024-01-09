@@ -209,6 +209,13 @@ const RegisterComponents: React.FC = () => {
     return registerListArray
   }, [registerList])
 
+  useEffect(() => {
+    if (sr_peri_id && sr_peri_id?.value) {
+      getPeripheralDetail(+sr_peri_id?.value)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sr_peri_id])
+
   const SelectBefore = (props: { type: string; values: string | undefined; status: string | undefined }) => {
     const { type, values, status } = props
     return (
@@ -376,11 +383,13 @@ const RegisterComponents: React.FC = () => {
                 disabled={!sr_peri_id.value}
                 showSearch={Boolean(0)}
                 value={sr_id.value}
-                onChange={e => {
-                  getPeripheralDetail(+e)
-                  if (e === sr_id.value) return
-                  onChangeFn('rightDataRegister', 'sr_id', e)
-                  closeMenu(false, sr_id.validateStatus, 'rightDataRegister')
+                onChange={async e => {
+                  if (e && sr_peri_id?.value) {
+                    await getPeripheralDetail(+sr_peri_id?.value)
+                    if (e === sr_id.value) return
+                    onChangeFn('rightDataRegister', 'sr_id', e)
+                    closeMenu(false, sr_id.validateStatus, 'rightDataRegister')
+                  }
                 }}
               >
                 {registerListStatus?.map((rate: any) => {

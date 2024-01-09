@@ -141,6 +141,11 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
   // 点击按钮 自动布局 todo
   layout: nodes => {
     const { edges } = get()
+    const nodeIds = new Set(get().nodes.map(node => node.id))
+
+    // Filter nodes that have corresponding edges
+    const filteredEdges = edges.filter(edge => nodeIds.has(edge.source) && nodeIds.has(edge.target))
+    set({ edges: filteredEdges })
     const targetNode = nodes.filter((item: any) => item.data.flag === 5)
     const info: any = []
     const getDeleteNodeAndAdge = (deleted: any, nodes: Node[], edges: Edge[]) => {

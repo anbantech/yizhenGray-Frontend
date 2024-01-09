@@ -332,6 +332,8 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
         // await LeftAndRightStore.getState().getDataHandlerDetail(sourceId)
         return saveCanvas(String(platform_id))
       }
+
+      return saveCanvas(String(platform_id))
     },
     [edgesData, nodeData, platform_id, saveCanvas, setEdges, setNodes]
   )
