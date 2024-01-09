@@ -427,6 +427,7 @@ function LowCodeWrapper() {
     getModelListDetails(platformsId)
     return () => {
       listenBeforeLoad()
+      LowCodeStore.getState().initLowCodeStore()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [platformsId])

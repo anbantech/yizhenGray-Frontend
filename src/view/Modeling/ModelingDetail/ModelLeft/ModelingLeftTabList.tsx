@@ -22,6 +22,8 @@ const Image = {
 
 const TreeDataMemo = (props: { listData: any; height: number }) => {
   const { listData, height } = props
+  const { tabs } = LeftListStore()
+  const customAndDefaultPeripheral = LeftListStore(state => state.customAndDefaultPeripheral)
   const [autoExpandParent, setAutoExpandParent] = useState(true)
   const { updateTreeNodeData } = LeftListStore()
   // loading 骨架屏
@@ -37,7 +39,10 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
     },
     [updateTreeNodeData]
   )
-
+  const showTabs = React.useMemo(() => {
+    const result = ['customPeripheral', 'boardPeripheral'].includes(tabs) && customAndDefaultPeripheral.key_word
+    return result
+  }, [tabs, customAndDefaultPeripheral])
   const updataMidleAndRightUI = useCallback(
     (selectedKeys, e) => {
       const { flag, id } = e.node
@@ -66,6 +71,7 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
     event.dataTransfer.setData('application/reactflow', data)
     event.dataTransfer.effectAllowed = 'move'
   }
+
   return (
     <>
       <Skeleton loading={loading}>
@@ -79,7 +85,7 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
             autoExpandParent={autoExpandParent}
             selectedKeys={[`${selectLeftId}`]}
             expandedKeys={[...treeNodeData]}
-            height={height}
+            height={showTabs ? height - 20 : height}
             titleRender={(node: any) => {
               return (
                 <div

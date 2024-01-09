@@ -6,7 +6,7 @@ import StyleSheet from './modelLeft.less'
 import { LeftListStore } from '../../Store/ModeleLeftListStore/LeftListStore'
 
 function ModelingInputMemo() {
-  const { timerAndHandData, tabs, updateTagOrKeyWord, getList } = LeftListStore()
+  const { timerAndHandData, tabs, updateTagOrKeyWord, getList, updateTreeNodeData } = LeftListStore()
   const customAndDefaultPeripheral = LeftListStore(state => state.customAndDefaultPeripheral)
   const ref = React.useRef<any>()
   const whichOneParams = React.useMemo(() => {
@@ -15,10 +15,13 @@ function ModelingInputMemo() {
 
   const setKeyWords = React.useCallback(
     async (val: string) => {
+      if (val === '') {
+        updateTreeNodeData([])
+      }
       updateTagOrKeyWord(val, 'key_word', ['customPeripheral', 'boardPeripheral'].includes(tabs))
       await getList(tabs)
     },
-    [getList, tabs, updateTagOrKeyWord]
+    [getList, tabs, updateTagOrKeyWord, updateTreeNodeData]
   )
 
   const updateParams = React.useCallback(
