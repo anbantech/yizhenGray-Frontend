@@ -154,7 +154,6 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       })
 
       if (targetNode) {
-        console.log(targetNode)
         return message.warn('此节点放置位置,与其他节点重叠')
       }
 

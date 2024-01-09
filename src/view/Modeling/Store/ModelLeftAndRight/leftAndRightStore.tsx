@@ -15,7 +15,7 @@ import {
 import { produce } from 'immer'
 import { RightStoreTypes, LeftStoreTypes } from './leftAndRightStoreType'
 import ToolBox from '../ToolBoxStore/ToolBoxStore'
-import { LeftListStoreMap } from '../ModeleLeftListStore/LeftListStore'
+import { LeftListStore, LeftListStoreMap } from '../ModeleLeftListStore/LeftListStore'
 import { LowCodeStore } from '../CanvasStore/canvasStore'
 
 export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, get) => ({
@@ -270,15 +270,29 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
       LowCodeStore.getState().createRegisterNode(get().rightDataHandler)
     }
     // 更新是否为状态寄存器时,更新画布
-    if (type === 'rightDataRegister' && keys === 'kind' && value === 0) {
-      const id = get().platform_id
-      const targetId = get().rightDataRegister.id
-      const idExists = LowCodeStore.getState().nodes.some(item => item.id === String(targetId))
+    if (type === 'rightDataRegister' && keys === 'kind') {
+      const isKindParams = !value
+        ? {
+            set_cmd: { value: undefined, validateStatus: undefined, errorMsg: null },
+            restore_cmd: { value: undefined, validateStatus: undefined, errorMsg: null },
+            set_value: { value: undefined, validateStatus: undefined, errorMsg: null },
+            restore_value: { value: undefined, validateStatus: undefined, errorMsg: null }
+          }
+        : {
+            sr_id: { value: undefined, validateStatus: undefined, errorMsg: null },
+            sr_peri_id: { value: undefined, validateStatus: undefined, errorMsg: null }
+          }
+      set({ rightDataRegister: { ...get().rightDataRegister, ...isKindParams } })
+      if (value === 0) {
+        const id = get().platform_id
+        const targetId = get().rightDataRegister.id
+        const idExists = LowCodeStore.getState().nodes.some(item => item.id === String(targetId))
 
-      if (idExists && id) {
-        const node = LowCodeStore.getState().nodes.filter(item => String(targetId) !== item.id)
-        const edge = LowCodeStore.getState().edges.filter(item => String(targetId) !== item.target)
-        LowCodeStore.getState().setEdgesAndNodes(node, edge, String(id))
+        if (idExists && id) {
+          const node = LowCodeStore.getState().nodes.filter(item => String(targetId) !== item.id)
+          const edge = LowCodeStore.getState().edges.filter(item => String(targetId) !== item.target)
+          LowCodeStore.getState().setEdgesAndNodes(node, edge, String(id))
+        }
       }
     }
   },
@@ -413,13 +427,15 @@ export const LeftAndRightStore = create<RightStoreTypes & LeftStoreTypes>((set, 
               ? `0${rightDataRegister.restore_value.value}`
               : undefined
         }
-      : { sr_id: rightDataRegister.sr_id.value, sr_peri_id: rightDataRegister.sr_peri_id.value }
+      : { sr_id: rightDataRegister.sr_id.value, sr_peri_id: rightDataRegister?.sr_peri_id.value || null }
 
     const params = { ...baseParams, ...isKindParams }
     const res = await updateRegister(rightDataRegister.id, params)
     if (platform_id && res.data) {
       await LowCodeStore.getState().updatateNodeInfo(res.data, String(platform_id))
-      LeftListStoreMap.getList('customPeripheral')
+      const tab = LeftListStore.getState().tabs
+      // get().updateRightAttributes('rightDataRegister', get().rightDataRegister, res.data)
+      LeftListStoreMap.getList(tab)
       set({ rightAttributes: params })
     }
   },

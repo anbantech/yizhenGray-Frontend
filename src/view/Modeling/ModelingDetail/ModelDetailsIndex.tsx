@@ -42,6 +42,7 @@ function ModelDetailsIndex() {
       LeftAndRightStore.getState().initLeftAndRight()
       LeftListStore.getState().initStore()
       HeaderStore.getState().initFormValue()
+      LowCodeStore.getState().initLowCodeStore()
     }
   }, [])
 

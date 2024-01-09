@@ -98,11 +98,15 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
     if (sourceNode?.data.flag === 5 && [1, 4].includes(targetNode?.data.flag)) {
       set({ edges: [...get().edges, item] })
     }
+    const connectionFn = async (id: number, target: number) => {
+      await LeftAndRightStore.getState().getDataHandlerDetail(target)
+      await LeftAndRightStore.getState().onChangeFn('rightDataHandler', 'peripheral_id', +id)
+      await LeftAndRightStore.getState().updateHandlerData(true, { peripheral_id: +id })
+    }
 
     if (sourceNode?.data.flag === 1 && targetNode?.data.flag === 3) {
       // 如果外设和数据处理器连接,更新数据处理器外设的状态  1.调用更新数据处理器接口 2.修改右侧属性接口数据
-      await LeftAndRightStore.getState().onChangeFn('rightDataHandler', 'peripheral_id', +source)
-      await LeftAndRightStore.getState().updateHandlerData(true, { peripheral_id: +source })
+      connectionFn(source, target)
       set({ edges: [...get().edges, item] })
     }
 
@@ -387,5 +391,8 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
     }
     const tab = LeftListStore.getState().tabs
     await LeftListStore.getState().getList(tab)
+  },
+  initLowCodeStore: () => {
+    set({ nodes: [], edges: [] })
   }
 }))
