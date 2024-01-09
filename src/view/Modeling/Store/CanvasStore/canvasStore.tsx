@@ -219,7 +219,7 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
       data: {
         label: registerInfo[0].name,
         id: String(register_id.value),
-        error_code: registerInfo[0].code,
+        error_code: registerInfo[0].error_code,
         flag: 2,
         tabs: registerInfo[0].variety ? 'boardPeripheral' : 'customPeripheral',
         parentId: String(id),

@@ -219,7 +219,10 @@ const RegisterComponents: React.FC = () => {
         allowClear
         value={values}
         style={{ width: 70, height: 30 }}
-        onClear={() => {}}
+        onClear={() => {
+          onChangeFn('rightDataRegister', type, null)
+          closeMenu(false, status, 'rightDataRegister')
+        }}
         onChange={(value: string) => {
           if (value === values) return
           onChangeFn('rightDataRegister', type, value)
@@ -342,11 +345,18 @@ const RegisterComponents: React.FC = () => {
                 showSearch={Boolean(0)}
                 allowClear
                 value={sr_peri_id.value}
-                onChange={e => {
-                  getPeripheralDetail(+e)
-                  if (e === sr_peri_id.value) return
-                  onChangeFn('rightDataRegister', 'sr_peri_id', e)
+                onClear={() => {
+                  onChangeFn('rightDataRegister', 'sr_peri_id', null)
+                  onChangeFn('rightDataRegister', 'sr_id', null)
                   closeMenu(false, sr_peri_id.validateStatus, 'rightDataRegister')
+                }}
+                onChange={e => {
+                  if (e) {
+                    getPeripheralDetail(+e)
+                    if (e === sr_peri_id.value) return
+                    onChangeFn('rightDataRegister', 'sr_peri_id', e)
+                    closeMenu(false, sr_peri_id.validateStatus, 'rightDataRegister')
+                  }
                 }}
                 placeholder='请选择关联状态寄存器所属外设'
               >
