@@ -25,4 +25,5 @@ export interface LowCodeStoreType {
   createRegisterNode: (data: any) => void
   initLowCodeStore: () => void
   onNodesDelete: (nodeData: any, edgesData: any, deletedArray: any, error_code: [{ error_code: number; id: string }]) => void
+  getTreeNode: () => void
 }

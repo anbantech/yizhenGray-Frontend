@@ -172,7 +172,25 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
     // set({ nodes: nodeArray, edges: edgesArray })
     // const { nodeArray, edgesArray } = Layout(layoutNode, connectedEdges)
   },
-
+  // 获取建模节点
+  getTreeNode: () => {
+    const targetNode = get().nodes.filter((item: any) => item.data.flag === 5)
+    const info: any = []
+    const getDeleteNodeAndAdge = (deleted: any, nodes: Node[], edges: Edge[]) => {
+      // eslint-disable-next-line array-callback-return
+      deleted.reduce((acc: any, node: any) => {
+        const outgoers = getOutgoers(node, nodes, edges)
+        if (outgoers.length > 0) {
+          info.push(outgoers)
+          getDeleteNodeAndAdge(outgoers, nodes, edges)
+        }
+      }, edges)
+      return false
+    }
+    getDeleteNodeAndAdge(targetNode, get().nodes, get().edges)
+    const layoutNode = info.concat(targetNode).flat(Infinity)
+    return layoutNode
+  },
   // 创建节点
   createNode: data => {
     return set({ nodes: [...get().nodes, { ...data }] })

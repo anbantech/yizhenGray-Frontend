@@ -496,7 +496,9 @@ const HeaderBarMemo = () => {
             browserDownload.createFrontendDownloadAction(decodeURIComponent(res.fileName), new Blob([res.data]))
           }
         } else {
-          const res: any = await scriptGenerator(platform_id, allId)
+          const TreeNode = LowCodeStore.getState().getTreeNode()
+          const TreeNodes = filterNode(TreeNode)
+          const res: any = await scriptGenerator(platform_id, TreeNodes)
           if (res.code === 0) {
             message.success('生成脚本成功')
           }
