@@ -10,7 +10,8 @@ import ReactFlow, {
   NodeTypes,
   Panel,
   ReactFlowProvider,
-  getOutgoers
+  getOutgoers,
+  useNodesInitialized
 } from 'reactflow'
 import { useLocation } from 'react-router'
 import { useEventListener } from 'ahooks-v2'
@@ -65,9 +66,15 @@ const nodeTypes: NodeTypes = {
 
 // 保持原点在屏幕中心
 // const nodeOrigin: NodeOrigin = [0.5, 0.5]
+const options = {
+  includeHiddenNodes: false
+}
 
 function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
   const platform_id = LeftAndRightStore(state => state.platform_id)
+  const nodesInitialized = useNodesInitialized(options)
+
+  const [isLayout, setIsLayout] = useState(false)
   const tabs = LeftListStore(state => state.tabs)
   const {
     addEdge,
@@ -337,12 +344,18 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
   const layoutChange = React.useCallback(() => {
     if (layout(nodeData)) {
       getLayoutedElements({ 'elk.algorithm': 'layered', 'elk.direction': 'DOWN' })
-      window.requestAnimationFrame(() => {
-        fitView()
-      })
     }
-  }, [fitView, getLayoutedElements, layout, nodeData])
-
+    setIsLayout(true)
+    // window.requestAnimationFrame(() => {
+    //   fitView({ nodes: [{ id: String(platform_id) }] })
+    // })
+  }, [getLayoutedElements, layout, nodeData])
+  useEffect(() => {
+    if (nodesInitialized && isLayout) {
+      fitView()
+      setIsLayout(false)
+    }
+  }, [nodesInitialized, isLayout, fitView])
   return (
     <ReactFlow
       ref={ref}
@@ -366,6 +379,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       onNodeDragStart={onNodeDragStart}
       onEdgesDelete={onCanvasEdgesDelete}
       connectionLineType={ConnectionLineType.SmoothStep}
+      minZoom={0.01}
     >
       <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
       <CustomControls />

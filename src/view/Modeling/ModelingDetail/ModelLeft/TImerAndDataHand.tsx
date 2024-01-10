@@ -34,6 +34,7 @@ const OthersCompoentsMemo = (props: { listData: any; height: number }) => {
     (e, item) => {
       const { flag, id } = item
       setSelect(id, flag)
+      LowCodeStore.getState().setCanvasCenter(String(id))
       if (flag === 3) {
         getAllList()
       }
