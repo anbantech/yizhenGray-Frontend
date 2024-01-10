@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { Skeleton, Tooltip, Tree } from 'antd'
+import { Tooltip, Tree } from 'antd'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { IconPeripheral, IconYifuRegister, IconDelete, IconCommon, IconClock, IconExclamationTriangleFill } from '@anban/iconfonts'
 import styles from 'Src/view/Project/task/taskList/task.less'
@@ -27,7 +27,7 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
   const [autoExpandParent, setAutoExpandParent] = useState(true)
   const { updateTreeNodeData } = LeftListStore()
   // loading 骨架屏
-  const { loading, treeNodeData, getAllList } = LeftListStore()
+  const { treeNodeData, getAllList } = LeftListStore()
   // 设置选中节点,以及flag
   const { setSelect, selectLeftId } = LeftAndRightStore()
   // 树节点 筛选结果
@@ -77,65 +77,65 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
 
   return (
     <>
-      <Skeleton loading={loading}>
-        {listData.length > 0 ? (
-          <Tree
-            treeData={listData}
-            className={StyleSheet.treeItem}
-            showIcon
-            onExpand={onExpand}
-            onSelect={updataMidleAndRightUI}
-            autoExpandParent={autoExpandParent}
-            selectedKeys={[`${selectLeftId}`]}
-            expandedKeys={[...treeNodeData]}
-            height={showTabs ? height - 20 : height}
-            titleRender={(node: any) => {
-              return (
-                <div
-                  className={StyleSheet.node}
-                  style={{ paddingRight: '4px' }}
-                  draggable={node.flag === 1}
-                  onDragStart={event => onDragStart(event, node)}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <span style={{ paddingLeft: '6px' }}>{node.title}</span>
-                    {node?.error_code ? (
-                      <div>
-                        <Tooltip title={errorCodeMapFn(node.error_code, node)} placement='right' color='red'>
-                          {' '}
-                          <IconExclamationTriangleFill
-                            style={{
-                              width: '16px',
-                              height: '16px',
-                              color: 'red',
-                              paddingLeft: '2px',
-                              paddingTop: 3
-                            }}
-                          />
-                        </Tooltip>
-                      </div>
-                    ) : null}
-                  </div>
-                  {node.tabs !== 'boardPeripheral' || ([3].includes(node.flag) && node.tabs === 'boardPeripheral') ? (
-                    <IconDelete
-                      style={{ color: '#cccccc' }}
-                      className={StyleSheet.icon}
-                      onClick={e => {
-                        deleteTreeNodeHandle(e, node)
-                      }}
-                    />
+      {/* <Skeleton loading={loading}> */}
+      {listData.length > 0 ? (
+        <Tree
+          treeData={listData}
+          className={StyleSheet.treeItem}
+          showIcon
+          onExpand={onExpand}
+          onSelect={updataMidleAndRightUI}
+          autoExpandParent={autoExpandParent}
+          selectedKeys={[`${selectLeftId}`]}
+          expandedKeys={[...treeNodeData]}
+          height={showTabs ? height - 20 : height}
+          titleRender={(node: any) => {
+            return (
+              <div
+                className={StyleSheet.node}
+                style={{ paddingRight: '4px' }}
+                draggable={node.flag === 1}
+                onDragStart={event => onDragStart(event, node)}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{ paddingLeft: '6px' }}>{node.title}</span>
+                  {node?.error_code ? (
+                    <div>
+                      <Tooltip title={errorCodeMapFn(node.error_code, node)} placement='right' color='red'>
+                        {' '}
+                        <IconExclamationTriangleFill
+                          style={{
+                            width: '16px',
+                            height: '16px',
+                            color: 'red',
+                            paddingLeft: '2px',
+                            paddingTop: 3
+                          }}
+                        />
+                      </Tooltip>
+                    </div>
                   ) : null}
                 </div>
-              )
-            }}
-          />
-        ) : (
-          <p style={{ textAlign: 'center', width: '216px' }}>
-            <span className={styles.listLine} />
-            <span className={styles.concentList}>内容已经加载完毕</span>
-          </p>
-        )}
-      </Skeleton>
+                {node.tabs !== 'boardPeripheral' || ([3].includes(node.flag) && node.tabs === 'boardPeripheral') ? (
+                  <IconDelete
+                    style={{ color: '#cccccc' }}
+                    className={StyleSheet.icon}
+                    onClick={e => {
+                      deleteTreeNodeHandle(e, node)
+                    }}
+                  />
+                ) : null}
+              </div>
+            )
+          }}
+        />
+      ) : (
+        <p style={{ textAlign: 'center', width: '216px' }}>
+          <span className={styles.listLine} />
+          <span className={styles.concentList}>内容已经加载完毕</span>
+        </p>
+      )}
+      {/* </Skeleton> */}
     </>
   )
 }
