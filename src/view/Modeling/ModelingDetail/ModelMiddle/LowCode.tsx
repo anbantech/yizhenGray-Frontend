@@ -350,12 +350,14 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     //   fitView({ nodes: [{ id: String(platform_id) }] })
     // })
   }, [getLayoutedElements, layout, nodeData])
+
   useEffect(() => {
     if (nodesInitialized && isLayout) {
-      fitView()
+      fitView({ maxZoom: 0.9 })
       setIsLayout(false)
     }
   }, [nodesInitialized, isLayout, fitView])
+
   return (
     <ReactFlow
       ref={ref}
