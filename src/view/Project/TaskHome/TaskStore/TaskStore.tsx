@@ -113,6 +113,7 @@ const TaskListDataStore = create<TaskListState<TaskRequestParams>>((set, get) =>
   TaskListData: [],
   TaskDetail: null,
   status: null,
+  fn: () => {},
   request: {
     project_id: null,
     key_word: '',
@@ -123,6 +124,9 @@ const TaskListDataStore = create<TaskListState<TaskRequestParams>>((set, get) =>
     sort_order: 'descend'
   },
   loading: false,
+  clearKeyWord: fn => {
+    set({ fn })
+  },
   setTaskID: id => {
     set({ TaskId: id })
   },
@@ -221,6 +225,11 @@ const TaskListDataStore = create<TaskListState<TaskRequestParams>>((set, get) =>
   },
   initData: () => {
     set(() => ({
+      TaskId: null,
+      hasMoreData: true,
+      TaskListData: [],
+      TaskDetail: null,
+      status: null,
       request: {
         project_id: null,
         key_word: '',

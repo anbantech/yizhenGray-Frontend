@@ -329,6 +329,13 @@ const TaskInstanceTable: React.FC<RouteComponentProps<any, StaticContext, projec
     }
   ]
 
+  React.useEffect(() => {
+    if (inputRef.current && inputRef.current?.save) {
+      TaskListDataStore.getState().clearKeyWord(inputRef.current.save)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div className={globalStyle.AnBan_main}>
       <div className={styles.instance_header}>

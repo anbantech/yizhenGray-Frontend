@@ -100,7 +100,7 @@ const TaskMemo: React.FC<RouteComponentProps<any, StaticContext, projectPropsTyp
       const res = await deleteTasks(projectInfo.projectId, `${TaskId}`)
       if (res.data) {
         if (res.data.success_list.length > 0) {
-          setTaskListData([])
+          TaskListDataStore.getState().initData()
           message.success('删除成功')
         } else {
           message.error(res.data.fail_list[0])
@@ -113,7 +113,7 @@ const TaskMemo: React.FC<RouteComponentProps<any, StaticContext, projectPropsTyp
       CommonModleClose(false)
       throwErrorMessage(error, { 1009: '任务删除失败', 1007: '操作频繁' })
     }
-  }, [TaskId, projectInfo.projectId, setPage, setTaskListData])
+  }, [TaskId, projectInfo.projectId, setPage])
 
   // 跳转修改任务
   const fixTask = (item: any) => {
@@ -157,6 +157,7 @@ const TaskMemo: React.FC<RouteComponentProps<any, StaticContext, projectPropsTyp
   // 点击右侧属性 拉取ws 更新详情
   const onClickRightAtrrbuite = React.useCallback(
     id => {
+      TaskListDataStore.getState().fn()
       setTaskID(id)
       sendMessage(id, 'task')
     },

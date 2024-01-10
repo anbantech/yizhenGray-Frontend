@@ -20,6 +20,8 @@ type TaskListState<T> = {
   TaskListData: [] | Record<string, any>
   request: T
   loading: boolean
+  fn: () => void
+  clearKeyWord: (fn: any) => void
   TaskDetail: Record<string, any> | null
   TaskId: number | null
   status: number | null

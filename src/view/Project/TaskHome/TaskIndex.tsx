@@ -40,7 +40,7 @@ const TaskIndex: React.FC<RouteComponentProps<any, StaticContext, projectPropsTy
   const TaskDetail = TaskListDataStore(state => state.TaskDetail)
   const request = TaskListDataStore(state => state.request)
 
-  const { getTasKList, setTaskID } = TaskListDataStore()
+  const { getTasKList, initData } = TaskListDataStore()
 
   const { messages } = useWebSocketStore()
 
@@ -58,7 +58,7 @@ const TaskIndex: React.FC<RouteComponentProps<any, StaticContext, projectPropsTy
 
   React.useEffect(() => {
     return () => {
-      setTaskID(null)
+      initData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
