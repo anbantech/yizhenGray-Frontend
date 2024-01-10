@@ -437,7 +437,7 @@ function LowCodeWrapper() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [platformsId])
-  return <ReactFlowProvider>{nodes.length && <ReactFlowPro nodes={nodes} edges={edges} />}</ReactFlowProvider>
+  return <ReactFlowProvider>{nodes?.length >= 1 ? <ReactFlowPro nodes={nodes} edges={edges} /> : null}</ReactFlowProvider>
 }
 
 export default LowCodeWrapper
