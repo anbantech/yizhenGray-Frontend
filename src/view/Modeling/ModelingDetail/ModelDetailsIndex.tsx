@@ -21,7 +21,7 @@ function ModelDetailsIndex() {
   const markDown = vieMarkDown(state => state.markDown)
   const platformsId = (useLocation() as LoactionState).state?.id
   const setPlatFormId = LeftAndRightStore(state => state.setPlatFormId)
-
+  const setSelect = LeftAndRightStore(state => state.setSelect)
   // 首次加载自定义外设列表
   const getList = LeftListStore(state => state.getList)
   const setPortList = publicAttributes(state => state.setPortList)
@@ -30,11 +30,12 @@ function ModelDetailsIndex() {
 
   React.useEffect(() => {
     if (platformsId) {
+      setSelect(platformsId, 5)
       getModelDetails(platformsId)
       setPortList()
       setPlatFormId(platformsId)
     }
-  }, [getList, getModelDetails, platformsId, setPlatFormId, setPortList])
+  }, [getList, getModelDetails, platformsId, setPlatFormId, setPortList, setSelect])
 
   React.useEffect(() => {
     LeftListStore.getState().getAllList()

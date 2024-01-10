@@ -32,6 +32,8 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
   nodes: [],
   edges: [],
   deleteNode: [],
+  reactFlowInstance: null, // 初始值为null
+  setReactFlowInstance: (instance: any) => set({ reactFlowInstance: instance }),
   deleteNodeInfo: { node: {}, visibility: false },
   setNodes: (nodes: Node[]) => {
     set({ nodes })
@@ -368,7 +370,20 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
     getDeleteNodeAndAdge(deleted, nodes, edges)
     set({ deleteNode: info })
   },
-
+  // 居中画布
+  setCanvasCenter: id => {
+    const node = get().reactFlowInstance.getNode(id)
+    if (node) {
+      const { x, y } = node.position
+      const { width } = node
+      const { height } = node
+      if (width && height) {
+        const centerX = x + width / 2
+        const centerY = y + height / 2
+        get().reactFlowInstance.setCenter(centerX, centerY, { duration: 300 })
+      }
+    }
+  },
   // 画布的删除
   onNodesDelete: async (nodeData, edgesData, deletedArray, error_code) => {
     const deleteNodeInfo = get().deleteNode.concat(deletedArray).flat(Infinity) as any

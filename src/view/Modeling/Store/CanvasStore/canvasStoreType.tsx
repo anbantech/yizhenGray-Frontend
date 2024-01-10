@@ -8,6 +8,8 @@ export interface LowCodeStoreType {
   setNodes: (nodes: Node[]) => void
   onNodesChange: (changes: NodeChange[]) => void
   onEdgesChange: (changes: EdgeChange[]) => void
+  reactFlowInstance: any // 初始值为null
+  setReactFlowInstance: (instance: any) => void
   addEdge: (edges: any) => void
   createNode: (data: any) => void
   updatePositionNode: (target: Node, source: Node) => void
@@ -27,4 +29,5 @@ export interface LowCodeStoreType {
   onNodeRightCanvasDelete: (id: string | number) => void
   onNodesDelete: (nodeData: any, edgesData: any, deletedArray: any, error_code: [{ error_code: number; id: string }]) => void
   getTreeNode: () => void
+  setCanvasCenter: (id: string) => void
 }

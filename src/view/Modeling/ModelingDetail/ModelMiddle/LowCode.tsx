@@ -10,8 +10,7 @@ import ReactFlow, {
   NodeTypes,
   Panel,
   ReactFlowProvider,
-  getOutgoers,
-  useNodesInitialized
+  getOutgoers
 } from 'reactflow'
 import { useLocation } from 'react-router'
 import { useEventListener } from 'ahooks-v2'
@@ -51,7 +50,9 @@ const selector = (state: LowCodeStoreType) => ({
   setEdgesAndNodes: state.setEdgesAndNodes,
   setEdges: state.setEdges,
   setNodes: state.setNodes,
-  saveCanvas: state.saveCanvas
+  saveCanvas: state.saveCanvas,
+  reactFlowInstance: state.reactFlowInstance,
+  setReactFlowInstance: state.setReactFlowInstance
 })
 
 const nodeTypes: NodeTypes = {
@@ -65,13 +66,8 @@ const nodeTypes: NodeTypes = {
 // 保持原点在屏幕中心
 // const nodeOrigin: NodeOrigin = [0.5, 0.5]
 
-const options = {
-  includeHiddenNodes: false
-}
-
 function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
   const platform_id = LeftAndRightStore(state => state.platform_id)
-  const nodesInitialized = useNodesInitialized(options)
   const tabs = LeftListStore(state => state.tabs)
   const {
     addEdge,
@@ -83,6 +79,8 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     createNode,
     saveCanvas,
     // onEdgeUpdate,
+    setReactFlowInstance,
+    reactFlowInstance,
     layout,
     setEdgesAndNodes,
     updatePositionNode,
@@ -91,11 +89,11 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
 
   // target is the node that the node is dragged over
   const [target, setTarget] = useState<any>(null)
-  const selectId = LeftAndRightStore(state => state.selectLeftId)
+  // const selectId = LeftAndRightStore(state => state.selectLeftId)
 
   const dragRef = React.useRef<any>(null)
-  const { getNode, setCenter } = useReactFlow()
-  const [reactFlowInstance, setReactFlowInstance] = useState<any>(null)
+  const { fitView } = useReactFlow()
+
   const { getList } = LeftListStore()
 
   const ref = React.useRef(null)
@@ -119,11 +117,9 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
   const onDrop = useCallback(
     event => {
       event.preventDefault()
-
       const type = event.dataTransfer.getData('application/reactflow')
       const nodeInfo = JSON.parse(type)
       const { flag, id, name, error_code, tabs } = nodeInfo
-
       const ifId = nodes.some(item => String(item.id) === String(id))
       // check if the dropped element is valid
       if (ifId) {
@@ -154,7 +150,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       })
 
       if (targetNode) {
-        return message.warn('此节点放置位置,与其他节点重叠')
+        return message.warn('此节点放置位置与其他节点重叠')
       }
 
       const newNode = {
@@ -338,40 +334,18 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
     [edgesData, nodeData, platform_id, saveCanvas, setEdges, setNodes]
   )
 
-  const centerNode = useCallback(
-    id => {
-      const node = getNode(id)
-      if (node) {
-        const { x, y } = node.position
-        const { width } = node
-        const { height } = node
-        if (width && height) {
-          const centerX = x + width / 2
-          const centerY = y + height / 2
-          setCenter(centerX, centerY, { duration: 300, zoom: 1 })
-        }
-      }
-    },
-    [getNode, setCenter]
-  )
-
-  useEffect(() => {
-    if (selectId && nodesInitialized) {
-      centerNode(String(selectId))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectId, nodesInitialized])
-
   const layoutChange = React.useCallback(() => {
     if (layout(nodeData)) {
       getLayoutedElements({ 'elk.algorithm': 'layered', 'elk.direction': 'DOWN' })
+      window.requestAnimationFrame(() => {
+        fitView()
+      })
     }
-  }, [getLayoutedElements, layout, nodeData])
+  }, [fitView, getLayoutedElements, layout, nodeData])
 
   return (
     <ReactFlow
       ref={ref}
-      fitView
       onDrop={onDrop}
       nodes={nodeData}
       edges={edgesData}
@@ -387,7 +361,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       onEdgesChange={onEdgesChange}
       onInit={setReactFlowInstance}
       onNodesDelete={onNodesDelete}
-      fitViewOptions={{ minZoom: 1 }}
+      fitView
       onNodeDragStop={onNodeDragStop}
       onNodeDragStart={onNodeDragStart}
       onEdgesDelete={onCanvasEdgesDelete}

@@ -39,14 +39,17 @@ const TreeDataMemo = (props: { listData: any; height: number }) => {
     },
     [updateTreeNodeData]
   )
+
   const showTabs = React.useMemo(() => {
     const result = ['customPeripheral', 'boardPeripheral'].includes(tabs) && customAndDefaultPeripheral.key_word
     return result
   }, [tabs, customAndDefaultPeripheral])
+
   const updataMidleAndRightUI = useCallback(
     (selectedKeys, e) => {
       const { flag, id } = e.node
       setSelect(id, flag)
+      LowCodeStore.getState().setCanvasCenter(String(id))
       if (flag === 2) {
         getAllList()
       }
