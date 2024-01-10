@@ -372,7 +372,7 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
   },
   // 居中画布
   setCanvasCenter: id => {
-    const node = get().reactFlowInstance.getNode(id)
+    const node = get().reactFlowInstance?.getNode(id)
 
     if (node) {
       const { x, y } = node.position
@@ -381,7 +381,7 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
       if (width && height) {
         const centerX = x + width / 2
         const centerY = y + height / 2
-        get().reactFlowInstance.setCenter(centerX, centerY, { duration: 300, zoom: 0.9 })
+        get().reactFlowInstance.setCenter(centerX, centerY, { zoom: 0.9, duration: 500 })
       }
     }
   },

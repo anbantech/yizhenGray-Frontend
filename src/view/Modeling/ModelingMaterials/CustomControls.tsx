@@ -14,7 +14,7 @@ export default function CustomControls() {
     zoomOut({ duration: 800 })
   }
   const onFitViewHandler = () => {
-    fitView({ maxZoom: 0.9 })
+    fitView()
   }
 
   return (

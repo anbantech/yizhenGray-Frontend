@@ -346,17 +346,15 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       getLayoutedElements({ 'elk.algorithm': 'layered', 'elk.direction': 'DOWN' })
     }
     setIsLayout(true)
-    // window.requestAnimationFrame(() => {
-    //   fitView({ nodes: [{ id: String(platform_id) }] })
-    // })
   }, [getLayoutedElements, layout, nodeData])
 
   useEffect(() => {
-    if (nodesInitialized && isLayout) {
-      fitView({ maxZoom: 0.9 })
+    if (isLayout) {
+      fitView()
+      LowCodeStore.getState().setCanvasCenter(String(platform_id))
       setIsLayout(false)
     }
-  }, [nodesInitialized, isLayout, fitView])
+  }, [nodesInitialized, isLayout, platform_id, fitView])
 
   return (
     <ReactFlow
@@ -381,7 +379,7 @@ function ReactFlowPro({ edges, nodes }: ExpandCollapseExampleProps) {
       onNodeDragStart={onNodeDragStart}
       onEdgesDelete={onCanvasEdgesDelete}
       connectionLineType={ConnectionLineType.SmoothStep}
-      minZoom={0.01}
+      minZoom={0.001}
     >
       <Background variant={BackgroundVariant.Dots} gap={24} size={1} />
       <CustomControls />
