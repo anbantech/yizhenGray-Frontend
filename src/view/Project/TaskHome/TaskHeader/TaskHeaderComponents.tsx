@@ -32,7 +32,6 @@ const ImageMap = {
 
 function HeaderComponetsMemo(props: Record<string, any>) {
   const { data, status } = props
-
   return (
     <>
       {data && (

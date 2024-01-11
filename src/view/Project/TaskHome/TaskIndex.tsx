@@ -54,7 +54,7 @@ const TaskIndex: React.FC<RouteComponentProps<any, StaticContext, projectPropsTy
     getTasKList(projectInfo.projectId)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectInfo.projectId, request])
+  }, [projectInfo.projectId, request, status])
 
   React.useEffect(() => {
     return () => {
