@@ -437,7 +437,7 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
 
   // 右侧属性删除画布
   onNodeRightCanvasDelete: id => {
-    set({ nodes: get().nodes.filter((item: any) => item?.id !== String(id)) })
+    set({ nodes: get().nodes.filter((item: any) => item?.id !== String(id)), edges: get().edges.filter((item: any) => item?.target !== String(id)) })
   },
   initLowCodeStore: () => {
     set({ nodes: [], edges: [] })
