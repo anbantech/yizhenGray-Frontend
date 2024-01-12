@@ -6,7 +6,7 @@ import { LowCodeStore } from '../Store/CanvasStore/canvasStore'
 
 const elk = new ELK()
 export const useLayoutedElements = (setNodes: any) => {
-  const { fitView, getNodes } = useReactFlow()
+  const { getNodes } = useReactFlow()
   const defaultOptions = {
     'elk.algorithm': 'layered',
     'elk.layered.spacing.nodeNodeBetweenLayers': 100,
