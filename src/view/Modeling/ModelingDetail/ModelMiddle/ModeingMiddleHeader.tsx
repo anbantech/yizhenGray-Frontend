@@ -146,6 +146,7 @@ const PeripheralsForm = () => {
         >
           <Input
             placeholder='请输入自定义外设名称'
+            autoComplete='off'
             onChange={e => {
               run('name', e.target.value)
             }}
@@ -184,6 +185,7 @@ const PeripheralsForm = () => {
           validateStatus={base_address?.validateStatus}
         >
           <Input
+            autoComplete='off'
             placeholder='请输入基地址'
             prefix='0x'
             onChange={e => {
@@ -201,6 +203,7 @@ const PeripheralsForm = () => {
           validateStatus={address_length?.validateStatus}
         >
           <Input
+            autoComplete='off'
             onChange={e => {
               run('address_length', e.target.value)
             }}
@@ -212,6 +215,7 @@ const PeripheralsForm = () => {
         </Form.Item>
         <Form.Item name='desc' label='外设描述' rules={[{ type: 'string', max: 50, message: '字数不能超过50个' }]}>
           <TextArea
+            autoComplete='off'
             onChange={e => {
               run('desc', e.target.value)
             }}
@@ -271,7 +275,7 @@ const ProcessorForm = () => {
           </Select>
         </Form.Item>
         <Form.Item label='寄存器名称' hasFeedback required name='name' help={name?.errorMsg} validateStatus={name?.validateStatus}>
-          <Input placeholder='请输入寄存器名称' onChange={e => run('name', e.target.value)} onBlur={messageInfoFn} />
+          <Input autoComplete='off' placeholder='请输入寄存器名称' onChange={e => run('name', e.target.value)} onBlur={messageInfoFn} />
         </Form.Item>
         <Form.Item
           label='偏移地址'
@@ -281,7 +285,13 @@ const ProcessorForm = () => {
           help={relative_address?.errorMsg}
           validateStatus={relative_address?.validateStatus}
         >
-          <Input placeholder='请输入偏移地址' prefix='0x' onChange={e => run('relative_address', e.target.value)} onBlur={messageInfoFn} />
+          <Input
+            autoComplete='off'
+            placeholder='请输入偏移地址'
+            prefix='0x'
+            onChange={e => run('relative_address', e.target.value)}
+            onBlur={messageInfoFn}
+          />
         </Form.Item>
       </Form>
     </div>
@@ -311,7 +321,13 @@ const DataHandlerForm = () => {
           help={name?.errorMsg}
           validateStatus={name?.validateStatus}
         >
-          <Input value={name?.value} placeholder='请输入数据处理器名称' onChange={e => run('name', e.target.value)} onBlur={messageInfoFn} />
+          <Input
+            autoComplete='off'
+            value={name?.value}
+            placeholder='请输入数据处理器名称'
+            onChange={e => run('name', e.target.value)}
+            onBlur={messageInfoFn}
+          />
         </Form.Item>
         <Form.Item name='port' label='端口' required hasFeedback help={port?.errorMsg} validateStatus={port?.validateStatus}>
           <Select
@@ -368,6 +384,7 @@ const TimeForm = () => {
           validateStatus={name?.validateStatus}
         >
           <Input
+            autoComplete='off'
             placeholder='请输入定时器名称'
             value={name?.value}
             onChange={e => {
@@ -378,6 +395,7 @@ const TimeForm = () => {
         </Form.Item>
         <Form.Item label='间隔' hasFeedback required name='period' validateStatus={period?.validateStatus} help={period?.errorMsg}>
           <Input
+            autoComplete='off'
             placeholder='请输入间隔'
             suffix='微秒'
             value={period?.value}
@@ -389,6 +407,7 @@ const TimeForm = () => {
         </Form.Item>
         <Form.Item label='中断号' hasFeedback required name='interrupt' validateStatus={interrupt?.validateStatus} help={interrupt?.errorMsg}>
           <Input
+            autoComplete='off'
             placeholder='请输入中断号'
             value={interrupt?.value}
             onChange={e => {

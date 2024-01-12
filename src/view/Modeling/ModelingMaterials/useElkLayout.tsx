@@ -24,27 +24,28 @@ export const useLayoutedElements = (setNodes: any) => {
         children: getNodes() as any,
         edges: edges as any
       }
-
-      elk
-        .layout(graph)
-        .then(({ children }) => {
-          // By mutating the children in-place we saves ourselves from creating a
-          // needless copy of the nodes array.
-          children?.forEach((node: any) => {
-            // eslint-disable-next-line no-param-reassign
-            node.position = { x: node.x, y: node.y }
+      try {
+        elk
+          .layout(graph)
+          .then(({ children }) => {
+            // By mutating the children in-place we saves ourselves from creating a
+            // needless copy of the nodes array.
+            children?.forEach((node: any) => {
+              // eslint-disable-next-line no-param-reassign
+              node.position = { x: node.x, y: node.y }
+            })
+            setNodes(children)
+            return children
           })
-          setNodes(children)
-          window.requestAnimationFrame(() => {
-            fitView()
+          .catch(error => {
+            // eslint-disable-next-line no-console
+            console.log(error)
+            // throwErrorMessage(error)
           })
-          return '1'
-        })
-        .catch(error => {
-          // eslint-disable-next-line no-console
-          console.log(error)
-          // throwErrorMessage(error)
-        })
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error)
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
