@@ -595,10 +595,10 @@ const DataHanderComponents: React.FC = () => {
     },
     [onChangeFn, rightDataHandler]
   )
+
   useEffect(() => {
     if (rightDataHandler.peripheral_id.value) return getPeripheralDetail(+rightDataHandler.peripheral_id.value)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rightDataHandler.peripheral_id.value])
+  }, [getPeripheralDetail, rightDataHandler])
 
   return (
     <div className={StyleSheet.rightConcentBody} id='area'>
