@@ -3,8 +3,6 @@ import React, { useImperativeHandle, useMemo } from 'react'
 import { BaseList } from 'Src/view/Modeling/Store/ModeleLeftListStore/LeftListStoreType'
 import clearImage from 'Image/Delete.svg'
 import searchImage from 'Image/search.svg'
-import { useRequest } from 'ahooks-v2'
-import { message } from 'antd'
 import styles from '../searchInput/searchInput.less'
 
 interface searchTypes {
@@ -46,13 +44,9 @@ const ClearSuffix = React.memo(function ClearSuffix(isShowProp: {
 const LowCodeInputMemo = React.forwardRef((props: searchTypes, myRef) => {
   const { placeholder, className, setKeyWords, params } = props
 
-  const { run } = useRequest(setKeyWords, {
-    debounceInterval: 20,
-    manual: true,
-    onError: error => {
-      message.error(error.message)
-    }
-  })
+  const run = (value: string) => {
+    setKeyWords(value)
+  }
   useImperativeHandle(myRef, () => ({
     save: () => {},
     delete: () => {},
