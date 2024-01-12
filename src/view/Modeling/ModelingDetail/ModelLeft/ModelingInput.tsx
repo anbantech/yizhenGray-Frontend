@@ -1,5 +1,4 @@
-import { useRequest } from 'ahooks-v2'
-import { message, Radio } from 'antd'
+import { Radio } from 'antd'
 import * as React from 'react'
 import LowCodeInput from 'Src/components/Input/LowCodeInput/LowCodeInput'
 import StyleSheet from './modelLeft.less'
@@ -17,6 +16,7 @@ function ModelingInputMemo() {
     async (val: string) => {
       if (val === '') {
         updateTreeNodeData([])
+        updateTagOrKeyWord('0', 'tag', ['customPeripheral', 'boardPeripheral'].includes(tabs))
       }
       updateTagOrKeyWord(val, 'key_word', ['customPeripheral', 'boardPeripheral'].includes(tabs))
       await getList(tabs)
@@ -32,14 +32,6 @@ function ModelingInputMemo() {
     [getList, tabs, updateTagOrKeyWord]
   )
 
-  const { run } = useRequest(updateParams, {
-    debounceInterval: 20,
-    manual: true,
-    onError: error => {
-      message.error(error.message)
-    }
-  })
-
   const showTabs = React.useMemo(() => {
     const result = ['customPeripheral', 'boardPeripheral'].includes(tabs) && customAndDefaultPeripheral.key_word
     return result
@@ -54,7 +46,7 @@ function ModelingInputMemo() {
             defaultValue={customAndDefaultPeripheral.tag}
             className={StyleSheet.radioGroup}
             onChange={e => {
-              run(e.target.value)
+              updateParams(e.target.value)
             }}
           >
             <Radio.Button className={StyleSheet.radio} style={{ width: '44px' }} value='0'>
