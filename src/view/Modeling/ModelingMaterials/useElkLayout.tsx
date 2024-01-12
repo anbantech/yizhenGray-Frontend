@@ -2,11 +2,10 @@
 import ELK from 'elkjs/lib/elk.bundled.js'
 import { useCallback } from 'react'
 import { useReactFlow } from 'reactflow'
-import { LowCodeStore } from '../Store/CanvasStore/canvasStore'
 
 const elk = new ELK()
 export const useLayoutedElements = (setNodes: any) => {
-  const { getNodes } = useReactFlow()
+  const { getNodes, getEdges } = useReactFlow()
   const defaultOptions = {
     'elk.algorithm': 'layered',
     'elk.layered.spacing.nodeNodeBetweenLayers': 100,
@@ -14,7 +13,6 @@ export const useLayoutedElements = (setNodes: any) => {
     'elk.layered.nodePlacement.bk.fixedAlignment': 'BALANCED'
     // 'nodePlacement.strategy': 'BRANDES_KOEPF'
   }
-  const edges = LowCodeStore.getState().filterEdge()
   const getLayoutedElements = useCallback(
     options => {
       const layoutOptions = { ...defaultOptions, ...options }
@@ -22,7 +20,7 @@ export const useLayoutedElements = (setNodes: any) => {
         id: 'root',
         layoutOptions,
         children: getNodes() as any,
-        edges: edges as any
+        edges: getEdges() as any
       }
       try {
         elk

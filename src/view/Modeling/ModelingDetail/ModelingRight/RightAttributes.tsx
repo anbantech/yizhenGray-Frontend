@@ -598,7 +598,7 @@ const DataHanderComponents: React.FC = () => {
 
   useEffect(() => {
     if (rightDataHandler.peripheral_id.value) return getPeripheralDetail(+rightDataHandler.peripheral_id.value)
-  }, [getPeripheralDetail, rightDataHandler])
+  }, [getPeripheralDetail, rightDataHandler.peripheral_id])
 
   return (
     <div className={StyleSheet.rightConcentBody} id='area'>
