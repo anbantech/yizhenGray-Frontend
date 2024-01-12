@@ -139,7 +139,14 @@ export const LowCodeStore = create<LowCodeStoreType>((set, get) => ({
     })
     get().saveCanvas(platform_id)
   },
-
+  // 过滤边节点
+  filterEdge: () => {
+    const { edges } = get()
+    const nodeIds = new Set(get().nodes.map(node => node.id))
+    // Filter nodes that have corresponding edges
+    const filteredEdges = edges.filter(edge => nodeIds.has(edge.source) && nodeIds.has(edge.target))
+    return filteredEdges
+  },
   // 点击按钮 自动布局 todo
   layout: nodes => {
     const { edges } = get()

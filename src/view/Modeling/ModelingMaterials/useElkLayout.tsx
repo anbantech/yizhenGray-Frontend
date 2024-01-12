@@ -1,12 +1,12 @@
-import { throwErrorMessage } from 'Src/util/common'
 // eslint-disable-next-line import/extensions
 import ELK from 'elkjs/lib/elk.bundled.js'
 import { useCallback } from 'react'
 import { useReactFlow } from 'reactflow'
+import { LowCodeStore } from '../Store/CanvasStore/canvasStore'
 
 const elk = new ELK()
 export const useLayoutedElements = (setNodes: any) => {
-  const { fitView, getEdges, getNodes } = useReactFlow()
+  const { fitView, getNodes } = useReactFlow()
   const defaultOptions = {
     'elk.algorithm': 'layered',
     'elk.layered.spacing.nodeNodeBetweenLayers': 100,
@@ -14,7 +14,7 @@ export const useLayoutedElements = (setNodes: any) => {
     'elk.layered.nodePlacement.bk.fixedAlignment': 'BALANCED'
     // 'nodePlacement.strategy': 'BRANDES_KOEPF'
   }
-
+  const edges = LowCodeStore.getState().filterEdge()
   const getLayoutedElements = useCallback(
     options => {
       const layoutOptions = { ...defaultOptions, ...options }
@@ -22,7 +22,7 @@ export const useLayoutedElements = (setNodes: any) => {
         id: 'root',
         layoutOptions,
         children: getNodes() as any,
-        edges: getEdges() as any
+        edges: edges as any
       }
 
       elk
@@ -41,7 +41,9 @@ export const useLayoutedElements = (setNodes: any) => {
           return '1'
         })
         .catch(error => {
-          throwErrorMessage(error)
+          // eslint-disable-next-line no-console
+          console.log(error)
+          // throwErrorMessage(error)
         })
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

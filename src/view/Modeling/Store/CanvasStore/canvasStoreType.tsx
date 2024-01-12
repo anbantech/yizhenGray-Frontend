@@ -30,4 +30,5 @@ export interface LowCodeStoreType {
   onNodesDelete: (nodeData: any, edgesData: any, deletedArray: any, error_code: [{ error_code: number; id: string }]) => void
   getTreeNode: () => void
   setCanvasCenter: (id: string) => void
+  filterEdge: () => Edge[]
 }

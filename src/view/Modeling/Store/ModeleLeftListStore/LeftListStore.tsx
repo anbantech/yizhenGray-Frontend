@@ -37,7 +37,7 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
   timerAndHandData: {
     key_word: '',
     page: 1,
-    page_size: 10,
+    page_size: 30,
     sort_field: 'create_time',
     sort_order: 'descend'
   },
@@ -257,7 +257,7 @@ export const LeftListStore = create<LeftListStoreType>((set, get) => ({
       tabs: '',
       loading: false,
       treeNodeData: [],
-      timerAndHandData: { key_word: '', page: 1, page_size: 10, sort_field: 'create_time', sort_order: 'descend' },
+      timerAndHandData: { key_word: '', page: 1, page_size: 30, sort_field: 'create_time', sort_order: 'descend' },
       customAndDefaultPeripheral: {
         variety: '0', // 0自定义 1内置
         platform_id: null,
