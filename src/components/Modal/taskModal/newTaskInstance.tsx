@@ -147,7 +147,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
     const objData: Record<string, string> = {}
     Object.keys(CrashInfoMap).forEach((item: string) => {
       if (type === 'Crash') {
-        objData[item] = '0'
+        objData[item] = '1'
       }
     })
     setCrashObj(isChecked ? { ...objData } : {})
@@ -312,7 +312,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
                   <div className={styles.crashTable_headerLeft}>{CrashInfoMap[+value]}</div>
                   <Checkbox.Group value={carshObj[value] as string[]} disabled={Boolean(isDetail)}>
                     <Checkbox
-                      value='0'
+                      value='1'
                       onClick={e => {
                         handleCancel(e, value)
                       }}
