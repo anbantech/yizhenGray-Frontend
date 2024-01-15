@@ -276,5 +276,6 @@ export const LeftListStoreMap = {
   getList: LeftListStore.getState().getList,
   getModelListDetails: LeftListStore.getState().getModelListDetails,
   updateTreeNodeData: LeftListStore.getState().updateTreeNodeData,
-  setTabs: LeftListStore.getState().setTabs
+  setTabs: LeftListStore.getState().setTabs,
+  getAllLists: LeftListStore.getState().getAllList
 }

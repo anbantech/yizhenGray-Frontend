@@ -229,6 +229,7 @@ export const HeaderStore = create<HeaderStoreType>((set, get) => ({
     }
     await componentFunctions[tabs as keyof typeof componentFunctions](params, tabs)
     await LeftListStoreMap.getModelListDetails(id as number)
+    await LeftListStoreMap.getAllLists()
     get().toggle()
   },
   // 初始化数据
