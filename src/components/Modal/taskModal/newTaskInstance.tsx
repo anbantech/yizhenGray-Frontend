@@ -273,7 +273,7 @@ function NewTaskInstance(props: NEWTaskInstanceType) {
         <div className={styles.crashDes}>
           <span>
             {' '}
-            非法指令、程序跑飞、看门狗超时、系统复位错误、堆栈溢出、RAM区向下溢出、RAM区向上溢出、FLASH区向下溢、FLASH区向上溢出、ROM区向下溢出、ROM区向上溢出、读取保护区域、写入保护区域、代码区破坏错误
+            非法指令、程序跑飞、看门狗超时、系统复位错误、堆栈溢出、RAM区向下溢出、RAM区向上溢出、FLASH区向下溢出、FLASH区向上溢出、ROM区向下溢出、ROM区向上溢出、读取保护区域、写入保护区域、代码区破坏错误
           </span>
           <div>
             <CrashTipAllComponents />
