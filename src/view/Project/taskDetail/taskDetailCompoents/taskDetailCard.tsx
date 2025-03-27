@@ -4,6 +4,7 @@ import { RightOutlined } from '@ant-design/icons'
 import * as React from 'react'
 import { ResTaskDetail } from 'Src/globalType/Response'
 import { generateUUID } from 'Src/util/common'
+import { simulationInfo } from 'Src/config'
 import styles from '../taskDetail.less'
 import cardStyles from './taskCard.less'
 
@@ -86,7 +87,7 @@ type stringKey = Record<string, string>
 const showTitleMap = {
   total: '用例总数(条)',
   defects_count: '缺陷数量',
-  coverage: '覆盖率',
+  ...(simulationInfo !== 'ccs' ? { coverage: '覆盖率' } : {}),
   test_speed: '测试速率(帧/秒)',
   test_time: '运行时长',
   status: '状态'
@@ -171,14 +172,14 @@ function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
   const { lookLog, InitTask } = props
 
   return (
-    <div className={styles.taskDetailCard}>
+    <div className={styles.taskDetailCard} style={simulationInfo === 'ccs' ? { justifyContent: 'space-between' } : {}}>
       {Object.keys(showTitleMap).map((item: string) => {
         return (
           <React.Fragment key={generateUUID()}>
             {item === 'total' ? (
               <TestNumComponents
                 lookLog={lookLog}
-                concent={showTitleMap[item as keyof typeof showTitleMap]}
+                concent={showTitleMap[item as keyof typeof showTitleMap] || ''}
                 value={taskMapInfo[item as keyof typeof taskMapInfo]}
               />
             ) : item === 'coverage' ? (
@@ -186,11 +187,14 @@ function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
             ) : item === 'status' ? (
               <StatusCardComponents
                 InitTask={InitTask}
-                concent={showTitleMap[item as keyof typeof showTitleMap]}
+                concent={showTitleMap[item as keyof typeof showTitleMap] || ''}
                 value={taskMapInfo[item as keyof typeof taskMapInfo]}
               />
             ) : (
-              <CommonComponents concent={showTitleMap[item as keyof typeof showTitleMap]} value={taskMapInfo[item as keyof typeof taskMapInfo]} />
+              <CommonComponents
+                concent={showTitleMap[item as keyof typeof showTitleMap] || ''}
+                value={taskMapInfo[item as keyof typeof taskMapInfo]}
+              />
             )}
           </React.Fragment>
         )

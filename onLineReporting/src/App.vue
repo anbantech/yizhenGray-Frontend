@@ -12,43 +12,41 @@
     <div class="main">
       <div class="left_nav">
         <span class="left_nav_title">易复测试报告</span>
-        <div v-for="(value,index) in titleArray" style="cursor: pointer;">
-          <span class="title_menu" :key='index' @click="scroll(index)">{{value}}</span>
+        <div v-for="(value, index) in titleArray" style="cursor: pointer;">
+          <span class="title_menu" :key="index" @click="scroll(index)">{{ value }}</span>
         </div>
-        <div style="cursor: pointer;" v-if='isShow'>
+        <div style="cursor: pointer;" v-if="isShow">
           <span class="title_menu" @click="scroll(4)">五、测试统计结果</span>
         </div>
-        <div class="left_nav_menu_title" v-if='isShow'>
-          <div v-for="(value,index) in titleMenuArray" style="cursor: pointer;">
-            <span class="title_menu" :key='index' @click="menuScroll(index)">{{value}}</span>
+        <div class="left_nav_menu_title" v-if="isShow">
+          <div v-for="(value, index) in titleMenuArray" style="cursor: pointer;">
+            <span class="title_menu" :key="index" @click="menuScroll(index)">{{ value }}</span>
           </div>
         </div>
       </div>
       <div class="concentBody">
-        <Home :homeDataTestOverview='homeData' />
+        <Home :homeDataTestOverview="homeData" />
         <div>
-          <div id='one' style="padding-top: 70p'x;margin-top: -70px;">
-            <HomeComponent :homeDataTestOverview='homeDataTestOverview' title="一、测试概述"
-              cloumnType="homeDataTestOverviewType" />
+          <div id="one" style="padding-top: 70p'x;margin-top: -70px;">
+            <HomeComponent :homeDataTestOverview="homeDataTestOverview" title="一、测试概述" cloumnType="homeDataTestOverviewType" />
           </div>
-          <div id='two' style="padding-top: 70px;margin-top: -70px;">
-            <HomeComponent :homeDataTestOverview='homeDataTestPlan' title="二、测试方案" cloumnType="homeDataTestPlanType" />
+          <div id="two" style="padding-top: 70px; margin-top: -70px;">
+            <HomeComponent :homeDataTestOverview="homeDataTestPlan" title="二、测试方案" cloumnType="homeDataTestPlanType" />
           </div>
-          <div id='three' style="padding-top: 70px;margin-top: -70px;">
-            <HomeComponent :homeDataTestOverview='homeDataTestSummary' title="三、测试总结"
-              cloumnType="homeDataTestSummaryType" />
+          <div id="three" style="padding-top: 70px; margin-top: -70px;">
+            <HomeComponent :homeDataTestOverview="homeDataTestSummary" title="三、测试总结" cloumnType="homeDataTestSummaryType" />
           </div>
-          <div id='four' style="padding-top: 70px;margin-top: -70px;">
+          <div id="four" style="padding-top: 70px; margin-top: -70px;">
             <HomeTestDetail :table-data="homeDataTestDetail" title="四、测试详情" />
           </div>
         </div>
-        <div class="statistics" v-if='isShow'>
-          <div id="five" style="padding-top: 70px;margin-top: -70px;"></div>
+        <div class="statistics" v-if="isShow">
+          <div id="five" style="padding-top: 70px; margin-top: -70px;"></div>
           <span class="result">五、测试统计结果</span>
-          <div id="first" style="padding-top: 70px;margin-top: -70px;">
-            <coverTable  :table-data="tableData.coverData"></coverTable>
+          <div id="first" style="padding-top: 70px; margin-top: -70px;">
+            <coverTable :table-data="tableData.coverData"></coverTable>
           </div>
-          <div id="second" style="padding-top: 70px;margin-top: -70px;">
+          <!-- <div id="second" style="padding-top: 70px;margin-top: -70px;">
             <performanceTable  :table-data="tableData.performanceData">
             </performanceTable>
           </div>
@@ -64,8 +62,7 @@
           </div>
           <div id="sixth" style="padding-top: 70px;margin-top: -70px;">
             <imageList v-if='urlList !== "" ' :url-list="urlList"></imageList>
-          </div>
-
+          </div> -->
         </div>
       </div>
     </div>
@@ -73,14 +70,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import Component from "vue-class-component";
-import coverTable from "./components/coverTable.vue";
-import performanceTable from "./components/performanceTable.vue";
-import trackingTable from "./components/trackingTable.vue";
-import memoryTable from "./components/memoryTable.vue";
-import staticTable from "./components/staticTable.vue";
-import imageList from "./components/imageList.vue";
+import Vue from 'vue'
+import Component from 'vue-class-component'
+import coverTable from './components/coverTable.vue'
+import performanceTable from './components/performanceTable.vue'
+import trackingTable from './components/trackingTable.vue'
+import memoryTable from './components/memoryTable.vue'
+import staticTable from './components/staticTable.vue'
+import imageList from './components/imageList.vue'
 import reportHeader from './layout/reportHeader.vue'
 import HomeComponent from './components/catalogue/homeComponent.vue'
 import HomeTestDetail from './components/catalogue/homeTestDetail.vue'
@@ -99,8 +96,8 @@ import Home from './components/catalogue/home.vue'
     trackingTable,
     memoryTable,
     staticTable,
-    imageList,
-  },
+    imageList
+  }
 })
 export default class App extends Vue {
   homeData = []
@@ -111,19 +108,20 @@ export default class App extends Vue {
   tableData = {}
   allData = {}
   urlList = ''
-  titleArray = ['一、测试概述','二、测试方案','三、测试总结','四、测试详情']
-  titleMenuArray = ['1、覆盖统计表', '2、性能统计表', '3、内存统计表', '4、跟踪统计表', '5、静态度量表', '6、动态调用图']
+  titleArray = ['一、测试概述', '二、测试方案', '三、测试总结', '四、测试详情']
+  // '2、性能统计表', '3、内存统计表', '4、跟踪统计表', '5、静态度量表', '6、动态调用图'
+  titleMenuArray = ['1、覆盖统计表']
   isShow = false
-  mounted(){
-   window.onload = () => {
-     this.update()
+  mounted() {
+    window.onload = () => {
+      this.update()
     }
   }
   update() {
     this.$nextTick(() => {
-      window.addEventListener('message', (e) => {
+      window.addEventListener('message', e => {
         if (typeof e.data === 'string') {
-          this.allData = JSON.parse(e.data);
+          this.allData = JSON.parse(e.data)
           this.homeData = JSON.parse(e.data)?.cover
           this.homeDataTestOverview = JSON.parse(e.data)?.testOverview
           this.homeDataTestPlan = JSON.parse(e.data)?.testPlan
@@ -134,55 +132,55 @@ export default class App extends Vue {
           this.urlList = JSON.parse(e.data)?.tableData.dynamicCallGraph
           this.$nextTick(() => {
             setTimeout(() => {
-              window.parent.postMessage('__AB_REPORT_DONE__', "*")
-            }, 6000);
+              window.parent.postMessage('__AB_REPORT_DONE__', '*')
+            }, 6000)
           })
         }
       })
     })
   }
-  scroll(index:number){
-      if(index === 0){
-        const ele = document.querySelector('#one')
-        if(!!ele){
-          ele?.scrollIntoView({
-            behavior: 'smooth',
-            block: "start", 
-            inline: "nearest"
-          })
-        }
-      } else if (index === 1){
-        const ele = document.querySelector('#two')
-        if (!!ele) {
-          ele?.scrollIntoView({
-            behavior: 'smooth'
-          })
-        }
-      }else if(index === 2){
-        const ele = document.querySelector('#three')
-        if (!!ele) {
-          ele?.scrollIntoView({
-            behavior: 'smooth'
-          })
-        }
-      }else if(index === 3){
-        const ele = document.querySelector('#four')
-        if (!!ele) {
-          ele?.scrollIntoView({
-            behavior: 'smooth'
-          })
-        }
-      } else if (index === 4) {
-        const ele = document.querySelector('#five')
-        if (!!ele) {
-          ele?.scrollIntoView({
-            behavior: 'smooth'
-          })
-        }
+  scroll(index: number) {
+    if (index === 0) {
+      const ele = document.querySelector('#one')
+      if (!!ele) {
+        ele?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest'
+        })
       }
+    } else if (index === 1) {
+      const ele = document.querySelector('#two')
+      if (!!ele) {
+        ele?.scrollIntoView({
+          behavior: 'smooth'
+        })
+      }
+    } else if (index === 2) {
+      const ele = document.querySelector('#three')
+      if (!!ele) {
+        ele?.scrollIntoView({
+          behavior: 'smooth'
+        })
+      }
+    } else if (index === 3) {
+      const ele = document.querySelector('#four')
+      if (!!ele) {
+        ele?.scrollIntoView({
+          behavior: 'smooth'
+        })
+      }
+    } else if (index === 4) {
+      const ele = document.querySelector('#five')
+      if (!!ele) {
+        ele?.scrollIntoView({
+          behavior: 'smooth'
+        })
+      }
+    }
   }
-  menuScroll(index:number){
-    if(index===0){
+  menuScroll(index: number) {
+    if (index === 0) {
       const ele = document.querySelector('#first')
       if (!!ele) {
         ele?.scrollIntoView({
@@ -232,13 +230,10 @@ export default class App extends Vue {
     }
   }
 }
-
-
-
 </script>
 
 <style lang="stylus" scoped>
-#app {  
+#app {
   margin: 0;
   padding:0;
    background-color:#fff;
