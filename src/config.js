@@ -1,4 +1,3 @@
-const simulationInfo = 'ccs'
+const simulationInfo = 'default'
 
 export { simulationInfo }
- 

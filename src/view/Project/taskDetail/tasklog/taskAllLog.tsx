@@ -11,7 +11,6 @@ import { getTime } from 'Src/util/baseFn'
 import { testAlllogs } from 'Src/globalType/Param'
 import { CrashInfoMapLog } from 'Src/util/DataMap/dataMap'
 import style from 'Src/view/Project/project/project.less'
-import { simulationInfo } from 'Src/config'
 import styles from '../taskDetailUtil/Detail.less'
 import tableStyle from '../taskDetail.less'
 import { projectInfoType } from '../../task/taskList/task'
@@ -191,37 +190,33 @@ const DetailTestAlLTable: React.FC<RouteComponentProps<any, StaticContext, taskD
       )
     },
 
-    ...(simulationInfo !== 'ccs'
-      ? [
-          {
-            title: () => {
-              return <SortIconComponent title='分支覆盖率增幅' key='3' onChange={changeCurrentTypeBranch} type='Branch' isType={isType} />
-            },
-            dataIndex: 'branch_coverage',
-            key: 'branch_coverage',
-            render: (text: any, record: any) => (
-              <div className={styles.checkDetail} key={record.id}>
-                {record.branch_coverage}
-              </div>
-            ),
-            width: '10%'
-          },
+    {
+      title: () => {
+        return <SortIconComponent title='分支覆盖率增幅' key='3' onChange={changeCurrentTypeBranch} type='Branch' isType={isType} />
+      },
+      dataIndex: 'branch_coverage',
+      key: 'branch_coverage',
+      render: (text: any, record: any) => (
+        <div className={styles.checkDetail} key={record.id}>
+          {record.branch_coverage}
+        </div>
+      ),
+      width: '10%'
+    },
 
-          {
-            title: () => {
-              return <SortIconComponent title='语句覆盖率增幅' key='4' onChange={changeStatementType} type='Statement' isType={isType} />
-            },
-            dataIndex: 'statement_coverage',
-            key: 'statement_coverage',
-            render: (text: any, record: any) => (
-              <div className={styles.checkDetail} key={record.id}>
-                {record.statement_coverage}
-              </div>
-            ),
-            width: '10%'
-          }
-        ]
-      : []),
+    {
+      title: () => {
+        return <SortIconComponent title='语句覆盖率增幅' key='4' onChange={changeStatementType} type='Statement' isType={isType} />
+      },
+      dataIndex: 'statement_coverage',
+      key: 'statement_coverage',
+      render: (text: any, record: any) => (
+        <div className={styles.checkDetail} key={record.id}>
+          {record.statement_coverage}
+        </div>
+      ),
+      width: '10%'
+    },
 
     {
       title: () => {

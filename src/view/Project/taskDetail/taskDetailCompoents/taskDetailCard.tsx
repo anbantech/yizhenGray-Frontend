@@ -4,7 +4,6 @@ import { RightOutlined } from '@ant-design/icons'
 import * as React from 'react'
 import { ResTaskDetail } from 'Src/globalType/Response'
 import { generateUUID } from 'Src/util/common'
-import { simulationInfo } from 'Src/config'
 import styles from '../taskDetail.less'
 import cardStyles from './taskCard.less'
 
@@ -87,7 +86,7 @@ type stringKey = Record<string, string>
 const showTitleMap = {
   total: '用例总数(条)',
   defects_count: '缺陷数量',
-  ...(simulationInfo !== 'ccs' ? { coverage: '覆盖率' } : {}),
+  coverage: '覆盖率',
   test_speed: '测试速率(帧/秒)',
   test_time: '运行时长',
   status: '状态'
@@ -172,7 +171,7 @@ function TaskDetailCard(props: propsResTaskDetailType<ResTaskDetail>) {
   const { lookLog, InitTask } = props
 
   return (
-    <div className={styles.taskDetailCard} style={simulationInfo === 'ccs' ? { justifyContent: 'space-between' } : {}}>
+    <div className={styles.taskDetailCard}>
       {Object.keys(showTitleMap).map((item: string) => {
         return (
           <React.Fragment key={generateUUID()}>

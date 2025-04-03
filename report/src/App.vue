@@ -93,7 +93,6 @@ export default class App extends Vue {
   tableData = window.reportData.tableData
   urlList = ''
   titleArray = ['一、测试概述','二、测试方案','三、测试总结','四、测试详情']
-    // '2、性能统计表', '3、内存统计表', '4、跟踪统计表', '5、静态度量表', '6、动态调用图'
   titleMenuArray = ['1、覆盖统计表']
   isShow = false
   progress = 0

@@ -8,7 +8,6 @@ import { CrashInfoMapLog } from 'Utils/DataMap/dataMap'
 import { getTime } from 'Src/util/baseFn'
 import { throwErrorMessage } from 'Src/util/message'
 import { ResTaskDetail } from 'Src/globalType/Response'
-import { simulationInfo } from 'Src/config'
 import styles from '../taskDetailUtil/Detail.less'
 
 interface propsType {
@@ -105,45 +104,41 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       ),
       width: '15%'
     },
-    // 根据simulationInfo判断是否展示覆盖率信息
-    ...(simulationInfo !== 'ccs'
-      ? [
-          {
-            title: () => {
-              return (
-                <div>
-                  <span> 分支覆盖率增幅 </span>
-                </div>
-              )
-            },
-            dataIndex: 'branch_coverage',
-            key: 'branch_coverage',
-            render: (text: any, record: any) => (
-              <div className={styles.checkDetail} key={record.id}>
-                {record.branch_coverage}
-              </div>
-            ),
-            width: '12%'
-          },
-          {
-            title: () => {
-              return (
-                <div>
-                  <span>语句覆盖率增幅</span>
-                </div>
-              )
-            },
-            dataIndex: 'statement_coverage',
-            key: 'statement_coverage',
-            render: (text: any, record: any) => (
-              <div className={styles.checkDetail} key={record.id}>
-                {record.statement_coverage}
-              </div>
-            ),
-            width: '12%'
-          }
-        ]
-      : []),
+
+    {
+      title: () => {
+        return (
+          <div>
+            <span> 分支覆盖率增幅 </span>
+          </div>
+        )
+      },
+      dataIndex: 'branch_coverage',
+      key: 'branch_coverage',
+      render: (text: any, record: any) => (
+        <div className={styles.checkDetail} key={record.id}>
+          {record.branch_coverage}
+        </div>
+      ),
+      width: '12%'
+    },
+    {
+      title: () => {
+        return (
+          <div>
+            <span>语句覆盖率增幅</span>
+          </div>
+        )
+      },
+      dataIndex: 'statement_coverage',
+      key: 'statement_coverage',
+      render: (text: any, record: any) => (
+        <div className={styles.checkDetail} key={record.id}>
+          {record.statement_coverage}
+        </div>
+      ),
+      width: '12%'
+    },
 
     {
       title: () => {
@@ -156,7 +151,7 @@ const DetailTestAllTable: React.FC<propsType> = (props: propsType) => {
       dataIndex: 'crash_type',
       key: 'crash_type',
       ellipsis: true,
-      width: simulationInfo === 'ccs' ? '25%' : '12.5%',
+      width: '12.5%',
       render: (text: any, record: any) => (
         <div className={styles.dataLongInfoResult}>
           {Object.keys(record.crash_type).map(item => {

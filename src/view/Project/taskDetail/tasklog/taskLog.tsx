@@ -10,7 +10,6 @@ import { rePlayTask } from 'Src/services/api/taskApi'
 import errorFrameCopy from 'Src/assets/image/errorFrameCopy.svg'
 import PaginationsAge from 'Src/components/Pagination/Pagina'
 import { CrashInfoMapLog } from 'Utils/DataMap/dataMap'
-import { simulationInfo } from 'Src/config'
 import styles from '../taskDetailUtil/Detail.less'
 import { taskDetailInfoType } from '../taskDetail'
 import { projectInfoType } from '../../task/taskList/task'
@@ -229,22 +228,15 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
           <div className={styles.Header_Main}>
             <span>接收数据</span>
           </div>
-
           <div className={styles.Header_Main}>
             <SortIconComponent title='发送时间' key='2' onChange={setOperation} type='time' isType={isType} />
           </div>
-          {simulationInfo !== 'ccs' ? (
-            <>
-              {' '}
-              <div className={styles.Header_Main}>
-                <SortIconComponent title='分支覆盖率增幅' key='3' onChange={setOperation} type='Branch' isType={isType} />
-              </div>
-              <div className={styles.Header_Main}>
-                <SortIconComponent title='语句覆盖率增幅' key='4' onChange={setOperation} type='Statement' isType={isType} />
-              </div>
-            </>
-          ) : null}
-
+          <div className={styles.Header_Main}>
+            <SortIconComponent title='分支覆盖率增幅' key='3' onChange={setOperation} type='Branch' isType={isType} />
+          </div>
+          <div className={styles.Header_Main}>
+            <SortIconComponent title='语句覆盖率增幅' key='4' onChange={setOperation} type='Statement' isType={isType} />
+          </div>
           <div style={{ textAlign: 'left' }} className={styles.Header_Main}>
             <span>缺陷结果</span>
           </div>
@@ -325,17 +317,10 @@ const DetailTestedTable: React.FC<propsType> = (props: propsType) => {
                       </div>
                     </div>
                     <div>{getTime(item.create_time)}</div>
-                    {simulationInfo !== 'ccs' ? (
-                      <>
-                        <div>{item.branch_coverage}</div>
-                      </>
-                    ) : null}
 
-                    {simulationInfo !== 'ccs' ? (
-                      <>
-                        <div>{item.statement_coverage}</div>
-                      </>
-                    ) : null}
+                    <div>{item.branch_coverage}</div>
+
+                    <div>{item.statement_coverage}</div>
 
                     <div style={{ textAlign: 'left' }}>
                       <div className={styles.dataLongInfoResult}>
